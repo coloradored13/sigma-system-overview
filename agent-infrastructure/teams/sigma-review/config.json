@@ -1,0 +1,19 @@
+{
+  "name": "sigma-review",
+  "description": "Review the sigma-mem project from architecture, product, and UX perspectives using ΣComm protocol",
+  "createdAt": 1772868335487,
+  "leadAgentId": "team-lead@sigma-review",
+  "leadSessionId": "cbee583f-0492-4f3b-9816-eb35be2714a8",
+  "members": [
+    {
+      "agentId": "team-lead@sigma-review",
+      "name": "team-lead",
+      "agentType": "team-lead",
+      "model": "claude-opus-4-6",
+      "joinedAt": 1772868335487,
+      "tmuxPaneId": "",
+      "cwd": "/Users/bjgilbert/Projects/sigma-mem",
+      "subscriptions": []
+    }
+  ]
+}
