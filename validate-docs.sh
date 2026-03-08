@@ -172,8 +172,10 @@ if [ -n "$README_TOTAL" ] && [ -n "$ARCH_TOTAL" ]; then
   RT_TESTS=$(echo "$README_TOTAL" | grep -oE '[0-9,]+' | tail -1 | tr -d ',')
   AT_TESTS=$(echo "$ARCH_TOTAL" | grep -oE '[0-9,]+' | tail -1 | tr -d ',')
 
+  # README totals include non-code rows (ΣComm, agent infra) and use rounding
+  # ARCHITECTURE totals are code-only and exact — so only warn, don't fail
   if [ "$RT_LOC" != "$AT_LOC" ]; then
-    fail "Total LOC mismatch: README=${RT_LOC} vs ARCHITECTURE=${AT_LOC}"
+    warn "Total LOC differs: README=${RT_LOC} (rounded, includes non-code) vs ARCHITECTURE=${AT_LOC} (exact, code-only)"
   else
     pass "Total LOC consistent across README and ARCHITECTURE (${RT_LOC})"
   fi
