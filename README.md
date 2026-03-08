@@ -26,14 +26,25 @@ See [ARCHITECTURE.md](./ARCHITECTURE.md) for the full system design, including h
 
 See [case-study/REVIEW-6-WALKTHROUGH.md](./case-study/REVIEW-6-WALKTHROUGH.md) for a documented run of the full team protocol — three agents reviewing a codebase with research-grounded expertise, peer communication via ΣComm, and self-declared convergence.
 
+## Getting Started
+
+```bash
+git clone --recurse-submodules https://github.com/coloradored13/sigma-system-overview.git
+```
+
+If you already cloned without `--recurse-submodules`:
+```bash
+git submodule update --init --recursive
+```
+
 ## Structure
 
 ```
 sigma-system-overview/
   ARCHITECTURE.md                    # System design document
   README.md                         # This file
-  hateoas-agent/                    # Framework source + tests + examples
-  sigma-mem/                        # Memory MCP server source + tests
+  hateoas-agent/                    # → git submodule (github.com/coloradored13/hateoas-agent)
+  sigma-mem/                        # → git submodule (github.com/coloradored13/sigma-mem)
   agent-infrastructure/
     agents/                         # Agent definitions + protocols
       sigma-lead.md                 # Orchestrator protocol

@@ -1,0 +1,6 @@
+[submodule "hateoas-agent"]
+	path = hateoas-agent
+	url = https://github.com/coloradored13/hateoas-agent.git
+[submodule "sigma-mem"]
+	path = sigma-mem
+	url = https://github.com/coloradored13/sigma-mem.git
