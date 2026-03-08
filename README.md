@@ -53,9 +53,10 @@ sigma-system-overview/
 
 1. **HATEOAS for AI agents** — deterministic tool selection via server-side state machines (no other framework does this)
 2. **Self-navigating memory** — memory retrieval as a HATEOAS state machine with context-dependent actions
-3. **Anti-memories (¬)** — explicitly tracking what is NOT true to prevent false assumptions
-4. **Self-sufficient agent teams on files** — agents boot, communicate, and maintain memory with zero infrastructure
-5. **Research-grounded agents** — periodic web research stored in compressed notation for current, sourced expertise
+3. **Compressed notation as working memory** — notation designed to give a single Claude instance persistent working memory within limited context, which then evolved into inter-agent communication (ΣComm)
+4. **Anti-memories (¬)** — explicitly tracking what is NOT true to prevent false assumptions
+5. **Self-sufficient agent teams on files** — agents boot, communicate, and maintain memory with zero infrastructure
+6. **Research-grounded agents** — periodic web research stored in compressed notation for current, sourced expertise
 
 ## Stats
 

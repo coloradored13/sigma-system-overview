@@ -113,7 +113,13 @@ Claude calls get_team_decisions("sigma-review")
 
 ### ΣComm Protocol
 
-A compressed communication protocol for agent-to-agent messaging.
+A compressed notation system that originated as **working memory for a single Claude instance**, then evolved into an inter-agent communication protocol.
+
+**Origin:** Claude's persistent memory is ~2,000 lines across ~10 files. Every line loaded into context costs tokens. Compressed notation (pipe-separated fields, checksums, confidence scores, anti-memories) was developed to pack maximum signal into that limited space — giving a single Claude instance something resembling working memory rather than just file reads. When agent teams needed efficient communication, the same notation was already battle-tested. ΣComm is the inter-agent application of this same system.
+
+**Two applications of one system:**
+1. **Working memory** — sigma-mem's memory files use compressed notation to maximize the value of every line loaded into context (the single-instance origin)
+2. **Agent communication** — ΣComm applies the same notation to inbox messages, workspace entries, and peer-to-peer messaging
 
 **Format:**
 ```
@@ -201,6 +207,9 @@ User interaction:
 - **Selective wake** — not every task needs every agent, wake-for matching reduces cost
 - **Research protocol** — agents do web research to ground expertise in current sources, stored as ΣComm in memory, refreshed periodically
 
+**Known limits:**
+- **Concurrent writes** — agents write to named subsections they own in workspace, which avoids collisions in practice. For shared files (decisions, patterns), the lead serializes writes. This works for ~5 agents; beyond that, a write-coordination protocol would be needed.
+
 ## How the pieces connect
 
 ```
@@ -281,11 +290,13 @@ The system has been through 6 rounds of self-review. The sigma-review team (tech
 
 2. **Self-navigating memory** — memory retrieval as a HATEOAS state machine where available actions change based on detected context. No static routing table.
 
-3. **Anti-memories and anti-messages** — explicitly tracking what is NOT true (¬) to prevent false assumptions. Applied to both persistent memory and agent communication.
+3. **Compressed notation as working memory** — a notation system designed to give a single Claude instance persistent working memory within its ~2,000-line budget, which then naturally extended to inter-agent communication (ΣComm). One system, two applications.
 
-4. **Self-sufficient agent teams on files** — persistent agent teams that boot themselves, communicate through inboxes, maintain their own memory, and declare convergence — all on markdown files with zero infrastructure.
+4. **Anti-memories and anti-messages** — explicitly tracking what is NOT true (¬) to prevent false assumptions. Applied to both persistent memory and agent communication.
 
-5. **Research-grounded agents** — agents periodically refresh domain knowledge via web research, stored in compressed notation, creating a curated and updatable knowledge base rather than relying solely on training data.
+5. **Self-sufficient agent teams on files** — persistent agent teams that boot themselves, communicate through inboxes, maintain their own memory, and declare convergence — all on markdown files with zero infrastructure.
+
+6. **Research-grounded agents** — agents periodically refresh domain knowledge via web research, stored in compressed notation, creating a curated and updatable knowledge base rather than relying solely on training data.
 
 ## Stats
 
