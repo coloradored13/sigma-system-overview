@@ -13,6 +13,8 @@ chmod +x setup.sh
 
 The setup script is idempotent — safe to run multiple times without duplicating files or configs.
 
+> **Sharing via zip?** GitHub's "Download ZIP" button does NOT include submodule contents. Use `./make-release.sh` to create a proper zip with all files included.
+
 ## What Gets Installed
 
 ### Python Packages
