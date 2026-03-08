@@ -72,7 +72,7 @@ The framework handles:
 
 ### sigma-mem
 
-A persistent memory system for Claude (~1,100 LOC, 57 tests), exposed as an MCP server. Built on hateoas-agent.
+A persistent memory system for Claude (~1,400 LOC, 165 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The memory system is itself a HATEOAS state machine. Claude calls `recall` (the gateway), describes the current context, and the system detects the conversation type (project work, debugging, being corrected, team work, etc.) and returns relevant memories with state-dependent actions.
@@ -97,10 +97,11 @@ Claude calls get_team_decisions("sigma-review")
 ```
 ~/Projects/sigma-mem/
   src/sigma_mem/
+    __init__.py     # Package init
     server.py       # MCP server entry point
     machine.py      # State machine definition (26 actions across 8 states)
     handlers.py     # Handler implementations
-    detection.py    # Context detection (weighted scoring)
+    integrity.py    # Memory integrity checks
   docs/
     sigma-comm-protocol.md  # ΣComm specification
 ```
@@ -157,6 +158,8 @@ File-based infrastructure for self-sufficient agent teams with persistent identi
   tech-architect.md            # Agent: architecture specialist
   product-strategist.md        # Agent: product/shipping specialist
   ux-researcher.md             # Agent: developer experience specialist
+  code-quality-analyst.md      # Agent: code quality specialist
+  technical-writer.md          # Agent: documentation specialist
 
 ~/.claude/teams/sigma-review/  # Team instance
   shared/
@@ -303,7 +306,7 @@ The system has been through 6 rounds of self-review. The sigma-review team (tech
 | Component | Source LOC | Test LOC | Tests | Files |
 |-----------|-----------|----------|-------|-------|
 | hateoas-agent | 2,042 | 5,217 | 250 | 13 modules, 19 test files, 12 examples |
-| sigma-mem | 1,102 | 426 | 57 | 5 modules, 4 test files |
+| sigma-mem | 1,400 | 1,460 | 165 | 5 modules, test files |
 | ΣComm protocol | — | — | — | 123 lines spec |
 | Agent infrastructure | — | — | — | 5 agent defs (415 lines), team files (510 lines) |
-| **Total** | **3,144** | **5,643** | **307** | |
+| **Total** | **3,442** | **6,677** | **415** | |

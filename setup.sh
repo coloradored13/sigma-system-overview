@@ -143,6 +143,8 @@ AGENT_FILES=(
     "tech-architect.md"
     "product-strategist.md"
     "ux-researcher.md"
+    "code-quality-analyst.md"
+    "technical-writer.md"
     "SIGMA-COMM-SPEC.md"
 )
 

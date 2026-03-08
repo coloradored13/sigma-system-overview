@@ -34,6 +34,8 @@ The setup script is idempotent — safe to run multiple times without duplicatin
     tech-architect.md                 # Agent definition: architecture specialist
     product-strategist.md             # Agent definition: product/shipping specialist
     ux-researcher.md                  # Agent definition: developer experience specialist
+    code-quality-analyst.md           # Agent definition: code quality specialist
+    technical-writer.md               # Agent definition: documentation specialist
   teams/sigma-review/
     shared/
       roster.md                       # Team roster with domains and wake-for rules
@@ -100,6 +102,8 @@ cp agent-infrastructure/agents/SIGMA-COMM-SPEC.md ~/.claude/agents/
 cp agent-infrastructure/agents/tech-architect.md ~/.claude/agents/
 cp agent-infrastructure/agents/product-strategist.md ~/.claude/agents/
 cp agent-infrastructure/agents/ux-researcher.md ~/.claude/agents/
+cp agent-infrastructure/agents/code-quality-analyst.md ~/.claude/agents/
+cp agent-infrastructure/agents/technical-writer.md ~/.claude/agents/
 ```
 
 ### 3. Create team directory structure
@@ -316,6 +320,8 @@ rm ~/.claude/agents/SIGMA-COMM-SPEC.md
 rm ~/.claude/agents/tech-architect.md
 rm ~/.claude/agents/product-strategist.md
 rm ~/.claude/agents/ux-researcher.md
+rm ~/.claude/agents/code-quality-analyst.md
+rm ~/.claude/agents/technical-writer.md
 ```
 
 ### Remove team data

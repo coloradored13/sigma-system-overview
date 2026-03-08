@@ -10,7 +10,7 @@ This repository documents a system of four interlocking components that together
 A Python framework (~2,000 LOC, 250 tests) that applies HATEOAS to AI agent tool use. The agent starts with one tool; each response tells it exactly what actions are available next. The server decides what's valid, not the LLM.
 
 ### [sigma-mem](./sigma-mem/)
-A persistent memory system for Claude (~1,100 LOC, 57 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
+A persistent memory system for Claude (~1,400 LOC, 165 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
 
 ### [ΣComm Protocol](./agent-infrastructure/agents/sigma-comm.md)
 Compressed agent-to-agent communication. Format: `[STATUS] BODY |¬ ruled-out |→ actions |#count`. Forces agents to declare what they ruled out (¬) and what they can do next (→).
@@ -52,6 +52,8 @@ sigma-system-overview/
       tech-architect.md             # Agent definition
       product-strategist.md         # Agent definition
       ux-researcher.md              # Agent definition
+      code-quality-analyst.md       # Agent definition
+      technical-writer.md           # Agent definition
     teams/sigma-review/             # Live team instance
       shared/                       # Workspace, decisions, patterns, roster
       agents/                       # Individual agent persistent memory
@@ -74,7 +76,7 @@ sigma-system-overview/
 | Component | Source | Tests | Test Count |
 |-----------|--------|-------|------------|
 | hateoas-agent | 2,042 LOC | 5,217 LOC | 250 |
-| sigma-mem | 1,102 LOC | 426 LOC | 57 |
+| sigma-mem | 1,400 LOC | 1,460 LOC | 165 |
 | ΣComm + agents | 415 lines | — | — |
 | Team infra | 510 lines | — | — |
-| **Total** | **~4,000 LOC** | **~5,600 LOC** | **307** |
+| **Total** | **~4,300 LOC** | **~6,700 LOC** | **415** |
