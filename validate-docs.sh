@@ -28,8 +28,8 @@ if [ -d "hateoas-agent/src" ]; then
   echo "  Actual: src=${HA_LOC} LOC, tests=${HA_TEST_LOC} LOC, test_count=${HA_TESTS}"
 
   # Check README claims
-  README_HA_LOC=$(grep -oP 'hateoas-agent.*?(\d[\d,]+)\s*LOC' README.md | head -1 | grep -oE '[0-9,]+' | head -1 | tr -d ',') || README_HA_LOC=""
-  ARCH_HA_LOC=$(grep -oP 'hateoas-agent.*?(\d[\d,]+)' ARCHITECTURE.md | head -1 | grep -oE '[0-9,]+' | head -1 | tr -d ',') || ARCH_HA_LOC=""
+  README_HA_LOC=$(grep -oE 'hateoas-agent.*?(\d[\d,]+)\s*LOC' README.md | head -1 | grep -oE '[0-9,]+' | head -1 | tr -d ',') || README_HA_LOC=""
+  ARCH_HA_LOC=$(grep -oE 'hateoas-agent.*?(\d[\d,]+)' ARCHITECTURE.md | head -1 | grep -oE '[0-9,]+' | head -1 | tr -d ',') || ARCH_HA_LOC=""
 
   # README stats table
   README_TABLE_HA=$(grep 'hateoas-agent' README.md | grep '|' | head -1) || README_TABLE_HA=""

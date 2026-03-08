@@ -26,7 +26,7 @@ This principle — **deterministic state-driven navigation** — is then applied
 
 ### hateoas-agent
 
-A Python library (~2,000 LOC, 250 tests) that implements HATEOAS for AI agent tool use.
+A Python library (~2,060 LOC, 261 tests) that implements HATEOAS for AI agent tool use.
 
 **How it works:**
 ```
@@ -60,7 +60,7 @@ The framework handles:
     errors.py           # Error hierarchy
     types.py            # Data types
     advertisement.py    # Result formatting
-  tests/                # 250 tests across 19 files
+  tests/                # 261 tests across 19 test files
   examples/             # 12 working examples
 ```
 
@@ -72,7 +72,7 @@ The framework handles:
 
 ### sigma-mem
 
-A persistent memory system for Claude (~1,400 LOC, 165 tests), exposed as an MCP server. Built on hateoas-agent.
+A persistent memory system for Claude (~1,560 LOC, 174 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The memory system is itself a HATEOAS state machine. Claude calls `recall` (the gateway), describes the current context, and the system detects the conversation type (project work, debugging, being corrected, team work, etc.) and returns relevant memories with state-dependent actions.
@@ -305,8 +305,8 @@ The system has been through 6 rounds of self-review. The sigma-review team (tech
 
 | Component | Source LOC | Test LOC | Tests | Files |
 |-----------|-----------|----------|-------|-------|
-| hateoas-agent | 2,042 | 5,217 | 250 | 13 modules, 19 test files, 12 examples |
-| sigma-mem | 1,400 | 1,460 | 165 | 5 modules, test files |
+| hateoas-agent | 2,062 | 5,295 | 261 | 13 modules, 19 test files, 12 examples |
+| sigma-mem | 1,564 | 1,656 | 174 | 5 modules, test files |
 | ΣComm protocol | — | — | — | 123 lines spec |
 | Agent infrastructure | — | — | — | 5 agent defs (415 lines), team files (510 lines) |
-| **Total** | **3,442** | **6,677** | **415** | |
+| **Total** | **3,626** | **6,951** | **435** | |
