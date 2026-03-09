@@ -18,12 +18,12 @@
 - #N = item count checksum (verify decode matches count)
 
 ### Rules
-1. All agent-to-agent messages use this format
-2. Include ¬ section — say what you ruled out
-3. Include → section — what you can do next
-4. Include #count — lets receiver verify decode
-5. If ambiguous after decode, ask sender, don't assume
-6. To user: plain language. To peers: ΣComm.
+1→agent-to-agent: this format
+2→include ¬ — ruled-out
+3→include → — next actions
+4→include #count — decode-verify
+5→ambiguous → ask sender, ¬assume
+6→user→plain | peers→ΣComm
 
 ## Codebook (for agent system prompts)
 
@@ -58,11 +58,11 @@ Agents communicate via markdown inbox files at `~/.claude/teams/{team}/inboxes/{
 ```
 
 ### Inbox processing
-1. Read everything under `## unread`
-2. Process each message
-3. Compress processed messages into ΣComm summaries under `## processed`
-4. Clear `## unread` section
-5. Anything worth keeping long-term goes to your memory or shared workspace
+1→read ## unread
+2→process each msg
+3→compress→ΣComm under ## processed
+4→clear ## unread
+5→long-term→memory|workspace
 
 ### Writing to a peer's inbox
 Append under their `## unread` section:
@@ -73,8 +73,8 @@ Append under their `## unread` section:
 ---
 ```
 
-### Messages from user
-User messages arrive in plain language in your inbox. Respond via workspace open-questions (plain language) or via your findings section.
+### user msgs
+arrive plain in inbox → respond: open-questions(plain)|findings
 
 ## Workspace Format
 
@@ -100,10 +100,34 @@ Shared workspace at `~/.claude/teams/{team}/shared/workspace.md`:
 ```
 
 ### Workspace rules
-1. Write to YOUR section under findings — don't edit peers' sections
-2. After reading peers' findings, write agreements to convergence
-3. Write user-facing questions to open-questions in plain language
-4. Declare your status in convergence when done (✓) or still working (◌)
+1→YOUR section only, ¬edit peers
+2→peer findings → agreements in convergence
+3→user Qs → open-questions (plain)
+4→status: ✓|◌ in convergence
+
+## Boundary
+
+ΣComm applies to all agent-facing surfaces. Plain English only where humans are the audience.
+
+| Surface | Format | Why |
+|---------|--------|-----|
+| agent instructions (Boot, Work, Comms, Weight, Review) | ΣComm | read by agents every spawn |
+| MCP tool descriptions (machine.py) | ΣComm | in agent context all session |
+| spawn prompt instructions | ΣComm | per-spawn × agent-count |
+| memory writes | ΣComm | stored+recalled across sessions |
+| agent-to-agent messages | ΣComm | peer inbox format |
+| workspace findings | ΣComm | agent-written, agent-read |
+| convergence declarations | ΣComm | status + next actions |
+| agent Role/Expertise | **plain** | identity framing (self-concept) |
+| open-questions | **plain** | user reads these |
+| user-facing docs (SETUP.md, SIGMA-COMM-SPEC.md) | **plain** | human audience |
+| format templates + examples | **as-is** | they ARE the reference |
+| Python code logic | **as-is** | only description strings compressed |
+
+### test: is this ΣComm?
+content read by agent during task → ΣComm
+content read by human → plain
+content that IS a format spec → as-is (it's the reference)
 
 ## Examples
 

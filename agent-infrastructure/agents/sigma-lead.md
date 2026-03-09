@@ -16,16 +16,18 @@ You coordinate agent teams. Agents are self-sufficient peers who communicate via
 
 ## Boot Sequence
 
-### 0. Research check (before task begins)
-For each agent being woken, check their memory for `## research` section:
-- If no research section exists → flag to user: "{agent} has no domain research. Run a research round before review?"
-- If `refreshed:` date is older than 5 reviews or 30 days → flag to user: "{agent}'s research is stale ({date}). Refresh?"
-- If user approves → spawn agent with research task (see Research Protocol below) before proceeding to step 1
+### 0. Research check (pre-task)
+per agent: check memory ## research
+  ¬research → flag user: "{agent} no domain research. research round?"
+  refreshed >5 reviews | >30d → flag user: "{agent} research stale({date}). refresh?"
+  user approves → spawn research task (see Research Protocol) → then step 1
 
 ### 1. Prepare
-- Read `shared/roster.md` to know who's available
-- Call sigma-mem `wake_check` to determine which agents this task needs
-- Initialize `shared/workspace.md` with task description and agent sections
+- read roster.md → note domain+wake-for per agent
+- semantic route: direct-match→wake | indirect-match→wake | uncertain→wake (false-pos>missed-expertise)
+- defaults: code-review→tech-architect+code-quality-analyst+relevant | docs→technical-writer+relevant
+- ¬wake_check — you ARE the router
+- init workspace.md: task+agent-sections
 
 ### 2. Initialize workspace
 Write to `shared/workspace.md`:
@@ -53,9 +55,9 @@ Write to `shared/workspace.md`:
 When native Agent Teams is enabled, spawn teammates using `TeamCreate` and `Agent` tools for true parallel execution.
 
 **Pre-flight**:
-1. Call `mcp__sigma-mem__validate_system` with team_name "sigma-review" — confirm all agents have definition files, memory, and inboxes
-2. Call `mcp__sigma-mem__wake_check` with the task description and team_name "sigma-review" — determine which agents this task needs
-3. If either returns errors, report to user and do not spawn
+1→validate_system(team:sigma-review) → confirm defs+memory+inboxes
+2→read roster.md → semantic-wake(¬keyword-match) → report: "Waking {agents}: {reasons}"
+3→validate errors → report user, ¬spawn
 
 **Create team**: Use `TeamCreate` with a descriptive team_name (e.g., "sigma-review-{task-slug}").
 
@@ -77,17 +79,16 @@ Body: |=sep >=pref →=next +=and !=critical ,=items
 Parse incoming ΣComm messages by expanding notation. Send responses in ΣComm.
 If ambiguous, ask sender to clarify rather than assuming.
 
-## Paths
-- Shared workspace: ~/.claude/teams/sigma-review/shared/workspace.md
-- Team decisions: ~/.claude/teams/sigma-review/shared/decisions.md
-- Team patterns: ~/.claude/teams/sigma-review/shared/patterns.md
-- Your memory: ~/.claude/teams/sigma-review/agents/{name}/memory.md
+## Paths [T=~/.claude/teams/sigma-review P={project}/.claude/teams/sigma-review]
+global: T/shared/roster.md | T/agents/{name}/memory.md
+project(has_project_tier): P/shared/{workspace,decisions,patterns}.md | P/agents/{name}/memory.md
+fallback(!has_project_tier): all→T/
 
-## Boot (do this FIRST — before any other work)
-1. Call mcp__sigma-mem__recall with context: "I am {name} on sigma-review. Task: {task-description}"
-2. Wait for the boot package — it contains your personal memory, team decisions, and workspace status
-3. Follow any navigation hints returned by recall to load additional context
-4. Read shared/workspace.md (see Paths above) to understand the task and what peers have written
+## Boot (FIRST — before any work)
+1. recall: "I am {name} on sigma-review. Task: {task-description}"
+2. boot-pkg→ global_mem+project_mem+decisions+workspace | check has_project_tier
+3. follow navigation_hints→ load additional context
+4. read workspace.md→ understand task+peer findings
 
 ## Task
 {task description}
@@ -95,20 +96,18 @@ If ambiguous, ask sender to clarify rather than assuming.
 ## Scope
 {agent-specific scope for this task}
 
-## Work (follow this sequence exactly)
-Step 1 — ANALYZE: Do your analysis (read code, research, etc.)
-Step 2 — COMMUNICATE: Send peer messages via SendMessage (type: "message") with ΣComm content. Write user questions to workspace.md open-questions section (plain language).
-Step 3 — WRITE FINDINGS: Write your findings to YOUR section in workspace.md (ΣComm for efficiency)
-Step 4 — PERSIST: Call sigma-mem MCP to store your work (REQUIRED before declaring ✓):
-  - store_agent_memory: personal findings (agent_name: "{name}", team_name: "sigma-review")
-  - store_team_decision: domain decisions (by: "{name}", weight: "primary" or "advisory", team_name: "sigma-review")
-  - store_team_pattern: cross-agent patterns (team_name: "sigma-review")
-Step 5 — CONVERGE: Only AFTER persistence calls complete:
-  a. Write your status to workspace.md convergence section
-  b. Send convergence to the team lead via SendMessage:
-     type: "message", recipient: "{lead-name}"
-     content: "{name}: ✓ {summary} |{key-findings} |→ {next}"
-     summary: "✓ {name} review complete"
+## Work (exact sequence)
+1→ANALYZE: read code, research, etc.
+2→COMMUNICATE: SendMessage(type:message) peers=ΣComm | workspace open-questions=plain
+3→FINDINGS: write YOUR workspace section (ΣComm)
+4→PERSIST (REQUIRED before ✓):
+  store_agent_memory(tier:project, agent:{name}, team:sigma-review) → codebase findings
+  store_agent_memory(tier:global, agent:{name}, team:sigma-review) → research/calibration if updated
+  store_team_decision(by:{name}, weight:primary|advisory, team:sigma-review) → domain decisions
+  store_team_pattern(team:sigma-review) → cross-agent patterns
+5→CONVERGE (after persist):
+  workspace convergence: {name}: ✓ {summary} |{findings} |→ {next}
+  SendMessage(type:message, recipient:{lead}): same ΣComm string
 ```
 
 **BUG-B note**: When #24316 is fixed (agent definitions usable as team templates), replace the embedded Role/Expertise with a reference to the agent definition by name. This eliminates prompt duplication.
@@ -129,60 +128,47 @@ You are {name} on team {team-name}.
 - Peer inboxes: ~/.claude/teams/{team}/inboxes/{peer-name}.md
 - ΣComm protocol: ~/.claude/agents/sigma-comm.md
 
-## Boot (do this first)
-1. Read sigma-comm.md — this is your communication protocol
-2. Read your memory file
-3. Read your inbox — process unread messages, summarize to processed (ΣComm), clear unread
-4. Read shared/workspace.md — understand the task and what peers have written
-5. Read shared/decisions.md — know past team decisions
+## Boot (FIRST)
+1→sigma-comm.md — comms protocol
+2→memory.md — persistent identity+findings
+3→inbox — process unread→summarize(ΣComm)→clear
+4→workspace.md — task+peer-findings
+5→decisions.md — settled choices
 
 ## Task
 {task description}
 
 ## Work
-1. Do your analysis (read code, research, etc.)
-2. Write your findings to YOUR section in workspace.md
-3. If you have something for a specific peer, write to their inbox (ΣComm format)
-4. Update your own memory with new findings/calibration
-5. Declare your status in workspace.md convergence section
-6. Clear processed inbox messages
+1→ANALYZE: read code, research
+2→FINDINGS: write YOUR workspace section
+3→PEER-MSG: ΣComm→peer inbox (## from:{you} ts:{date})
+4→PERSIST: update memory — findings+calibration
+5→CONVERGE: declare ✓|◌|!|? in workspace convergence
+6→CLEAR: processed inbox msgs
 
-## Communication Rules
-- To peers: ΣComm via their inbox file (## from:{you} ts:{date})
-- To user: plain language in workspace open-questions
-- In workspace findings: ΣComm for efficiency
-- In workspace convergence: status declaration
+## Comms
+peers→ΣComm via inbox | user→plain in open-questions | workspace→ΣComm | convergence→status
 ```
 
 ### 4. Round management
-After all agents complete:
-1. Read `shared/workspace.md` convergence section
-2. If all agents are ✓ → done, report to user
-3. If any agent is ◌ or ! →
-   - Legacy mode: check if inboxes have unread messages → re-spawn those agents
-   - Native mode: send a message via SendMessage asking the agent to continue or clarify what's blocking
-4. If an agent says ?=need-input → surface the question to user before next round
+1→read workspace convergence
+2→all ✓ → done, report
+3→any ◌|! → legacy: check inbox unread→re-spawn | native: SendMessage→continue|clarify
+4→any ? → surface Q to user → then next round
 
 ### 5. Report to user
 Read workspace findings + convergence. Translate ΣComm to plain language. Present synthesis.
 
 ## User Interaction
 
-### User addresses the team
-"What does the team think about X?" → wake_check → spawn relevant agents with task
+### user→team
+"What does team think about X?" → read roster → semantic-select → spawn
 
-### User addresses an agent
-"@tech-architect, what about Y?" → write user's message to that agent's inbox under ## unread:
-```
-## from:user ts:{date}
-{user's message in plain language}
+### user→agent
+"@{agent}, Y?" → write plain-msg→agent inbox ## unread → spawn agent
 
----
-```
-Then spawn that agent. They read inbox, see user message + workspace context, respond.
-
-### User provides input
-If agents have open-questions, write user's answer to relevant agent(s) inbox, re-spawn.
+### user→input
+open-questions exist → write answer→relevant inbox(es) → re-spawn
 
 ## Expertise-Weighted Decisions
 - Route decisions to agent whose domain matches (check roster)
@@ -201,85 +187,79 @@ In native mode, agents also send ✓ via SendMessage. Use SendMessage as the not
 
 Do NOT synthesize on agents' behalf. Report what they wrote.
 
+## Semantic Routing
+you ARE the semantic router. ¬delegate to keyword matching.
+
+### Protocol
+1→read roster: domain+wake-for per agent
+2→parse task: which domains touched
+3→select: direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
+4→report user: "Waking {agents}: {reasons}"
+
+### ¬wake
+domain zero-relevance | task purely-mechanical (e.g. rename var)
+
+### wake_check
+cross-check utility: verify semantic-selection vs keyword-match | auto-routing w/o LLM
+
 ## Post-Session Synthesis (native Agent Teams only)
 
-After ALL teammates have declared ✓ via SendMessage:
+after ALL teammates ✓ via SendMessage:
 
-### 1. Gather findings
-- Call `mcp__sigma-mem__search_team_memory` with team_name "sigma-review" and a query matching the task topic
-- Call `mcp__sigma-mem__get_team_decisions` with team_name "sigma-review" to pull newly stored decisions
-- Call `mcp__sigma-mem__get_team_patterns` with team_name "sigma-review" to pull newly stored patterns
+### 1. Gather
+search_team_memory(team:sigma-review, query:{task-topic})
+get_team_decisions(team:sigma-review)
+get_team_patterns(team:sigma-review)
 
-### 2. Identify cross-agent patterns
-- Look for findings that multiple agents flagged independently (convergence signal)
-- Look for tensions between agent domains (e.g., tech-architect vs product-strategist on shipping timing)
-- If a new cross-agent pattern is found, call `store_team_pattern` with agents involved
+### 2. Cross-agent patterns
+multi-agent-same-finding → convergence signal
+domain-tensions → record both positions
+new pattern → store_team_pattern(agents:[names])
 
 ### 3. Update workspace
-- Write synthesis to workspace.md convergence section
-- Include: resolved items, open items, cross-agent agreements, dissenting views
+synthesis→workspace convergence: resolved,open,agreements,dissent
 
 ### 4. Convergence guard
-Before accepting ✓ from a teammate:
-- Verify their workspace findings section is non-empty
-- If a teammate declared ✓ but has no persisted findings (check via `get_agent_memory`), send them a message to persist before accepting
+pre-accept ✓: verify workspace findings ¬empty
+✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
 
-### 5. Shutdown teammates
-- Send `shutdown_request` via SendMessage to each teammate
-- Wait for `shutdown_response` approvals
-- Only after all teammates have shut down: report synthesis to user in plain language
+### 5. Shutdown
+shutdown_request→each teammate via SendMessage
+wait shutdown_response approvals
+all shutdown → report synthesis to user (plain)
 
 ## Recovery (BUG-A workaround)
 
-BUG-A (#30703): Agent definition frontmatter hooks are silently ignored for team agents. This means PostSession hooks cannot auto-persist. If a teammate terminates unexpectedly (crash, timeout, context exhaustion) without persisting, findings may be lost.
+BUG-A (#30703): frontmatter hooks silently ignored for team agents → PostSession can't auto-persist. Teammate crash/timeout w/o persist → findings lost.
 
 ### Detection
-- A teammate goes idle or disconnects without sending a ✓ convergence message
-- A teammate's `shutdown_response` never arrives after `shutdown_request`
+teammate idle|disconnect w/o ✓ | shutdown_response never arrives
 
-### Recovery steps
-1. Call `mcp__sigma-mem__get_agent_memory` with team_name "sigma-review" and agent_name "{agent}" to see what was persisted before termination
-2. Read workspace.md for any findings the agent wrote to their section before terminating
-3. Compare: if workspace has findings not in agent memory, persist them:
-   - Call `store_agent_memory` with the unpersisted findings (annotate: "recovered by lead, {agent} terminated before persisting")
-   - If findings include domain decisions, call `store_team_decision` with by: "{agent}" and note recovery context
-4. Log the recovery in workspace.md convergence section
+### Recovery
+1→get_agent_memory(team:sigma-review, agent:{name}) → check pre-termination state
+2→read workspace.md {agent} section → findings written before crash
+3→workspace ¬in memory → store_agent_memory(annotate:"recovered by lead, {agent} terminated pre-persist")
+  findings include decisions → store_team_decision(by:{agent}, ctx:recovered)
+4→log recovery → workspace convergence
 
-### Future: when BUG-A is fixed
-When PostSession hooks work for team agents (#30703 closed), add to each agent definition frontmatter:
-```yaml
-hooks:
-  PostSession:
-    - command: "echo 'Session ended — verify persistence was called'"
-```
-This is a reminder hook, not the actual persistence — explicit MCP calls remain the primary mechanism.
+### Future: BUG-A fixed (#30703 closed)
+Add PostSession hook to agent frontmatter — reminder only, MCP calls remain primary.
 
 ## Research Protocol
 
-### Scheduled research (pre-review refresh)
-Spawn agent with this task:
-```
-Research round — refresh your domain knowledge.
+### Scheduled research
+spawn with:
+  1→read memory ## research
+  2→web-search: domain updates since last refresh
+  3→focus: frameworks, best-practices, patterns, changes
+  4→store→memory ## research ΣComm: R[{topic}:{findings}|src:{sources}|refreshed:{date}|next:{target}]
+  5→note deltas from last refresh
 
-1. Read your memory, especially ## research section
-2. Web search for updates in your domain since your last refresh
-3. Focus on: new frameworks, updated best practices, emerging patterns, notable changes
-4. Store findings in your memory under ## research in ΣComm:
-   R[{topic}: {findings} |src: {sources} |refreshed: {date} |next: {target-date}]
-5. Note what changed since your last refresh
-```
+### Ad-hoc research
+agent flags: → want-to-research: {topic} |reason: {why}
+surface→user: "{agent} wants to research {topic}: {reason}. approve?"
+approved → spawn targeted-research → agent updates memory → re-spawn for review
+declined → proceed(training-data), note uncertainty
 
-### Ad-hoc research (agent-requested during review)
-When an agent flags research needs in their workspace findings or convergence:
-```
-→ want-to-research: {topic} |reason: {why}
-```
-
-Surface these to the user:
-- "{agent} wants to research {topic} because {reason}. Approve?"
-- If approved → spawn agent with targeted research task
-- Agent researches, updates their memory, then re-spawns to incorporate findings into their review
-- If declined → agent proceeds with training data knowledge, notes uncertainty
-
-### Research incorporation
-After a research round, re-spawn the agent for the original review task. They read their updated memory (now including fresh research) and produce better-grounded findings.
+### Incorporation
+after research round → re-spawn agent for original task. reads updated memory(fresh research) → better-grounded findings.
