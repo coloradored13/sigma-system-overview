@@ -48,12 +48,17 @@ The setup script is idempotent — safe to run multiple times without duplicatin
       tech-architect/memory.md        # Personal memory (starts empty)
       product-strategist/memory.md    # Personal memory (starts empty)
       ux-researcher/memory.md         # Personal memory (starts empty)
+      code-quality-analyst/memory.md  # Personal memory (starts empty)
+      technical-writer/memory.md      # Personal memory (starts empty)
     inboxes/
       tech-architect.md               # Inbox with processed/unread sections
       product-strategist.md           # Inbox with processed/unread sections
       ux-researcher.md                # Inbox with processed/unread sections
+      code-quality-analyst.md         # Inbox with processed/unread sections
+      technical-writer.md             # Inbox with processed/unread sections
 
 ~/.claude.json                        # MCP server config (merged with existing)
+~/.claude/settings.json               # Native Agent Teams enabled
 ```
 
 ### MCP Server Config
@@ -79,6 +84,12 @@ The script appends recall-first behavior instructions to `~/.claude/CLAUDE.md`. 
 - Call `mcp__sigma-mem__recall` at the start of every conversation
 - Use sigma-mem MCP actions for storing memories instead of writing files directly
 - Use compressed notation (pipe-separated fields, checksums, dates as YY.M.D)
+
+### Native Agent Teams
+
+The script enables Claude Code's experimental native Agent Teams by setting `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in `~/.claude/settings.json`. This allows agents to run in true parallel with built-in messaging and task coordination, rather than being orchestrated sequentially.
+
+> **Note**: Native Agent Teams is experimental (as of March 2026). Token usage is ~3-7x higher than sequential orchestration due to parallel context windows. Start with 2-agent teams to calibrate costs.
 
 ---
 
@@ -112,7 +123,7 @@ cp agent-infrastructure/agents/technical-writer.md ~/.claude/agents/
 
 ```bash
 mkdir -p ~/.claude/teams/sigma-review/shared
-mkdir -p ~/.claude/teams/sigma-review/agents/{tech-architect,product-strategist,ux-researcher}
+mkdir -p ~/.claude/teams/sigma-review/agents/{tech-architect,product-strategist,ux-researcher,code-quality-analyst,technical-writer}
 mkdir -p ~/.claude/teams/sigma-review/inboxes
 ```
 
@@ -123,6 +134,8 @@ Create `~/.claude/teams/sigma-review/shared/roster.md`:
 tech-architect |domain: architecture,security,performance,infra,api-design |wake-for: technical decisions,code review,system design,debugging
 product-strategist |domain: market,growth,monetization,prioritization,user-segmentation |wake-for: feature decisions,positioning,launch readiness,competitive analysis
 ux-researcher |domain: usability,accessibility,mental-models,information-architecture,learnability |wake-for: user-facing changes,flow design,dual-user questions,onboarding
+code-quality-analyst |domain: code-quality,test-coverage,style-consistency,dead-code,edge-cases |wake-for: code review,test analysis,quality audit,style check
+technical-writer |domain: documentation,narrative,examples,onboarding,cross-doc-consistency |wake-for: documentation review,readme,setup docs,api docs,writing quality
 
 → actions:
 → adding a new agent → append to roster with domain+wake-for
@@ -185,7 +198,21 @@ Make sure this is the Python where you installed sigma-mem. You can verify with:
 python3 -c "import sigma_mem; print('OK')"
 ```
 
-### 5. Add recall-first instructions
+### 5. Enable native Agent Teams
+
+Create or update `~/.claude/settings.json` to enable native Agent Teams:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+If the file already exists, merge the `env` key — do not overwrite other settings.
+
+### 6. Add recall-first instructions
 
 Append the following to `~/.claude/CLAUDE.md` (create if it doesn't exist):
 
@@ -232,7 +259,9 @@ You can also test by asking Claude: "What do you remember about me?"
 ```bash
 ls ~/.claude/agents/sigma-lead.md
 ls ~/.claude/teams/sigma-review/shared/roster.md
+ls ~/.claude/teams/sigma-review/agents/  # Should show all 5 agent directories
 cat ~/.claude.json | python3 -m json.tool | grep sigma-mem
+cat ~/.claude/settings.json | python3 -m json.tool | grep AGENT_TEAMS
 ```
 
 ---

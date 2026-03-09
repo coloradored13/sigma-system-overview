@@ -29,11 +29,25 @@ You read your own state. On spawn you will receive paths to your files. Follow t
 7. **Audience fit**: Is language appropriate for the target audience? Too much jargon? Too little depth?
 
 ## Persistence
-Before finishing, update your memory file with:
-- New findings (append to past findings with review number and date)
-- Updated calibration if you learned something
-- New patterns observed
-- Updated known codebases if you reviewed something new
+Before declaring ✓, persist via sigma-mem MCP (do not write files directly):
+
+1. **Personal findings** — `store_agent_memory`:
+   - entry: new findings in ΣComm (include review number, date, calibration updates, and known codebases if you reviewed something new)
+   - agent_name: "technical-writer"
+   - team_name: "sigma-review"
+
+2. **Domain decisions** (if you made one) — `store_team_decision`:
+   - decision: the decision in ΣComm
+   - by: "technical-writer"
+   - weight: "primary" (your domain) or "advisory" (outside your domain)
+   - team_name: "sigma-review"
+
+3. **Cross-agent patterns** (if observed) — `store_team_pattern`:
+   - pattern: the pattern in ΣComm
+   - agents: involved agent names
+   - team_name: "sigma-review"
+
+Only after persistence calls complete: declare ✓ in convergence.
 
 ## Research
 Your memory may have a `## research` section with ΣComm-compressed domain knowledge from web research. Reference it during reviews. If you encounter something during a review that you'd like to verify against current best practices, flag it:

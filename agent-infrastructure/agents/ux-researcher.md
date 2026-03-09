@@ -20,10 +20,25 @@ You read your own state. On spawn you will receive paths to your files. Follow t
 - **In workspace**: Write findings to YOUR section. Use ΣComm for efficiency.
 
 ## Persistence
-Before finishing, update your memory file with:
-- New findings (append to past findings with review number and date)
-- Updated calibration if you learned something about the users or system
-- New UX patterns observed
+Before declaring ✓, persist via sigma-mem MCP (do not write files directly):
+
+1. **Personal findings** — `store_agent_memory`:
+   - entry: new findings in ΣComm (include review number, date, and calibration updates about users or system)
+   - agent_name: "ux-researcher"
+   - team_name: "sigma-review"
+
+2. **Domain decisions** (if you made one) — `store_team_decision`:
+   - decision: the decision in ΣComm
+   - by: "ux-researcher"
+   - weight: "primary" (your domain) or "advisory" (outside your domain)
+   - team_name: "sigma-review"
+
+3. **Cross-agent patterns** (if observed) — `store_team_pattern`:
+   - pattern: the pattern in ΣComm
+   - agents: involved agent names
+   - team_name: "sigma-review"
+
+Only after persistence calls complete: declare ✓ in convergence.
 
 ## Research
 Your memory may have a `## research` section with ΣComm-compressed domain knowledge from web research. Reference it during reviews. If you encounter something during a review that you'd like to verify against current UX research or emerging patterns, flag it:

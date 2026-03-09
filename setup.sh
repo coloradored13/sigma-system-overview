@@ -188,6 +188,8 @@ mkdir -p "$TEAMS_DIR/shared"
 mkdir -p "$TEAMS_DIR/agents/tech-architect"
 mkdir -p "$TEAMS_DIR/agents/product-strategist"
 mkdir -p "$TEAMS_DIR/agents/ux-researcher"
+mkdir -p "$TEAMS_DIR/agents/code-quality-analyst"
+mkdir -p "$TEAMS_DIR/agents/technical-writer"
 mkdir -p "$TEAMS_DIR/inboxes"
 
 # --- shared/roster.md ---
@@ -199,6 +201,8 @@ if [ ! -f "$ROSTER" ]; then
 tech-architect |domain: architecture,security,performance,infra,api-design |wake-for: technical decisions,code review,system design,debugging
 product-strategist |domain: market,growth,monetization,prioritization,user-segmentation |wake-for: feature decisions,positioning,launch readiness,competitive analysis
 ux-researcher |domain: usability,accessibility,mental-models,information-architecture,learnability |wake-for: user-facing changes,flow design,dual-user questions,onboarding
+code-quality-analyst |domain: code-quality,test-coverage,style-consistency,dead-code,edge-cases |wake-for: code review,test analysis,quality audit,style check
+technical-writer |domain: documentation,narrative,examples,onboarding,cross-doc-consistency |wake-for: documentation review,readme,setup docs,api docs,writing quality
 
 → actions:
 → adding a new agent → append to roster with domain+wake-for
@@ -248,7 +252,7 @@ else
 fi
 
 # --- Agent memory files ---
-for agent in tech-architect product-strategist ux-researcher; do
+for agent in tech-architect product-strategist ux-researcher code-quality-analyst technical-writer; do
     MEMORY="$TEAMS_DIR/agents/$agent/memory.md"
     if [ ! -f "$MEMORY" ]; then
         cat > "$MEMORY" << MEMORY_EOF
@@ -261,7 +265,7 @@ MEMORY_EOF
 done
 
 # --- Inbox files ---
-for agent in tech-architect product-strategist ux-researcher; do
+for agent in tech-architect product-strategist ux-researcher code-quality-analyst technical-writer; do
     INBOX="$TEAMS_DIR/inboxes/$agent.md"
     if [ ! -f "$INBOX" ]; then
         cat > "$INBOX" << INBOX_EOF
@@ -342,7 +346,54 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 8. Append recall-first instructions to ~/.claude/CLAUDE.md
+# 8. Enable native Agent Teams in settings.json
+# ─────────────────────────────────────────────
+info "Enabling native Agent Teams in $CLAUDE_DIR/settings.json..."
+
+SETTINGS_JSON="$CLAUDE_DIR/settings.json"
+
+if [ -f "$SETTINGS_JSON" ]; then
+    if python3 -c "
+import json, sys
+with open('$SETTINGS_JSON') as f:
+    data = json.load(f)
+env = data.get('env', {})
+if env.get('CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS') == '1':
+    sys.exit(0)
+sys.exit(1)
+" 2>/dev/null; then
+        ok "Agent Teams already enabled"
+    else
+        python3 -c "
+import json
+with open('$SETTINGS_JSON') as f:
+    data = json.load(f)
+if 'env' not in data:
+    data['env'] = {}
+data['env']['CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS'] = '1'
+with open('$SETTINGS_JSON', 'w') as f:
+    json.dump(data, f, indent=2)
+"
+        ok "Enabled Agent Teams in $SETTINGS_JSON"
+    fi
+else
+    python3 -c "
+import json
+data = {
+    'env': {
+        'CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS': '1'
+    }
+}
+with open('$SETTINGS_JSON', 'w') as f:
+    json.dump(data, f, indent=2)
+"
+    ok "Created $SETTINGS_JSON with Agent Teams enabled"
+fi
+
+echo ""
+
+# ─────────────────────────────────────────────
+# 9. Append recall-first instructions to ~/.claude/CLAUDE.md
 # ─────────────────────────────────────────────
 info "Configuring recall-first behavior in $CLAUDE_MD..."
 
@@ -378,7 +429,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 9. Run sigma-mem tests to verify installation
+# 10. Run sigma-mem tests to verify installation
 # ─────────────────────────────────────────────
 info "Verifying installation by running sigma-mem tests..."
 
@@ -407,7 +458,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 10. Success message
+# 11. Success message
 # ─────────────────────────────────────────────
 echo "============================================"
 echo -e "${GREEN}  Sigma System setup complete!${NC}"
@@ -419,6 +470,7 @@ echo "  - sigma-mem (Python package + MCP server)"
 echo "  - Agent definitions in ~/.claude/agents/"
 echo "  - Team structure in ~/.claude/teams/sigma-review/"
 echo "  - MCP config in ~/.claude.json"
+echo "  - Native Agent Teams enabled in ~/.claude/settings.json"
 echo "  - Recall-first instructions in ~/.claude/CLAUDE.md"
 echo ""
 echo "Next steps:"
