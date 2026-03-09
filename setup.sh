@@ -192,7 +192,52 @@ done
 echo ""
 
 # ─────────────────────────────────────────────
-# 5. Create team directory structure
+# 5. Copy skills
+# ─────────────────────────────────────────────
+info "Setting up skills in $CLAUDE_DIR/skills/..."
+
+SKILLS_DIR="$CLAUDE_DIR/skills"
+SRC_SKILLS="$SCRIPT_DIR/agent-infrastructure/skills"
+
+if [ -d "$SRC_SKILLS" ]; then
+    for skill_dir in "$SRC_SKILLS"/*/; do
+        skill_name=$(basename "$skill_dir")
+        src="$skill_dir/SKILL.md"
+        dest_dir="$SKILLS_DIR/$skill_name"
+        dest="$dest_dir/SKILL.md"
+
+        if [ ! -f "$src" ]; then
+            continue
+        fi
+
+        mkdir -p "$dest_dir"
+
+        if [ -f "$dest" ]; then
+            if cmp -s "$src" "$dest"; then
+                ok "$skill_name skill already up to date"
+            else
+                warn "$skill_name skill already exists with different content"
+                read -rp "  Overwrite? (y/N): " overwrite
+                if [[ "$overwrite" =~ ^[Yy]$ ]]; then
+                    cp "$src" "$dest"
+                    ok "$skill_name skill updated"
+                else
+                    info "Keeping existing $skill_name skill"
+                fi
+            fi
+        else
+            cp "$src" "$dest"
+            ok "$skill_name skill installed"
+        fi
+    done
+else
+    warn "Skills source directory not found at $SRC_SKILLS — skipping"
+fi
+
+echo ""
+
+# ─────────────────────────────────────────────
+# 6. Create team directory structure
 # ─────────────────────────────────────────────
 info "Setting up team directory at $TEAMS_DIR..."
 
@@ -296,7 +341,7 @@ done
 echo ""
 
 # ─────────────────────────────────────────────
-# 6. Configure MCP server in ~/.claude.json
+# 7. Configure MCP server in ~/.claude.json
 # ─────────────────────────────────────────────
 info "Configuring sigma-mem MCP server in $CLAUDE_JSON..."
 
@@ -358,7 +403,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 7. Enable native Agent Teams in settings.json
+# 8. Enable native Agent Teams in settings.json
 # ─────────────────────────────────────────────
 info "Enabling native Agent Teams in $CLAUDE_DIR/settings.json..."
 
@@ -405,7 +450,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 8. Append recall-first instructions to ~/.claude/CLAUDE.md
+# 9. Append recall-first instructions to ~/.claude/CLAUDE.md
 # ─────────────────────────────────────────────
 info "Configuring recall-first behavior in $CLAUDE_MD..."
 
@@ -441,7 +486,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 9. Run sigma-mem tests to verify installation
+# 10. Run sigma-mem tests to verify installation
 # ─────────────────────────────────────────────
 info "Verifying installation by running sigma-mem tests..."
 
@@ -473,7 +518,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 10. Success message
+# 11. Success message
 # ─────────────────────────────────────────────
 echo "============================================"
 echo -e "${GREEN}  Sigma System setup complete!${NC}"
@@ -484,22 +529,23 @@ echo "  - Python venv at ~/.claude/sigma-venv/"
 echo "  - hateoas-agent (in venv)"
 echo "  - sigma-mem (in venv, MCP server)"
 echo "  - Agent definitions in ~/.claude/agents/"
+echo "  - Skills in ~/.claude/skills/ (sigma-review, sigma-init, sigma-research)"
 echo "  - Team structure in ~/.claude/teams/sigma-review/"
 echo "  - MCP config in ~/.claude.json (using venv Python)"
 echo "  - Native Agent Teams enabled in ~/.claude/settings.json"
 echo "  - Recall-first instructions in ~/.claude/CLAUDE.md"
 echo ""
 echo "Next steps:"
-echo "  1. Set up project-local teams (two-tier memory) in any project:"
-echo "     cd /path/to/your/project"
-echo "     $SCRIPT_DIR/setup-project.sh"
+echo "  1. In any project, run /sigma-init to set up project-local teams:"
+echo "     cd /path/to/your/project && claude"
+echo "     /sigma-init My awesome project"
 echo ""
-echo "  2. Open Claude Code in the project directory"
-echo "  3. Claude will automatically call recall at the start of each conversation"
-echo "  4. To run a team review, tell Claude:"
-echo "     \"Run a sigma-review of this project\""
-echo "  5. To talk to a specific agent:"
-echo "     \"@tech-architect review the auth module\""
+echo "  2. Or manually: $SCRIPT_DIR/setup-project.sh"
+echo ""
+echo "  3. Available skills (type / in Claude Code):"
+echo "     /sigma-review <task>     — full multi-agent team review"
+echo "     /sigma-init              — initialize sigma-review for a project"
+echo "     /sigma-research [agent]  — refresh agent domain research"
 echo ""
 echo "Note: setup-project.sh is optional. Without it, all data lives in"
 echo "~/.claude/teams/ (single-tier, backward compatible)."
