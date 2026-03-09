@@ -13,6 +13,7 @@ CLAUDE_JSON="$HOME/.claude.json"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
 AGENTS_DIR="$CLAUDE_DIR/agents"
 TEAMS_DIR="$CLAUDE_DIR/teams/sigma-review"
+VENV_DIR="$CLAUDE_DIR/sigma-venv"
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -107,31 +108,42 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 3. Install hateoas-agent
+# 3. Create venv and install packages
 # ─────────────────────────────────────────────
+info "Setting up Python environment at $VENV_DIR..."
+
+VENV_PYTHON="$VENV_DIR/bin/python3"
+VENV_PIP="$VENV_DIR/bin/pip"
+
+if [ ! -d "$VENV_DIR" ]; then
+    python3 -m venv "$VENV_DIR"
+    ok "Created virtual environment"
+else
+    ok "Virtual environment already exists"
+fi
+
+# Install/upgrade hateoas-agent
 info "Installing hateoas-agent..."
-if python3 -c "import hateoas_agent" &>/dev/null; then
+if "$VENV_PYTHON" -c "import hateoas_agent" &>/dev/null; then
     ok "hateoas-agent already installed"
 else
-    python3 -m pip install "git+https://github.com/coloradored13/hateoas-agent.git" --quiet
+    "$VENV_PIP" install "git+https://github.com/coloradored13/hateoas-agent.git" --quiet
     ok "hateoas-agent installed"
 fi
 
-# ─────────────────────────────────────────────
-# 4. Install sigma-mem
-# ─────────────────────────────────────────────
+# Install/upgrade sigma-mem
 info "Installing sigma-mem..."
-if python3 -c "import sigma_mem" &>/dev/null; then
+if "$VENV_PYTHON" -c "import sigma_mem" &>/dev/null; then
     ok "sigma-mem already installed"
 else
-    python3 -m pip install "git+https://github.com/coloradored13/sigma-mem.git" --quiet
+    "$VENV_PIP" install "git+https://github.com/coloradored13/sigma-mem.git" --quiet
     ok "sigma-mem installed"
 fi
 
 echo ""
 
 # ─────────────────────────────────────────────
-# 5. Copy agent definitions
+# 4. Copy agent definitions
 # ─────────────────────────────────────────────
 info "Setting up agent definitions in $AGENTS_DIR..."
 
@@ -180,7 +192,7 @@ done
 echo ""
 
 # ─────────────────────────────────────────────
-# 6. Create team directory structure
+# 5. Create team directory structure
 # ─────────────────────────────────────────────
 info "Setting up team directory at $TEAMS_DIR..."
 
@@ -284,31 +296,29 @@ done
 echo ""
 
 # ─────────────────────────────────────────────
-# 7. Configure MCP server in ~/.claude.json
+# 6. Configure MCP server in ~/.claude.json
 # ─────────────────────────────────────────────
 info "Configuring sigma-mem MCP server in $CLAUDE_JSON..."
 
-# Find where sigma-mem's server module lives
-SIGMA_MEM_SERVER=$(python3 -c "import sigma_mem; import os; print(os.path.dirname(sigma_mem.__file__))" 2>/dev/null || echo "")
-PYTHON_PATH=$(command -v python3)
-
-if [ -z "$SIGMA_MEM_SERVER" ]; then
-    warn "Could not locate sigma_mem module. MCP config skipped — see SETUP.md for manual instructions."
+# Verify sigma-mem is importable in the venv
+if ! "$VENV_PYTHON" -c "import sigma_mem" &>/dev/null; then
+    warn "Could not locate sigma_mem in venv. MCP config skipped — see SETUP.md for manual instructions."
 else
     if [ -f "$CLAUDE_JSON" ]; then
-        # Check if sigma-mem is already configured
+        # Check if sigma-mem is already configured with the correct venv path
         if python3 -c "
 import json, sys
 with open('$CLAUDE_JSON') as f:
     data = json.load(f)
 servers = data.get('mcpServers', {})
-if 'sigma-mem' in servers:
+sm = servers.get('sigma-mem', {})
+if sm.get('command') == '$VENV_PYTHON':
     sys.exit(0)
 sys.exit(1)
 " 2>/dev/null; then
             ok "sigma-mem MCP server already configured"
         else
-            # Merge sigma-mem into existing config
+            # Merge sigma-mem into existing config (or update existing entry)
             python3 -c "
 import json
 with open('$CLAUDE_JSON') as f:
@@ -316,13 +326,14 @@ with open('$CLAUDE_JSON') as f:
 if 'mcpServers' not in data:
     data['mcpServers'] = {}
 data['mcpServers']['sigma-mem'] = {
-    'command': '$PYTHON_PATH',
+    'command': '$VENV_PYTHON',
     'args': ['-m', 'sigma_mem.server']
 }
 with open('$CLAUDE_JSON', 'w') as f:
     json.dump(data, f, indent=2)
+    f.write('\n')
 "
-            ok "Added sigma-mem MCP server to $CLAUDE_JSON"
+            ok "Added sigma-mem MCP server to $CLAUDE_JSON (using venv Python)"
         fi
     else
         # Create new .claude.json with just the MCP config
@@ -331,13 +342,14 @@ import json
 data = {
     'mcpServers': {
         'sigma-mem': {
-            'command': '$PYTHON_PATH',
+            'command': '$VENV_PYTHON',
             'args': ['-m', 'sigma_mem.server']
         }
     }
 }
 with open('$CLAUDE_JSON', 'w') as f:
     json.dump(data, f, indent=2)
+    f.write('\n')
 "
         ok "Created $CLAUDE_JSON with sigma-mem MCP server"
     fi
@@ -346,7 +358,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 8. Enable native Agent Teams in settings.json
+# 7. Enable native Agent Teams in settings.json
 # ─────────────────────────────────────────────
 info "Enabling native Agent Teams in $CLAUDE_DIR/settings.json..."
 
@@ -393,7 +405,7 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 9. Append recall-first instructions to ~/.claude/CLAUDE.md
+# 8. Append recall-first instructions to ~/.claude/CLAUDE.md
 # ─────────────────────────────────────────────
 info "Configuring recall-first behavior in $CLAUDE_MD..."
 
@@ -429,47 +441,51 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 10. Run sigma-mem tests to verify installation
+# 9. Run sigma-mem tests to verify installation
 # ─────────────────────────────────────────────
 info "Verifying installation by running sigma-mem tests..."
 
-SIGMA_MEM_PKG_DIR=$(python3 -c "import sigma_mem, os; print(os.path.dirname(os.path.dirname(os.path.dirname(sigma_mem.__file__))))" 2>/dev/null || echo "")
+# Ensure pytest is available in the venv
+"$VENV_PIP" install pytest --quiet 2>/dev/null
+
+SIGMA_MEM_PKG_DIR=$("$VENV_PYTHON" -c "import sigma_mem, os; print(os.path.dirname(os.path.dirname(os.path.dirname(sigma_mem.__file__))))" 2>/dev/null || echo "")
 
 if [ -n "$SIGMA_MEM_PKG_DIR" ] && [ -d "$SIGMA_MEM_PKG_DIR/tests" ]; then
-    if python3 -m pytest "$SIGMA_MEM_PKG_DIR/tests" --quiet --tb=short 2>/dev/null; then
+    if "$VENV_PYTHON" -m pytest "$SIGMA_MEM_PKG_DIR/tests" --quiet --tb=short 2>/dev/null; then
         ok "All sigma-mem tests passed"
     else
         warn "Some sigma-mem tests failed. This may be expected if memory files haven't been initialized yet."
-        warn "Run 'python3 -m pytest' in the sigma-mem directory to debug."
+        warn "Run '$VENV_PYTHON -m pytest' in the sigma-mem directory to debug."
     fi
 else
     # Try running tests from the submodule if available
     if [ -d "$SCRIPT_DIR/sigma-mem/tests" ]; then
-        if python3 -m pytest "$SCRIPT_DIR/sigma-mem/tests" --quiet --tb=short 2>/dev/null; then
+        if "$VENV_PYTHON" -m pytest "$SCRIPT_DIR/sigma-mem/tests" --quiet --tb=short 2>/dev/null; then
             ok "All sigma-mem tests passed (from submodule)"
         else
-            warn "Some sigma-mem tests failed. Run 'python3 -m pytest sigma-mem/tests' to debug."
+            warn "Some sigma-mem tests failed. Run '$VENV_PYTHON -m pytest sigma-mem/tests' to debug."
         fi
     else
-        warn "Could not locate sigma-mem tests. Verify manually: python3 -c 'import sigma_mem; print(\"OK\")'"
+        warn "Could not locate sigma-mem tests. Verify manually: $VENV_PYTHON -c 'import sigma_mem; print(\"OK\")'"
     fi
 fi
 
 echo ""
 
 # ─────────────────────────────────────────────
-# 11. Success message
+# 10. Success message
 # ─────────────────────────────────────────────
 echo "============================================"
 echo -e "${GREEN}  Sigma System setup complete!${NC}"
 echo "============================================"
 echo ""
 echo "What was installed:"
-echo "  - hateoas-agent (Python package)"
-echo "  - sigma-mem (Python package + MCP server)"
+echo "  - Python venv at ~/.claude/sigma-venv/"
+echo "  - hateoas-agent (in venv)"
+echo "  - sigma-mem (in venv, MCP server)"
 echo "  - Agent definitions in ~/.claude/agents/"
 echo "  - Team structure in ~/.claude/teams/sigma-review/"
-echo "  - MCP config in ~/.claude.json"
+echo "  - MCP config in ~/.claude.json (using venv Python)"
 echo "  - Native Agent Teams enabled in ~/.claude/settings.json"
 echo "  - Recall-first instructions in ~/.claude/CLAUDE.md"
 echo ""

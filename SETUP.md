@@ -17,7 +17,9 @@ The setup script is idempotent — safe to run multiple times without duplicatin
 
 ## What Gets Installed
 
-### Python Packages
+### Python Environment
+
+The setup script creates a dedicated virtual environment at `~/.claude/sigma-venv/` and installs both packages there. This avoids conflicts with system Python (PEP 668) and keeps the installation self-contained.
 
 | Package | Source | Purpose |
 |---------|--------|---------|
@@ -28,6 +30,7 @@ The setup script is idempotent — safe to run multiple times without duplicatin
 
 ```
 ~/.claude/
+  sigma-venv/                         # Python venv with hateoas-agent + sigma-mem
   CLAUDE.md                           # Recall-first instructions (appended, not overwritten)
   agents/
     sigma-lead.md                     # Team orchestrator protocol
@@ -76,7 +79,7 @@ The script adds a `sigma-mem` entry to the `mcpServers` section of `~/.claude.js
 }
 ```
 
-The `command` path is detected automatically from whichever `python3` has `sigma-mem` installed.
+The `command` path points to the venv Python at `~/.claude/sigma-venv/bin/python3`, which has sigma-mem installed.
 
 ### CLAUDE.md Instructions
 
@@ -97,11 +100,12 @@ The script enables Claude Code's experimental native Agent Teams by setting `CLA
 
 If you prefer not to run the script, follow these steps:
 
-### 1. Install Python packages
+### 1. Create venv and install Python packages
 
 ```bash
-pip install git+https://github.com/coloradored13/hateoas-agent.git
-pip install git+https://github.com/coloradored13/sigma-mem.git
+python3 -m venv ~/.claude/sigma-venv
+~/.claude/sigma-venv/bin/pip install git+https://github.com/coloradored13/hateoas-agent.git
+~/.claude/sigma-venv/bin/pip install git+https://github.com/coloradored13/sigma-mem.git
 ```
 
 ### 2. Copy agent definitions
@@ -178,24 +182,22 @@ Create empty memory files for each agent (`~/.claude/teams/sigma-review/agents/{
 
 ### 4. Configure MCP server
 
-Edit `~/.claude.json` (create if it doesn't exist). Add or merge the `mcpServers` section:
+Edit `~/.claude.json` (create if it doesn't exist). Add or merge the `mcpServers` section, pointing to the venv Python:
 
 ```json
 {
   "mcpServers": {
     "sigma-mem": {
-      "command": "/path/to/your/python3",
+      "command": "~/.claude/sigma-venv/bin/python3",
       "args": ["-m", "sigma_mem.server"]
     }
   }
 }
 ```
 
-Find your Python path with: `which python3`
-
-Make sure this is the Python where you installed sigma-mem. You can verify with:
+Verify sigma-mem is importable in the venv:
 ```bash
-python3 -c "import sigma_mem; print('OK')"
+~/.claude/sigma-venv/bin/python3 -c "import sigma_mem; print('OK')"
 ```
 
 ### 5. Enable native Agent Teams
@@ -231,18 +233,15 @@ When storing memories, use the sigma-mem MCP actions (store_memory, log_decision
 ### Quick check
 
 ```bash
-python3 -c "import hateoas_agent; print('hateoas-agent OK')"
-python3 -c "import sigma_mem; print('sigma-mem OK')"
+~/.claude/sigma-venv/bin/python3 -c "import hateoas_agent; print('hateoas-agent OK')"
+~/.claude/sigma-venv/bin/python3 -c "import sigma_mem; print('sigma-mem OK')"
 ```
 
 ### Run sigma-mem tests
 
 ```bash
 # From the cloned repo (with submodules)
-python3 -m pytest sigma-mem/tests --quiet
-
-# Or from the installed package
-python3 -m pytest $(python3 -c "import sigma_mem, os; print(os.path.dirname(os.path.dirname(os.path.dirname(sigma_mem.__file__))))")/tests --quiet
+~/.claude/sigma-venv/bin/python3 -m pytest sigma-mem/tests --quiet
 ```
 
 ### Test MCP server
@@ -307,39 +306,29 @@ The sigma-mem system will pick up whatever is in `CLAUDE.md` and return it throu
 
 ### Changing the MCP server command
 
-If you use a virtual environment or a specific Python installation, update the `command` path in `~/.claude.json`:
+The default setup uses `~/.claude/sigma-venv/bin/python3`. If you want to use a different Python installation, update the `command` path in `~/.claude.json`:
 
 ```json
 {
   "mcpServers": {
     "sigma-mem": {
-      "command": "/path/to/venv/bin/python3",
+      "command": "/path/to/other/python3",
       "args": ["-m", "sigma_mem.server"]
     }
   }
 }
 ```
 
-Alternatively, if you have `uvx` installed and sigma-mem is published:
-```json
-{
-  "mcpServers": {
-    "sigma-mem": {
-      "command": "uvx",
-      "args": ["sigma-mem"]
-    }
-  }
-}
-```
+Make sure the Python you point to has sigma-mem installed.
 
 ---
 
 ## Uninstall
 
-### Remove Python packages
+### Remove Python venv
 
 ```bash
-pip uninstall sigma-mem hateoas-agent
+rm -rf ~/.claude/sigma-venv
 ```
 
 ### Remove agent definitions
@@ -375,13 +364,13 @@ Edit `~/.claude/CLAUDE.md` and remove everything from `# Sigma System — recall
 
 ### "sigma_mem module not found"
 
-The MCP server config in `~/.claude.json` points to a specific Python binary. Make sure that binary has sigma-mem installed:
+The MCP server config in `~/.claude.json` points to the venv Python at `~/.claude/sigma-venv/bin/python3`. Verify it has sigma-mem installed:
 
 ```bash
-/path/to/python3 -c "import sigma_mem; print('OK')"
+~/.claude/sigma-venv/bin/python3 -c "import sigma_mem; print('OK')"
 ```
 
-If you installed sigma-mem in a virtual environment, the `command` in `~/.claude.json` must point to that venv's Python.
+If the venv is missing or corrupted, re-run `setup.sh` to recreate it.
 
 ### "recall returns empty"
 
@@ -390,7 +379,7 @@ sigma-mem reads memory from `~/.claude/memory/`. On first use, this directory wo
 ### MCP server not connecting
 
 1. Verify the config: `cat ~/.claude.json | python3 -m json.tool`
-2. Test the server directly: `python3 -m sigma_mem.server`
+2. Test the server directly: `~/.claude/sigma-venv/bin/python3 -m sigma_mem.server`
 3. Restart Claude Code after config changes
 
 ### Tests fail on fresh install
