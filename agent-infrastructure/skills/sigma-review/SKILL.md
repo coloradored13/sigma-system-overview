@@ -127,11 +127,28 @@ After all agents ✓:
 pre-accept ✓: verify workspace findings ¬empty
 ✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
 
+## Promotion Phase
+
+1→SendMessage→each teammate: "promotion-round: classify+submit generalizable learnings for global memory"
+2→wait for teammate responses (each auto-promotes low-risk + submits candidates)
+3→read workspace ## promotion → candidates
+4→any P-candidate[] class:user-approve:
+  present to user (plain English):
+    "## Promotion Candidates (require approval)"
+    per candidate: "[CLASS] {agent}: {distilled finding} | Source: {project}"
+    "→ Approve / Reject"
+  also list auto-promoted items (informational)
+  wait user approve/reject
+5→store approved:
+  per agent-domain → store_agent_memory(tier:global, agent:{name}, team:sigma-review) → P[]
+  per team-level → store_team_decision(tier:global) | store_team_pattern(tier:global)
+6→portfolio entry → write {project-name} record to shared/portfolio.md (global tier)
+
 ## Shutdown
 
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain English)
+all shutdown → report synthesis to user (plain English, include promotion summary)
 
 ## Recovery
 

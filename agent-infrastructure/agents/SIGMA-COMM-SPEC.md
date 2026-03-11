@@ -164,6 +164,10 @@ C~[uncert>conf wrong | depth match|2|26.3]
 
 # Research entry
 R[OWASP agentic top-10: tool-poisoning, rag-poisoning, agent-hijacking |src: owasp.org/agentic |refreshed: 26.3.7 |next: 26.4]
+
+# Promoted learning (distilled from project review → global memory)
+P[state-machines>5-states need startup-validation |src:thriveapp |promoted:26.3.8 |class:principle]
+P[magic-string-keys→silent-failures |src:thriveapp+sigma-mem |promoted:26.3.8 |class:anti-pattern]
 ```
 
 ## Examples

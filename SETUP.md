@@ -46,6 +46,7 @@ The Sigma System uses a two-tier memory architecture. The global tier is install
   teams/sigma-review/
     shared/
       roster.md                                   # Team roster with domains (always global)
+      portfolio.md                                # Projects reviewed: dates, agents, takeaways, promotions
     agents/
       tech-architect/memory.md                    # Global memory: identity, research, calibration
       product-strategist/memory.md                # Global memory: identity, research, calibration
@@ -319,8 +320,19 @@ For non-standard setups, use the `--project-teams-dir` CLI argument:
 
 | Tier | Location | Contents | Grows with |
 |------|----------|----------|-----------|
-| Global | `~/.claude/teams/sigma-review/` | Roster, agent identity, research, calibration | User experience |
+| Global | `~/.claude/teams/sigma-review/` | Roster, agent identity, research, calibration, portfolio, promoted learnings | User experience + promotions |
 | Project | `<project>/.claude/teams/sigma-review/` | Findings, decisions, patterns, workspace, inboxes | Per-review |
+
+### Promotion (project-to-global learning)
+
+After each review, generalizable learnings are promoted from project memory to global memory so agents accumulate cross-project experience. This uses a hybrid trigger:
+
+- **Auto-promote** (no approval needed): calibration self-updates, patterns that confirm existing global patterns, research supplements
+- **User-approve** (presented for confirmation): new principles, new anti-patterns, corrections to existing global beliefs, new global decisions
+
+Promoted learnings are stored as `P[]` blocks in agent global memory with source project attribution. The lead also writes a portfolio entry to `shared/portfolio.md` tracking which projects were reviewed, by whom, and what was promoted.
+
+The promotion phase runs between convergence guard and shutdown in the post-session synthesis. See `sigma-lead.md` and agent definitions for the full protocol.
 
 ### Backward compatibility
 

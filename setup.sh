@@ -27,6 +27,110 @@ ok()    { echo -e "${GREEN}[OK]${NC}    $1"; }
 warn()  { echo -e "${YELLOW}[WARN]${NC}  $1"; }
 fail()  { echo -e "${RED}[FAIL]${NC}  $1"; exit 1; }
 
+# ─────────────────────────────────────────────
+# Pull mode: import new/changed files from installed → repo
+# Usage: ./setup.sh pull
+# ─────────────────────────────────────────────
+if [ "${1:-}" = "pull" ]; then
+    echo ""
+    echo "============================================"
+    echo "  Sigma System Pull (installed → repo)"
+    echo "============================================"
+    echo ""
+
+    SRC_AGENTS="$SCRIPT_DIR/agent-infrastructure/agents"
+    SRC_SHARED="$SCRIPT_DIR/agent-infrastructure/teams/sigma-review/shared"
+
+    # Pull agents: find installed agents not in repo, or modified
+    info "Checking agents..."
+    new_count=0
+    modified_count=0
+    for installed in "$AGENTS_DIR"/*.md; do
+        [ -f "$installed" ] || continue
+        file=$(basename "$installed")
+        repo="$SRC_AGENTS/$file"
+        if [ ! -f "$repo" ]; then
+            warn "NEW agent not in repo: $file"
+            read -rp "  Import to repo? (y/N): " import
+            if [[ "$import" =~ ^[Yy]$ ]]; then
+                cp "$installed" "$repo"
+                ok "Imported $file to repo"
+                ((new_count++))
+            fi
+        elif ! cmp -s "$installed" "$repo"; then
+            warn "MODIFIED: $file (installed differs from repo)"
+            read -rp "  Import installed version to repo? (y/N): " import
+            if [[ "$import" =~ ^[Yy]$ ]]; then
+                cp "$installed" "$repo"
+                ok "Updated $file in repo"
+                ((modified_count++))
+            fi
+        fi
+    done
+
+    # Pull shared files: roster, directives, protocols
+    info "Checking shared files..."
+    for shared_file in roster.md directives.md protocols.md; do
+        installed="$TEAMS_DIR/shared/$shared_file"
+        repo="$SRC_SHARED/$shared_file"
+        [ -f "$installed" ] || continue
+        if [ ! -f "$repo" ]; then
+            warn "NEW shared file not in repo: $shared_file"
+            read -rp "  Import to repo? (y/N): " import
+            if [[ "$import" =~ ^[Yy]$ ]]; then
+                cp "$installed" "$repo"
+                ok "Imported $shared_file to repo"
+                ((new_count++))
+            fi
+        elif ! cmp -s "$installed" "$repo"; then
+            warn "MODIFIED: $shared_file (installed differs from repo)"
+            read -rp "  Import installed version to repo? (y/N): " import
+            if [[ "$import" =~ ^[Yy]$ ]]; then
+                cp "$installed" "$repo"
+                ok "Updated $shared_file in repo"
+                ((modified_count++))
+            fi
+        fi
+    done
+
+    # Pull skills
+    info "Checking skills..."
+    INSTALLED_SKILLS="$CLAUDE_DIR/skills"
+    SRC_SKILLS="$SCRIPT_DIR/agent-infrastructure/skills"
+    if [ -d "$INSTALLED_SKILLS" ]; then
+        for skill_dir in "$INSTALLED_SKILLS"/*/; do
+            [ -d "$skill_dir" ] || continue
+            skill_name=$(basename "$skill_dir")
+            installed="$skill_dir/SKILL.md"
+            repo="$SRC_SKILLS/$skill_name/SKILL.md"
+            [ -f "$installed" ] || continue
+            if [ ! -f "$repo" ]; then
+                warn "NEW skill not in repo: $skill_name"
+                read -rp "  Import to repo? (y/N): " import
+                if [[ "$import" =~ ^[Yy]$ ]]; then
+                    mkdir -p "$SRC_SKILLS/$skill_name"
+                    cp "$installed" "$repo"
+                    ok "Imported $skill_name skill to repo"
+                    ((new_count++))
+                fi
+            elif ! cmp -s "$installed" "$repo"; then
+                warn "MODIFIED: $skill_name skill (installed differs from repo)"
+                read -rp "  Import installed version to repo? (y/N): " import
+                if [[ "$import" =~ ^[Yy]$ ]]; then
+                    cp "$installed" "$repo"
+                    ok "Updated $skill_name skill in repo"
+                    ((modified_count++))
+                fi
+            fi
+        done
+    fi
+
+    echo ""
+    echo "Pull complete: $new_count new, $modified_count modified"
+    echo "Run 'git diff' to review changes before committing."
+    exit 0
+fi
+
 echo ""
 echo "============================================"
 echo "  Sigma System Setup"
@@ -149,21 +253,11 @@ info "Setting up agent definitions in $AGENTS_DIR..."
 
 mkdir -p "$AGENTS_DIR"
 
-AGENT_FILES=(
-    "sigma-lead.md"
-    "sigma-comm.md"
-    "tech-architect.md"
-    "product-strategist.md"
-    "ux-researcher.md"
-    "code-quality-analyst.md"
-    "technical-writer.md"
-    "SIGMA-COMM-SPEC.md"
-)
-
 SRC_AGENTS="$SCRIPT_DIR/agent-infrastructure/agents"
 
-for file in "${AGENT_FILES[@]}"; do
-    src="$SRC_AGENTS/$file"
+# Deploy all .md files from repo (dynamic — no hardcoded list)
+for src in "$SRC_AGENTS"/*.md; do
+    file=$(basename "$src")
     dest="$AGENTS_DIR/$file"
     if [ ! -f "$src" ]; then
         warn "Source file $src not found — skipping"
@@ -242,34 +336,44 @@ echo ""
 info "Setting up team directory at $TEAMS_DIR..."
 
 mkdir -p "$TEAMS_DIR/shared"
-mkdir -p "$TEAMS_DIR/agents/tech-architect"
-mkdir -p "$TEAMS_DIR/agents/product-strategist"
-mkdir -p "$TEAMS_DIR/agents/ux-researcher"
-mkdir -p "$TEAMS_DIR/agents/code-quality-analyst"
-mkdir -p "$TEAMS_DIR/agents/technical-writer"
+mkdir -p "$TEAMS_DIR/shared/debates"
 mkdir -p "$TEAMS_DIR/inboxes"
 
-# --- shared/roster.md ---
-ROSTER="$TEAMS_DIR/shared/roster.md"
-if [ ! -f "$ROSTER" ]; then
-    cat > "$ROSTER" << 'ROSTER_EOF'
-# sigma-review team roster
+# Create agent dirs and inboxes dynamically from repo agent files
+for src in "$SRC_AGENTS"/*.md; do
+    agent=$(basename "$src" .md)
+    # Skip protocol/template files — only create dirs for actual agents
+    case "$agent" in
+        sigma-lead|sigma-comm|SIGMA-COMM-SPEC|_template) continue ;;
+    esac
+    mkdir -p "$TEAMS_DIR/agents/$agent"
+done
 
-tech-architect |domain: architecture,security,performance,infra,api-design |wake-for: technical decisions,code review,system design,debugging
-product-strategist |domain: market,growth,monetization,prioritization,user-segmentation |wake-for: feature decisions,positioning,launch readiness,competitive analysis
-ux-researcher |domain: usability,accessibility,mental-models,information-architecture,learnability |wake-for: user-facing changes,flow design,dual-user questions,onboarding
-code-quality-analyst |domain: code-quality,test-coverage,style-consistency,dead-code,edge-cases |wake-for: code review,test analysis,quality audit,style check
-technical-writer |domain: documentation,narrative,examples,onboarding,cross-doc-consistency |wake-for: documentation review,readme,setup docs,api docs,writing quality
-
-→ actions:
-→ adding a new agent → append to roster with domain+wake-for
-→ checking who to wake → match task keywords against wake-for fields
-→ team decision needed → route to agent whose domain matches topic
-ROSTER_EOF
-    ok "Created roster.md"
-else
-    ok "roster.md already exists"
-fi
+# --- shared files from repo (roster, directives, protocols) ---
+SRC_SHARED="$SCRIPT_DIR/agent-infrastructure/teams/sigma-review/shared"
+for shared_file in roster.md directives.md protocols.md; do
+    src="$SRC_SHARED/$shared_file"
+    dest="$TEAMS_DIR/shared/$shared_file"
+    if [ ! -f "$src" ]; then
+        warn "Source $shared_file not found in repo — skipping"
+        continue
+    fi
+    if [ ! -f "$dest" ]; then
+        cp "$src" "$dest"
+        ok "Created $shared_file"
+    elif cmp -s "$src" "$dest"; then
+        ok "$shared_file already up to date"
+    else
+        warn "$shared_file differs from repo"
+        read -rp "  Overwrite with repo version? (y/N): " overwrite
+        if [[ "$overwrite" =~ ^[Yy]$ ]]; then
+            cp "$src" "$dest"
+            ok "$shared_file updated"
+        else
+            info "Keeping existing $shared_file"
+        fi
+    fi
+done
 
 # --- shared/decisions.md ---
 DECISIONS="$TEAMS_DIR/shared/decisions.md"
@@ -293,6 +397,17 @@ else
     ok "patterns.md already exists"
 fi
 
+# --- shared/portfolio.md ---
+PORTFOLIO="$TEAMS_DIR/shared/portfolio.md"
+if [ ! -f "$PORTFOLIO" ]; then
+    cat > "$PORTFOLIO" << 'PORTFOLIO_EOF'
+# portfolio — projects reviewed
+PORTFOLIO_EOF
+    ok "Created portfolio.md"
+else
+    ok "portfolio.md already exists"
+fi
+
 # --- shared/workspace.md ---
 WORKSPACE="$TEAMS_DIR/shared/workspace.md"
 if [ ! -f "$WORKSPACE" ]; then
@@ -308,21 +423,21 @@ else
     ok "workspace.md already exists"
 fi
 
-# --- Agent memory files ---
-for agent in tech-architect product-strategist ux-researcher code-quality-analyst technical-writer; do
+# --- Agent memory and inbox files (dynamic from repo agent files) ---
+for src in "$SRC_AGENTS"/*.md; do
+    agent=$(basename "$src" .md)
+    case "$agent" in
+        sigma-lead|sigma-comm|SIGMA-COMM-SPEC|_template) continue ;;
+    esac
+
     MEMORY="$TEAMS_DIR/agents/$agent/memory.md"
     if [ ! -f "$MEMORY" ]; then
         cat > "$MEMORY" << MEMORY_EOF
 # $agent — personal memory
 MEMORY_EOF
         ok "Created $agent/memory.md"
-    else
-        ok "$agent/memory.md already exists"
     fi
-done
 
-# --- Inbox files ---
-for agent in tech-architect product-strategist ux-researcher code-quality-analyst technical-writer; do
     INBOX="$TEAMS_DIR/inboxes/$agent.md"
     if [ ! -f "$INBOX" ]; then
         cat > "$INBOX" << INBOX_EOF
@@ -333,8 +448,6 @@ for agent in tech-architect product-strategist ux-researcher code-quality-analys
 ## unread
 INBOX_EOF
         ok "Created $agent inbox"
-    else
-        ok "$agent inbox already exists"
     fi
 done
 
@@ -546,6 +659,9 @@ echo "  3. Available skills (type / in Claude Code):"
 echo "     /sigma-review <task>     — full multi-agent team review"
 echo "     /sigma-init              — initialize sigma-review for a project"
 echo "     /sigma-research [agent]  — refresh agent domain research"
+echo ""
+echo "  4. After reviews create new agents or modify existing ones:"
+echo "     ./setup.sh pull          — import changes from installed → repo"
 echo ""
 echo "Note: setup-project.sh is optional. Without it, all data lives in"
 echo "~/.claude/teams/ (single-tier, backward compatible)."

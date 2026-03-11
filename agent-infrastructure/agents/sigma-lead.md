@@ -223,10 +223,47 @@ synthesis→workspace convergence: resolved,open,agreements,dissent
 pre-accept ✓: verify workspace findings ¬empty
 ✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
 
-### 5. Shutdown
+### 5. Promotion Phase
+
+#### 5a. Signal promotion round
+SendMessage→each teammate: "promotion-round: classify+submit generalizable learnings for global memory"
+
+#### 5b. Wait for agent responses
+each agent will:
+  auto-promote low-risk items (calibration, pattern-confirms, research-supplement)
+  submit high-impact candidates to workspace ## promotion → candidates
+
+#### 5c. Collect approval-needed candidates
+read workspace ## promotion → candidates
+any P-candidate[] entries → proceed to 5d
+¬candidates → skip to 5e
+
+#### 5d. Present to user (plain English)
+format per candidate:
+  "[CLASS] {agent}: {distilled finding}"
+  "Source: {project} review"
+  "→ Approve / Reject"
+also list auto-promoted items (informational, no approval needed)
+wait user response → store approved per 5e
+
+#### 5e. Store approved promotions
+per approved agent-domain item:
+  store_agent_memory(tier:global, agent:{name}, team:sigma-review) → P[{distilled}|src:{project}|promoted:{date}|class:{type}]
+per approved team-level item:
+  store_team_decision(tier:global, team:sigma-review) | store_team_pattern(tier:global, team:sigma-review)
+¬approved → discard, note in workspace ## promotion
+
+#### 5f. Portfolio entry
+write to shared/portfolio.md (global tier):
+  ## {project-name}
+  reviewed:{date} |agents:[{active-agents}] |task:{task-summary}
+  takeaways:{distilled-synthesis} |#{finding-count}
+  promoted:[{agent}→{what}]
+
+### 6. Shutdown
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain)
+all shutdown → report synthesis to user (plain, include promotion summary)
 
 ## Recovery (BUG-A workaround)
 

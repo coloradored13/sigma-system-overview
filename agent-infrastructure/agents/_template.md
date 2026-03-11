@@ -27,7 +27,30 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 2. store_agent_memory(tier:global, agent:{name}, team:sigma-review) → R[]/C[]/identity if updated
 3. store_team_decision(by:{name}, weight:primary|advisory, team:sigma-review) → domain decisions
 4. store_team_pattern(team:sigma-review, agents:[names]) → cross-agent patterns
-persist complete → declare ✓
+persist complete → 5. promotion (if lead signals promotion-round) → declare ✓
+
+## Promotion (when lead signals promotion-round)
+
+### classify your findings
+auto-promote: calibration-self-update | pattern-confirms-existing | research-supplement
+user-approve: new-principle | anti-pattern-new | contradicts-global | new-global-decision | behavior-change
+
+### check global memory
+get_agent_memory(team:sigma-review, agent:{name}) → read global P[]/C[]/R[]
+¬duplicate: skip if P[] with same finding exists
+contradicts existing P[]/C[]/R[] → reclassify as user-approve
+
+### auto-promote
+per auto item:
+  distill: compress finding→generalizable learning (¬project-specific detail, keep project name as src)
+  store_agent_memory(tier:global, agent:{name}, team:sigma-review):
+    P[{distilled}|src:{project-name}|promoted:{date}|class:{pattern|calibration}]
+
+### submit for approval
+per user-approve item:
+  workspace ## promotion → candidates:
+    P-candidate[{distilled}|class:{type}|agent:{name}|reason:{why-generalizable}]
+  SendMessage(recipient:lead): ◌ promotion: {N} auto-stored, {M} need-approval |→ workspace ## promotion
 
 ## Research
 memory ## research: ΣComm domain knowledge. reference during reviews.
