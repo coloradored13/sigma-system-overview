@@ -125,6 +125,30 @@ if [ "${1:-}" = "pull" ]; then
         done
     fi
 
+    # Check CLAUDE.md for sigma-specific content drift
+    info "Checking ~/.claude/CLAUDE.md for sigma-related content..."
+    if [ -f "$CLAUDE_MD" ]; then
+        SIGMA_LINES=$(grep -c -E '(sigma-mem|recall|store_memory|log_decision|check_integrity|ΣComm|sigma-comm)' "$CLAUDE_MD" 2>/dev/null || echo "0")
+        if [ "$SIGMA_LINES" -gt 0 ]; then
+            ok "CLAUDE.md contains $SIGMA_LINES sigma-related lines"
+            # Save a snapshot for reference
+            CLAUDE_SNAPSHOT="$SCRIPT_DIR/agent-infrastructure/claude-md-snapshot.txt"
+            grep -E '(sigma-mem|recall|store_memory|log_decision|check_integrity|ΣComm|sigma-comm|session-end)' "$CLAUDE_MD" > "$CLAUDE_SNAPSHOT.new" 2>/dev/null || true
+            if [ -f "$CLAUDE_SNAPSHOT" ] && ! cmp -s "$CLAUDE_SNAPSHOT" "$CLAUDE_SNAPSHOT.new"; then
+                warn "Sigma-related content in CLAUDE.md has changed since last pull"
+                echo "  Review: diff $CLAUDE_SNAPSHOT $CLAUDE_SNAPSHOT.new"
+                cp "$CLAUDE_SNAPSHOT.new" "$CLAUDE_SNAPSHOT"
+                ((modified_count++))
+            elif [ ! -f "$CLAUDE_SNAPSHOT" ]; then
+                cp "$CLAUDE_SNAPSHOT.new" "$CLAUDE_SNAPSHOT"
+                ok "Saved CLAUDE.md sigma content snapshot"
+            fi
+            rm -f "$CLAUDE_SNAPSHOT.new"
+        else
+            warn "CLAUDE.md has no sigma-related content — may need re-setup"
+        fi
+    fi
+
     echo ""
     echo "Pull complete: $new_count new, $modified_count modified"
     echo "Run 'git diff' to review changes before committing."
@@ -226,23 +250,39 @@ else
     ok "Virtual environment already exists"
 fi
 
+# Pinned dependency versions (commit hashes)
+# Update these when upgrading — run tests after changing
+HATEOAS_AGENT_PIN="5d272d5aad1cd19ce9ac43628f98dd264bd372ca"  # 2026-03-11
+SIGMA_MEM_PIN="4d9ee3a0fcf9aa25e938ad9f97e79df0755057ff"      # 2026-03-11 (P[] block recognition)
+
+# Track installed pins to detect when upgrade needed
+PIN_FILE="$VENV_DIR/.pinned-versions"
+
 # Install/upgrade hateoas-agent
-info "Installing hateoas-agent..."
-if "$VENV_PYTHON" -c "import hateoas_agent" &>/dev/null; then
-    ok "hateoas-agent already installed"
+info "Installing hateoas-agent (pinned: ${HATEOAS_AGENT_PIN:0:7})..."
+INSTALLED_HA_PIN=$(grep "^hateoas-agent=" "$PIN_FILE" 2>/dev/null | cut -d= -f2 || echo "")
+if "$VENV_PYTHON" -c "import hateoas_agent" &>/dev/null && [ "$INSTALLED_HA_PIN" = "$HATEOAS_AGENT_PIN" ]; then
+    ok "hateoas-agent already installed at pinned version"
 else
-    "$VENV_PIP" install "git+https://github.com/coloradored13/hateoas-agent.git" --quiet
-    ok "hateoas-agent installed"
+    "$VENV_PIP" install --force-reinstall "git+https://github.com/coloradored13/hateoas-agent.git@${HATEOAS_AGENT_PIN}" --quiet
+    ok "hateoas-agent installed (${HATEOAS_AGENT_PIN:0:7})"
 fi
 
 # Install/upgrade sigma-mem
-info "Installing sigma-mem..."
-if "$VENV_PYTHON" -c "import sigma_mem" &>/dev/null; then
-    ok "sigma-mem already installed"
+info "Installing sigma-mem (pinned: ${SIGMA_MEM_PIN:0:7})..."
+INSTALLED_SM_PIN=$(grep "^sigma-mem=" "$PIN_FILE" 2>/dev/null | cut -d= -f2 || echo "")
+if "$VENV_PYTHON" -c "import sigma_mem" &>/dev/null && [ "$INSTALLED_SM_PIN" = "$SIGMA_MEM_PIN" ]; then
+    ok "sigma-mem already installed at pinned version"
 else
-    "$VENV_PIP" install "git+https://github.com/coloradored13/sigma-mem.git" --quiet
-    ok "sigma-mem installed"
+    "$VENV_PIP" install --force-reinstall "git+https://github.com/coloradored13/sigma-mem.git@${SIGMA_MEM_PIN}" --quiet
+    ok "sigma-mem installed (${SIGMA_MEM_PIN:0:7})"
 fi
+
+# Record installed pins
+cat > "$PIN_FILE" <<PINS
+hateoas-agent=$HATEOAS_AGENT_PIN
+sigma-mem=$SIGMA_MEM_PIN
+PINS
 
 echo ""
 
