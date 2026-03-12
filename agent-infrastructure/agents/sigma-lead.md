@@ -260,10 +260,46 @@ write to shared/portfolio.md (global tier):
   takeaways:{distilled-synthesis} |#{finding-count}
   promoted:[{agent}→{what}]
 
+#### 5g. Infrastructure Sync (installed → repo)
+
+purpose: dynamic agents, modified skills/shared files created during review exist only at ~/.claude/ — sync them back to the sigma-system-overview repo so nothing is lost
+
+##### detect drift
+compare installed→repo:
+  agents: Glob ~/.claude/agents/*.md → per file, Read + compare against agent-infrastructure/agents/{file}
+  skills: Glob ~/.claude/skills/*/SKILL.md → per file, Read + compare against agent-infrastructure/skills/{name}/SKILL.md
+  shared: Read ~/.claude/teams/sigma-review/shared/{roster,directives,protocols}.md → compare against agent-infrastructure/teams/sigma-review/shared/
+
+classify per file:
+  NEW: exists installed, ¬exists repo → auto-sync (¬conflict risk)
+  MODIFIED: exists both, content differs → sync + flag for review
+  UNCHANGED: skip
+
+skip list (¬sync these): sigma-lead.md, sigma-comm.md, SIGMA-COMM-SPEC.md, _template.md (managed in repo, ¬installed-first)
+
+##### sync to repo
+per NEW file:
+  copy installed → repo path (preserve directory structure)
+per MODIFIED file:
+  copy installed → repo path
+
+##### report to user (plain English)
+"## Infrastructure Sync"
+per new: "  NEW: {filename} → copied to repo"
+per modified: "  MODIFIED: {filename} → copied to repo (review with `git diff`)"
+¬changes → "  No infrastructure changes to sync."
+
+##### offer commit
+if any files synced:
+  "Commit sync changes? I can stage and commit, or you can review first."
+  wait user response
+  if approved → git add {synced files} + git commit -m "Sync agents/skills from sigma-review session"
+  ¬approved → "OK — files are copied but uncommitted. Run `git diff` to review."
+
 ### 6. Shutdown
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain, include promotion summary)
+all shutdown → report synthesis to user (plain, include promotion summary + sync summary)
 
 ## Recovery (BUG-A workaround)
 

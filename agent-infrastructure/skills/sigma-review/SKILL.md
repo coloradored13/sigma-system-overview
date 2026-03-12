@@ -144,11 +144,28 @@ pre-accept ✓: verify workspace findings ¬empty
   per team-level → store_team_decision(tier:global) | store_team_pattern(tier:global)
 6→portfolio entry → write {project-name} record to shared/portfolio.md (global tier)
 
+## Infrastructure Sync (installed → repo)
+
+7→detect drift: compare installed (agents, skills, shared) → sigma-system-overview repo
+  agents: ~/.claude/agents/*.md vs agent-infrastructure/agents/
+  skills: ~/.claude/skills/*/SKILL.md vs agent-infrastructure/skills/
+  shared: ~/.claude/teams/sigma-review/shared/ vs agent-infrastructure/teams/sigma-review/shared/
+  classify: NEW (auto-sync) | MODIFIED (sync+flag) | UNCHANGED (skip)
+  skip: sigma-lead.md, sigma-comm.md, SIGMA-COMM-SPEC.md, _template.md (repo-managed)
+8→sync: copy new/modified files installed→repo
+9→report to user (plain English):
+  "## Infrastructure Sync"
+  per new/modified file: what changed + where copied
+  ¬changes → "No infrastructure changes to sync."
+10→offer commit:
+  if synced files → "Commit sync changes? I can stage and commit, or you can review first."
+  wait user → git add+commit if approved
+
 ## Shutdown
 
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain English, include promotion summary)
+all shutdown → report synthesis to user (plain English, include promotion + sync summary)
 
 ## Recovery
 
