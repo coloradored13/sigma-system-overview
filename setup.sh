@@ -253,7 +253,7 @@ fi
 # Pinned dependency versions (commit hashes)
 # Update these when upgrading — run tests after changing
 HATEOAS_AGENT_PIN="5d272d5aad1cd19ce9ac43628f98dd264bd372ca"  # 2026-03-11
-SIGMA_MEM_PIN="4d9ee3a0fcf9aa25e938ad9f97e79df0755057ff"      # 2026-03-11 (P[] block recognition)
+SIGMA_MEM_PIN="d45cbabd667d8ec6daea95332099d4b82ce73882"      # 2026-03-12 (CI fix + P[] block recognition)
 
 # Track installed pins to detect when upgrade needed
 PIN_FILE="$VENV_DIR/.pinned-versions"
