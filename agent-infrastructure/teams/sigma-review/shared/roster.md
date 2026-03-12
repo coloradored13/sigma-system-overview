@@ -18,6 +18,7 @@ tech-industry-analyst |domain: AI-company-strategy,compliance-costs,model-deploy
 economics-analyst |domain: market-impact,innovation-effects,investment-flows,cost-pass-through,competitiveness,trade-effects |wake-for: economic impact,investment flows,innovation effects,regulatory costs,competitive dynamics,trade effects
 
 regulatory-licensing-specialist |domain: trust-company-chartering,loan-agent-licensing,fiduciary-duties,banking-regulations,compliance-infrastructure,bonding-insurance,AML-BSA |wake-for: regulatory requirements,licensing,trust company,fiduciary duty,compliance costs,banking regulations,chartering |dynamic: created 26.3.11 per DA[#8] gap identification
+loan-ops-tech-specialist |domain: waterfall-engines,credit-agreement-mechanics,settlement-workflows,covenant-systems,investor-reporting,Loan-IQ-ecosystem,payment-processing,BSL-vs-PC-operations,CLO-trustee-ops,BDC-administration,LSTA-LMA-standards,SOFR-mechanics |wake-for: loan administration,waterfall calculations,credit agreements,covenant tracking,settlement,Loan IQ,investor reporting,amendment processing,borrowing base,syndicated loans,private credit,CLO,BDC
 
 → actions:
 → adding a new agent → append to roster with domain+wake-for
