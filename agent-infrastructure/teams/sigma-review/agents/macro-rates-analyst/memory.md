@@ -12,7 +12,8 @@ protocol: ΣComm (see ~/.claude/agents/sigma-comm.md)
 
 ## patterns
 P[oil-shock→fed-paralysis]: negative supply shocks create impossible choice(inflation↑+growth↓)→Fed historically holds then cuts(1990 pattern) or accommodates then regrets(1973 pattern) |Warsh likely follows 1990 playbook
-P[demand-destruction-ceiling]: $120/bbl=recession trigger regardless of supply dynamics |self-correcting mechanism but correction=recession |provides natural price ceiling for analysis
+P[demand-destruction-ceiling]: REVISED from $120 binary→gradient. $100+(demand destruction active, -1M bpd IEA)→$110-115(intensifies)→$120+(recession). Self-limiting creates RANGE-BOUND $95-110 in sustained conflict. Demand destruction moderates inflation pass-through 0.3-0.5pp
+P[EM-contagion-channel]: oil-EM correlation extremes→EM stress→USD demand spike→DXY overshoot→US corporate earnings drag(40% S&P international)→recession probability amplified beyond oil-direct channel
 P[correlation-regime-shift]: inflation-driven regimes→positive stock-bond correlation→60/40 breaks→need real assets(gold,commodities,TIPS) as third bucket |1977-80 precedent
 P[breakeven-divergence-signal]: short-end breakevens surging while long-end anchored=market believes transitory |IF long-end starts rising→signal shifts to embedded inflation expectations→much worse
 
@@ -46,6 +47,34 @@ WU guide UPDATED: 5-8% GAAP rev growth(was 6-9%)|organic "closer to flattish"|Co
 FedNow: 1,400+ participants(was ~1500 projected)|most still receive-only
 SWIFT: confirmed launched Mar 5 2026|enforceable rules framework
 Nigeria: $56B/yr crypto vol|60% = stablecoins|CBN task force formed
+## research-refresh-iran-rerun
+R[fed-policy-26.3.13]: FFR 3.50-3.75%|CME 94.1% hold Mar 18|only 1 cut priced(Dec)|was 2-3 cuts r1|Warsh May 15
+R[stagflation-26.3.13]: !UPGRADED 30-35%→40-50%|Q4 GDP 0.7%(revised from 1.4%)|PCE 2.8%|oil $103|NFP -92K|UE 4.4%|Deutsche Bank+Oxford Econ warning|Goldman recession 25%
+R[yields-26.3.13]: 10Y 4.28%(was 4.13-4.17%)|2Y 3.75%(was 3.56%)|2s10s +0.53%(flattening)|war premium in bonds|KRE -5% on GDP revision
+R[breakevens-26.3.13]: 10Y BE 2.38%(was 2.31%)|5Y BE 2.56%(flat)|1Y 4.2%(flat)|divergence signal ACTIVE|2.5% 10Y BE=regime shift trigger
+R[dollar-26.3.13]: DXY 100.04(was 99.3)|+3.23% month|safe-haven confirmed|EM oil-EM correlation -27yr extreme
+R[inflation-26.3.13]: Feb CPI 2.4%(predates conflict)|gas $3.60(was $3.54)|$100 oil→CPI 3.5% EOY(RBC)|$4.00 gas=consumer threshold
+R[recession-26.3.13]: Oxford Econ gradient: $100(slows)→$120(distress)→$140(recession)|Kalshi 34.5%|Polymarket 35%|Goldman 25%
+R[correlation-26.3.13]: BofA "60/40 broken"|Vanguard→40/60|positive stock-bond correlation=consensus|P[correlation-regime-shift] validated
+R[gold-26.3.13]: $5,020-5,190|tested $5,400|+22% YTD|CB 755t|$4,800 stop intact|4.6% above stop=tight
+
+## findings-log-update
+F[26.3.13] iran-rerun r1: 19F+7S+7I|4×outcome-1(stagflation,yields,recession gradient,TLT timing)|11×outcome-2|0×outcome-3
+key revisions: stagflation 40-50%(was 30-35%), Fed cuts dead(1 Dec only), TLT→cash near-term, EM -27yr extreme
+confirmed: STIP>TIP, gold 10%, EM shorts, USD tactical long, 60/40 broken
+
+F[26.3.13] iran-rerun r2: 6RF+7RI|DA challenges addressed(#4,#5,#9,#10)
+key revisions: stagflation 40-50%→35-45%(quasi-stagflation framework), inflation 3.5-4.0%→3.2-3.5%(demand destruction), price range $95-120+→$95-110(demand cap), SPR "failed"→"early-stage insufficient"
+NEW: EM contagion channel(recession 30-40%), demand destruction feedback loop
+divergences: price range vs energy($95-110 vs $95-120+), EM contagion risk higher than team
+§2a F13 consensus anti-pattern CORRECTED
+
+## calibration-update
+C[26.3.13]: Q4 GDP revision 1.4→0.7% was ¬predicted in r1. GDPNow had shown weakness but actual revision TWICE as severe. Lesson: GDP advance estimates unreliable during policy disruption(shutdown+tariffs+energy)→weight forward indicators(NFP,PMI) more than backward GDP
+C[26.3.13]: TLT ceasefire trade from r3 was WRONG timing. 10Y yields rose(4.13→4.28%) as ceasefire prob fell(52→24%). Cash or TLT calls would have been better. Lesson: ceasefire bucket should use options for asymmetric payoff ¬linear bond exposure when yields are rising
+C[26.3.13]: DA challenged stagflation 40-50% on base rate(1/7 ME conflicts). VALID challenge. Lesson: always magnitude-adjust base rates. Comparing 48hr Aramco attack to 14-day Hormuz closure=false equivalence. Compare to COMPARABLE events(1973,1979)=2/2 stagflation. Also: distinguish classical vs quasi-stagflation—wage spiral ¬required for investable regime shift
+C[26.3.13]: demand destruction was blind spot. IEA -1M bpd Mar-Apr. Lesson: always model demand-side feedback when supply shock pushes prices into demand-destruction zone($100+). Supply-only analysis systematically overestimates price persistence
+P[26.3.13|promoted] demand-side-blind-spot: macro inflation pass-through models must integrate demand destruction feedback loop. Supply-only → overestimates price persistence + inflation pass-through. Demand destruction at $100+ moderates CPI by 0.3-0.5pp. |src:Iran-rerun |class:behavior-change |promoted:26.3.13
 
 → actions:
 → new finding → append with severity+evidence

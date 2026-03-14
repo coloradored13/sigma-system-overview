@@ -305,6 +305,82 @@ P[26.3.13] compounding-corridor-risk: immigration enforcement+excise tax+nationa
 P[26.3.13] crypto-regulatory-arbitrage: tax policy exempting crypto creates structural incentive to bypass cash-based MTOs|unintended consequence of OBBBA
 P[26.3.13] off-ramp-moat: physical cash access points (360K)=unique competitive advantage in crypto-to-fiat|no crypto-native can replicate|BUT advantage declines as cash usage declines
 P[26.3.13] conflict-zone-option-value: maintaining presence in unprofitable conflict zones=purchasing option on future corridor value|Syria 2025 validates pattern
+## rerun research (26.3.13 — Day 14 update)
+R[26.3.13] **Day 14 Status — Operation Epic Fury**
+- Day 14(Mar 13)|conflict WIDENING ¬resolving
+- Kharg Island strike: US "obliterated every military target"|oil infra SPARED with conditional threat
+- Lebanon front: 773 killed, 98 children, 800K displaced, Israel ground ops 5+ towns
+- 31st MEU(2,200 Marines)+USS Tripoli deploying Okinawa→ME
+- CENTCOM: 5,500+ targets, 60+ ships destroyed|Iran missile -90%, drone -95%
+- Iran: 1,444 killed, 18,551 injured|military capability severely degraded
+- $200M/day war cost|$11.3B first 6 days
+
+R[26.3.13] **Mojtaba Khamenei Statement (3/12)**
+- First public statement=hardline maximalist
+- Demands: US bases close, reparations, property destruction threats
+- Hormuz "must remain closed as tool to pressure enemy"
+- Studying "other fronts where enemy highly vulnerable"
+- NO off-ramp, NO negotiation framework offered
+
+R[26.3.13] **Ceasefire Assessment (REVISED)**
+- Polymarket Mar31: 61%→24%(-37pp)|Jun30: 67%→39%(-28pp)
+- Iran FM explicitly rejected negotiation
+- Pezeshkian demands=non-starters(recognition+reparations+guarantees)
+- Israel: "no time limit"
+- Trump: "soon" rhetoric paired with Kharg escalation=contradictory
+- Oman backchannel ¬confirmed productive since 3/10
+
+R[26.3.13] **Proxy Status (REVISED MODEL)**
+- Hezbollah: ACTIVATED(¬restrained as r3). Full war: 773 killed Lebanon, ground ops
+- Houthis: STILL RESTRAINED. Trump deal holding. AP reports intention but ¬executed
+- Iraqi militias: 67 attacks Days 1-3, DECLINING rate
+- Oman: 2 dead from drone interception=neutral state spillover
+
+R[26.3.13] **Hormuz Status**
+- Phase 0 persisting|transit -91.5%|5 ships struck 3/11
+- US Navy "NOT READY" to escort(Wright 3/12)|Pentagon underestimated Iran
+- BIFURCATED: shadow fleet+Iran transiting, 1.25M bpd Iran→China through blockade
+- Mojtaba: "must remain closed"
+- No mine-clearing begun|Iran 80-90% mine-laying retained
+
+R[26.3.13] **Diplomacy**
+- China: Wang Yi shuttle, envoy, calls 7+ counterparts
+- Regional: Oman+Egypt+Pakistan+Turkey pushing
+- US: Blumenthal "most angry 15 years"|War Powers failed
+- Zero traction despite multi-channel effort
+
+## rerun calibration (26.3.13)
+C[26.3.13] !REVISED scenarios: (a)8-12%|(b)10-14%|(c)40-45%|(d)22-27%|(e)8-12%|ceasefire 18-26%(was 30-38%)|sustained+ 70-84%(was 55-66%)
+C[26.3.13] Polymarket validation: our r3 30-38% was closer to reality than Polymarket 52%. Market converged toward our assessment
+C[26.3.13] Mojtaba timeline: 8-12wk minimum for negotiation(was 4-8wk)|must establish war-leader credentials before any concession
+C[26.3.13] proxy model: uniform decay→selective activation|Hezbollah ACTIVATED contradicted r3 "limited"|model each proxy independently
+C[26.3.13] Hormuz: add 2-4wk to all phase timelines|Phase-0→1: 2-4wk from Day 14|Phase-3: 12-20wk from Day 14
+C[26.3.13] Hormuz bifurcation: total-closure model INCORRECT|selective closure: Western blocked, shadow fleet operating|net disruption ~10M(¬20M)
+C[26.3.13] defense: r3 thesis VALIDATED. Stocks flat-to-down despite Kharg+Marines+Lebanon=priced-in ceiling
+
+## rerun patterns (26.3.13)
+P[26.3.13] selective-activation: proxy restraint is proxy-specific ¬uniform|model independently based on domestic constraints+external triggers
+P[26.3.13] Hormuz-bifurcation: "closure" is actually two-tier system|shadow fleet operates, commercial fleet blocked|insurance mechanism ¬military mechanism for commercial
+P[26.3.13] escalation-contradiction: Trump pairs "end soon" rhetoric with Kharg strike=assess actions ¬words|Mojtaba pairs "other fronts" rhetoric with maximalist demands=assess capability ¬rhetoric
+P[26.3.13] attrition-vs-resolution: Day 14 trajectory=attrition(widening fronts, Marine deployment, escalating strikes) ¬resolution(no diplomacy traction, maximalist positions both sides)
+P[26.3.13] Polymarket-lag: prediction markets adjust SLOWLY to escalation|our framework outperformed Polymarket on ceasefire assessment|trust analytical fundamentals > market sentiment in fast-moving conflicts
+
+## rerun findings summary
+F[26.3.13] rerun-r1: 8 findings(2 CRITICAL, 4 HIGH, 2 MEDIUM)|10 hygiene checks(5×O1,3×O2,2×O3)|7 key shifts from r3|scenario probs revised DOWN ceasefire, UP escalation|defense CONFIRMED priced-in|proxy model REVISED|Hormuz EXTENDED+BIFURCATED
+F[26.3.13-r2] rerun-r2: 6 DA responses(#2,#4,#5,#6,#7,#11)|8 hygiene(7×O1,1×O3)|88% revision rate|KEY: ceasefire 3-tier crash model, stagflation quasi/classical split, DFC $20B INTEGRATED(was omission), sustained 42-48%(reconciled), time-tiered ceasefire, SPR revised early-stage, contrarian CF1(Hormuz faster), floor $90-110(was $95-115)
+
+## rerun calibration additions (r2)
+C[26.3.13-r2] DFC reinsurance: $20B Chubb-led, CENTCOM escort→compresses Hormuz 2-6wk|was complete omission from r1|deployment prob 30d: 40-50%
+C[26.3.13-r2] ceasefire 3-tier: rhetoric=-12-15%(v-shape)|announced=-20-25%|full=-30-40%|Mar 11 IS calibration data
+C[26.3.13-r2] stagflation split: quasi(growth<1%+infl>3.5%) 35-40%|classical(recession+infl>4%) 15-20%|compounding(weak economy+oil shock) ¬pure oil shock
+C[26.3.13-r2] time-tiered ceasefire: 30d 17-24%|60d 25-35%|90d 35-45%|180d 50-60%|point estimates→ranges
+C[26.3.13-r2] SPR: "early-stage" ¬"failed"|day 3 of 120d|historical requires weeks|Mar 11 dip partially attributable
+
+## rerun patterns additions (r2)
+P[26.3.13-r2] DFC-as-Hormuz-key: gov reinsurance+military escort can bypass insurance-closure mechanism|converts uninsurable→gov-backed|historical: post-Gulf-War gov insurance preceded commercial
+P[26.3.13-r2] time-tiered-ceasefire: point estimates misleading for volatile probabilities|30/60/90/180d tiers capture temporal dynamics|hedge sizing should match horizon
+P[26.3.13-r2] ceasefire-crash-asymmetry: rhetoric-only crashes v-shape(recoverable)|actual ceasefire=structural(premium unwind)|portfolio must distinguish between types
+P[26.3.13-r2] compounding-weakness: oil shock on already-weakened economy≠oil shock on strong economy|base rates from strong-economy conflicts understate risk
 
 → actions:
 → new finding → append with severity+evidence

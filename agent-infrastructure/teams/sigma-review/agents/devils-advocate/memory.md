@@ -359,9 +359,6 @@ key outcomes:
 - must verify challenge PREMISES as rigorously as I require agents to verify findings
 - my 2 errors both = insufficient verification of own assumptions
 
-→ actions:
-→ new finding → append with severity+evidence
-→ disagreement with another agent → record both positions in shared/decisions.md
 
 ## research-WU-market-analysis(26.3.13)
 R[stablecoin-hype-vs-reality: crypto-remittances=3-6%-of-$905B-global-market(~$27-54B) |$8.5T-quarterly-stablecoin-volume=overwhelmingly-institutional/trading-NOT-personal-remittances |US-Mexico:stablecoins-5-10%(Mizuho) |last-mile-fiat-conversion=biggest-unsolved-problem(Lowy:"solution-in-search-of-problem") |GENIUS-Act-imposes-heavy-compliance(BSA/AML/KYC,freeze/seize)→narrowing-cost-advantage |China-banned-all-stablecoins-2025 |src:OpenDue,IMF,Lowy-Institute,coinlaw.io |refreshed:2026-03-13 |next:2026-04-13]
@@ -433,3 +430,70 @@ exit-gate: PASS |all-5-requirements-met
 - !CONFIRMED: concession-quality-correlates-with-analytical-improvement. Tech-industry-concessions(withdrew-ratio,acknowledged-timeline)=stronger-r3-than-defensive-responses-would-have-been.
 - !NEW: probability-range-divergence=healthy-signal. PS(30%)+portfolio(15-20%) on Beyond-2028=genuine-analytical-tension-not-herding. Different-agents-with-different-frameworks-reaching-different-probabilities=expected.
 - C[cost-integration-as-exit-gate-standard: requiring ONE de-duplicated cost number before synthesis=forced best work of review. Portfolio produced $798M model only because DA required it. Make cost-integration a standard exit-gate requirement for any review involving transformation/investment recommendations |src:WU-market-analysis |26.3.13 |class:new-principle]
+## Iran conflict rerun r2 challenges (26.3.13) |#12
+
+### r2 challenges issued |#12
+- DA[#1] !CRITICAL: energy=consensus-trade(XLE-$1.81B-weekly+€793M-EU+CFTC-172K-net-long-33wk-high+unanimous-sell-side) |v5-23%-energy-complex |7th-review-crowding-finding-recurring
+- DA[#2] !CRITICAL: ceasefire-crash-unmodeled(Mar-11-Brent-$119→$84-in-48hrs-on-RHETORIC |futures-sub-$70-in-6mo |pre-conflict-IEA-surplus-3.7M-bpd |WB-$60-target |v5-drawdown-estimate-2.5-4%-UNDERSTATES-risk→actual-8-12%)
+- DA[#3] HIGH: floor-anchored-upward($80-85→$90-95→$95-120+) |bypass-8.3M-EXCEEDED-estimates→should-push-floor-DOWN |SPR-"failure"-premature(day-3-of-120-day-program)
+- DA[#4] HIGH: stagflation-40-50%-inflated |base-rate-1/7-ME-conflicts=stagflation |no-wage-spiral-mechanism |Q4-GDP=pre-conflict |Oxford-$100=slows-¬recession
+- DA[#5] HIGH: zero-divergence-7th-consecutive(5-agents-69-findings-0-disagreements) |herding-severity-MODERATE
+- DA[#6] HIGH: DFC-$20B-reinsurance+Chubb-underwriter+CENTCOM-escort=OMITTED-from-ALL-agents |targets-insurance-as-closure-mechanism
+- DA[#7] HIGH: scenario-probs-diverge(geo-40-45%-vs-portfolio-50-55%-sustained) |unreconciled
+- DA[#8] MEDIUM: crack-$40-supercycle-premature |historical-range-$10-25 |pre-conflict-declining |new-capacity-ramping |$40=entirely-war-premium
+- DA[#9] MEDIUM: demand-destruction-underweighted |IEA-demand-CUT-210kb/d+1M-bpd-Mar/Apr |self-limiting-mechanism-undiscussed
+- DA[#10] MEDIUM: SPR-"failure"-narrative-premature |day-3-of-120-day-program |1991+2022-SPR-took-weeks/months |3-agents-declared-"failure"-on-48hrs-data
+- DA[#11] MEDIUM: ceasefire-prob-overcorrected-DOWN |Polymarket-swung-61%→24%-in-10-days=VOLATILE |Trump-single-statement=12%-oil-crash |5%-hedge-INSUFFICIENT-for-23%-energy
+- DA[#12] LOW-POSITIVE: hygiene-substantially-improved |72+-checks-vs-r1-~20 |revision-rates-27-50% |portfolio-weakest(20%-revision-rate)
+
+### key research (26.3.13 rerun)
+R[Mar-11-oil-crash]: Brent-$119→$84(-12%)-in-<48hrs-on-Trump-ceasefire-rhetoric+G7-SPR-coordination |proves-ceasefire-crash-severity |WTI-to-$83.45
+R[DFC-reinsurance]: $20B-program-announced-3/7 |Chubb-lead-underwriter-3/11 |Hull+Machinery+Cargo |CENTCOM-coordination |escort-tankers-if-necessary |analysts:"insurance-alone-won't-restart-shipping—crews-fear-for-lives"
+R[pre-conflict-fundamentals]: IEA-surplus-3.7-3.84M-bpd |WB-Brent-$60-forecast |JP-Morgan-$60-forecast |demand-growth-640kb/d(cut-210kb/d) |inventories-8.2B-bbl(highest-since-Feb-2021) |futures-curve-sub-$70-in-6mo
+R[stagflation-base-rate]: 6/7-US-ME-conflicts=equity-recovery-within-year |1973-ONLY-sustained-stagflation(required-EMBARGO) |CNBC:"workers-lack-bargaining-power-for-wage-price-spiral" |Goldman-recession-25% |Polymarket-recession-35%
+R[crack-spread-history]: 2014-2020-range-$10-25/bbl |post-2008-elevated-$20-30 |$40=2x-historical-top |EIA-Sep-2025-multiyear-seasonal-lows |Kpler-Feb-2026-margins-declining |new-refinery-capacity-Q4-2025/Q1-2026
+
+### patterns (rerun)
+- !CONFIRMED(7th): zero-dissent-in-r1 across ALL review types+team sizes+topics
+- !NEW: performative-concession-pattern: team conceded crowding in r1→reduced XLE allocation→but v5 STILL 23% energy complex. Concession acknowledged then behavior unchanged=performative
+- !NEW: premature-narrative-crystallization: "SPR failed" declared by 3 agents on 48hrs data of 120-day program. Narrative hardens before evidence sufficient
+- !NEW: selective-timeframe-bias: SPR "failure" judged on 2 days. Ceasefire "impossible" judged on 14 days. Both premature but team selects timeframe that confirms thesis
+- !CONFIRMED: Mar-11 crash proves ceasefire-drawdown-estimates systematically understate risk(v5: -2.5-4% vs actual single-day move of -12%)
+- C[demand-side-blind-spot: teams model supply disruption extensively but underweight demand destruction feedback loop. At $100+ Brent, demand destruction is ACTIVE(IEA -1M bpd Mar/Apr) and self-limiting. Supply-side focus=confirmation of bullish thesis]
+## rerun review R2 exit-gate (26.3.13)
+
+### exit-gate: PASS
+engagement:[EMA:A, STA:A, GEO:A-, PA:A-, MRA:B+]
+unresolved: 3 deliberate divergences(range overlap, bypass permanence, perspective-dependent)
+untested-consensus: DFC probability=low-confidence(partial test only)
+hygiene: PASS(dramatic improvement from R1)
+
+### R2 challenge results |12 challenges
+HELD: DA[#1] crowding(portfolio -4pp), DA[#2] ceasefire crash(drawdown re-modeled -5.5/-8.2%), DA[#6] DFC omission(3 agents integrated), DA[#9] demand destruction(3 agents, time-dependent range), DA[#10] SPR premature(3 agents corrected)
+PARTIALLY HELD: DA[#3] floor anchoring($88-92 ¬$80-85, Iraq/Kuwait defense valid), DA[#4] stagflation(35-45% ¬40-50%, denominator correction valid both ways), DA[#8] crack supercycle(MPC removed, language retracted), DA[#11] ceasefire overcorrection(time-tiered model, hedge still thin at 60d+)
+PROCESS WIN: DA[#5] zero divergence→4 genuine disagreements emerged in R2
+HIT RATE: 8/12(67%), adjusted 6.5/11(59%)=consistent with r1(60%)
+
+### grades
+EMA: A(100% revision rate, MOST IMPROVED) | STA: A(3-tier Hormuz model=best innovation, SPR bias acknowledgment=most honest) | GEO: A-(time-tiered ceasefire=best innovation, contrarian Hormuz speed) | PA: A-(v6 materially improved, 2-tier drawdown model) | MRA: B+(quasi/classical split, demand integration, §2a corrected)
+
+### underweighted risks (flagged for synthesis)
+1→crowding unwind speed: liquidity withdrawal amplifies beyond -8.2% model
+2→post-conflict bearish overshoot: $55-65 ¬$60-70 reversion(accumulated demand destruction+retained bypass)
+3→DFC probability: 15-25% 30d ¬30-40%(zero precedent, crew willingness behavioral)
+4→MLP complacency: 8% without fresh §2c ceasefire sensitivity
+5→time-decay: portfolio needs Mo1→Mo2→Mo3 adjustment schedule to match price model
+
+### patterns (new)
+!performative-concession: agents concede verbally then maintain same recommendation=detected+corrected in R2(portfolio 23→19% was behavioral change)
+!premature-narrative-crystallization: 3 agents declared SPR "failed" after 48hrs=consensus narrative overriding evidence windows=corrected
+!demand-side-blind-spot: supply-focused team systematically underweights demand destruction=corrected via DA[#9]
+!selective-timeframe-bias: treating 2-day SPR data as conclusive while 2-week ceasefire data equally conclusive=inconsistent=corrected
+!team R2 quality exceptional: best I've evaluated. 100% revision rates from 2 agents. Genuine disagreements emerged. Novel analytical frameworks produced. v6 is materially different from v5
+P[26.3.13|promoted] performative-concession(anti-pattern): agent concedes challenge→adjusts single metric→maintains SAME total directional exposure. Detection: compare total exposure pre/post \u00acjust conceded metric. Fix: challenge must specify MEASURABLE behavioral change threshold. |src:Iran-rerun-r2 |class:anti-pattern |promoted:26.3.13
+P[26.3.13|promoted] demand-side-blind-spot(systematic-bias): teams model supply disruption extensively but underweight demand destruction. 5 agents, 69+ findings, ZERO demand-side integration until DA challenged. At $100+ oil, demand destruction active+self-limiting. Fix: mandate demand-side modeling from R1 in any supply-disruption analysis. |src:Iran-rerun-r2 |class:systematic-bias |promoted:26.3.13
+P[26.3.13|promoted] data-backed-challenges>rhetorical: R2 revision rate 89% when DA challenges included counter-evidence(DFC program, Mar 11 data, IEA surplus) vs prior reviews with rhetorical challenges producing performative concessions. Fix: DA must always include specific counter-evidence \u00acjust bias identification. |src:Iran-rerun-r2 |class:new-principle |promoted:26.3.13
+
+→ actions:
+→ new finding → append with severity+evidence
+→ disagreement with another agent → record both positions in shared/decisions.md

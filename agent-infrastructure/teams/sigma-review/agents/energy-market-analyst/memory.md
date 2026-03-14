@@ -180,6 +180,83 @@ F[26.3.10-r3] round-3-debate:
 - communicated revisions to: devils-advocate(full response), portfolio-analyst(sizing changes), geopolitical-strategist(demand gradient impact on scenarios)
 - key revision: tradeable range $85-120(was $90-150), energy sizing 15%→10-12%, XLE→E&P individual names
 - core thesis intact but conviction reduced, sizing smaller, exit timing more critical
+## rerun research
+R[26.3.13] prices-update(rerun):
+- WTI $98.71|Brent $103.14(>$100 2nd day)|HH $2.92(stable)|TTF $18.5/MBtu(doubled from pre-conflict)
+- war premium expanded $30-34→$43/bbl(+28% from r1)|total Brent premium=72% above pre-conflict $60
+- crack spreads EXPLODED $18.65→$40/bbl|MPC 114% capture|VLO,PSX,MPC up 31-40% YTD
+- VLCC $423K ATH→$315K moderation|FRO +62.6% YTD|war-risk insurance withdrawal=new factor
+
+R[26.3.13] supply-update(rerun):
+- Hormuz still closed day 14|transit 153→13/day(-91.5%)|5-ship attack 3/11=ESCALATION
+- IEA 400M bbl SPR release ANNOUNCED+DEPLOYED→FAILED to suppress prices(Brent >$100)
+- Qatar LNG ATTACKED by drone(was just "paused" in r1)|world's largest facility SHUT|10.2 Bcf/d=20% global
+- OPEC+ 206k bpd(5.9% of spare)|insufficient|conserving capacity
+- EU gas storage <30%(vs 40% YoY)|Germany 20.5%|France 21%
+
+R[26.3.13] equities(rerun):
+- XOM $155 ATH|CVX $196.76 ATH|COP $118 52wk high|ALL integrated=ATH
+- FANG $182.70|DVN $36.56|EOG $106.20|E&P rallied but ¬ATH→still preferred
+- XLE +12.93% 30d|OIH +31.4% YTD|XOP +29.4% YTD|crowding risk ESCALATED
+
+R[26.3.13] ceasefire(rerun):
+- Polymarket Mar31: 61%→24%(DROPPED)|Iran FM REJECTED ceasefire
+- Iran demands: recognition+reparations+guarantees|new Supreme Leader consolidating
+- multiple mediators(China,Oman,Egypt,Pakistan,Turkey,LATAM)→¬traction
+
+## rerun calibration
+C[26.3.13] key-shifts-from-r1/r3:
+- war premium +28%|SPR deployed+FAILED|crack spreads +114%|Qatar ATTACKED(¬paused)
+- Hormuz day 14 ESCALATION|ceasefire probability DOWN|sustained-conflict=BASE CASE
+- tradeable range REVISED: r3 $85-120→rerun $95-120+(SPR failure raises floor)
+- REFINERS UPGRADED: "nuanced"→"strong tailwind"|$40 cracks=supercycle thesis
+- BNO window MAY extend(ceasefire less likely) but entry at $103 worse than $92
+
+C[26.3.13] r3-revision-assessment:
+- r3 $80-85 conditional floor WITH SPR→SPR deployed, prices >$100→floor HIGHER than r3
+- r3 demand destruction gradient intact but onset delayed(oil >$95 ¬triggering recession YET)
+- r3 crowding risk CONFIRMED+INTENSIFIED(XLE inflows continued)
+- r3 BNO 2-6wk→may extend to 4-8wk given ceasefire drop
+- r3 E&P>integrated CONFIRMED(majors ATH, E&P ¬ATH)
+
+## rerun findings
+F[26.3.13] rerun-r1:
+- 15 findings(F1-F15)+2 gaps(G1-G2)+7 thesis updates(T1-T7)+9 key shifts(S1-S9)
+- analytical hygiene: 14 checks(5×§2a,6×§2b,3×§2c)|6×outcome-1(revised),8×outcome-2(confirmed+risk)
+- NEW: refiners upgraded to strong conviction|crack spread supercycle thesis
+- NEW: SPR failure raises effective floor|r3 $80-85→$95+ while deployed+failing
+- CONFIRMED: E&P>integrated,crowding,tanker prospective degraded,HH insulated,TTF vulnerable
+## r2 calibration (rerun)
+C[26.3.13-r2] DA-challenge-revisions:
+- crowding: CONCEDED. 23% energy-complex=consensus trade. Revised to 18% ceiling. XLE/BNO reduced, individual E&P maintained. Crowding amplifies reversal speed ¬direction
+- ceasefire crash: CONCEDED. Mar 11 $119→$84 on rhetoric alone. Drawdown at 18% energy=-4.5 to -7%(was -2.5-4%). Pre-conflict baseline bearish(IEA surplus 3.7M, WB $60)
+- floor anchoring: COMPROMISED. Bypass 8.3M overperformance+SPR gradual impact→floor DOWN to $88-92(was $95+). Iraq/Kuwait 5M irreducible supports floor ¬arbitrary anchoring
+- crack supercycle: COMPROMISED. Retracted "supercycle"→"conflict-driven margin expansion." $40 cracks=conflict premium. Mean revert $15-20 within 4-8wk of resolution. MPC exit: cracks<$28
+- demand destruction: CONCEDED. IEA -1M bpd Mar/Apr. Self-limiting. Range time-dependent: Mo1 $88-115, Mo2 $85-105, Mo3-4 $80-95
+- SPR premature: CONCEDED. Day 3 of 120-day program. Retract "FAILED." Expected -$3-5 impact weeks 3-8. Historical 3-4wk lag
+- DFC omission: CONCEDED. $20B reinsurance+CENTCOM escort=30-40% partial reopening 30d→Brent $80-90 if successful
+- zero divergence: offered genuine disagreement with sanctions-trade on bypass ceiling(Iraq/Kuwait irreducible)
+
+## r2 findings (rerun)
+F[26.3.13-r2] round-2-analysis:
+- 8 DA challenges addressed, 8×outcome-1(all revised)|4 full concessions, 1 omission concession, 2 compromises, 1 genuine disagreement
+- tradeable range: $88-115 time-dependent(was $95-120+)|declining ceiling from demand destruction
+- key pattern: premature-narrative-crystallization on SPR—48hrs of data declared "failure" across 3 agents
+- key pattern: performative-concession on crowding—conceded r1, maintained same sizing
+- DFC reinsurance=material blind spot, now integrated as monitoring trigger
+- integrated all 4 peers: sanctions-trade(bifurcation,bypass), geopolitical(scenarios,Mojtaba), macro-rates(stagflation,recession gradient), portfolio(v5,MPC)
+
+## r2 patterns (rerun)
+P[26.3.13-r2] narrative-crystallization:
+- !48hrs of data ¬sufficient to declare policy "failed"|apply to: SPR, DFC, escort programs, sanctions escalation
+- historical lag: SPR 3-4wk, sanctions ramp 6mo, insurance normalization 6-12mo
+P[26.3.13-r2] time-dependent-ranges:
+- conflict trades have DECLINING ceilings over time(demand destruction+bypass ramp+SPR depletion)
+- ¬static ranges—model as time-decay function
+P[26.3.13-r2] bypass-ceiling:
+- bypass only addresses producers WITH alternative infrastructure(Saudi,UAE)
+- producers WITHOUT bypass(Iraq,Kuwait)=irreducible disruption floor regardless of bypass expansion
+P[26.3.13|promoted] demand-side-blind-spot: supply-disruption analyses must include demand destruction modeling from R1. IEA -1M bpd Mar/Apr was MATERIAL but not modeled until DA challenged. Self-limiting mechanism creates declining price ceiling over time. |src:Iran-rerun |class:behavior-change |promoted:26.3.13
 
 → actions:
 → new finding → append with severity+evidence

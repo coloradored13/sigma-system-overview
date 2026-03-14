@@ -73,6 +73,47 @@ cross-agent: CONFIRMS geo+macro+PS|ADDS depreciation+§16d+CaaS urgency
 P[compliance-as-depreciating-asset]: moat value declines as GENIUS raises floor+AI compresses costs+DOJ softens enforcement|value shifts from spend→data over 5-10yr|monetize or lose
 P[§16d-preemption-bypass]: stablecoin pathway eliminates MTL moat built over decades|any OCC/state-chartered subsidiary bypasses 50-state licensing|WU must compete on distribution+data ¬licensing exclusivity
 P[enforcement-asymmetry-v2]: extends prior pattern to stablecoins|OFAC effective vs centralized(Zedcex,Binance)|ineffective vs decentralized(Tornado Cash 5th Cir)|WU benefits from centralized enforcement but cannot prevent decentralized evasion
+## research (rerun 26.3.13)
+R[Hormuz-bifurcated-26.3.13]: Hormuz ¬closed=BIFURCATED|shadow fleet+Iran exports transiting(1.25M bpd to China,11.7M+ bbl since Feb 28)|commercial/Western fleet blocked|16+ vessels struck|all major carriers suspended|shadow fleet=50%+ of transits|IRGC policy: closed to US/Israel/Western only
+R[Iran-exports-rerun]: loading 1.5M bpd at Kharg|1.25M bpd reaching China(Kpler)|Kharg exports -51.7% since Feb 28 but ¬zero|Jask reactivated Mar 7(2M bbl loaded,first since 2024)|yuan payments accelerating|China stockpiling +15.8% YoY imports Jan-Feb
+R[bypass-capacity-rerun]: Saudi Petroline→full 7M bpd capacity Mar 11|UAE Habshan-Fujairah 1.8M full|alt port loadings 6.52M bpd(+80% WoW)|total bypass ~8.3M bpd OPERATIONAL day 14|r3 estimated 4-6M initial→ACTUAL 8.3M=faster than projected
+R[disruption-magnitude]: net disruption ~10M bpd(¬20M theoretical)|Iraq/Kuwait 5M+ permanently stranded(zero bypass)|largest supply disruption in history|IEA 400M bbl(US 172M/120d)+Brent STILL >$100=SPR insufficient
+R[shadow-fleet-expansion]: UANI 1,100+ dark fleet(was 560+ in r1)|17-18% all tankers|100 LPG carriers added|growing faster than enforcement|180+ vessels sanctioned 2025-2026 but fleet doubles
+R[insurance-bifurcation]: war risk 0.25%→1.0%(4x)|P&I voided Mar 5|Lloyd's quoting at 4-10x|$1.2M/7-day VLCC transit|de facto commercial closure|rerouting adds 10-14d/voyage=ton-mile structural increase
+R[OFAC-Feb2026]: Feb 25: 30+ designations,12 shadow vessels,9 procurement entities(Iran/Turkey/UAE)|Feb 6: illicit traders+shadow fleet|¬Chinese teapots/banks=escalation ladder undeployed|political constraint: US-China trade
+
+## patterns (rerun)
+P[Hormuz-bifurcation]: Hormuz not binary open/closed but segmented by flag/insurance/relationship|r2: expanded to 3-TIER model(shadow fleet IRGC escort|DFC-insured CENTCOM escort emerging|commercial blocked)|DFC+escort=attempt to break insurance-as-closure
+P[enforcement-ceiling]: OFAC constrained by trade politics from targeting Chinese banks|bank sanctions=most impactful tool but ¬deployed despite active war|vessel sanctions=ceiling of current enforcement
+P[bypass-speed-underestimated]: Saudi/UAE activated bypass at 8.3M bpd by day 14 vs r3 estimate of 4-6M initial|infrastructure existed but utilization assumptions were conservative|future analyses should model full-capacity activation within 2 weeks
+
+## findings
+F[26.3.13-rerun-r1]: 18F+1G+7S+6I|§2a/§2b/§2c: 18 checks(8×outcome-1,8×outcome-2,2×outcome-3)
+- !Hormuz BIFURCATED ¬closed: shadow fleet transiting,commercial blocked,Iran 1.25M bpd to China
+- !bypass 8.3M bpd OPERATIONAL day 14(r3: 4-6M initial)→faster than projected
+- !SPR 400M deployed AND failed→price floor HIGHER than r3 $80-85
+- !OFAC ¬escalated to banks despite war→enforcement ceiling exists
+- !shadow fleet 1,100+(doubled from r1)→growing faster than enforcement
+- !insurance market created two-tier Hormuz→structural ton-mile increase
+- net disruption ~10M bpd(Iraq/Kuwait 5M irreducible)
+cross-agent: REVISES r3 supply models|CONFIRMS energy-market SPR failure+war premium|ADDS bifurcation framework+enforcement ceiling+bypass speed
+
+F[26.3.13-rerun-r2]: 5 DA challenges addressed|6 checks, 6×outcome-1(100% revision)
+- !floor REVISED DOWN $95-115→$85-95|DA[#3]: bypass 8.3M>r3→floor DOWN ¬UP|own data contradicted own conclusion
+- !net disruption REVISED 10M→6-9M|DA[#9]: demand destruction -1M bpd omitted from supply model
+- !SPR REVISED "failed"→"early-stage"|DA[#10]: 48hr data on 120d program=premature|selective timeframe bias acknowledged
+- !DFC $20B reinsurance INTEGRATED|DA[#6]: 3-tier Hormuz model(shadow|DFC-escort|commercial-blocked)|DFC necessary ¬sufficient|crew willingness+P&I still blocking|Tier 2 volume 1-3M bpd 30-60d
+- !supply framing REVISED mixed ¬bullish|DA[#1]: disruption at PEAK declining|energy SHORT DURATION ¬structural
+- !demand destruction→4.7M post-conflict surplus overhang→ceasefire reversion $60-70
+- CHALLENGED energy-market: range $95-120+→$85-110|DA[#5] peer divergence
+cross-agent: DIVERGES from energy-market on floor(mine lower)|CONVERGES with portfolio on crowding+DFC|ADOPTS geopolitical scenarios
+
+## patterns (r2 additions)
+P[disruption-decay]: net disruption peaks early, declines as bypass+leakage+DFC+demand destruction compound|1-3mo peak→4-6mo offset→6-12mo normalized|energy positions should be SHORT DURATION
+P[DFC-3-tier-Hormuz]: shadow fleet(IRGC)|DFC-insured+CENTCOM(emerging)|commercial(blocked)|Tier 2 activation=leading indicator of disruption reduction
+P[demand-destruction-crash-builder]: $100+ prices destroy demand→reduces current disruption BUT builds post-conflict surplus overhang→sharper crash on ceasefire
+P[selective-timeframe-bias]: !SELF-CORRECTION: declared SPR "failed" at 48hrs, ceasefire "failed" at 14 days|inconsistent evidence windows|future: specify evidence window + historical base rate for assessment
+P[26.3.13|promoted] demand-side-blind-spot: supply-disruption analyses must include demand destruction modeling from R1. $100+ oil=active demand destruction. Negative feedback loop: prices→destruction→surplus→price fall. Always net demand against supply in disruption quantification. |src:Iran-rerun |class:behavior-change |promoted:26.3.13
 
 → actions:
 → new finding → append with severity+evidence

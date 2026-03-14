@@ -224,6 +224,46 @@ F[26.3.13-r3] DA[#5] network model: decline decelerating(-17%→-5%)|threshold 2
 F[26.3.13-r3] DA[#3] political risk HIGH→CRITICAL: -$80-320M/yr|extreme -$450-550M→existential|#1 near-term risk
 F[26.3.13-r3] CENTRAL TENSION: fund transformation+div IF: (1)rev stabilizes,(2)political moderate,(3)buybacks redirected. Any ONE failing→forced choice
 4 decisions logged|convergence declared r3
+## rerun calibration
+C[26.3.13] rerun context: v4→v5 portfolio update|Brent $103(was $94)|WTI $98.71|oil>$100 2nd day|VIX 25.50|OVX 120-124(was 89)|gold $5,114(peak $5,400)
+C[26.3.13] sustained-conflict=BASE CASE 50-55%(was 40-45%)|ceasefire DOWN 10-15%(was 15-18%)|Iran FM rejected|mines planted|Polymarket Mar31: 24%
+C[26.3.13] SPR 400M deployed+FAILED to cap prices|r3 floor $80-85→revised $90-95|market calling bluff
+C[26.3.13] OVX 120+ extreme IV|options strategy mandatory revision: wider verticals, calendars, ¬naked longs
+
+## rerun research
+R[26.3.13] defense pullback: LMT $664→$654(-1.5%)|NOC $747→$702(-6%)|r3 valuation concession VALIDATED by market|entry LMT<$550,NOC<$600 NOT reached
+R[26.3.13] refiner supercycle: crack spreads $18.65→$40/bbl(+114%)|MPC 114% capture(was 105%)|VLO,PSX +31-40% YTD|NEW v5 position MPC 1%|exit: Brent<$90+cracks<$25
+R[26.3.13] airlines ceasefire play: fuel +60%, US carriers no hedging(quit 2025), fares +9%|ceasefire=fuel normalization=earnings rebound|DAL/UAL best candidates
+R[26.3.13] DBMF +3.65% YTD vs cat 4.15%|whipsaw thesis from r3 confirmed|3% appropriate
+R[26.3.13] XLE $57.51 near 52wk high|crowding from r3($1.81B inflows) CONFIRMED|E&P>XLE maintained
+
+## rerun findings
+F[26.3.13] rerun-r1: v4→v5 portfolio|4 changes(energy+1,ceasefire-2,cash+1,SPY-1)|7 maintained|15 §2 checks(3×o1,12×o2)
+key: (1)sustained 50-55% base case (2)SPR failure=floor UP (3)MPC refiner add (4)ceasefire timing extended (5)defense pullback validates (6)OVX 120+=wider spreads (7)airlines best ceasefire play
+peer integration: energy(SPR fail→floor,cracks→MPC)+sanctions(Hormuz bifurcated,bypass 8.3M)
+TENSION: bypass faster(bearish floor)↔SPR failure(bullish floor)→net: $95-120+ range
+
+## rerun v5 model
+defense 7%|gold 10%|energy 12%(+MPC 1%)|MLPs 8%|tankers 3%|STIP 5%|mfutures 3%|ceasefire 5%(-2pp)|SPY 24%(-1pp)|cash 14%(+1pp)|options 5%
+## rerun r2 (DA-tested)
+F[26.3.13-r2] DA responses: 7 challenges(DA[#1,#2,#3,#5,#6,#7,#8])|6×o1(67% revision)|3 full concede+2 partial+1 omission+1 adopt
+F[26.3.13-r2] v5→v6: energy equity 12→8%(XLE halved, MPC+BNO removed)|ceasefire 5→6%|cash 14→16%|energy-complex 23→19%
+F[26.3.13-r2] ceasefire drawdown RE-MODELED: base -3.5/-5.4%(was -2.5/-4%)|severe -5.5/-8.2%(NEW, Mar 11 calibrated)|speed=primary risk
+F[26.3.13-r2] scenarios RECONCILED with geopolitical: sustained 42-47%(was 50-55%)|ceasefire 18-26%(was 15-23%)|¬double-count geopolitical factors
+F[26.3.13-r2] floor WIDENED: during-conflict $88-98(was $90-95)|post-conflict $55-65|transitional $65-80|SPR "early-stage uncertain" ¬"failed"
+F[26.3.13-r2] DFC $20B reinsurance integrated: 30-40% partial reopening 30d per energy-market|extends tanker window(escorted convoys slower)|leading indicator for Hormuz Phase-0→1
+F[26.3.13-r2] MPC removed: $40 cracks=peak cycle, ¬new entry|"conflict-driven expansion" ¬"supercycle"
+F[26.3.13-r2] GENUINE DIVERGENCE: (1)bypass permanence overstated—Petroline reverts, Hormuz premium recovers 80-90% (2)E&P>integrated ¬universal at 18-26% ceasefire—integrated downstream buffers downturns
+
+## v6 portfolio model (r2 DA-tested)
+defense 7%(ITA 4%/LMT 1.5%/RTX 1.5%)|gold 10%(GLD 7%/GDX 3%,$4,800 stop)|energy equity 8%(XLE 2%,FANG/EOG 4%,OXY 2%)|MLPs 8%(EPD/MPLX/ET)|tankers 3%(FRO 1.5%/DHT 1.5%,covered calls)|STIP 5%|mfutures 3%(DBMF 2%/KMLM 1%)|ceasefire 6%(TLT 2%,airlines 2%,tech 2%)|SPY 24%(19%+puts 5%)|cash 16%(T-bills)|options 5%(XLE collars,FANG/EOG puts,SPY puts,GLD puts,VIX)
+
+## r2 peer convergence
+CONVERGES: energy-market($88-115, SPR early-stage, crack expansion ¬supercycle, energy ≤18%)
+CONVERGES: macro-rates(demand cap $95-110, quasi-stagflation 35-45%, demand destruction feedback)
+CHALLENGED: sanctions-trade(bypass permanence)
+ADOPTED: geopolitical(scenario framework)
+TENSION RESOLVED: my $88-98 floor vs macro $95-110→$88=absolute with bypass+SPR, $95=operational with demand. Both valid, different timeframes
 
 → actions:
 → new finding → append with severity+evidence
