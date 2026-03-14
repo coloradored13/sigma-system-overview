@@ -107,10 +107,28 @@ fallback(!has_project_tier): all→T/
 ## Round Management
 
 1→read workspace convergence section
-2→all ✓ → proceed to synthesis
+2→all ✓ → check for zero-dissent circuit breaker (see below) → then proceed
 3→any ◌ → SendMessage to agent: continue|clarify
 4→any ! → surface blocker to user
 5→any ? → surface question to user → write answer to relevant inbox → re-spawn
+
+## Zero-Dissent Circuit Breaker (R1 only)
+
+!fires: after all r1 agents ✓, BEFORE spawning DA for r2
+!check: scan workspace findings + convergence for ANY inter-agent tension, disagreement, or counter-estimate
+  tension found → skip circuit breaker, report to user, proceed to r2
+  zero divergence → fire circuit breaker:
+
+1→report to user: "Zero-dissent detected: {N} agents, {M} findings, 0 disagreements. Firing circuit breaker."
+2→send targeted self-challenge to each agent (SendMessage or re-spawn with CB prompt):
+  "zero-dissent circuit breaker: your R1 finding on [{highest-conviction finding}] agrees with all peers.
+   (1) Name the strongest argument AGAINST your own position.
+   (2) If that argument is correct, would you change your conclusion?
+   (3) Identify ONE peer finding you would challenge, quantify differently, or add a caveat to.
+   Respond in workspace — append to your findings section. 3 focused responses only."
+3→wait for CB responses (single turn per agent)
+4→read CB responses → note any revisions or tensions surfaced
+5→proceed to r2 (DA reads CB responses alongside r1 findings)
 
 ## Post-Session Synthesis
 

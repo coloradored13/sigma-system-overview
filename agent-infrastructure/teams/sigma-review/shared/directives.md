@@ -17,6 +17,43 @@ r1: domain agents research independently | DA observes ¬participates
   → DA reads all workspace findings at r1 convergence
   → DA prepares challenges before r2 begins
 
+#### zero-dissent circuit breaker (v1.0, 26.3.14)
+
+!trigger: lead detects ZERO divergence across all agents at r1 convergence
+  zero divergence = no agent challenged, nuanced, or disagreed with any peer finding
+  detection: lead reads convergence section + workspace findings for ANY tension, disagreement, or counter-estimate
+
+!purpose: 7 consecutive reviews produced zero r1 dissent (confirmed pattern 26.3.13). Independent domain experts producing 0 disagreements across 50-70+ findings = herding signal. Self-challenge BEFORE DA pressure produces more genuine analytical tension than waiting for external challenge
+
+!when: after all agents ✓ r1, BEFORE spawning DA for r2
+  IF any agent produced genuine divergence in r1 → skip circuit breaker → proceed to r2
+  IF zero divergence → circuit breaker fires → then proceed to r2
+
+!execution: lead sends targeted self-challenge to each agent (via SendMessage or re-spawn):
+  "zero-dissent circuit breaker: your R1 finding on [{agent's highest-conviction finding}] agrees with all peers.
+   (1) Name the strongest argument AGAINST your own position.
+   (2) If that argument is correct, would you change your conclusion?
+   (3) Identify ONE peer finding you would challenge, quantify differently, or add a caveat to.
+   Respond in workspace — append to your findings section. This is NOT a full re-analysis — 3 focused responses only."
+
+!agent response format (workspace):
+  "CB[1]: strongest counter to [{finding}]: {argument} |would-change: yes→{revision}|no→{why-it-holds-despite-counter}
+   CB[2]: peer challenge: [{agent}:{finding}] — {challenge/nuance/different-quantification}
+   CB[3]: self-assessed blind spot: {what I might be missing}"
+
+!constraints:
+  - ¬full re-analysis. 3 targeted responses per agent. Brief
+  - ¬delays r2 significantly. Agents respond in single turn
+  - DA reads CB responses alongside r1 findings when preparing r2 challenges
+  - DA evaluates CB quality: genuine self-challenge vs performative. Weak CB = grade modifier in r2
+  - if CB produces genuine revision → agent updates finding before r2
+  - if CB surfaces new disagreement → logged, DA incorporates into r2 challenges
+
+!success criteria:
+  - ≥1 genuine revision from CB (finding actually changed)
+  - ≥2 peer challenges surfaced (analytical tensions for DA to work with)
+  - DA reports CB quality in exit-gate assessment
+
 r2: DA delivers challenges to all inboxes FIRST
   → agents integrate peers + address DA challenges simultaneously
   → each agent workspace write MUST include DA response section
