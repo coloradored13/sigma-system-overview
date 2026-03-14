@@ -114,9 +114,11 @@ fallback(!has_project_tier): all→T/
 
 ## Zero-Dissent Circuit Breaker (R1 only)
 
+!MANDATORY: lead MUST run this check after r1 convergence. ¬optional, ¬skip
 !fires: after all r1 agents ✓, BEFORE spawning DA for r2
+!hard gate: lead ¬advances to r2 without either (a) logging detected divergence OR (b) completing circuit breaker
 !check: scan workspace findings + convergence for ANY inter-agent tension, disagreement, or counter-estimate
-  tension found → skip circuit breaker, report to user, proceed to r2
+  tension found → log "R1 divergence detected: {description}" to workspace → proceed to r2
   zero divergence → fire circuit breaker:
 
 1→report to user: "Zero-dissent detected: {N} agents, {M} findings, 0 disagreements. Firing circuit breaker."

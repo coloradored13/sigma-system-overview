@@ -25,9 +25,10 @@ r1: domain agents research independently | DA observes ¬participates
 
 !purpose: 7 consecutive reviews produced zero r1 dissent (confirmed pattern 26.3.13). Independent domain experts producing 0 disagreements across 50-70+ findings = herding signal. Self-challenge BEFORE DA pressure produces more genuine analytical tension than waiting for external challenge
 
-!when: after all agents ✓ r1, BEFORE spawning DA for r2
-  IF any agent produced genuine divergence in r1 → skip circuit breaker → proceed to r2
+!when: after all agents ✓ r1, BEFORE spawning DA for r2. MANDATORY — lead MUST run zero-dissent check
+  IF any agent produced genuine divergence in r1 → log divergence found, skip circuit breaker → proceed to r2
   IF zero divergence → circuit breaker fires → then proceed to r2
+  !hard gate: lead ¬advances to r2 without either (a) logging detected divergence OR (b) completing circuit breaker
 
 !execution: lead sends targeted self-challenge to each agent (via SendMessage or re-spawn):
   "zero-dissent circuit breaker: your R1 finding on [{agent's highest-conviction finding}] agrees with all peers.
