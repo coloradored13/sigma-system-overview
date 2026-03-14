@@ -220,6 +220,115 @@ D[credit-cycle-pipeline-mix]:bear-case-pipeline=greenfield-15-20%+successor-40-5
   |ctx: DA[#3]-addendum:new-BDC-data-confirms-DA-was-right-credit-cycle-underweighted
 exit-gate:PASS(r2)|synthesis-authorized |engagement:LOT(A-)+PS(B+)+RLS(A-) |challenges:8/10-held(80%) |4-gaps-resolved:cost-model($23-37M/$28-47M),Loan-IQ(phased-hybrid),credit-stress(bear-case),Hypercore(charter-scenarios) |2-divergences:build-sequence(PS-distribution-first-vs-LOT-waterfall-first)+breakeven(RLS-36-48mo-vs-PS-30-42mo) |1-correction:compliance-split(2/3-internal,1/3-external-KYC) |by:devils-advocate |weight:primary
   |ctx: r2-challenge-round-complete. 10-challenges-issued(4H+5M+1L). All-3-agents-responded-substantively. LOT-best-defense(waterfall-type-distinction). PS-best-honesty(owned-confirmation-bias). RLS-best-research(OCC-charter-surge-11-companies-83-days). No-additional-round-needed.
+sigma-predict:RESEARCH-PROJECT¬PRODUCT-PROJECT |proposal-asks-"does-team-separation-improve-forecasts?"-which-is-research-question |evaluate-by-research-criteria(hypothesis-testable?,pilot-study-design?,kill-criteria?) ¬product-criteria(speed-to-market,competitive-baseline) |DA-challenge-#11-upheld:both-TA+PS-answered-wrong-question |grade-adjustment:proposal-design-quality-higher-than-initial-B- |by:devils-advocate+lead |weight:primary
+  |ctx: r2-challenge-#11-META:agents-optimized-for-wrong-question. Proposal-line-7-explicitly-states-"determine-whether". Both-agents-graded-as-product-launch. DA-identified-question-substitution-pattern(new-team-pattern-stored).
+sigma-predict:DUAL-TRACK-BUILD |Track-1(PRODUCT):competitive-bot-on-Metaculus-framework,enter-Spring-2026-tournament,establish-baseline |Track-2(RESEARCH):test-role-separation-hypothesis-incrementally-against-Track-1-baseline |neither-track-alone-is-sufficient:Track-1-without-Track-2=one-shot-bot¬learning-system,Track-2-without-Track-1=no-baseline-to-measure-against |by:lead |weight:primary
+  |ctx: synthesizing-TA+PS-recommendation(competitive-bot-first)+DA-correction(proposal=research-project). Both-are-right:you-need-a-baseline-to-test-against(TA+PS)+you-need-to-actually-test-the-hypothesis(DA).
+sigma-predict:REFRAME |goal=build-prediction-tool-focused-solely-on-prediction-quality |tournaments=validation-thermometer¬objective |¬product,¬market,¬sell,¬buy-in |experiment="can-we-actually-make+refine+improve-predictions-over-time" |architecture-agnostic:3-team-IF-it-produces-quality-predictions,alternative-IF-better |user-directive:rerun-review-with-prediction-quality-lens |by:user+lead |weight:directive
+  |ctx: user-corrected-team-framing:agents-were-optimizing-for-tournament-entry+product-launch. User-clarified:sole-focus=quality-predictions. Metaculus-framework-bias-concern-raised-and-validated. Tournaments=measurement¬goal.
+KB-docs-factual-accuracy: Doc3§1 rate data (Fed cuts 175bp, FFR 3.50-3.75%) is UNVERIFIABLE and potentially WRONG→must be verified against actual FOMC actions before publication. All downstream rate tables depend on this assumption. Doc3 Fedwire hours internally inconsistent (§4 says 7PM, §10 says 6:30PM). Doc6§12.1 WSO "industry-dominant" is INCORRECT→Finastra Loan IQ holds ~70% agent bank market share. |by:loan-ops-tech-specialist |weight:primary
+  |ctx: KB review r1 — factual accuracy assessment of loan admin training documents. Domain authority: loan ops technology, settlement, payment systems, platform market share.
+KB-docs-completeness-gaps: 5 material gaps identified for third-party agent curriculum: (1) borrowing request/funding notice lifecycle [HIGH→foundational daily workflow], (2) payment waterfall/priority of payments [HIGH→every distribution depends on this], (3) agent fee structures/billing mechanics [MH], (4) lender register maintenance [MH→legal significance], (5) intercreditor agreement agent operations [M]. Additionally, escrow agent coverage is 1 paragraph for a role explicitly in curriculum scope. These gaps represent "operational how-to" content vs the "conceptual what/why" that docs cover well. |by:loan-ops-tech-specialist |weight:primary
+  |ctx: KB review r1 — completeness assessment against third-party agent (admin+collateral+escrow) curriculum requirements.
+glossary-is-highest-priority: for any multi-doc curriculum with 100+ specialized terms, a consolidated glossary is the single highest-impact structural improvement |rationale: enables independent doc access, reduces prerequisite burden, supports non-linear learning paths |implementation: Doc0_Glossary.md with terms + definitions + "first introduced in DocN §M" refs |cost: 4-6 hours |benefit: every trainee on every doc access |by:technical-writer |weight:primary
+  |ctx: loan admin KB review r1 — 6 docs, 378KB, 100+ terms, no glossary
+Doc5 regulatory content verified HIGH accuracy (21/22 web-confirmed). Only factual error: OFAC penalty $330,947→$377,700 in Doc6§6.3. Agent licensing framework=MOST SIGNIFICANT regulatory gap — recommend new Doc6 section covering trust charter, non-chartered agent, bank subsidiary regulatory status. |by:regulatory-licensing-specialist |weight:primary
+  |ctx: R1 regulatory review of 6 loan administration knowledge base documents for third-party admin/collateral/escrow agent training curriculum
+D[r2-exit-gate-PENDING|19 challenges issued, agent responses required before synthesis authorization|must-resolve: (1)LOT Fedwire correction error, (2)priority re-ranking by trainee impact, (3)curriculum design positions(BSL+PC, exercises, VERIFY tags)|exit-gate will PASS if agents engage substantively with challenges|26.3.13] |by:devils-advocate |weight:primary
+  |ctx: loan-admin-KB-review r2 challenge round. 3 agents delivered strong r1 findings (64F+16G). Zero divergence(5th consecutive). DA issued 19 challenges focusing on: correction accuracy, priority ranking methodology, curriculum design questions, scope boundaries.
+KB-review-priority-framework: trainee-impact>analytical-severity. CRITICAL=missing-operational-workflows(G1-borrowing-request,G2-payment-waterfall)→trainees-cannot-do-core-job. HIGH=operational-gaps(register,fees,escrow,intercreditor,LME-playbook)+factual-errors-affecting-operations(Fedwire-cutoffs,WSO-vs-LoanIQ). MEDIUM=factual-errors-in-reference-data(rates,stats). LOW=enhancements. Completeness-gaps-collectively-outweigh-factual-findings. Deliverable-structure: (1)new-content-WRITING, (2)factual-corrections-EDITING, (3)enhancement-ITERATIVE. |by:loan-ops-tech-specialist |weight:primary
+  |ctx: KB review r2 — DA challenge #2 and #3 prompted re-ranking from analytical-severity to trainee-impact basis. User input: audience=new hires (Ops, RMs, engineers, product) at non-trust-company third-party agent.
+D[r2-exit-gate-PASS|synthesis authorized|grades:LOT(A-),TW(A-),RLS(A)|19 challenges→16 held,2 defended,1 fell|key outcomes: Fedwire corrected, priority restructured, G2 withdrawn, VERIFY 3-tier policy, duty-source framework, §6.2 proportionality review|26.3.13] |by:devils-advocate |weight:primary
+  |ctx: loan-admin-KB-review r2 exit-gate evaluation. All 3 agents addressed all 19 challenges substantively. Engagement quality A- or above across all agents. No material disagreements unresolved. No untested consensus remaining (VERIFY policy stress-tested by design, doc structure logged as deliberate non-action).
+loan-admin-KB-review: 7 factual corrections, 9 critical operational gaps, 20 enhancements identified across 6 docs (~378KB). Priority: factual corrections > operational gaps (new writing) > structural improvements > enhancements. Key pattern: analyst-perspective bias — docs strong conceptual, weak operational. DA exit-gate PASS (3-round review). Grades: LOT(A-), TW(A-), RLS(A), DA(84% hit rate, 2 self-corrections). User scoping: non-trust-company, new hires novice→near-expert, pure KB (no exercises), structure fully flexible, [VERIFY] tags stay with 3-tier policy. |by:sigma-lead |weight:primary
+  |ctx: sigma-review of 6 loan administration knowledge base documents for third-party agent curriculum. 4-agent team (loan-ops-tech-specialist, technical-writer, regulatory-licensing-specialist, devils-advocate). 3 rounds (r1 research, r2 DA challenge + response, exit-gate PASS).
+
+## WU market analysis r1 (26.3.13)
+
+geopolitical:compounding-corridor-risk-framework |by:geopolitical-strategist |weight:primary
+  |ctx: immigration enforcement+excise tax+national FPS analyzed as interacting forces ¬independent risks. Individual estimates: tax alone -1.6%, sender erosion -3% to -5%. Combined: -5% to -8% US corridor volume. IAD+IIF+Brookings+WU own data converge. Standard analyst reports treat risks independently→understate
+  |alt: independent-risk-model(sum separately)|worst-case-aggregation(too pessimistic)|correlation-adjusted(insufficient data for coefficients)
+
+geopolitical:sanctioned-corridor-loss-permanence |by:geopolitical-strategist |weight:primary
+  |ctx: Russia exited Mar 2022→A7A5 stablecoin processed $93.3B in <1yr. Iran $7.78B crypto ecosystem, +694% YoY sanctions evasion. Once crypto fills corridor at scale, formal channels don't recover. Syria reopening (Jul 2025)=rare exception, smaller corridor
+  |alt: temporary-loss(wait for sanctions removal)→REJECTED(Russia crypto replacement proves permanence)
+
+geopolitical:USDPT-compliance-paradox-flagged |by:geopolitical-strategist |weight:advisory
+  |ctx: WU entering stablecoin space while stablecoins=84% of illicit crypto volume+primary sanctions evasion tool. Regulated USDPT competes with unregulated alternatives that serve corridors WU legally cannot. Regulatory scrutiny risk. §2c gap: cannot assess full compliance cost across jurisdictions→flagged for regulatory-licensing-specialist
+
+regulatory:GENIUS-Act-net-negative-for-WU-moat |by:regulatory-licensing-specialist |weight:primary
+  |ctx: GENIUS §5(h) preempts state MTL for FQPSIs+IDI subsidiaries. WU's 50-state MTL=$200M/yr was asymmetric barrier. Post-GENIUS, Circle+Ripple+Paxos+BitGo+Bridge/Stripe bypass with $5M min capital(OCC NPRM). WU gains USDPT enablement but loses regulatory exclusivity. K&L Gates+Mayer Brown: preemption "self-executing." Remaining moat=physical(360K locations) ¬regulatory
+  |alt: GENIUS-net-positive(WU investor narrative)→REJECTED|GENIUS-neutral→REJECTED(asymmetric loss > symmetric gain)|moat-intact(GENIUS=stablecoin-only)→PARTIALLY-VALID near-term but stablecoin substitution growing
+
+regulatory:USDPT-compliance-$15-30M/yr |by:regulatory-licensing-specialist |weight:primary
+  |ctx: resolves geopolitical-strategist F8 §2c gap. Issuance=Anchorage(FQPSI,$0 to WU)+partnership fees $5-15M/yr. Distribution=WU bears(GENIUS preemption scope unclear per Mayer Brown). EU/MiCA=$3-8M. Per-country=evolving. Total=$15-30M/yr. WIDE error bars—regulation evolving
+  |alt: lower-estimate($5-10M,US-only)→REJECTED(multi-jurisdiction necessary)|higher-estimate($30-50M)→possible if EU/APAC regulation tightens
+
+regulatory:moat-shift-regulatory→physical+brand+data |by:regulatory-licensing-specialist |weight:primary
+  |ctx: GENIUS preemption+MTMA 41 states+OCC charter surge converge on regulatory barrier reduction. WU's durable moats shift to: (1)360K physical locations(no competitor replicates), (2)brand trust(175yr), (3)KYC/AML data assets($200M/yr compliance infrastructure). Morningstar already downgraded wide→narrow (2023)
+  |alt: regulatory-moat-persists→REJECTED(3 vectors eroding simultaneously)|physical-moat-also-eroding→PARTIALLY-VALID long-term(demographics shift digital) but 5-10yr+ horizon
+
+portfolio:capital-allocation-97%-impedes-transformation |by:portfolio-analyst |weight:primary
+  |ctx: FY2025 OCF $544M, returns $529M(97%). Peers 15-25% rev growth investment vs WU ~6-8%. FCF/div 1.29x(thin). Recommend 60-70% return ratio→frees $130-160M/yr. Maintain $0.94 div, halt buybacks >$100M
+  |alt: maintain-current(yield-supports-stock)→REJECTED(unsustainable for transforming company)|full-harvest(maximize-returns)→considered if moat eroding
+
+portfolio:Intermex-accretive-declining-corridor |by:portfolio-analyst |weight:primary
+  |ctx: $500M for declining asset(Intermex txns -8.5%, US-Mexico <1% 2026). Financially accretive(>$0.10 EPS, $30M synergies). Strategically questionable(consolidation≠growth). Leverage 1.6→2.1x. Upside: 6M customer digital cross-sell at $20-30 CAC
+  |alt: pass-on-Intermex→valid but 6M customers hard to replicate organically
+
+portfolio:valuation-asymmetric-at-4.2x |by:portfolio-analyst |weight:primary
+  |ctx: P/E 4.2x prices perpetual decline. Down(-4%+cut)=$6-7. Up(stabilize)=$12-14. ~1.5:1 upside. PayPal 8.6x=achievable comp=100% upside. Organic rev ex-Intermex=acid test for re-rating
+  |alt: fair-value(decline-priced-correctly)→possible|turnaround-play→requires catalyst
+
+portfolio:dividend-proactive-cut-policy |by:portfolio-analyst |weight:primary
+  |ctx: FCF/div 1.29x(THIN). Maintain $0.94 through '26-'27. IF organic growth fails Q4 2027→proactive cut $0.70(~7% yield)→redirect $85M/yr. Proactive > reactive. SA confirms "unsustainable late 2027"
+  |alt: maintain-indefinitely→REJECTED(1.29x inadequate)|cut-now→too-aggressive(lose yield holders without proving turnaround)
+
+## WU market analysis r1 — tech-industry-analyst decisions (26.3.13)
+
+tech:rails-war=structural-threat |by:tech-industry-analyst |weight:primary
+  |ctx: 4 L1 payment chains (Stripe Tempo $5B, Circle Arc 150M txns testnet, Google GCUL CME phase 1, Solana $650B/mo) all confirmed 2026. Combined capital >$100B. Enterprise blockchain 2-3yr slower but testnets LIVE. WU must adopt multi-rail strategy. Single-chain=HIGH risk.
+
+tech:AI-compliance-moat-eroding |by:tech-industry-analyst |weight:primary
+  |ctx: WU $200M/yr compliance becoming stranded cost. McKinsey 200-2,000% productivity gains. Sardine 88% auto-resolution. Felix 48hrs→<5min. GENIUS+AMLA harmonization reduces complexity. New entrants at 30% WU cost. Moat=table-stakes 2-3yr. Must invest $100-200M/3yr modernization.
+
+tech:SWIFT-retail=primary-real-time-threat ¬FedNow |by:tech-industry-analyst |weight:primary
+  |ctx: SWIFT Payments Scheme Jun 2026: enforceable cross-border retail rules, 25+ banks, 11 countries (AU,BD,CA,CN,DE,IN,PK,ES,TH,UK,US). FedNow domestic-only=indirect. SWIFT corridors overlap 80%+ WU top corridors. Bank-native lower CAC. gpi 89% traffic adoption within 4yr validates timeline.
+
+tech:WU-stablecoin-follower ¬leader |by:tech-industry-analyst |weight:primary
+  |ctx: MoneyGram LIVE Colombia USDC/Stellar. Felix Pago LIVE WhatsApp USDC $1B+. Remitly One Sep 2025 stablecoin wallet. WU USDPT announced Oct 2025, H1 2026 ¬yet live. 12-18mo behind. Visa USDC Solana $3.5B annualized. WU's 360K off-ramp=genuine moat but execution gap real.
+
+## WU market analysis r1 — sanctions-trade-analyst decisions (26.3.13)
+
+sanctions:compliance-moat-depreciating-asset |by:sanctions-trade-analyst |weight:primary
+  |ctx: $200M/yr AML validated by Binance $4.3B+TD Bank $3B fines. BUT DOJ "Ending Reg by Prosecution" Apr 2025+GENIUS Act floor+AI(Verafin 80% reduction) compress costs. Moat narrows from both directions. 20yr×200-country data=irreplaceable ML asset. Must convert spend→CaaS product within 3-5yr or 500bp margin disadvantage vs AI-first competitors by 2029
+  |alt: maintain-as-cost-center→500bp gap|license-immediately→dilutes advantage|selective-via-DAN→current approach,implicit ¬explicit
+
+sanctions:GENIUS-§16d-MTL-moat-bypass |by:sanctions-trade-analyst |weight:primary
+  |ctx: §16d preempts state MTL for stablecoin issuers. OCC NPRM Feb 2026→finals Jul 2026→entry mid-2027. PayPal PYUSD operational, JPMorgan positioning. WU correct to use Anchorage(OCC-chartered) but competing on new terrain. Davis Polk+Arnold Porter+K&L Gates+Gibson Dunn all confirm preemption scope. CONFIRMS+DEEPENS regulatory-licensing-specialist decision on GENIUS-net-negative
+  |alt: MTL+stablecoin(current,$30-50M/yr)|stablecoin-primary(risk:cash still needs MTL)|dual-track(optimal but complex)
+
+sanctions:sanctions-enforcement-paradox-dual-framing |by:sanctions-trade-analyst |weight:primary
+  |ctx: $104B sanctioned crypto(Chainalysis 2026,+694%) VALIDATES compliant alternatives(WU USDPT) AND THREATENS by proving uncompliant stablecoins scale without consequences. OFAC effective centralized(Zedcex,Binance)|ineffective decentralized(Tornado Cash 5th Cir). WU regulatory pitch: "our stablecoin has same AML as legacy." Both framings correct simultaneously—consensus overweights threat, underweights validation
+  |alt: threat-only(consensus)→incomplete|validation-only(WU narrative)→naive|dual-framing(our position)→captures both dynamics
+
+## WU market analysis r3 — portfolio-analyst DA responses (26.3.13)
+
+valuation:probability-weighted-fair-value-$9.90-13.00 |by:portfolio-analyst |weight:primary
+  |ctx: 4-scenario model(success 15-20%/$15-18, stabilization 35-40%/$11-13, managed decline 30-35%/$8-9, accel decline 10-15%/$5-7). Current $9.73=fairly priced to modest undervalue. ¬deep value. Upside requires catalysts(organic growth proof, CS acceleration). Beyond 2028 success=best case $4.6B ¬$5B. DA[#7] compromise.
+  |alt: dismiss-Beyond-2028(r1 position)→corrected|model-success-only→overweights|current(probability-weighted)→balanced
+
+capital:integrated-transformation-$798M-5yr-fundable |by:portfolio-analyst |weight:primary
+  |ctx: de-duplicated 4 agents' overlapping estimates. Tech $490-870M INCLUDES AI+USDPT→¬additive with sanctions $100-200M or reg-lic $15-30M/yr. Fundable from OCF($786M capex)+buyback redirect($525M). No div cut or new debt. !CRITICAL: -4%/yr decline→OCF erosion $50M/yr→deficit yr3-4→forced div-vs-transformation. DA[#8] concede.
+  |alt: sum-all-estimates($1.2B+)→double-counted|tech-only($490-870M)→misses ongoing compliance|integrated($798M)→realistic
+
+risk:political-risk-elevated-to-CRITICAL |by:portfolio-analyst |weight:primary
+  |ctx: excise tax+immigration compound -$80-320M/yr. Extreme scenario(expanded tax+mass deport) -$450-550M by 2028=-11-13% rev→div unsustainable+transformation unfundable. #1 near-term risk ahead of stablecoin. Precautionary surge masking base erosion→12-18mo cliff. DA[#3] concede.
+  |alt: maintain-HIGH(r1)→underweights current impact|CRITICAL(revised)→matches evidence
+
+network:corridor-specific-moat-model |by:portfolio-analyst |weight:primary
+  |ctx: 360K=¬monolithic. Asset corridors(CentAm,Gulf-SA,SSA)=180-200K stable=genuine moat. Liability corridors(US-India,Eur,urban US)=150-180K declining. Feedback loop threshold ~250-300K. Cloud POS rev/loc $10.8K→$13.0K supports transformation thesis. CONFIRMS econ-F3. DA[#5] compromise.
+  |divergence: PS assigns 30% success probability vs portfolio 15-20%—healthy tension, PS weights execution evidence heavier
 
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
