@@ -146,12 +146,16 @@ pre-accept ✓: verify workspace findings ¬empty
 
 ## Infrastructure Sync (installed → repo)
 
-7→detect drift: compare installed (agents, skills, shared) → sigma-system-overview repo
+7→detect drift: compare installed (agents, skills, shared, team-runtime) → sigma-system-overview repo
   agents: ~/.claude/agents/*.md vs agent-infrastructure/agents/
   skills: ~/.claude/skills/*/SKILL.md vs agent-infrastructure/skills/
   shared: ~/.claude/teams/sigma-review/shared/ vs agent-infrastructure/teams/sigma-review/shared/
+  agent-memory: ~/.claude/teams/sigma-review/agents/*/memory.md vs agent-infrastructure/teams/sigma-review/agents/*/memory.md
+  agent-extras: ~/.claude/teams/sigma-review/agents/*/*.md (findings, inbox, workspace-draft, etc.)
+  inboxes: ~/.claude/teams/sigma-review/inboxes/*.md vs agent-infrastructure/teams/sigma-review/inboxes/*.md
   classify: NEW (auto-sync) | MODIFIED (sync+flag) | UNCHANGED (skip)
   skip: sigma-lead.md, sigma-comm.md, SIGMA-COMM-SPEC.md, _template.md (repo-managed)
+  !mandatory: agent-memory+inboxes+shared MUST sync every session (correction 26.3.13: 12 memories drifted undetected)
 8→sync: copy new/modified files installed→repo
 9→report to user (plain English):
   "## Infrastructure Sync"
