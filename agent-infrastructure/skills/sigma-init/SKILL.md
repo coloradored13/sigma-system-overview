@@ -1,12 +1,59 @@
 ---
 name: sigma-init
-description: Initialize the sigma-review system for the current project. Creates two-tier memory structure, project CLAUDE.md with sigma instructions, and validates the setup. Use when starting a new project with sigma-review.
-argument-hint: "[project description]"
+description: Initialize the sigma-review system for the current project, or create a new agent from YAML config. Use "/sigma-init" for project setup, "/sigma-init agent <name>" to create agent from YAML template.
+argument-hint: "[project description] or 'agent <name>'"
 disable-model-invocation: true
 allowed-tools: Read, Bash, Write, Edit, Glob, Grep
 ---
 
-# Sigma Init — Project Kickoff
+# Sigma Init — Project Kickoff & Agent Creation
+
+## Route
+
+Parse $ARGUMENTS:
+- starts with "agent" → go to **Agent Creation** section
+- otherwise → go to **Project Setup** section
+
+---
+
+## Agent Creation
+
+Create a new sigma-review agent from YAML config.
+
+### If user provides agent name only: `/sigma-init agent supply-chain-analyst`
+
+1→copy template: `~/Projects/sigma-system-overview/agent-infrastructure/templates/agent-config.yaml`
+2→create working copy at `/tmp/{name}-config.yaml`
+3→pre-fill name field with provided name
+4→present to user:
+  "I've created a YAML config template for **{name}**. Edit the fields below:"
+  show the YAML with comments explaining each field
+5→wait for user edits (or ask field-by-field interactively)
+6→run conversion:
+  ```bash
+  python3 ~/Projects/sigma-system-overview/agent-infrastructure/scripts/yaml-to-agent.py /tmp/{name}-config.yaml --install
+  ```
+7→report: show generated agent file path + roster entry
+8→offer: "Run research for this agent? (`/sigma-research {name}`)"
+
+### If user provides YAML path: `/sigma-init agent /path/to/config.yaml`
+
+1→validate YAML has required fields (name, role, expertise, domain, wake-for)
+2→run conversion:
+  ```bash
+  python3 ~/Projects/sigma-system-overview/agent-infrastructure/scripts/yaml-to-agent.py /path/to/config.yaml --install
+  ```
+3→report results
+
+### Two modes
+- **Standard mode**: YAML config → auto-generated .md (for new users, quick agent creation)
+- **Power mode**: edit .md files directly with full ΣComm (for optimization, custom protocols)
+
+The YAML template handles all ΣComm boilerplate. Users only write: name, role, expertise, domain, wake-for, review steps, weight.
+
+---
+
+## Project Setup
 
 Initialize sigma-review for this project. Project context: **$ARGUMENTS**
 
