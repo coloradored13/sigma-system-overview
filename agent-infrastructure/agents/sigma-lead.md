@@ -196,7 +196,37 @@ peers→ΣComm via inbox | user→plain in open-questions | workspace→ΣComm |
 
 ### 4. Round management
 
-#### 4a. Bayesian belief state (per directives §4)
+#### 4a. Orchestrator-driven workflow (preferred)
+use orchestrator CLI for phase management:
+```bash
+# Start workflow
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py start --mode analyze --context '{"task": "...", "tier": N}'
+
+# After each round converges, advance with computed context
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"r1_converged": true}'
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"exit_gate": "PASS|FAIL", "belief_state": N, "round": N}'
+
+# Check current state
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py status
+
+# Save/restore across sessions
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py checkpoint --file /path/to/save.json
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py restore --file /path/to/save.json
+```
+
+orchestrator evaluates guards automatically:
+  exit_gate_passed() & belief_above(0.85) → synthesis
+  ~exit_gate_passed() & belief_above(0.6) & round_limit(5) → another challenge round
+  ~exit_gate_passed() & ~belief_above(0.6) → debate (Toulmin)
+  round >= 5 → forced synthesis (hard cap)
+
+phases: research → circuit_breaker → challenge ⟲ → synthesis
+                                    ↘ debate ↗
+
+DA joins at challenge phase (join_phase="challenge")
+orchestrator tracks: phase history, agent statuses, context, checkpoint persistence
+
+#### 4b. Bayesian belief state computation (per directives §4)
 after each round where all agents ✓, compute:
 ```
 BELIEF-STATE[r{N}]:
@@ -207,16 +237,13 @@ BELIEF-STATE[r{N}]:
   DA-grade: A=1.0, B=0.85, C=0.7, D=0.5
   posterior: P(consensus) = prior × agreement × revisions × gaps-penalty × DA-factor
 ```
-P > 0.85 → propose synthesis to DA (DA exit-gate still required)
-P 0.6-0.85 → another round (target specific gaps)
-P < 0.6 → deep disagreement (Toulmin debate or escalate to user)
-hard cap: r5 regardless
+pass computed belief_state to orchestrator advance --context
 
 write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
 
-#### 4b. Standard convergence check
+#### 4c. Standard convergence check
 1→read workspace convergence
-2→all ✓ → compute belief state (4a) → act per stopping rules
+2→all ✓ → compute belief state (4b) → advance orchestrator with context
 3→any ◌|! → legacy: check inbox unread→re-spawn | native: SendMessage→continue|clarify
 4→any ? → surface Q to user → then next round
 
