@@ -263,6 +263,117 @@ after 3 cycles (≥1 ANALYZE + ≥1 BUILD) → DA assesses adversarial layer val
 → new directive → append with version+date
 → directive revision → update version, note change in ctx
 
+## superforecasting protocol v1.0 (26.3.14)
+
+scope: all sigma-review ANALYZE operations requiring estimates, forecasts, or probability assessments
+companion: adversarial-layer v2.0, analytical-hygiene forcing function
+
+### §3 superforecasting methodology (Tetlock)
+
+!purpose: ground analysis in base rates and historical precedent. Superforecasters outperform professional analysts by 30% (Good Judgment Project). Key insight: experts overweight inside-view narrative reasoning; outside-view (base rates + analogues) is more reliable.
+
+#### decomposition mandate
+!rule: complex questions MUST be decomposed into 3-7 independent sub-questions before analysis
+format per sub-question:
+  "SQ[{N}]: {sub-question} |estimable: {yes/no} |method: {base-rate/analogue/data} |→ {which-agent-best-answers}"
+!purpose: prevents anchoring on a single narrative. Each sub-question gets independent analysis.
+
+#### reference class forecasting
+!rule: before ANY original analysis, identify the reference class
+format:
+  "RC[{question}]: reference-class={category} |base-rate={frequency} |sample-size={N} |src:{source} |confidence:{H/M/L}"
+!rule: team estimates that deviate >15pp from reference class base rate MUST justify deviation with specific evidence (outcome 1 or 2 from §2 hygiene)
+
+#### historical analogues
+!rule: identify 3-5 historical analogues for each major analysis question
+format:
+  "ANA[{N}]: {description} |outcome:{what-happened} |similarity:{H/M/L} |key-difference:{what's-different} |src:{source}"
+!purpose: forces pattern-matching against real precedent, ¬theoretical reasoning
+
+#### calibrated probability estimates
+!rule: key estimates must include calibrated ranges, ¬point estimates only
+format:
+  "CAL[{estimate}]: point={best} |80%=[{low},{high}] |90%=[{lower},{higher}] |assumptions:{what-must-be-true} |breaks-if:{condition}"
+!enforcement: DA checks calibration quality. Overconfident ranges (80% band < 20% of point estimate) → challenge
+
+#### pre-mortem analysis
+!rule: every ANALYZE review must include pre-mortem: "It's 3 years later and this failed. What happened?"
+format:
+  "PM[{N}]: {failure-scenario} |probability:{%} |early-warning:{signal} |mitigation:{prevention}"
+!minimum: 3 failure scenarios, each with probability estimate
+
+#### outside-view reconciliation
+!rule: AFTER all agents complete inside-view analysis, reference-class-analyst produces reconciliation
+format:
+  "OV-RECONCILIATION: inside-view={team-estimate} |outside-view={base-rate-estimate} |gap={difference} |→ {reconcile: which is more trustworthy and why}"
+!rule: if gap >15pp → DA must challenge the divergence in R2
+!rule: team may choose inside-view BUT must document specific evidence for deviation
+
+### §3a adaptive agent count v1.0 (26.3.14)
+
+!purpose: right-size team to task complexity. Research shows (AgentDropout 2025) not all agents needed for all questions. Reduces 15-26x cost multiplier to 3-5x for simple analyses.
+
+#### complexity tiers
+
+TIER-1 (simple, 3+DA agents):
+  criteria: single-domain question, well-defined scope, existing precedent available
+  team: primary-domain-agent + reference-class-analyst + synthesist + DA(from-r2)
+  cost: ~3-5x single-agent
+
+TIER-2 (moderate, 4-5+DA agents):
+  criteria: multi-domain question, some ambiguity, limited precedent
+  team: 2-3 domain agents + reference-class-analyst + DA(from-r2)
+  cost: ~8-12x single-agent
+
+TIER-3 (complex, 5-8+DA agents):
+  criteria: novel domain, high uncertainty, multi-stakeholder, high-stakes decision
+  team: 3-5 domain agents + reference-class-analyst + dynamic specialists + DA(from-r2)
+  cost: ~15-26x single-agent
+
+#### complexity detection
+lead evaluates at task creation:
+  1→ domain count: how many expertise areas touched?
+  2→ precedent availability: well-trodden or novel?
+  3→ decision stakes: cost of being wrong?
+  4→ ambiguity level: is the question well-defined?
+  5→ uncertainty: how much is unknown?
+
+scoring: 1-5 per factor. Sum < 12 → TIER-1 | 12-18 → TIER-2 | >18 → TIER-3
+
+#### dynamic escalation
+!rule: if TIER-1 review surfaces unexpected complexity during R1 → lead escalates to TIER-2 (adds agents)
+!rule: if TIER-2 DA identifies domain gap → escalate to TIER-3 (dynamic agent creation)
+!rule: never DE-escalate mid-review (removing agents loses context)
+
+#### lead reports tier selection
+format: "complexity-assessment: {tier} |scores: domain({N}),precedent({N}),stakes({N}),ambiguity({N}),uncertainty({N}) |total:{sum} |team-size:{N}"
+user may override tier selection
+
+### §3b evaluation protocol v1.0 (26.3.14)
+
+!purpose: measure analysis quality systematically. Replaces ad-hoc "was it good?" with rubric-based evaluation.
+!when: after synthesis complete (post-DA-exit-gate), before promotion phase
+!optional: lead or user can invoke /sigma-evaluate at any time
+
+#### rubric (6 criteria, 4-point scale)
+1→ accuracy: factual claims correct, citations verified, numbers from reliable sources (4=all verified, 1=significant errors)
+2→ completeness: all major perspectives covered, no strawmanning, stakeholders represented (4=comprehensive, 1=one-sided)
+3→ logic: reasoning chains sound, conclusions follow from premises, no fallacies (4=rigorous, 1=significant flaws)
+4→ evidence-quality: authoritative sources, base rates applied, counter-evidence addressed (4=primary sources+base rates, 1=weak/absent)
+5→ calibration: confidence appropriate to uncertainty, assumptions explicit, ranges provided (4=explicit uncertainty, 1=false precision)
+6→ actionability: recommendations concrete, decision-relevant, implementation path clear (4=specific actions+criteria, 1=purely descriptive)
+
+#### grading
+A: 3.5-4.0 avg | B: 2.8-3.4 | C: 2.0-2.7 | D: 1.5-1.9 | F: <1.5
+
+#### pipeline
+see /sigma-evaluate skill for full evaluation pipeline (3 evaluator agents + judge)
+
+#### calibration feedback loop
+!rule: when predictions from past reviews resolve (outcomes known), update agent calibration data
+format: "OUTCOME[{review}:{prediction}]: predicted={X} |actual={Y} |error={delta} |→ calibration-update"
+!purpose: each review makes future reviews more accurate through tracked calibration
+
 ## dynamic-agent-orchestration v1.0 (26.3.11)
 
 scope: sigma-review operations requiring adaptive team composition

@@ -66,6 +66,41 @@ r4: adversarial reviewer — test integrity (§4d), cross-agent integration gaps
 5→ confirmation: did the team select evidence that supports its thesis?
 6→ what loses money / fails / goes wrong? (name the specific scenario)
 7→ what is the team NOT discussing?
+8→ outside-view reconciliation: does team's inside-view (narrative) match outside-view (base rates)? if gap >15pp, challenge
+
+## Toulmin-Structured Debate (R3+, when material disagreement persists)
+!purpose: force explicit reasoning structure on contested claims. Replaces free-form argument with disciplined format.
+!when: DA identifies material disagreement that survived R2 challenge (agents defended but DA ¬convinced)
+
+### Toulmin argument structure (per contested claim)
+```
+CLAIM: {the conclusion being argued}
+GROUNDS: {data/evidence supporting the claim}
+WARRANT: {the logical connection — WHY grounds support claim}
+BACKING: {support for the warrant itself — meta-evidence}
+QUALIFIER: {degree of certainty — necessarily|probably|apparently|plausibly}
+REBUTTAL: {conditions under which claim does NOT hold}
+```
+
+### DA's role in Toulmin debate
+1→ require agent to state claim in full Toulmin structure
+2→ attack the WARRANT (the logical connection, ¬the data)
+3→ provide counter-REBUTTAL (specific conditions where claim fails)
+4→ evaluate QUALIFIER (is stated confidence appropriate?)
+5→ if BACKING is weak → challenge: "your warrant rests on {weak foundation}"
+
+### format in workspace
+```
+DEBATE[{topic}]:
+  {agent}: CLAIM={X} |GROUNDS={evidence} |WARRANT={why} |QUALIFIER={confidence} |REBUTTAL={when-wrong}
+  DA: ATTACK-WARRANT={counter-argument} |COUNTER-REBUTTAL={failure-scenario} |QUALIFIER-CHECK={appropriate?}
+  RESOLUTION: {concede|defend|compromise} |RULING={lead decision if unresolved}
+```
+
+### Toulmin evaluates argument quality, ¬persuasiveness
+weak warrant + strong data = bad argument (correlation≠causation)
+strong warrant + weak data = evidence gap (flag for research)
+strong warrant + strong data + appropriate qualifier = sound argument (DA acknowledges)
 
 ## Challenge Framework (BUILD)
 1→ spec compliance: does the plan match the design doc? cite section

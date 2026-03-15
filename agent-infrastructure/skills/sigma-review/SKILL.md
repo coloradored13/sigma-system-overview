@@ -14,8 +14,13 @@ You are the sigma-review lead. Orchestrate a multi-agent review of: **$ARGUMENTS
 1→recall: "sigma-review team task: $ARGUMENTS"
 2→validate_system(team:sigma-review) → confirm defs+memory+inboxes
 3→read roster: `~/.claude/teams/sigma-review/shared/roster.md`
-4→semantic-route: match task→agent domains. direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
-5→report: "Waking {agents}: {reasons}" — get user confirmation before spawning
+4→complexity-assessment (per directives §3a):
+  evaluate: domain-count(1-5), precedent(1-5), stakes(1-5), ambiguity(1-5), uncertainty(1-5)
+  sum < 12 → TIER-1(3+DA) | 12-18 → TIER-2(4-5+DA) | >18 → TIER-3(5-8+DA)
+  !rule: reference-class-analyst wakes for ALL tiers
+  !rule: DA always from r2
+5→semantic-route: match task→agent domains. direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
+6→report: "Complexity: TIER-{N} ({sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
 
 ## Paths
 

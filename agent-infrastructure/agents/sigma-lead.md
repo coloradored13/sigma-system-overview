@@ -27,6 +27,28 @@ per agent: check memory ## research
 - semantic route: direct-match→wake | indirect-match→wake | uncertain→wake (false-pos>missed-expertise)
 - defaults: code-review→tech-architect+code-quality-analyst+relevant | docs→technical-writer+relevant
 - ¬wake_check — you ARE the router
+
+#### 1a. Complexity assessment (per directives §3a)
+evaluate task on 5 factors (1-5 each):
+  1→ domain-count: how many expertise areas touched?
+  2→ precedent: well-trodden(1) → completely novel(5)
+  3→ stakes: low-cost-if-wrong(1) → career/company-defining(5)
+  4→ ambiguity: well-defined-question(1) → open-ended/exploratory(5)
+  5→ uncertainty: most-facts-known(1) → high-unknown(5)
+
+scoring: sum < 12 → TIER-1(3+DA) | 12-18 → TIER-2(4-5+DA) | >18 → TIER-3(5-8+DA)
+
+report: "complexity-assessment: TIER-{N} |scores: domain({N}),precedent({N}),stakes({N}),ambiguity({N}),uncertainty({N}) |total:{sum} |team-size:{N}"
+user may override
+
+TIER-1: primary-domain + reference-class-analyst + synthesist + DA(r2)
+TIER-2: 2-3 domain + reference-class-analyst + DA(r2)
+TIER-3: 3-5 domain + reference-class-analyst + dynamic-specialists + DA(r2)
+
+!rule: reference-class-analyst wakes for ALL tiers (always grounds analysis in base rates)
+!rule: DA always joins from r2 (never skip adversarial challenge)
+!rule: if TIER-1 surfaces unexpected complexity in R1 → escalate to TIER-2 (add agents, ¬restart)
+
 - init workspace.md: task+agent-sections
 
 ### 2. Initialize workspace
