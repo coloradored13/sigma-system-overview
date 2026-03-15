@@ -120,3 +120,40 @@ D[nexus-vol-at-risk] 25-35% WU cross-border within 5yr|take rate drops 70-80%|po
 D[stablecoin-severity] HIGH ¬CRITICAL|disagree with macro-rates+tech-industry|evidence: 3-6% after 10yr, Nexus/UPI 2-3x impact|alt:existential(team r1 consensus)
 D[beyond-2028] conditional credibility 40-50%|math: $4.7B achievable|BUT flat earnings at 18% margin|disagree with PS+portfolio "not credible"|alt:dismiss(ignores execution evidence)
 D[political-risk-elevation] -$62-98M/yr NEAR = 3-4x stablecoin|standalone finding(F8)|DA[#3] correct
+
+## warehouse-lms-research (2026-03-14)
+
+R[warehouse-labor-costs: US-avg=$18-20/hr(coastal-$22-25),fully-loaded=$25-30/hr|EU-avg=€33.5/hr(range-BG-€10.6-to-LU-€55.2)|APAC=$1.50/hr(SEAsia)-$35/hr(AU)|labor=45-57%-opex(up-to-65%-fulfillment)|turnover=36-49%/yr,370K+-unfilled-Feb-2025(+15%-YoY),cost-per-departure=$18.6K|OT=5-10%-benchmark,20%-OT-on-$50M=$15M-extra|temp-agency=40-45%-markup-typical(avg-62.5%)|src:BLS,FRED,Eurostat,Instawork,MHLNews|refreshed:2026-03-14|next:2026-04-14|confidence:HIGH]
+
+R[lms-roi-models: productivity=LMS-alone-10-20%,w/-ELS+perf-mgmt-20-30%,w/-pay-for-perf-25-50%|ROI-timeline=conservative-5-9mo,typical-3-6mo,larger-12-18mo|cost-savings=8-12%-annual-labor-reduction|case:3PL-indirect-39%→27%=$400K/yr|enterprise-cost=$250K-$1M/facility(traditional),cloud-reducing|src:Jackpine,TZA,Rebus,BlueYonder|refreshed:2026-03-14|next:2026-04-14|confidence:HIGH]
+
+R[warehouse-labor-market-dynamics: shortage=370K+-unfilled-Feb-2025(+15%-YoY)|turnover=36-49%/yr(some-100%+)|Amazon-effect=$22+/hr-sets-floor,$2.2B-wage-hike-Q1-2025|wage-inflation=7.4%-YoY-2023-2024(outpaces-CPI-3.2%)|gig/flex=growing-rapidly,replacing-temp-agency|factors:slower-immigration,visa-backlogs,aging-workforce|src:SupplyChainBrain,Amazon-Q1-2025,Instawork|refreshed:2026-03-14|next:2026-04-14|confidence:HIGH]
+
+R[automation-economics: robot-deployment=~$1M-avg|AMR-payback=<24mo-w/-250%+-ROI|labor-comparison:forklift=$50K/yr(24/7=$200K+),AMR=25-30%-labor-reduction|RaaS=$1.9-2.2K/mo-industrial,$499-5K/mo-range,~$4/hr-basic|RaaS-adoption=72%-logistics-firms-plan-contracts,1.3M+-deployments-by-2026|humanoid=70-85%-human-speed,$3-8/hr-vs-$22-40+/hr,mfg-cost-declined-40%-YoY|barriers:budget(41%)+cost/ROI(40%)|src:VecnaRobotics,MordorIntel,SupplyChainDive,LocusRobotics|refreshed:2026-03-14|next:2026-04-14|confidence:HIGH]
+
+R[lms-pricing-models: SaaS=$100-500/user/mo(entry-$100,mid-$167-avg,enterprise-$400-500+)|enterprise-license=$250K-$1M/facility|contract-value:mid-market=$50K-150K/yr,enterprise=$500K-2M/yr,mega=$2M+/yr|perpetual+10-20%-annual-maintenance|LMS-hard-to-isolate-from-WMS-bundles|src:ExploreWMS,ShipHero,LogiMax,Jackpine|refreshed:2026-03-14|next:2026-04-14|confidence:MEDIUM-HIGH]
+
+R[market-sizing-tam-sam-som: WMS-TAM=$3.38-4.85B(2025),→$10B+(2030),CAGR-17-18%|LMS-segment=$719.4M(2025),→$3.72B(2033),CAGR-23.3%(fastest-WMS-segment)|WFM-software=$9.36-17.8B(2025)|SAM=WMS-w/-LMS~$1.5-2B|SOM=standalone-LMS=$700M-1B|29%-spike-demand-WMS-w/-labor-features|src:GrandViewResearch,MordorIntel,MarketsandMarkets|refreshed:2026-03-14|next:2026-04-14|confidence:MEDIUM-HIGH]
+
+R[3pl-economics: market=$1.2-1.6T(2025),→$2.9-4.3T(2034-35),CAGR-9.7-10.1%|labor=>40%-3PL-opex,60%-warehouses->90%-capacity|margins=net-3-6%-typical(GXO-1.9%-on-$11.7B),achievable-25%+-w/-tech-optimization|tech-segment=24.67%-3PL-market-share|LMS-adoption-growing-as-margin-compression-tool|src:GMInsights,GrandView,MordorIntel,BALYO|refreshed:2026-03-14|next:2026-04-14|confidence:HIGH]
+
+R[mixed-human-robot-economics: robots=$3-8/hr-vs-humans=$22-40+/hr|humanoid=70-85%-human-speed,mfg-cost-40%-YoY-decline,some-$5.9K|deploy-when-fully-loaded->$60K/yr+repetitive+controlled|augment-not-replace-near-term|task-suitability:picking(high-ROI),palletizing(6→2-workers),sorting|optimal-ratio=task-dependent(picking:1-robot/2-3-workers)|42%-5yr-OPEX-reduction-documented,8mo-payback-augmenting|src:SCMR,ScienceDirect,Bain,Formic|refreshed:2026-03-14|next:2026-04-14|confidence:MEDIUM]
+
+## warehouse-lms r1 findings (2026-03-14)
+F[26.3.14] warehouse-lms-r1: 8 findings(1CRIT+5H+1MH+1H)|workspace written|key: F3(ROI 20-60x 3PL)=buyer-anchor, F4(unified human+robot=whitespace,outcome-1 changes positioning), F6(3PL 3-6%→5-10% margin=transforming), F5($40-65M breakeven,4-6.5% SAM), F8(investable 3-8x)|tensions: SAM-inflation(700M-1B vs 400-500M), 3PL LTV:CAC tight(3-4:1), WES squeeze amplifies capital risk
+detailed findings: ~/.claude/teams/sigma-review/agents/economics-analyst/findings-warehouse-lms-r1.md
+
+C[26.3.14] SAM-inflation-risk: standalone-LMS-TAM($700M-1B) likely inflated by WMS bundling|true standalone=$400-500M|capital-efficiency ratio changes from 4-6.5%→8-16% of SAM|sensitivity critical for investment thesis
+C[26.3.14] 3PL-pricing-model: 3PLs(3-6% margin) prefer outcome-based(% of savings)→per-user pricing creates resistance|pricing model must flex by segment
+C[26.3.14] vendor-ROI-discount: vendor case studies select best outcomes|median customer=60-70% of stated ROI|use 50% for conservative investment modeling
+
+P[26.3.14] workforce-orchestration-reframe: "warehouse LMS"→"workforce orchestration for mixed human+robot"=changes TAM(adds robotics orchestration market)+competitive set(no direct competitor)+pricing power(price-maker on robot tier)
+P[26.3.14] ROI-as-sales-anchor: 20-60x ROI for 3PLs=compelling enough to overcome price sensitivity|lead with savings calc ¬feature list
+
+## warehouse-lms r2 DA responses (2026-03-14)
+F[26.3.14] r2: 5 DA challenges|1 CONCEDE(SAM process failure),3 COMPROMISE,0 DEFEND
+D[SAM-commitment] $450-600M(was $700M-1B)|standalone minus 30-40% WES absorption|capital-efficiency forces lean path $25-35M
+D[EV-base-rate] 2.2x gross,1.0-1.3x net at base rate=marginal|thesis requires above-average survival OR $500M+ exit
+D[revenue-timeline] founding→$1M=24-30mo|founding→breakeven=5-6yr|seed covers 18-24mo
+D[gap-narrowing] BY does orchestration ¬economics|gap=3 axes(cost engine,mid-market,vendor-agnostic)|narrower than r1
+C[26.3.14] lean-capital-imperative: SAM revision($450-600M) makes $40-65M path capital-inefficient(7.5-14.4% vs 3-8% benchmark)|$25-35M lean path=4.2-7.8%=viable|MUST discipline early spend

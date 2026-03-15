@@ -236,8 +236,54 @@ P[AI-features-vs-AI-architecture: features(doc-parsing,classification)=replicabl
 P[M&A-integration-debt=structural-greenfield-advantage: incumbents-with-6+-acquisitions-face-$50-100M+3-5yr-unification. Greenfield=18-24mo-integrated-platform. Advantage-temporary-but-sufficient-for-relationship-lock-in |src:loan-admin |promoted:26.3.12 |class:new-principle]
 P[differentiation-tiering-framework: structural(charter,regulatory)>architectural(compliance-native,integration-depth)>functional(waterfall-engine,dual-market)>feature(AI-parsing,APIs). Higher-tiers=more-durable. Use-to-assess-competitive-moats |src:loan-admin |promoted:26.3.12 |class:new-principle]
 P[sigma-predict-review|F1(!C):orchestration-cost-3-8x-competitive-baseline(AIA-Forecaster=10-independent-agents→matched-superforecasters,Panshul42=5-model-aggregate=$1-3)|F2(H):isolation-unsupported-technically+counterproductive(AIA=SOTA-without-isolation)|F3(H):context-window-saturation-at-33-44-invocations|F5(M):Metaculus-forecasting-tools-framework-makes-proposal-redundant|build-prompt:5-phases-starting-fork-Metaculus-framework|grade:arch(B-)feasibility(C+)cost(D)|src:sigma-predict-review|26.3.12]
+## research
+R[engineered-labor-standards:MOST=dominant PMTS|3 sequences:General-Move,Controlled-Move,Tool-Use|calc:sum-indexes×10=TMU(1TMU=0.036s)|alternatives:MTM,MODAPTS,ML-dynamic|Manhattan:ELS engine task-timestamp vs standard|Blue Yonder:AI/ML forecasting+dynamic adjustment|allowances:PFD 15-20%|maturity:MOST=proven(50yr),ML-standards=emerging,hybrid=emerging|src:wikipedia.org/MOST,takt.io,manh.com,blueyonder.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[real-time-perf-tracking:scanner events(barcode/RFID)+UWB RTLS(10-30cm)+wearables(ring scanners,smart glasses)+CV(YOLO11 pose)|pipeline:scanner-event to Kafka/Flink to TSDB to dashboard|Manhattan:250+ microservices,K8s,REST,real-time per-task tracking|UWB:tag to anchor to server to position(5-layer)|wearables:+30pct efficiency,70pct adoption projected|maturity:scanners=proven,UWB=proven,CV-pose=emerging,biometric=emerging|src:manh.com,sewio.net,ultralytics.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[robot-fleet-mgmt:3 standards-VDA5050(EU),MassRobotics(NA),Open-RMF(OSS)|VDA5050:JSON-over-MQTT,order=graph(nodes+edges),QoS0 order/state,QoS1 connection,v2.1.0 Jan2025|MassRobotics:coexistence+monitoring,broadcasts location/speed/health,v2.0 adds charging|Open-RMF:ROS2-based,free_fleet adapter,traffic negotiation via schedule-aware routing|vendor:Locus LocusConnect API-first 6-8wk deploy,6RS Chuck robot-leads-picker|maturity:VDA5050=proven(EU),MassRobotics=proven(NA),Open-RMF=proven(OSS),unified metrics=emerging|src:github.com/VDA5050,open-rmf.org,locusrobotics.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[task-allocation:3 paradigms-wave(static,rigid),zone(workers confined,reduce travel),waveless(continuous,+40pct throughput,+20pct labor)|algorithms:Hungarian(O(n3),optimal,proven),auction-based(distributed),RL(Q-Mix POMDP,92.5pct conflict-free),hybrid Hungarian+RL|waveless arch:continuous stream to priority scoring to dynamic batch to assignment by proximity+availability|maturity:wave=proven(legacy),zone=proven,waveless=proven(modern),Hungarian=proven,RL=emerging,hybrid=speculative|src:nature.com/s41598-025-88305-9,inviarobotics.com/blog/waveless-picking|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[iot-edge-arch:MQTT pub/sub for edge low-latency,Kafka high-throughput stream,Flink/Spark ETL|edge:local broker sub-ms,selective cloud fwd|TSDB:InfluxDB=fast-ingest,TimescaleDB=SQL+joins,TDengine=fastest|maturity:MQTT+Kafka=proven,edge-TSDB=proven,edge-ML=emerging|src:hivemq.com,instaclustr.com|refreshed:2026-03-14|next:2026-04-14]
+R[cloud-arch-wms:Manhattan 250 microservices K8s REST|refreshed:2026-03-14]
+R[cloud-arch-wms-detail:SAP-EWM MFS PLC-level automation|multi-tenant per-customer-DB versionless-CD|integration REST MQ event-streams|Manhattan-Automation-Network for robotics|src:developer.manh.com sap.com|next:2026-04-14]
+R[warehouse-data-model:entities Worker Task Zone Robot Standard Shift PerformanceMetric CostCenter|rollup worker-zone-area-dept|metrics UPH LPH utilization cost-per-unit picking-accuracy|SQL-operational+TSDB-analytics|src:easymetrics.com|refreshed:2026-03-14|next:2026-04-14]
+R[computer-vision-warehouse:YOLO11 pose PPE hazards|OpenPose MediaPipe AlphaPose sub-2mm to 70mm|unsafe-bending lifting fatigue PPE pick-verify zone-intrusion|DHL deploying|PPE=proven pose=emerging pick-verify=emerging|src:ultralytics.com dhl.com|refreshed:2026-03-14|next:2026-04-14]
+
+## warehouse-lms-architecture findings (26.3.14) — r1
+
+### architecture-decisions |#10
+F1(!C):modular-monolith+event-backbone(Kafka)→microservices-at-scale|7-modules
+F2(H):2-store(PG+TimescaleDB)→ClickHouse-deferred(REVISED-from-3)
+F3(H):MQTT→Kafka→Kafka-Streams(day-1)→Flink-at-scale(REVISED-from-Flink-day-1)
+F4(H):MOST-first→ML-phase-2(XGBoost,±15%-cap)
+F5(H):waveless+Hungarian+constraints(¬RL-day-1)
+F6(H):VDA5050-adapter-first|!GAP:no-precedent-all-3-standards-unified
+F7(H):canonical-model+WMS-adapters
+F8(M):edge-first-offline(30min)+cloud-analytics
+F9(M):Go+Python|alt:Python-only-MVP
+F10(M):OIDC+RBAC+RLS+mTLS+SOC2
+
+### hygiene-outcomes
+3×outcome-1(revised):F2,F3,F3-§2c|1×outcome-3(gap):F6-§2b|rest=outcome-2
+
+### cross-agent
+PS:strong|tension(integration-cost-overestimate,MVP-timeline-reducible)
+TIA:strong|WES-squeeze=addressed(adjacent-positioning)
+
+### r2-DA-responses |#4
+DA[#6]:compromise—unified-telemetry(output)+paradigm-native-adapters(input) ¬canonical-command. ~85%(output) vs ~40%(full-canonical)
+DA[#7]:compromise—MVP-tightened(human-only-10-12mo)
+DA[#13]:concede—Python-only(talent-scarcity-binding)
+DA[#14d]:compromise—human-only-first(AMR-declining-18→10%)
+
+### r2-calibration
+C[canonical-robot-model=infeasible-across-paradigms|1|26.3.14]
+C[human-only-MVP=more-honest-than-unified-vision|1|26.3.14]
+C[Go+Python-for-startup=luxury|1|26.3.14]
+C[robotics-adoption-gap-real:planning↑-deployment↓|1|26.3.14]
 
 → actions:
-→ r4-second-challenge → ready for DA second-challenge round
-→ r5-synthesis → ready for final synthesis
-→ next research → monitor EU-CRD6-transposition, Versana-growth, AD-AI-capabilities, Hypercore-traction, GLAS-tech-acquisitions
+→ r3+ → synthesis
+→ next research → VDA5050-v2.2, Open-RMF-adoption, Python-FastAPI-warehouse

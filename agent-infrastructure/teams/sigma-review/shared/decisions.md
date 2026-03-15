@@ -322,6 +322,42 @@ capital:integrated-transformation-$798M-5yr-fundable |by:portfolio-analyst |weig
   |ctx: de-duplicated 4 agents' overlapping estimates. Tech $490-870M INCLUDES AI+USDPT→¬additive with sanctions $100-200M or reg-lic $15-30M/yr. Fundable from OCF($786M capex)+buyback redirect($525M). No div cut or new debt. !CRITICAL: -4%/yr decline→OCF erosion $50M/yr→deficit yr3-4→forced div-vs-transformation. DA[#8] concede.
   |alt: sum-all-estimates($1.2B+)→double-counted|tech-only($490-870M)→misses ongoing compliance|integrated($798M)→realistic
 
+## warehouse LMS market analysis r1 — product-strategist decisions (26.3.14)
+
+product:unified-human+robot-LMS=genuinely-unoccupied-category |by:product-strategist |weight:primary
+  |ctx: 4-tier competitive landscape(WMS-embedded~60%,standalone~25%,WFM-adjacent,robotics-bundled). Zero vendors offer blended human+robot cost-per-unit in single dashboard. Locus=closest(patent-pending AI coordinating people+robots,LocusONE) BUT robot-fleet-only ¬third-party. DHL:44%-deployed-robotics,34%-satisfied=gap-evidence. Orchestration platforms treat human+robot as separate systems
+  |alt: Locus-expands-to-full-LMS(6-12mo-risk)|WMS-incumbents-add-robot-APIs(bolt-on ¬purpose-built)|wait-for-market-to-form(lose-window)
+
+product:3PL-mid-market-greenfield-robotics=entry-segment |by:product-strategist |weight:primary
+  |ctx: 3PL-mid-market(100-500-employees): highest-labor-cost-pressure(50-70%-budget), WMS-agnostic-need(multi-client), fastest-robotics-adoption(33.7%-AI-2026,2x-2023), 4-week-onboard-benchmark(Takt). Greenfield-robotics-adopters=beachhead(79%-plan-robotics-by-2026,existing-LMS-has-zero-robot-awareness). US-first($310B-3PL-market). ¬enterprise(Manhattan/BY-lock-in). ¬SMB(Easy-Metrics-600-dominant,low-ACV)
+  |alt: enterprise-first(blocked-by-WMS-lock-in)|SMB-first(low-ACV-unsustainable)|robotics-vendor-first(dependency)
+
+product:BUILD-primary-$8-13M-to-first-revenue |by:product-strategist |weight:primary
+  |ctx: alternatives-analyzed: BUILD($5-8M-MVP-18mo+$3-5M-GTM=$8-13M), ACQUIRE-Easy-Metrics($50-100M+,600-facilities,legacy-arch), ACQUIRE-Takt(earlier-stage,lower-cost,smaller-base), PARTNER-Locus(defer-12mo,evaluate-trajectory), NULL(¬recommended,$719M→$3.72B-market). BUILD=purpose-built-unified-architecture-from-day-1. Easy-Metrics=evaluate-actively-for-distribution-not-tech
+  |alt: acquire-Easy-Metrics-for-distribution(expensive,$50-100M+)|partner-Locus-for-integration(dependency-risk)|null(miss-genuine-gap)
+
+product:differentiation-window=6-12mo |by:product-strategist |weight:primary |REVISED-r2:3-6mo(features)/12-18mo(positioning)
+  |ctx: Locus-patent-pending-AI-human+robot+Array-R2G-shipped=trajectory-toward-full-LMS. WMS-incumbents-adding-robot-modules. Consensus-forming-on-human+robot-coordination-as-bolt-on. Purpose-built-unified-model=12-18mo-advantage-over-bolt-on. Feature-parity-on-coordination-within-24mo. MUST-have-MVP-within-12mo
+  |r2-revision: BY-Robotics-Hub-already-shipping-vendor-agnostic-robot+human-orchestration. Window-SHORTENED. Feature-gap=3-6mo(BY-could-add-cost-per-unit). Market-positioning-gap=12-18mo(BY-going-downmarket-slow). DA[#2]-compromise
+  |alt: window-longer(18-24mo)|window-shorter(<6mo,Locus-moves-faster-than-expected)
+
+## warehouse LMS r2 — product-strategist DA-response decisions (26.3.14)
+
+product:unified-LMS=CONTESTED-¬unoccupied |by:product-strategist |weight:primary |REVISED-from-r1
+  |ctx: BY-Robotics-Hub(vendor-agnostic,human+robot-workload-balancing,+22%-labor-productivity), Locus-LocusINTELLIGENCE(system-directed-labor-optimization,worker-dashboards), Manhattan(unified-resource-orchestration+Agility-humanoid). 3 incumbents converging from adjacent positions. r1 missed BY entirely=research failure. Remaining gap=narrow: cost-per-unit-economics+mid-market-pricing+WMS-independence
+  |DA: DA[#1]-concede,DA[#11]-concede(§2a-failure)
+  |alt: gap-already-closed(bearish)|gap-still-meaningful(our-position)|gap-permanent(overly-bullish)
+
+product:capital-requirements-$6-10M-pre-revenue |by:product-strategist |weight:primary |REVISED-from-r1($8-13M)
+  |ctx: MVP=12-14mo+sales-cycle=mo-14-18-first-customer. Y1-from-founding=$0. Y1-from-launch=4-6-customers=$384K-1.08M-ARR-by-mo-24-30. Burn-pre-revenue=$6-10M. Seed=$4-6M(MVP-only). Series-A-required-before-first-revenue. 50%-increase-from-r1-estimate
+  |DA: DA[#5]-compromise
+  |alt: bootstrap(impossible-at-this-burn)|single-round($10-15M-seed,rare)|staged(seed+A,our-position)
+
+product:Easy-Metrics-acquisition=¬startup-viable |by:product-strategist |weight:primary |REVISED-from-r1($50-100M)
+  |ctx: 600+-facilities,$60-100M-implied-ARR,3-5x-SaaS-multiple=$180-500M. Only-viable-for-PE/strategic. Takt=$20-50M=more-plausible-for-well-funded-startup
+  |DA: DA[#10]-concede
+  |alt: Easy-Metrics-overvalued(possible-but-600-facilities-commands-premium)|Takt-available(evaluate)
+
 risk:political-risk-elevated-to-CRITICAL |by:portfolio-analyst |weight:primary
   |ctx: excise tax+immigration compound -$80-320M/yr. Extreme scenario(expanded tax+mass deport) -$450-550M by 2028=-11-13% rev→div unsustainable+transformation unfundable. #1 near-term risk ahead of stablecoin. Precautionary surge masking base erosion→12-18mo cliff. DA[#3] concede.
   |alt: maintain-HIGH(r1)→underweights current impact|CRITICAL(revised)→matches evidence

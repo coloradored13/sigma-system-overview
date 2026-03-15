@@ -494,6 +494,70 @@ P[26.3.13|promoted] performative-concession(anti-pattern): agent concedes challe
 P[26.3.13|promoted] demand-side-blind-spot(systematic-bias): teams model supply disruption extensively but underweight demand destruction. 5 agents, 69+ findings, ZERO demand-side integration until DA challenged. At $100+ oil, demand destruction active+self-limiting. Fix: mandate demand-side modeling from R1 in any supply-disruption analysis. |src:Iran-rerun-r2 |class:systematic-bias |promoted:26.3.13
 P[26.3.13|promoted] data-backed-challenges>rhetorical: R2 revision rate 89% when DA challenges included counter-evidence(DFC program, Mar 11 data, IEA surplus) vs prior reviews with rhetorical challenges producing performative concessions. Fix: DA must always include specific counter-evidence \u00acjust bias identification. |src:Iran-rerun-r2 |class:new-principle |promoted:26.3.13
 
+## current review (26.3.14 — warehouse LMS market analysis)
+
+### r2 challenges issued |#14 (8→PS, 4→TA, 3→UX, 4→TIA, 5→EA)
+- DA[#1] !CRITICAL: "unified human+robot=UNOCCUPIED"=FALSE |BY-Robotics-Hub(vendor-agnostic,human+robot-orchestration,+22%-productivity,plug-and-play) |Locus-LocusINTELLIGENCE(worker-productivity,system-directed-labor) |Manhattan(unified-resource-orchestration,Agility-humanoid-partnership) |target:PS,TIA,EA
+- DA[#2] HIGH: differentiation-window-anchoring |BY-already-shipping→PS-6-12mo-may-be-GENEROUS |TIA-18-24mo-assumes-legacy-constraints-but-BY=cloud-native-SaaS |target:PS,TIA
+- DA[#3] HIGH: base-rate-survival-not-applied-to-financials |75%-VC-fail+45.7%-3yr-survival→$40-65M-breakeven-with-<35%-probability=negative-EV |target:EA
+- DA[#4] HIGH: SAM-inflation |$700M-1B-vs-$400-500M=2x-difference |WES-squeeze-means-standalone-LMS-TAM-SHRINKING |target:EA,TIA
+- DA[#5] HIGH: Y1-ARR-timeline-confusion |MVP=14-18mo→first-revenue=26-30mo-from-founding |target:PS,EA
+- DA[#6] HIGH: robot-adapter-GAP-underweighted |VDA5050-still-incomplete(Seegrid-2026) |3-standards-different-semantics |canonical-model-may-not-exist |target:TA
+- DA[#7] MEDIUM: MVP-scope-undefined-vs-competitor |12-14mo-to-EXCEED-BY? |target:TA,PS
+- DA[#8] HIGH: surveillance-risk-split(UX=existential,4-silent) |42%-monitored+38%-union-provisions |regulatory-cost-¬adoption-blocking? |target:UX
+- DA[#9] HIGH: 3PL-beachhead-crowded(Takt+Rebus+Easy-Metrics-600+) |target:PS,EA
+- DA[#10] MEDIUM: acquisition-cost-underestimated(Easy-Metrics-likely-$180-500M) |target:PS
+- DA[#11] process: PS-F1-§2a-MISSED-BY-Robotics-Hub |target:PS
+- DA[#12] process: EA-F1-§2a-uses-inflated-TAM-despite-identifying-inflation |target:EA
+- DA[#13] process: TA-F9-§2a-cites-Uber/Datadog(mature)→¬startup-precedent |target:TA
+- DA[#14] HIGH: blind-spots(customer-concentration,founder-market-fit,WMS-channel-conflict,robotics-adoption-reality-gap-AMR/AGV-18%→10%) |target:ALL
+
+### r1 grades (pre-challenge)
+- product-strategist: B+ |excellent-competitive-research+honest-§2a-revisions |MISSED-BY-Robotics-Hub(major-gap-in-competitive-landscape) |Y1-ARR-timeline-ambiguous
+- tech-architect: A- |most-honest-agent(F6-§2b-GAP=best-finding-in-workspace) |start-simple-philosophy=correct |Go+Python-for-startup=questionable
+- ux-researcher: B+ |surveillance-finding-strongest-unique-contribution |multimodal-scope=unrealistic-for-startup |only-agent-flagging-worker-perspective
+- tech-industry-analyst: B+ |F8-unified-category-thesis=foundational |MISSED-BY-Robotics-Hub-depth |base-rate-§2b=good-but-didn't-cascade-to-projections
+- economics-analyst: B |SAM-inflation-self-identified-then-ignored |3PL-LTV:CAC=honest |ROI-claims-strong-but-survival-rate-not-integrated
+
+### key research (26.3.14)
+- BY-Robotics-Hub: vendor-agnostic-SaaS, human+robot-orchestration, "resource-orchestration"-engine, plug-and-play-hours-¬months, +22%-labor-productivity, +25%-throughput, 12+-vendor-integrations, DHL-partnership+Microsoft-collab
+- Locus-LocusINTELLIGENCE(Mar-2025): system-directed-labor-optimization, worker-productivity-dashboards, 6B+-picks-hardened, 2-3x-UPH-increase
+- Manhattan-Active: unified-resource-orchestration(labor+automation+robotics), WES-inside-WMS, Agility-Robotics-humanoid-partnership(Apr-2024), 433-live-sites, 40-45-features/quarter
+- robotics-adoption-reality-gap: AMR/AGV-actual-usage-DECLINING-18%→10%(MMH-2025) |planning-interest-RISING-20%→30% |43%-wait-and-see |DHL-44%-deployed-34%-satisfied
+- VDA5050: Seegrid-targeting-full-compliance-2026 |EU-dominant-NA-growing |still-incomplete-adoption
+- surveillance: 42%-electronic-monitoring(2025) |38%-union-contracts-address-automated-surveillance |state-privacy-expanding-2026
+- Easy-Metrics/TZA: 600+-facilities, unified-brand(May-2025), AI/ML-features-rolling-out, ProTrack-retained
+- startup-base-rates: 75%-VC-fail, BLS-3yr-survival-45.7%(transport/warehousing)
+
+### r2 exit-gate: PASS
+engagement: PS(A-),TA(A),UX(A-),TIA(A-),EA(B+) |all ≥ B
+scorecard: 14 challenges→6 held,8 partial,0 fell |71% effective hit rate |0 DEFEND
+unresolved(logged): SAM($400-550M range),MVP-scope(10-14mo),human-only-positioning-tension
+untested: BY-economics-feature-timeline(3-6mo-per-PS,not-verified)
+hygiene: PASS(3 violations corrected with outcome-1)
+
+### r2 grades (post-challenge)
+- tech-architect: A |best engagement quality. 4/4 material revisions. Human-only-MVP=single best insight. F6 reframing EXCEEDED challenge. Self-identified R5 risk. Conceded Python-only cleanly.
+- product-strategist: A- |3 concede(research failure, acquisition costs, §2a)+4 compromise. Zero defensiveness. Best: owning BY research gap as "genuine failure ¬framing error." Channel conflict revision=strongest blind-spot response.
+- ux-researcher: A- |3/3 compromise. Surveillance downgraded correctly. BUILD-PARTNER-DEFER matrix=actionable. 80%-robot-independent=independently validates TA pivot.
+- tech-industry-analyst: A- |2 concede+1 compromise. PINCER identification=most valuable R2 analytical contribution from any agent. SAM committed. Orchestration-window-CLOSED=honest.
+- economics-analyst: B+ |EV calculation finally done(2.2x gross). SAM committed $450-600M. Revenue timeline corrected. Deduction: EV lacks sensitivity, SAM diverges from TIA($300-500M) without reconciliation.
+
+### thesis evolution
+r1: "unified human+robot LMS, UNOCCUPIED market, $5-8M MVP, 18mo, $700M-1B SAM"
+r2: "human-only workforce economics LMS (WMS-agnostic, mid-market), CONTESTED market, $3-5M MVP, 10-14mo, $400-550M SAM, robot phase-2, EV=2.2x gross (marginal)"
+
+### patterns (26.3.14)
+- !CONFIRMED(9th): genuine-analytical-tensions-detected-in-r1(9-tensions)→circuit-breaker-NOT-triggered. First-review-where-r1-produced-meaningful-divergence. CB-may-be-working-as-filter.
+- !NEW: "unoccupied-market"-claims-require-§2a-verification-DEEPER-than-direct-competitors. PS-found-Locus+Easy-Metrics-but-MISSED-adjacent-incumbent-expansion(BY-Robotics-Hub,Manhattan-unified-resource). §2a-must-include-"are-incumbents-building-from-adjacent?"
+- !NEW: planning-vs-deployment-gap(robotics): teams-use-planning-data(79%-plan-robotics)-for-market-sizing-but-actual-deployment-data-diverges-sharply(18%→10%-AMR/AGV-usage). Demand-thesis-dependent-on-adoption-not-intention.
+- !CONFIRMED: SAM-inflation=systematic-in-startup-analysis. Teams-cite-headline-TAM→adjust-to-SAM→then-use-original-for-projections.
+- !NEW: 100%-hit-rate=r1-gap-signal. When ALL challenges produce concessions, r1 research had genuine holes (BY Robotics Hub miss). Healthy hit rate=60-80%. 100%=team should have caught these issues in r1.
+- !NEW: agent-reframing-that-exceeds-challenge=highest-quality-engagement. TA didn't just address DA[#6]—reframed to unified-telemetry+paradigm-native=BETTER answer than either r1 or DA challenge assumed. This is the goal: DA pressure producing NOVEL insight ¬just concession.
+- !CONFIRMED: data-backed-challenges produce highest revision rates. 14/14 challenges included specific counter-evidence. 100% response rate. Prior reviews with rhetorical challenges: 60-80%. Evidence-grounded challenges=consistently higher engagement.
+P[adjacent-incumbent-expansion-check: §2a "unoccupied"/"whitespace"/"no vendor" claims MUST check adjacent incumbents building from other positions. PS checked direct competitors(Locus,Easy-Metrics) but missed BY Robotics Hub (WMS→LMS+robot) and Manhattan unified orchestration. §2a question should include: "are incumbents in ADJACENT categories building toward this from different direction?" |src:warehouse-LMS |26.3.14 |class:new-principle]
+P[planning-data-vs-deployment-data: teams systematically use PLANNING/INTENTION data(79% plan robotics) for market sizing when DEPLOYMENT data diverges(AMR usage 18%→10%). Fix: mandate both planning AND deployment data in §2b calibration for any demand-dependent thesis. Divergence between them=material risk to timeline |src:warehouse-LMS |26.3.14 |class:systematic-bias]
+
 → actions:
 → new finding → append with severity+evidence
 → disagreement with another agent → record both positions in shared/decisions.md

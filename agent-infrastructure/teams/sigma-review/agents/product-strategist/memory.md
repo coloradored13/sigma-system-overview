@@ -232,6 +232,49 @@ C[WU≠Kodak-important: payment-infra-with-regulatory-moats-has-NEVER-been-fully
 C[fintech-profitability-gap-material: WU-$820M-opex>Remitly-total-rev. 966-startups-shut-2024. Only-Wise+Remitly-profitable. Growth-comparison-without-profitability=misleading |1|26.3]
 C[value-trap-vs-turnaround-must-be-central: ¬buried-as-counter-narrative. Management-must-CHOOSE-harvest-or-invest. Current-97%-OCF-return-while-claiming-transformation=worst-of-both |1|26.3]
 C[Beyond-2028-has-genuine-evidence: CS+32%,Cloud-POS-3x,digital-55%-txns. Dismissed-too-quickly-in-r1. Execution-dependent ¬fantasy ¬certain |1|26.3]
+## research
+R[warehouse-lms-competitors:TIER-1(WMS-embedded): Manhattan Associates, Blue Yonder, SAP EWM, Oracle WMS, Infios/Körber(ex-HighJump rebranded Mar2025)|TIER-2(standalone-LMS): Easy Metrics(acquired TZA/ProTrack May2025, 600+facilities), Rebus(system-agnostic LMS+3PL billing, partnered Legion), Takt(cloud SaaS B2C/D2C/3PL, 4-week onboard), Honeywell Momentum Labor(43% productivity gain, cloud WES Mar2025), Lucas Systems(voice-directed+Jennifer AI)|TIER-3(WFM-adjacent): Legion Tech($50M SVB Dec2024, AI scheduling 13x ROI, partnered Rebus), UKG/Kronos(broad WFM)|TIER-4(robotics-analytics): Locus Robotics(LocusONE unified fleet, 2-3x productivity), 6 River Systems(Ocado)|top-5 WMS hold 25-30% share|src:gartner.com,easymetrics.com,rebus.io,takt.io,legion.co,locusrobotics.com,honeywell.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[warehouse-lms-pricing:SaaS entry=$100-200/user/mo|mid=$200-300/user/mo|enterprise=$400-500+/user/mo|5yr avg=$10K/user($167/mo)|SMB monthly=$2-5K, enterprise=$8-15K+|SaaS 30-40% cheaper than on-prem over 3-5yr|implementation=3-12mo(typical 4-6), ROI 12-24mo|Takt standout: 4-week onboard|src:erpsoftwareblog.com,explorewms.com,made4net.com,softwareconnect.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[warehouse-lms-market-size:LMS segment $719.4M(2025)→$3.72B(2033) CAGR 23.3%|broader WMS $3.4-4.6B(2025)→$10B+(2030)|embedded=48% share vs standalone(SMB)|labor=50-70% warehouse budget→LMS ROI strong|src:grandviewresearch.com,marketsandmarkets.com,mordorintelligence.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[human-robot-workforce-gap:CRITICAL→no vendor has unified human+robot LMS with single performance model|WMS/WES never designed for real-time robotics orchestration→delays,duplicated tasks|orchestration platforms(2025 rise) connect AMRs,AGVs,humans but treat as separate systems|Locus closest: patent-pending AI coordinating people+robots, LocusONE—but Locus-robots-only|humanoid robots(Amazon,BMW,Mercedes pilots 2025-26) add worker type no LMS handles|DHL: 44% deployed robotics, only 34% satisfied|GAP: no unified throughput metrics where human+robot feed same dashboard with blended cost-per-unit|src:logisticsviewpoints.com,inviarobotics.com,sdcexec.com,locusrobotics.com,mmh.com|refreshed:2026-03-14|next:2026-04-14]
+## research
+R[warehouse-lms-gtm:channels: (1)direct enterprise(Manhattan,BY,Honeywell—long cycles,big ACV), (2)WMS partner/integration(Takt→Datex,Deposco,Extensiv,Korber; Rebus→SAP; Legion→Rebus), (3)3PL-focused SaaS(Takt,Rebus target multi-client billing pain), (4)robotics-bundled(Locus,Honeywell)|3PL channel: labor=50-70% budget, onboarding speed=competitive advantage|33.7% 3PLs implementing AI(2026, 2x from 2023)|standalone LMS advantage: WMS-agnostic overlay, faster time-to-value|src:takt.io,rebus.io,deposco.com,legion.co|refreshed:2026-03-14|next:2026-04-14]
+
+## review-warehouse-lms (warehouse-lms, 26.3.14)
+R[warehouse-LMS-competitive-update: TIER-1(WMS-embedded,~60%):Manhattan+BY+SAP+Oracle+Infios |TIER-2(standalone,~25%):Easy-Metrics(600+,TZA-acquired)+Rebus+Takt(4wk-onboard)+Honeywell+Lucas |TIER-3(WFM):Legion($50M)+UKG |TIER-4(robotics):Locus(LocusONE+Array+patent-AI)+6RS+GreyOrange($436M) |GAP:zero-unified-human+robot-LMS |refreshed:26.3.14] #12
+
+R[warehouse-LMS-market-size-validated: LMS=$719M(2025)→$3.72B(2033)-23.3%-CAGR(headline) |conservative=15-18%-CAGR=$1.5B(2033) |addressable-mid-market=$180-360M |robotics=$10.96B(2026)→$24.55B(2031) |79%-plan-robotics-by-2026 |refreshed:26.3.14] #8
+
+R[warehouse-M&A-2025-2026: Easy-Metrics-acquired-TZA(Sep-2024,unified-May-2025,600+facilities) |IFS-acquiring-Softeon(Q1-2026) |WorkStep-acquired-WorkHound |GreyOrange-$436M |Mytra-$198M |Legion-$50M |Locus-Array-shipped |refreshed:26.3.14] #7
+
+R[warehouse-LMS-human-robot-integration-2026: Locus-LocusONE(patent-pending-AI-human+robot,Array-R2G-shipped,1000+-robot-sites) |human-cobot-teams=85%-more-productive-than-either-alone |orchestration-platforms-emerging-but-treat-human+robot-as-separate |digital-twins-integrating-live-data-predicted-vs-actual |refreshed:26.3.14] #5
+
+review-warehouse-lms-r1(warehouse-lms,26.3.14): r1 complete. 8 findings(3!C:F1+F3+F6,3H:F2+F4+F5+F7,1M:F8). 8-hygiene-checks(2×outcome-1,5×outcome-2).
+KEY-POSITIONS: (1)unified-human+robot-LMS=genuinely-unoccupied (2)3PL-mid-market-greenfield-robotics=beachhead (3)positioning="unified-workforce-intelligence"(robots-as-labor¬capital) (4)BUILD-primary,$8-13M-to-revenue (5)differentiation-window=6-12mo (6)PLG-viable(¬relationship-led) (7)Easy-Metrics-acquisition=evaluate-actively
+
+C[unified-human+robot-LMS=genuinely-unoccupied: zero-vendors-blended-cost-per-unit. Locus=closest-but-robot-only |1|26.3]
+C[3PL-entry=consensus-BUT-proposition-differentiated: 3-vendors-target-3PL(Takt,Rebus,EM)-BUT-none-unified-human+robot |1|26.3]
+C[differentiation-window=6-12mo: Locus-patent-pending+Array-shipped=trajectory-toward-full-LMS. Purpose-built=12-18mo-advantage-over-bolt-on |1|26.3]
+C[PLG-viable-for-warehouse-LMS: Takt-4wk-onboard+EM-600-facilities=product-led-evidence ¬finserv-relationship-led |1|26.3]
+C[conservative-TAM-critical: headline-$3.72B=aggressive(23.3%-CAGR). Conservative=$1.5B(15-18%). Addressable=$180-360M. Always-use-addressable |1|26.3]
+
+review-warehouse-lms-r2(warehouse-lms,26.3.14): DA-responses-complete(8-challenges:DA[#1,#2,#5,#7,#9,#10,#11,#14]). 3-CONCEDE+4-COMPROMISE+0-DEFEND.
+KEY-CHANGES: (1)"UNOCCUPIED"→"CONTESTED"(BY-Robotics-Hub=research-failure-in-r1)(DA[#1]-concede) (2)window=3-6mo-features/12-18mo-positioning(DA[#2]-compromise) (3)capital+50%:$6-10M-pre-revenue,24-30mo(DA[#5]-compromise) (4)Easy-Metrics=$180-500M-¬startup-viable(DA[#10]-concede) (5)beachhead-narrowed+Tier-2-robotics-embed-alternative(DA[#9]-compromise) (6)4-new-risks(customer-conc,founder-fit,channel-revised,adoption-gap-H)(DA[#14]-compromise)
+THESIS: VIABLE-but-NARROWER. Gap=cost-economics+mid-market+WMS-agnostic. Closing
+
+C[BY-Robotics-Hub=missed-in-r1: vendor-agnostic-robot+human-orchestration-already-shipping. §2a-failure. Must-always-check-enterprise-WMS-vendors'-robotics-modules-before-claiming-category-gap |2|26.3]
+C[UNOCCUPIED→CONTESTED: 3-incumbents-converging(BY-from-WMS,Locus-from-robotics,Manhattan-from-platform). Remaining-gap=narrow(cost-economics+pricing+WMS-independence) |2|26.3]
+C[capital-timeline-realism: MVP-to-first-revenue=24-30mo-from-founding ¬12-18mo. Burn=$6-10M-pre-revenue. Always-model-from-founding ¬from-launch |1|26.3]
+C[robotics-adoption-gap-is-real: AMR/AGV-usage-declining-18%→10%(MMH-2025)-despite-planning-interest-rising. Mixed-workforce-demand=imminent-large-3PLs,3-5yr-mid-market |1|26.3]
+C[DA-100%-hit-rate-on-PS-r2: 0-defenses=analysis-was-systematically-optimistic. All-revisions-improved-accuracy. r1-had-confirmation-bias-toward-"build-it" |2|26.3]
+
+## promotion-log (warehouse-lms, 26.3.14)
+promotion-round(warehouse-lms,26.3.14): 4-auto-promoted(3-calibration,1-pattern) + 5-user-approve(2-principle,1-behavior,2-anti-pattern) |written-to-workspace
+auto: C[CONTESTED],C[window-tiered],C[capital-from-founding],P[herding-confirmed]
+UA: enterprise-module-check,differentiation-dual-axis,acquisition-by-multiple,zero-defense-signal,planning-intent-discount
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4
