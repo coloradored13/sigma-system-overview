@@ -49,6 +49,16 @@ TIER-3: 3-5 domain + reference-class-analyst + dynamic-specialists + DA(r2)
 !rule: DA always joins from r2 (never skip adversarial challenge)
 !rule: if TIER-1 surfaces unexpected complexity in R1 → escalate to TIER-2 (add agents, ¬restart)
 
+#### 1b. Model selection (per directives §5)
+per agent, set model parameter in spawn:
+  DA: model=opus (TIER-A — adversarial quality critical)
+  reference-class-analyst: model=opus (TIER-A — calibration accuracy critical)
+  domain agents R1: model=sonnet (TIER-B — breadth over depth)
+  domain agents R2: model=sonnet (TIER-B — concede/defend straightforward)
+  synthesis: model=sonnet default, model=opus if P(consensus) < 0.7
+report: "MODEL[{agent}]: {tier}({model}) |reason: {why}"
+user may override: "use opus for all" | "use sonnet for all"
+
 - init workspace.md: task+agent-sections
 
 ### 2. Initialize workspace
@@ -59,6 +69,11 @@ Write to `shared/workspace.md`:
 
 ## task
 {full task description with context}
+
+## scope-boundary
+This review analyzes: {specific scope from task description}
+This review does NOT cover: {list topics from current conversation that are NOT part of this review}
+Lead: before writing synthesis or documents, re-read this boundary.
 
 ## findings
 ### {agent-1-name}
@@ -117,6 +132,13 @@ fallback(!has_project_tier): all→T/
 
 ## Scope
 {agent-specific scope for this task}
+
+## Context Firewall
+You are analyzing ONLY: {task description}
+You have NO knowledge of: the user's career plans, other companies discussed outside this review,
+prior reviews in this session, or any conversation between the user and lead that is not in
+your workspace task description. If you encounter information that seems outside your review
+scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
 
 ## Work (exact sequence)
 1→ANALYZE: read code, research, etc.
@@ -197,6 +219,14 @@ write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
 2→all ✓ → compute belief state (4a) → act per stopping rules
 3→any ◌|! → legacy: check inbox unread→re-spawn | native: SendMessage→continue|clarify
 4→any ? → surface Q to user → then next round
+
+### 4c. Contamination check (per directives §6)
+!MANDATORY before synthesis/report/document generation:
+1→re-read workspace ## scope-boundary
+2→identify session topics outside review scope
+3→write: "CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})"
+4→after generating any output, grep for contamination terms → revise if found
+5→shareable documents → spawn document agent (isolated context, workspace data ONLY)
 
 ### 5. Report to user
 Read workspace findings + convergence. Translate ΣComm to plain language. Present synthesis.

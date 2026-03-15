@@ -63,6 +63,12 @@ You are the sigma-evaluate lead. Run a structured evaluation of: **$ARGUMENTS**
   2: generic recommendations, limited specificity, unclear next steps
   1: no clear actions, purely descriptive, not decision-relevant
 
+7→**Scope Integrity**: does the analysis stay within its stated scope? any references to topics, companies, or goals outside the review's stated boundary?
+  4: perfectly scoped, zero external contamination
+  3: minor tangential references, don't affect conclusions
+  2: noticeable out-of-scope references that could bias interpretation
+  1: significant contamination from external topics — analysis integrity compromised
+
 ## Pipeline
 
 ### 1→READ
@@ -154,13 +160,16 @@ Evaluate the following analysis for calibration quality and actionability.
 2→ASSUMPTION-AUDIT: identify hidden/unstated assumptions
 3→PRECISION-CHECK: flag false precision (point estimates without ranges)
 4→ACTION-CHECK: assess whether recommendations are concrete+decision-relevant
-5→SCORE (use rubric below):
+5→SCOPE-CHECK: verify analysis stays within stated scope, flag external topic contamination
+6→SCORE (use rubric below):
   Calibration (1-4): {score} | {justification with specific examples}
   Actionability (1-4): {score} | {justification with specific examples}
+  Scope Integrity (1-4): {score} | {justification with specific examples}
 
 ## Rubric
 Calibration: 4=explicit uncertainty+calibrated+assumptions documented+ranges | 3=generally appropriate+most assumptions stated | 2=over/underconfident+hidden assumptions | 1=false precision+unstated assumptions+no uncertainty
 Actionability: 4=specific actions+decision criteria+implementation path+go/no-go | 3=mostly actionable+some vagueness | 2=generic+limited specificity | 1=no clear actions+purely descriptive
+Scope Integrity: 4=perfectly scoped+zero external contamination | 3=minor tangential+don't affect conclusions | 2=noticeable out-of-scope references+could bias | 1=significant contamination+integrity compromised
 
 ## Output Format
 CALIBRATION: {N}/4
@@ -171,6 +180,10 @@ false-precision: {list of uncalibrated estimates, if any}
 ACTIONABILITY: {N}/4
 justification: {specific evidence for score}
 vague-recommendations: {list of non-actionable items, if any}
+
+SCOPE-INTEGRITY: {N}/4
+justification: {specific evidence for score}
+contamination-flags: {list of out-of-scope references, if any}
 ```
 
 ### 3→JUDGE
@@ -189,9 +202,9 @@ Synthesize evaluator scores into a final evaluation report.
 {Evaluator 3 output}
 
 ## Work (¬read original analysis — avoid anchoring)
-1→COLLECT: extract all 6 criterion scores from evaluators
+1→COLLECT: extract all 7 criterion scores from evaluators
 2→DISAGREEMENT-CHECK: if any criterion scored by multiple evaluators differs by >1 point → flag+resolve with evidence
-3→COMPUTE: average all 6 scores → overall average
+3→COMPUTE: average all 7 scores → overall average
 4→GRADE:
   A: 3.5-4.0 average
   B: 2.8-3.4
@@ -212,6 +225,7 @@ Logic: {N}/4 | {brief justification}
 Evidence: {N}/4 | {brief justification}
 Calibration: {N}/4 | {brief justification}
 Actionability: {N}/4 | {brief justification}
+Scope Integrity: {N}/4 | {brief justification}
 
 STRENGTHS:
 1. {specific strength}
@@ -248,6 +262,7 @@ Translate Judge output to user (plain English):
 | Evidence | {N}/4 | {brief justification} |
 | Calibration | {N}/4 | {brief justification} |
 | Actionability | {N}/4 | {brief justification} |
+| Scope Integrity | {N}/4 | {brief justification} |
 
 ### Strengths
 1. ...
@@ -283,3 +298,4 @@ store evaluation results to sigma-mem:
 - Judge reads evaluator outputs only → ¬original analysis (avoid anchoring bias)
 - grade < B → suggest specific findings to revise → offer to re-evaluate after revision
 - if target doc is a workspace → evaluate the findings sections (¬metadata/status/convergence)
+- model tiers (per directives §5): evaluators=haiku (TIER-C), judge=sonnet (TIER-B)

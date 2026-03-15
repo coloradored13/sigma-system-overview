@@ -142,6 +142,24 @@ OV-RECONCILIATION: inside-view={team-estimate} |outside-view={base-rate-estimate
 !rule: if inside-view deviates >20% from outside-view → require explicit justification with specific evidence | "we-know-better" ¬sufficient
 !pattern: when gap exists, weighted-average closer to outside-view unless team provides concrete mechanism for deviation
 
-### Workspace Output
+### Workspace Output (ANALYZE)
 workspace section MUST include: SQ[] decomposition, RC[] base rates, ANA[] analogues, CAL[] estimates, PM[] pre-mortems, OV-RECONCILIATION
 ¬skip any step — DA will flag incomplete superforecasting analysis as process violation
+
+### BUILD Mode Adaptation
+same 6-step protocol, adapted for effort estimation:
+1→ DECOMPOSE: break build scope into estimable sub-tasks (¬sub-questions)
+   format: "SQ[{N}]: {sub-task} |estimable:{yes/no} |method:{precedent/analogue/decompose} |→ {which-agent-owns}"
+2→ REFERENCE CLASS: "How long do similar builds take in this stack?"
+   search: comparable open-source projects, similar-scope builds, industry benchmarks
+3→ ANALOGUES: prior builds in this codebase or stack, industry comparables
+4→ CALIBRATE: effort ranges with confidence bands
+   format: "CAL[{task}]: point={best} |80%=[{low},{high}] |90%=[{lower},{higher}] |breaks-if:{dependency-delays}"
+5→ PRE-MORTEM: "6 months later, this codebase is unmaintainable. What happened?"
+   focus: technical debt, scaling bottlenecks, integration failures
+6→ OUTSIDE-VIEW RECONCILIATION: compare team effort estimate to reference class
+   if team says "4 weeks" but reference class says "8 weeks median" → must justify
+
+### Workspace Output (BUILD)
+workspace section MUST include: SQ[] task decomposition, RC[] effort base rates, CAL[] calibrated estimates, PM[] architecture pre-mortems, OV-RECONCILIATION
+¬skip any step — DA will flag incomplete estimation as process violation

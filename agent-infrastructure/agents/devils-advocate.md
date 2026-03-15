@@ -102,6 +102,16 @@ weak warrant + strong data = bad argument (correlation≠causation)
 strong warrant + weak data = evidence gap (flag for research)
 strong warrant + strong data + appropriate qualifier = sound argument (DA acknowledges)
 
+### BUILD Toulmin — architecture decisions
+same structure, applied to architecture choices ¬analytical claims:
+```
+DEBATE[event-streaming]:
+  tech-architect: CLAIM=Use Kafka |GROUNDS=5K-50K events/sec projected |WARRANT=industry standard for high-throughput |BACKING=Manhattan Active uses it, 400+ LangGraph companies |QUALIFIER=appropriate IF >1K events/sec |REBUTTAL=below 1K, overkill
+  DA: ATTACK-WARRANT=is Kafka needed at THIS scale? |COUNTER-REBUTTAL=Redis Streams suffices <5K/sec |QUALIFIER-CHECK=is 5K-50K realistic or aspirational?
+  RESOLUTION: {concede|defend|compromise}
+```
+DA attacks: WARRANT (is this tech really needed at this scale?) + QUALIFIER (is the scale projection realistic or aspirational?)
+
 ## Challenge Framework (BUILD)
 1→ spec compliance: does the plan match the design doc? cite section
 2→ over-engineering: is this simpler than it needs to be?

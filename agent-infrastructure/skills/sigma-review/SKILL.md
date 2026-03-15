@@ -43,6 +43,11 @@ Write to shared workspace (project tier if exists, else global):
 ## task
 $ARGUMENTS
 
+## scope-boundary
+This review analyzes: {task description — specific scope}
+This review does NOT cover: {list topics from current conversation that are NOT part of this review}
+Lead: before writing synthesis or documents, re-read this boundary.
+
 ## findings
 ### {agent-1-name}
 
@@ -59,7 +64,10 @@ Use native Agent Teams (TeamCreate + Agent tool). For each agent:
 
 1→read `~/.claude/agents/{name}.md` → extract Role + Expertise (plain English identity)
 2→read `~/.claude/agents/sigma-comm.md` → extract Codebook section
-3→compose spawn prompt (template below)
+3→select model tier (per directives §5):
+  DA: model="opus" | reference-class-analyst: model="opus"
+  domain agents: model="sonnet" | synthesis(P<0.7): model="opus"
+4→compose spawn prompt (template below)
 
 ### Spawn Prompt Template
 
@@ -94,6 +102,13 @@ fallback(!has_project_tier): all→T/
 
 ## Scope
 {agent-specific scope — what this agent should focus on given the task}
+
+## Context Firewall
+You are analyzing ONLY: {task description}
+You have NO knowledge of: the user's career plans, other companies discussed outside this review,
+prior reviews in this session, or any conversation between the user and lead that is not in
+your workspace task description. If you encounter information that seems outside your review
+scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
 
 ## Work (exact sequence)
 1→ANALYZE: read code, research, etc.
@@ -218,6 +233,18 @@ teammate idle|disconnect w/o ✓:
 2→read workspace {agent} section → findings before crash
 3→workspace ¬in memory → store_agent_memory(annotate:"recovered by lead")
 4→log recovery → workspace convergence
+
+## Anti-Contamination Check (MANDATORY before report or document generation)
+
+!rule: before writing synthesis, report, or generating any shareable document:
+1→re-read workspace ## scope-boundary
+2→identify all topics discussed in this conversation OUTSIDE the review scope
+3→list: "session-topics-outside-scope: {list}"
+4→after generating report/document, grep output for terms from those topics
+5→any matches → revise to remove contamination before presenting to user
+6→shareable documents: spawn document-writing agent (separate subprocess = separate context)
+  provide ONLY workspace findings + review data as input
+  do NOT provide: user conversation context, casual remarks, career goals, unrelated topics
 
 ## Report
 

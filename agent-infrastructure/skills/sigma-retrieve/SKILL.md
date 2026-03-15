@@ -226,3 +226,4 @@ When invoked standalone:
 - ¬discard counter-evidence → contradictions are signal, present both sides
 - existing RP[{topic}] in memory + age < 30 days → offer to reuse | age ≥ 30 days → refresh
 - if total docs passing filter < 3 → warn user: low-evidence topic, findings are preliminary
+- model tiers (per directives §5): retrievers=haiku (TIER-C), validator=sonnet (TIER-B)

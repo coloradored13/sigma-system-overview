@@ -263,9 +263,10 @@ after 3 cycles (≥1 ANALYZE + ≥1 BUILD) → DA assesses adversarial layer val
 → new directive → append with version+date
 → directive revision → update version, note change in ctx
 
-## superforecasting protocol v1.0 (26.3.14)
+## superforecasting protocol v1.1 (26.3.15)
 
-scope: all sigma-review ANALYZE operations requiring estimates, forecasts, or probability assessments
+scope: all sigma-review operations requiring estimates, forecasts, or probability assessments
+modes: ANALYZE (market/domain forecasts) | BUILD (effort/complexity estimates)
 companion: adversarial-layer v2.0, analytical-hygiene forcing function
 
 ### §3 superforecasting methodology (Tetlock)
@@ -273,16 +274,33 @@ companion: adversarial-layer v2.0, analytical-hygiene forcing function
 !purpose: ground analysis in base rates and historical precedent. Superforecasters outperform professional analysts by 30% (Good Judgment Project). Key insight: experts overweight inside-view narrative reasoning; outside-view (base rates + analogues) is more reliable.
 
 #### decomposition mandate
+
+ANALYZE variant:
 !rule: complex questions MUST be decomposed into 3-7 independent sub-questions before analysis
 format per sub-question:
   "SQ[{N}]: {sub-question} |estimable: {yes/no} |method: {base-rate/analogue/data} |→ {which-agent-best-answers}"
 !purpose: prevents anchoring on a single narrative. Each sub-question gets independent analysis.
 
+BUILD variant:
+!rule: build scope MUST be decomposed into estimable sub-tasks before implementation
+format per sub-task:
+  "SQ[{N}]: {sub-task} |estimable: {yes/no} |method: {precedent/analogue/decompose} |→ {which-agent-owns}"
+!purpose: prevents anchoring on optimistic single-estimate. Each sub-task gets independent estimation.
+
 #### reference class forecasting
+
+ANALYZE variant:
 !rule: before ANY original analysis, identify the reference class
 format:
   "RC[{question}]: reference-class={category} |base-rate={frequency} |sample-size={N} |src:{source} |confidence:{H/M/L}"
 !rule: team estimates that deviate >15pp from reference class base rate MUST justify deviation with specific evidence (outcome 1 or 2 from §2 hygiene)
+
+BUILD variant:
+!rule: before effort estimation, identify reference class for build scope
+format:
+  "RC[{task}]: reference-class={similar-builds-in-stack} |base-rate={typical-duration} |sample-size={N} |src:{source} |confidence:{H/M/L}"
+!rule: "How long do similar builds take in this stack?" Apply base rates to timeline estimates.
+!rule: team estimates that deviate >30% from reference class MUST justify with specific evidence
 
 #### historical analogues
 !rule: identify 3-5 historical analogues for each major analysis question
@@ -291,16 +309,32 @@ format:
 !purpose: forces pattern-matching against real precedent, ¬theoretical reasoning
 
 #### calibrated probability estimates
+
+ANALYZE variant:
 !rule: key estimates must include calibrated ranges, ¬point estimates only
 format:
   "CAL[{estimate}]: point={best} |80%=[{low},{high}] |90%=[{lower},{higher}] |assumptions:{what-must-be-true} |breaks-if:{condition}"
 !enforcement: DA checks calibration quality. Overconfident ranges (80% band < 20% of point estimate) → challenge
 
+BUILD variant:
+!rule: effort estimates must include calibrated ranges, ¬point estimates only
+format:
+  "CAL[{task}]: point={best-estimate} |80%=[{low},{high}] |90%=[{lower},{higher}] |breaks-if:{dependency-delays}"
+!enforcement: DA checks: is 80% band realistic? Does it account for integration risk?
+
 #### pre-mortem analysis
+
+ANALYZE variant:
 !rule: every ANALYZE review must include pre-mortem: "It's 3 years later and this failed. What happened?"
 format:
   "PM[{N}]: {failure-scenario} |probability:{%} |early-warning:{signal} |mitigation:{prevention}"
 !minimum: 3 failure scenarios, each with probability estimate
+
+BUILD variant:
+!rule: every BUILD plan must include pre-mortem: "It's 6 months later and this codebase is unmaintainable. What happened?"
+format:
+  "PM[{N}]: {failure-scenario} |probability:{%} |early-warning:{signal} |mitigation:{prevention}"
+!minimum: 3 failure scenarios focused on: technical debt, scaling bottlenecks, integration failures
 
 #### outside-view reconciliation
 !rule: AFTER all agents complete inside-view analysis, reference-class-analyst produces reconciliation
@@ -309,11 +343,12 @@ format:
 !rule: if gap >15pp → DA must challenge the divergence in R2
 !rule: team may choose inside-view BUT must document specific evidence for deviation
 
-### §3a adaptive agent count v1.0 (26.3.14)
+### §3a adaptive agent count v1.1 (26.3.15)
 
 !purpose: right-size team to task complexity. Research shows (AgentDropout 2025) not all agents needed for all questions. Reduces 15-26x cost multiplier to 3-5x for simple analyses.
+modes: ANALYZE (analysis complexity) | BUILD (build complexity)
 
-#### complexity tiers
+#### ANALYZE complexity tiers
 
 TIER-1 (simple, 3+DA agents):
   criteria: single-domain question, well-defined scope, existing precedent available
@@ -329,6 +364,26 @@ TIER-3 (complex, 5-8+DA agents):
   criteria: novel domain, high uncertainty, multi-stakeholder, high-stakes decision
   team: 3-5 domain agents + reference-class-analyst + dynamic specialists + DA(from-r2)
   cost: ~15-26x single-agent
+
+#### BUILD complexity tiers
+
+TIER-1 (single module, 2+DA):
+  criteria: small feature, well-defined scope, existing patterns
+  team: primary builder + reviewer + DA
+  factors: module-count(1-2), interface-changes(0-1), test-complexity(low)
+
+TIER-2 (multi-module, 3-4+DA):
+  criteria: multi-module feature, interface changes, new patterns
+  team: 2-3 builders + reviewer + DA
+  factors: module-count(3-5), interface-changes(2+), test-complexity(moderate)
+
+TIER-3 (system build, 5-8+DA):
+  criteria: new system, multiple services, cross-cutting concerns
+  team: 3-5 builders + integration specialist + DA
+  factors: module-count(5+), interface-changes(many), test-complexity(high), dependency-risk(high)
+
+BUILD complexity scoring: module-count(1-5) + interface-changes(1-5) + test-complexity(1-5) + dependency-risk(1-5) + team-familiarity(1-5)
+sum < 12 → TIER-1 | 12-18 → TIER-2 | >18 → TIER-3
 
 #### complexity detection
 lead evaluates at task creation:
@@ -349,19 +404,34 @@ scoring: 1-5 per factor. Sum < 12 → TIER-1 | 12-18 → TIER-2 | >18 → TIER-3
 format: "complexity-assessment: {tier} |scores: domain({N}),precedent({N}),stakes({N}),ambiguity({N}),uncertainty({N}) |total:{sum} |team-size:{N}"
 user may override tier selection
 
-### §3b evaluation protocol v1.0 (26.3.14)
+### §3b evaluation protocol v1.1 (26.3.15)
 
-!purpose: measure analysis quality systematically. Replaces ad-hoc "was it good?" with rubric-based evaluation.
+!purpose: measure quality systematically. Replaces ad-hoc "was it good?" with rubric-based evaluation.
 !when: after synthesis complete (post-DA-exit-gate), before promotion phase
 !optional: lead or user can invoke /sigma-evaluate at any time
+modes: ANALYZE (analysis quality) | BUILD (code quality)
 
-#### rubric (6 criteria, 4-point scale)
+#### ANALYZE rubric (7 criteria, 4-point scale)
 1→ accuracy: factual claims correct, citations verified, numbers from reliable sources (4=all verified, 1=significant errors)
 2→ completeness: all major perspectives covered, no strawmanning, stakeholders represented (4=comprehensive, 1=one-sided)
 3→ logic: reasoning chains sound, conclusions follow from premises, no fallacies (4=rigorous, 1=significant flaws)
 4→ evidence-quality: authoritative sources, base rates applied, counter-evidence addressed (4=primary sources+base rates, 1=weak/absent)
 5→ calibration: confidence appropriate to uncertainty, assumptions explicit, ranges provided (4=explicit uncertainty, 1=false precision)
 6→ actionability: recommendations concrete, decision-relevant, implementation path clear (4=specific actions+criteria, 1=purely descriptive)
+7→ scope-integrity: analysis stays within stated scope, zero external contamination (4=perfectly scoped, 1=significant contamination)
+
+#### BUILD rubric (6 criteria, 4-point scale)
+1→ correctness: does it work? edge cases handled? error paths covered? (4=all cases handled, 1=fundamental bugs)
+2→ test-coverage: behavior tested (¬just runs)? failure cases? integration tests? (4=comprehensive behavioral, 1=minimal/absent)
+3→ maintainability: clear naming? reasonable complexity? future developer can understand? (4=self-documenting, 1=opaque)
+4→ performance: appropriate for scale? no obvious bottlenecks? measured ¬assumed? (4=measured+optimized, 1=unmeasured+bottlenecked)
+5→ security: input validation? auth/authz? OWASP top 10 addressed? (4=defense-in-depth, 1=no validation)
+6→ api-design: consistent? self-documenting? backward compatible? error responses clear? (4=exemplary contract, 1=inconsistent+undocumented)
+
+BUILD evaluator assignment:
+  Evaluator 1: Correctness + Security (code review perspective)
+  Evaluator 2: Test Coverage + Maintainability (quality perspective)
+  Evaluator 3: Performance + API Design (architecture perspective)
 
 #### grading
 A: 3.5-4.0 avg | B: 2.8-3.4 | C: 2.0-2.7 | D: 1.5-1.9 | F: <1.5
@@ -374,9 +444,10 @@ see /sigma-evaluate skill for full evaluation pipeline (3 evaluator agents + jud
 format: "OUTCOME[{review}:{prediction}]: predicted={X} |actual={Y} |error={delta} |→ calibration-update"
 !purpose: each review makes future reviews more accurate through tracked calibration
 
-## bayesian-consensus-tracking v1.0 (26.3.14)
+## bayesian-consensus-tracking v1.1 (26.3.15)
 
-scope: all sigma-review ANALYZE operations — replaces fixed round-count heuristic with evidence-based stopping
+scope: all sigma-review operations — replaces fixed round-count heuristic with evidence-based stopping
+modes: ANALYZE → P(consensus) | BUILD → P(implementation-ready)
 companion: adversarial-layer v2.0, superforecasting protocol
 
 ### §4 belief-state round management
@@ -413,6 +484,20 @@ BELIEF[r{N}]: P={posterior} |prior={X} |agreement={ratio} |revisions={quality} |
   |→ {synthesis-ready|continue(target:{gaps})|deep-disagreement(trigger:{action})}
 ```
 
+#### BUILD belief state: P(implementation-ready)
+!purpose: P(implementation-ready) instead of P(consensus) for BUILD mode
+weighted components:
+  interface-agreement: all agents agree on API contracts (weight 0.3)
+  no-assumption-conflicts: §4b cross-checked (weight 0.25)
+  test-strategy-defined: accepted by all agents (weight 0.2)
+  effort-calibrated: estimates calibrated against reference class (weight 0.15)
+  DA-exit-gate: plan quality (weight 0.1)
+
+BUILD stopping rules:
+  P > 0.85 → proceed to build (r3)
+  P 0.6-0.85 → another planning round (resolve specific gaps)
+  P < 0.6 → significant disagreement — Toulmin debate on contested architecture decisions
+
 #### why this matters
 - r1 with 9 tensions and 0.3 prior → P(consensus)≈0.25 → clearly needs r2 (correct)
 - r2 with 14/14 DA challenges addressed, all agents B+ → P≈0.88 → synthesis-ready (correct)
@@ -420,9 +505,10 @@ BELIEF[r{N}]: P={posterior} |prior={X} |agreement={ratio} |revisions={quality} |
 - prevents premature synthesis when disagreements are unresolved
 - gives DA objective data for exit-gate decision
 
-### §4a agentic retrieval protocol v1.0 (26.3.14)
+### §4a agentic retrieval protocol v1.1 (26.3.15)
 
-scope: structured data retrieval during sigma-review analyses
+scope: structured data retrieval during sigma-review operations
+modes: ANALYZE (market research) | BUILD (code patterns + API docs)
 companion: superforecasting protocol (base rate retrieval), analytical hygiene (evidence quality)
 
 !purpose: replace ad-hoc web search with quality-scored retrieval. Inspired by MAIN-RAG (ACL 2025) multi-agent filtering and Corrective RAG patterns.
@@ -454,11 +540,23 @@ filter threshold: total ≥ 10/15 passes | <10 flagged as low-confidence
 - reference-class-analyst uses retrieval for base rates and analogues
 - DA uses retrieval for counter-evidence
 
+#### BUILD retrieval strategies
+!rule: BUILD mode retrieves code patterns, ¬market research
+strategies:
+  CODE-PATTERN: search for implementations of specific patterns in production codebases (GitHub, docs, technical blogs)
+  LIBRARY-EVAL: compare libraries/frameworks (features, maintenance, community, license)
+  API-REFERENCE: fetch current API docs for dependencies being integrated
+  FAILURE-SEARCH: "What goes wrong when you build X this way?" (Stack Overflow, post-mortems, retrospectives)
+
+BUILD authority scoring:
+  official docs=5 | GitHub production examples=4 | tutorial with tests=3 | untested snippet=1
+
 see /sigma-retrieve skill for full pipeline (query decomposition → parallel retrieval → validation → synthesis)
 
-### §4b knowledge graph protocol v1.0 (26.3.14)
+### §4b knowledge graph protocol v1.1 (26.3.15)
 
-scope: structured domain knowledge for sigma-review analyses
+scope: structured domain knowledge for sigma-review operations
+modes: ANALYZE (market entities) | BUILD (codebase structure)
 location: agent-infrastructure/knowledge-graphs/{domain}/
 
 !purpose: provide structured entity-relationship data that enables multi-hop reasoning. Web search finds text; knowledge graphs find connections.
@@ -491,6 +589,21 @@ agents read graph files during boot or analysis:
 - lead validates new entries against existing graph (¬duplicate, ¬contradict)
 - graphs grow across reviews — each review adds domain knowledge
 - format: "KG-UPDATE[{domain}]: +E[{entity}] |+R[{relationship}] |src:{review-name} |date:{date}"
+
+#### BUILD codebase graph
+!purpose: map codebase structure for impact analysis, dependency visualization, test gap identification
+
+BUILD entity types: module, service, function, class, API-endpoint, database-table, config, dependency
+BUILD relationship types: depends-on, calls, implements, extends, reads-from, writes-to, integrates-with, tested-by
+
+enables:
+  impact analysis: "if I change this interface, what breaks?"
+  dependency visualization: module coupling map
+  test gap identification: untested integration points
+  dead code detection: unreferenced entities
+
+seeded from: codebase analysis during BUILD r1 (agents read code and populate graph)
+format: same E[]/R[] format as ANALYZE graphs
 
 #### available graphs
 warehouse-supply-chain (seeded 26.3.14 from warehouse LMS review)
@@ -630,6 +743,78 @@ prioritization (approaching token limits):
 
 compression target: memory ≤ 200 lines per agent after any round
   exceeding: summarize older entries, preserve calibration + active patterns
+
+## context-contamination-protocol v1.0 (26.3.15)
+
+scope: all sigma-review operations — protects analysis integrity from context bleed
+companion: adversarial-layer v2.0, evaluation protocol
+
+!purpose: LLM context windows don't have scope boundaries. Topics discussed in the same session
+contaminate each other's outputs via salience bias (recency + emotional relevance + specificity).
+Observed 26.3.14: casual career discussion contaminated system documentation.
+
+### §6a scope declaration
+!rule: workspace MUST include ## scope-boundary listing what review IS and IS NOT about
+!rule: lead populates "NOT about" list from current conversation topics outside the review
+!rule: lead re-reads scope-boundary before writing synthesis or documents
+
+### §6b agent context firewall
+!rule: agent spawn prompts include explicit context firewall section
+!rule: agents told they have NO knowledge of conversation outside their task
+!rule: agents note any out-of-scope signals encountered: "out-of-scope signal ignored: {description}"
+
+### §6c lead self-check
+!rule: before writing synthesis/documents, lead identifies out-of-scope session topics
+!rule: after generating, lead greps output for contamination terms
+!rule: contamination found → revise before presenting
+!format: "CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})"
+
+### §6d document isolation
+!rule: shareable documents generated via spawned agents (isolated context)
+!rule: document agents receive workspace data ONLY, ¬conversation context
+!rule: document agent prompt includes ONLY: task description, workspace findings, review data
+!rule: document agent prompt does NOT include: user conversation, casual remarks, career goals, unrelated topics
+
+### §6e evaluation
+!rule: /sigma-evaluate includes scope-integrity criterion (7th ANALYZE rubric item)
+!rule: scope-integrity scores: 4=zero contamination | 3=minor tangential | 2=noticeable out-of-scope | 1=significant contamination
+
+### §6f BUILD scope boundary
+!rule: BUILD scope-boundary prevents scope creep (aligns with §4a scope creep detection)
+BUILD format:
+  "## scope-boundary
+   This build implements: {phase description, specific features}
+   This build does NOT implement: {future phases, nice-to-haves, features not in spec}
+   Lead: before accepting agent output, verify it builds ONLY what's in scope."
+!rule: same contamination mechanism that prevents topic bleed in analysis prevents scope creep in build
+
+## tiered-model-strategy v1.0 (26.3.15)
+
+scope: all sigma-review operations — reduces cost by matching model capability to task
+companion: adaptive agent count (§3a)
+
+!purpose: reduce 15-26x cost multiplier to 3-8x. Not all agents need same capability.
+Opus for adversarial + calibration-critical. Sonnet for domain analysis + standard synthesis.
+Haiku for evaluation scoring + simple retrieval.
+
+### §5a model tiers
+TIER-A (opus): adversarial challenge, calibration-critical, low-consensus synthesis
+TIER-B (sonnet): domain analysis, standard synthesis, most R1 work
+TIER-C (haiku): evaluation scoring, simple retrieval, routine checks
+
+### §5b assignment rules
+DA: always TIER-A (adversarial quality directly correlates with model capability)
+reference-class-analyst: TIER-A (calibration accuracy critical)
+domain agents R1: TIER-B (breadth over depth in research round)
+domain agents R2 (DA response): TIER-B (concede/defend decisions are straightforward)
+synthesist/lead synthesis: TIER-B default, TIER-A if P(consensus) < 0.7
+evaluators (/sigma-evaluate): TIER-C for scoring, TIER-B for judge
+retrievers (/sigma-retrieve): TIER-C for search, TIER-B for validation
+
+### §5c override rules
+!rule: user can override: "use opus for all" or "use sonnet for all"
+!rule: lead can escalate: if TIER-B agent produces low-quality output, re-run as TIER-A
+!rule: lead reports model selection: "MODEL[{agent}]: {tier}({model}) |reason: {why}"
 
 → actions:
 → new directive → append with version+date
