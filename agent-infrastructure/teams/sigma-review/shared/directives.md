@@ -374,6 +374,128 @@ see /sigma-evaluate skill for full evaluation pipeline (3 evaluator agents + jud
 format: "OUTCOME[{review}:{prediction}]: predicted={X} |actual={Y} |error={delta} |→ calibration-update"
 !purpose: each review makes future reviews more accurate through tracked calibration
 
+## bayesian-consensus-tracking v1.0 (26.3.14)
+
+scope: all sigma-review ANALYZE operations — replaces fixed round-count heuristic with evidence-based stopping
+companion: adversarial-layer v2.0, superforecasting protocol
+
+### §4 belief-state round management
+
+!purpose: determine when to stop analyzing based on evidence quality, ¬arbitrary round count. Fixed "min 3, max 5" replaced by P(synthesis-ready | evidence). Inspired by ECON framework (ICML 2025) and sequential Bayesian consensus building.
+
+#### belief state computation (lead computes post-each-round)
+
+after each round, lead computes:
+```
+BELIEF-STATE[r{N}]:
+  P(consensus) = prior × L(evidence) / normalizer
+  prior: base-rate-consensus-for-task-type
+    simple-task: 0.7 | moderate: 0.5 | complex: 0.3 | novel: 0.2
+  L(evidence) = f(agreement-ratio, revision-quality, gap-count, DA-grade)
+    agreement-ratio: {agents-aligned}/{total-agents} (0-1)
+    revision-quality: how much did findings improve this round? (none=0.5, minor=0.7, material=0.9)
+    gap-count: unresolved gaps flagged by agents (each gap × 0.9 penalty)
+    DA-grade: DA engagement assessment (A=1.0, B=0.85, C=0.7, D=0.5, F=0.3)
+  posterior: P(consensus | r{N} evidence)
+```
+
+#### stopping rules
+!rule: P(consensus) > 0.85 → synthesis-ready (propose to DA for exit-gate)
+!rule: P(consensus) 0.6-0.85 → another round (targeted, address specific gaps)
+!rule: P(consensus) < 0.6 → deep disagreement (trigger Toulmin debate or escalate to user)
+!rule: DA exit-gate STILL required even if P(consensus) > 0.85 (Bayesian = proposal, DA = gate)
+!rule: hard cap remains at r5 regardless of P(consensus)
+
+#### workspace format
+lead writes after each round:
+```
+BELIEF[r{N}]: P={posterior} |prior={X} |agreement={ratio} |revisions={quality} |gaps={count} |DA={grade}
+  |→ {synthesis-ready|continue(target:{gaps})|deep-disagreement(trigger:{action})}
+```
+
+#### why this matters
+- r1 with 9 tensions and 0.3 prior → P(consensus)≈0.25 → clearly needs r2 (correct)
+- r2 with 14/14 DA challenges addressed, all agents B+ → P≈0.88 → synthesis-ready (correct)
+- prevents wasted rounds when consensus is genuine
+- prevents premature synthesis when disagreements are unresolved
+- gives DA objective data for exit-gate decision
+
+### §4a agentic retrieval protocol v1.0 (26.3.14)
+
+scope: structured data retrieval during sigma-review analyses
+companion: superforecasting protocol (base rate retrieval), analytical hygiene (evidence quality)
+
+!purpose: replace ad-hoc web search with quality-scored retrieval. Inspired by MAIN-RAG (ACL 2025) multi-agent filtering and Corrective RAG patterns.
+
+#### when to use agentic retrieval
+- reference-class-analyst needs base rate data or historical analogues
+- DA needs counter-evidence for challenges
+- any agent flags §2b calibration gap (outcome-3: can't resolve with existing data)
+- lead identifies research gap in workspace
+- user requests deep research on specific topic
+
+#### retrieval quality scoring
+every retrieved document scored on 3 dimensions (0-5 each):
+  relevance: how directly does this answer the question? (5=directly, 0=tangential)
+  authority: primary source(5) > academic(4) > industry report(3) > news(2) > blog/marketing(1) > unverifiable(0)
+  recency: <6mo(5) | 6-12mo(4) | 12-18mo(3) | 18-24mo(2) | 24-36mo(1) | >36mo(0)
+
+filter threshold: total ≥ 10/15 passes | <10 flagged as low-confidence
+
+#### cross-document validation
+!rule: claims supported by 3+ independent sources → CONVERGENT (high confidence)
+!rule: claims from single source → UNVERIFIED (flag, ¬discard)
+!rule: sources that contradict majority → COUNTER-EVIDENCE (valuable, preserve)
+!rule: counter-evidence search is MANDATORY for every retrieval (¬optional)
+
+#### integration with review
+- agents can invoke /sigma-retrieve {query} during analysis
+- results written to workspace as research package
+- reference-class-analyst uses retrieval for base rates and analogues
+- DA uses retrieval for counter-evidence
+
+see /sigma-retrieve skill for full pipeline (query decomposition → parallel retrieval → validation → synthesis)
+
+### §4b knowledge graph protocol v1.0 (26.3.14)
+
+scope: structured domain knowledge for sigma-review analyses
+location: agent-infrastructure/knowledge-graphs/{domain}/
+
+!purpose: provide structured entity-relationship data that enables multi-hop reasoning. Web search finds text; knowledge graphs find connections.
+
+#### graph structure
+each domain graph contains:
+  entities.md — entity type definitions (fields, examples)
+  relationships.md — relationship type definitions (direction, properties)
+  graph.md — actual graph data (entities + relationships, ΣComm-compressed)
+
+#### entity format
+```
+E[{name}|type:{entity-type}|{field1}:{value}|{field2}:{value}|src:{source}|date:{date}]
+```
+
+#### relationship format
+```
+R[{entity-A}|{relationship-type}|{entity-B}|{property1}:{value}|{property2}:{value}]
+```
+
+#### agent usage
+agents read graph files during boot or analysis:
+  1→ identify relevant domain graph for current task
+  2→ read graph.md → extract relevant entities and relationships
+  3→ use relationships for multi-hop reasoning (A→B→C)
+  4→ cite graph data in findings: "per KG[{domain}]: {entity} {relationship} {entity}"
+
+#### graph maintenance
+- seeded from review findings (post-review, agents contribute new entities/relationships)
+- lead validates new entries against existing graph (¬duplicate, ¬contradict)
+- graphs grow across reviews — each review adds domain knowledge
+- format: "KG-UPDATE[{domain}]: +E[{entity}] |+R[{relationship}] |src:{review-name} |date:{date}"
+
+#### available graphs
+warehouse-supply-chain (seeded 26.3.14 from warehouse LMS review)
+→ additional domains created as reviews warrant
+
 ## dynamic-agent-orchestration v1.0 (26.3.11)
 
 scope: sigma-review operations requiring adaptive team composition

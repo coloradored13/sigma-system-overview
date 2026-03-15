@@ -173,8 +173,28 @@ peers→ΣComm via inbox | user→plain in open-questions | workspace→ΣComm |
 ```
 
 ### 4. Round management
+
+#### 4a. Bayesian belief state (per directives §4)
+after each round where all agents ✓, compute:
+```
+BELIEF-STATE[r{N}]:
+  prior: task-complexity(simple=0.7, moderate=0.5, complex=0.3, novel=0.2)
+  agreement: {agents-aligned}/{total} (0-1)
+  revisions: none=0.5, minor=0.7, material=0.9
+  gaps: unresolved-count (each × 0.9 penalty)
+  DA-grade: A=1.0, B=0.85, C=0.7, D=0.5
+  posterior: P(consensus) = prior × agreement × revisions × gaps-penalty × DA-factor
+```
+P > 0.85 → propose synthesis to DA (DA exit-gate still required)
+P 0.6-0.85 → another round (target specific gaps)
+P < 0.6 → deep disagreement (Toulmin debate or escalate to user)
+hard cap: r5 regardless
+
+write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
+
+#### 4b. Standard convergence check
 1→read workspace convergence
-2→all ✓ → done, report
+2→all ✓ → compute belief state (4a) → act per stopping rules
 3→any ◌|! → legacy: check inbox unread→re-spawn | native: SendMessage→continue|clarify
 4→any ? → surface Q to user → then next round
 

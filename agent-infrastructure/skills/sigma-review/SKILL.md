@@ -112,10 +112,25 @@ fallback(!has_project_tier): all→T/
 ## Round Management
 
 1→read workspace convergence section
-2→all ✓ → check for zero-dissent circuit breaker (see below) → then proceed
-3→any ◌ → SendMessage to agent: continue|clarify
-4→any ! → surface blocker to user
-5→any ? → surface question to user → write answer to relevant inbox → re-spawn
+2→all ✓ → compute BELIEF-STATE (per directives §4):
+  prior(task-complexity) × agreement(agent-alignment) × revisions(quality) × gaps(penalty) × DA(grade)
+  P > 0.85 → propose synthesis to DA (exit-gate still required)
+  P 0.6-0.85 → another round (target specific gaps)
+  P < 0.6 → deep disagreement (Toulmin debate §DA or escalate)
+  hard cap: r5 regardless
+  write: "BELIEF[r{N}]: P={posterior} |→ {action}"
+3→r1 specifically: check for zero-dissent circuit breaker (see below) → then proceed
+4→any ◌ → SendMessage to agent: continue|clarify
+5→any ! → surface blocker to user
+6→any ? → surface question to user → write answer to relevant inbox → re-spawn
+
+## Retrieval Integration
+
+agents may invoke /sigma-retrieve for deep research during analysis (per directives §4a)
+- reference-class-analyst: base rates, historical analogues
+- DA: counter-evidence for challenges
+- any agent: §2b calibration gaps (outcome-3)
+results written to workspace as research packages with quality scores
 
 ## Zero-Dissent Circuit Breaker (R1 only)
 
