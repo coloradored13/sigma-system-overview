@@ -73,6 +73,10 @@ Write to `shared/workspace.md`:
 ## scope-boundary
 This review analyzes: {specific scope from task description}
 This review does NOT cover: {list topics from current conversation that are NOT part of this review}
+temporal-boundary: {YYYY-MM-DD if task specifies "as of" date or information cutoff | none}
+  if set: information-regime=only sources published+publicly available before cutoff
+  model-knowledge: post-cutoff knowledge of outcomes = OUT OF SCOPE
+  confidential-to-public: info confidential at cutoff but later made public = OUT OF SCOPE
 Lead: before writing synthesis or documents, re-read this boundary.
 
 ## findings
@@ -139,6 +143,19 @@ You have NO knowledge of: the user's career plans, other companies discussed out
 prior reviews in this session, or any conversation between the user and lead that is not in
 your workspace task description. If you encounter information that seems outside your review
 scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
+
+{IF temporal-boundary ≠ none, INCLUDE:}
+## Temporal Boundary: {YYYY-MM-DD}
+You are analyzing as of this date. You do NOT know what happened after this date.
+- Do NOT reference events, publications, or outcomes after {date}
+- Do NOT use knowledge of what subsequently happened to inform your analysis
+- ALL claims must cite a specific source with publication date before {date}
+- If you cannot find a pre-cutoff source for a claim, flag: UNSOURCED-CLAIM: {claim} |basis: model-knowledge
+- If web search returns post-cutoff sources, extract only data points that existed pre-cutoff
+  and cite the ORIGINAL pre-cutoff source, not the post-cutoff summary
+- Findings format adds provenance: F[date] name: {content} |confidence:H/M/L |src:{name}({pub-date}) |provenance:{type}
+  provenance types: filing | public-data | pre-cutoff-research | model-knowledge
+  model-knowledge → confidence capped at M
 
 ## Work (exact sequence)
 1→ANALYZE: read code, research, etc.
@@ -254,6 +271,20 @@ write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
 3→write: "CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})"
 4→after generating any output, grep for contamination terms → revise if found
 5→shareable documents → spawn document agent (isolated context, workspace data ONLY)
+
+{IF temporal-boundary ≠ none, ALSO per directives §6g:}
+6→SOURCE-AUDIT[§6g]: check every cited source publication date against temporal-boundary
+  pre-cutoff → ✓ | post-cutoff citing pre-cutoff data → replace with original source ↻ | post-cutoff only → ✗ reject
+  confidential-at-cutoff released post-cutoff → ✗ reject
+  write: "SOURCE-AUDIT[§6g]: {N} checked |{valid}✓ |{rejected}✗ |{replaced}↻"
+  >25% rejected → re-examine findings relying on rejected sources
+7→TEMPORAL-SCAN[§6g]: grep output for post-cutoff dates, outcome-revealing terms
+  ("collapse","failure","failed","receivership","post-mortem","hindsight","subsequently","ultimately")
+  write: "TEMPORAL-SCAN[§6g]: cutoff={date} |post-cutoff-refs:{list|none} |outcome-terms:{list|none} |result:clean|contaminated"
+  contaminated → revise before presenting
+8→PROVENANCE[§6g]: tally provenance across all findings
+  write: "PROVENANCE[§6g]: filing:{N} |public-data:{N} |pre-cutoff-research:{N} |model-knowledge:{N}"
+  model-knowledge >30% → flag review as potentially contaminated in output
 
 ### 5. Report to user
 Read workspace findings + convergence. Translate ΣComm to plain language. Present synthesis.

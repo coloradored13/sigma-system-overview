@@ -46,6 +46,10 @@ $ARGUMENTS
 ## scope-boundary
 This review analyzes: {task description — specific scope}
 This review does NOT cover: {list topics from current conversation that are NOT part of this review}
+temporal-boundary: {YYYY-MM-DD if task specifies "as of" date or information cutoff | none}
+  if set: information-regime=only sources published+publicly available before cutoff
+  model-knowledge: post-cutoff knowledge of outcomes = OUT OF SCOPE
+  confidential-to-public: info confidential at cutoff but later made public = OUT OF SCOPE
 Lead: before writing synthesis or documents, re-read this boundary.
 
 ## findings
@@ -257,6 +261,20 @@ teammate idle|disconnect w/o ✓:
 6→shareable documents: spawn document-writing agent (separate subprocess = separate context)
   provide ONLY workspace findings + review data as input
   do NOT provide: user conversation context, casual remarks, career goals, unrelated topics
+
+{IF temporal-boundary ≠ none, ALSO per directives §6g:}
+7→SOURCE-AUDIT[§6g]: check every cited source publication date against temporal-boundary
+  pre-cutoff → ✓ | post-cutoff citing pre-cutoff data → replace with original ↻ | post-cutoff only → ✗ reject
+  confidential-at-cutoff released post-cutoff → ✗ reject
+  write: "SOURCE-AUDIT[§6g]: {N} checked |{valid}✓ |{rejected}✗ |{replaced}↻"
+  >25% rejected → re-examine findings relying on rejected sources
+8→TEMPORAL-SCAN[§6g]: grep output for post-cutoff dates, outcome-revealing terms
+  ("collapse","failure","failed","receivership","post-mortem","hindsight","subsequently","ultimately")
+  write: "TEMPORAL-SCAN[§6g]: cutoff={date} |post-cutoff-refs:{list|none} |outcome-terms:{list|none} |result:clean|contaminated"
+  contaminated → revise before presenting
+9→PROVENANCE[§6g]: tally provenance across all findings
+  write: "PROVENANCE[§6g]: filing:{N} |public-data:{N} |pre-cutoff-research:{N} |model-knowledge:{N}"
+  model-knowledge >30% → flag review as potentially contaminated in output
 
 ## Report
 

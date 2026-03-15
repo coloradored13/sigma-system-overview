@@ -744,7 +744,7 @@ prioritization (approaching token limits):
 compression target: memory ≤ 200 lines per agent after any round
   exceeding: summarize older entries, preserve calibration + active patterns
 
-## context-contamination-protocol v1.0 (26.3.15)
+## context-contamination-protocol v1.1 (26.3.15)
 
 scope: all sigma-review operations — protects analysis integrity from context bleed
 companion: adversarial-layer v2.0, evaluation protocol
@@ -778,6 +778,11 @@ Observed 26.3.14: casual career discussion contaminated system documentation.
 ### §6e evaluation
 !rule: /sigma-evaluate includes scope-integrity criterion (7th ANALYZE rubric item)
 !rule: scope-integrity scores: 4=zero contamination | 3=minor tangential | 2=noticeable out-of-scope | 1=significant contamination
+!rule: when §6g active, scope-integrity ALSO evaluates temporal contamination:
+  4=zero post-cutoff sources, no hindsight markers, all claims have pre-cutoff provenance
+  3=minor: 1-2 post-cutoff sources caught+replaced, no outcome-revealing language
+  2=noticeable: post-cutoff framing present, some claims lack pre-cutoff sourcing
+  1=significant: confidential-then-public data used, outcome knowledge shapes analysis, sources mostly post-cutoff
 
 ### §6f BUILD scope boundary
 !rule: BUILD scope-boundary prevents scope creep (aligns with §4a scope creep detection)
@@ -787,6 +792,86 @@ BUILD format:
    This build does NOT implement: {future phases, nice-to-haves, features not in spec}
    Lead: before accepting agent output, verify it builds ONLY what's in scope."
 !rule: same contamination mechanism that prevents topic bleed in analysis prevents scope creep in build
+
+### §6g temporal scope boundary (26.3.15)
+
+!trigger: task includes temporal framing — "as of {date}", "using data available before {date}",
+  retrospective analysis, historical scenario, or any explicit information cutoff.
+  lead detects temporal framing during workspace initialization → activates §6g
+
+!purpose: LLMs trained on post-event data cannot naturally respect temporal information boundaries.
+  Web search returns post-event analysis when querying pre-event topics. Model training knowledge
+  includes outcomes the analysis persona would not know. Three contamination vectors:
+  (1) web search results contain post-cutoff sources + summaries
+  (2) model training knowledge includes post-cutoff outcomes
+  (3) confidential information made public only after cutoff (e.g. regulatory post-mortems)
+  Observed 26.3.15: SVB stress test — all 14 non-filing sources post-dated the Jan 2023 cutoff,
+  confidential CAMELS ratings appeared as "findings," probability estimates showed hindsight anchoring.
+
+#### §6g-1 temporal boundary declaration
+!rule: workspace ## scope-boundary MUST include temporal-boundary field when §6g triggers
+!format:
+  "temporal-boundary: {YYYY-MM-DD}
+   information-regime: only sources published + publicly available before {date}
+   model-knowledge: post-cutoff knowledge of outcomes is OUT OF SCOPE
+   confidential-to-public: information that was confidential at cutoff but later made public = OUT OF SCOPE"
+!rule: lead extracts cutoff date from task description. If ambiguous → ask user before proceeding
+
+#### §6g-2 agent temporal firewall
+!rule: agent spawn prompts include temporal firewall section when §6g active
+!format in spawn prompt:
+  "## temporal-boundary: {YYYY-MM-DD}
+   You are analyzing as of this date. You do NOT know what happened after this date.
+   - Do NOT reference events, publications, or outcomes after {date}
+   - Do NOT use knowledge of what subsequently happened to inform your analysis
+   - ALL claims must cite a specific source with publication date before {date}
+   - If you cannot find a pre-cutoff source for a claim, flag: UNSOURCED-CLAIM: {claim} |basis: model-knowledge
+   - If web search returns post-cutoff sources, extract only data points that existed pre-cutoff
+     and cite the ORIGINAL pre-cutoff source, not the post-cutoff summary"
+
+#### §6g-3 source-date audit
+!rule: MANDATORY before synthesis when §6g active
+!rule: every cited source must include publication date or filing date
+!rule: lead audits all sources against temporal-boundary:
+  source published BEFORE cutoff → ✓ valid
+  source published AFTER cutoff citing pre-cutoff data → extract original source, cite that instead
+  source published AFTER cutoff with no pre-cutoff equivalent → ✗ reject, flag for removal
+  confidential material released publicly AFTER cutoff → ✗ reject (even if material predates cutoff)
+!format: "SOURCE-AUDIT[§6g]: {N} sources checked |{valid}✓ |{rejected}✗ |{replaced}↻"
+!rule: if >25% sources rejected → lead re-examines findings that relied on rejected sources
+  findings without valid pre-cutoff sourcing → downgrade confidence or remove
+
+#### §6g-4 temporal contamination scan
+!rule: extends §6c — lead greps output for temporal contamination markers IN ADDITION TO topic markers
+!scan-targets:
+  - dates/years after cutoff (e.g. if cutoff=2023-01-31, scan for "March 2023", "April 2023", "2024", etc.)
+  - outcome-revealing terms: "collapse", "failure", "failed", "shutdown", "receivership", "post-mortem",
+    "lessons learned", "in hindsight", "we now know", "subsequently", "ultimately"
+  - post-event report titles or authors known to be post-cutoff
+  - regulatory confidential terms that only became public post-cutoff
+!format: "TEMPORAL-SCAN[§6g]: cutoff={date} |post-cutoff-refs: {list|none} |outcome-terms: {list|none} |result: clean|contaminated"
+!rule: contamination found → revise. Do NOT present contaminated output to user
+
+#### §6g-5 hindsight-bias check (DA responsibility)
+!rule: when §6g active, DA receives additional directive in spawn prompt:
+  "TEMPORAL REVIEW: This analysis has a temporal boundary of {date}. In addition to your standard
+   adversarial role, specifically check for:
+   - Findings that are correct but suspiciously precise (hindsight anchoring)
+   - Probability estimates that are too narrow or too confident for the stated information regime
+   - Claims sourced to post-cutoff publications or confidential-then-public materials
+   - Narrative framing that reflects post-event consensus rather than pre-event uncertainty
+   Flag each as: HINDSIGHT-BIAS[{finding}]: {why suspicious} |pre-cutoff basis: {exists|missing}"
+!rule: DA hindsight flags treated same as standard DA challenges — agents must concede|defend|compromise
+
+#### §6g-6 provenance requirements
+!rule: when §6g active, agent findings format adds provenance field:
+  standard: "F[date] finding-name: {content} |confidence:H/M/L"
+  temporal: "F[date] finding-name: {content} |confidence:H/M/L |src:{source-name}({pub-date}) |provenance:filing|public-data|pre-cutoff-research|model-knowledge"
+!rule: provenance=model-knowledge → confidence capped at M (cannot be H without external source)
+!rule: provenance=filing or provenance=public-data → confidence can be H if data is unambiguous
+!rule: lead tallies provenance distribution in synthesis:
+  "PROVENANCE[§6g]: filing:{N} |public-data:{N} |pre-cutoff-research:{N} |model-knowledge:{N}"
+  model-knowledge >30% of findings → flag review as potentially contaminated, note in output
 
 ## tiered-model-strategy v1.0 (26.3.15)
 

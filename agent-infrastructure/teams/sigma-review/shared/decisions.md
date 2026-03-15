@@ -408,6 +408,14 @@ scenario probabilities RECONCILED: portfolio adopts geopolitical framework. Sust
 DA exit-gate PASS for Iran conflict rerun R2. v6 portfolio DA-tested. Synthesis-ready with 5 risk factors: crowding unwind amplification, time-dependent portfolio adjustment, DFC probability low-confidence(15-25% 30d ¬30-40%), post-conflict overshoot($55-65), MLP §2c gap. 3 deliberate divergences logged: tradeable range(energy $88-115 vs sanctions $85-110), bypass permanence(portfolio disputes sanctions), price range perspective(macro $95-110 vs energy $88-115) |by:devils-advocate |weight:primary(DA exit-gate authority per directives)
   |ctx: R2 exit-gate evaluation. 12 challenges issued, 8 held/partially held(67%). All agents ≥B+. Portfolio v5→v6: energy equity -4pp, MPC+BNO removed, drawdown re-modeled -5.5/-8.2%. Analytical quality highest evaluated on this team
 
+## §6g temporal contamination controls (26.3.15)
+
+governance:§6g-temporal-boundary |by:lead |weight:primary
+  |ctx: SVB Jan 2023 stress test revealed §6 v1.0 designed for topic contamination ¬temporal. 3 vectors: (1) web search returns post-event sources+summaries (2) model training knowledge includes outcomes (3) confidential-then-public info leaks. 0/14 non-filing sources pre-cutoff, CAMELS ratings (confidential) appeared as findings, probability estimates showed hindsight anchoring
+  |decision: §6g added to directives v1.1 — 6 sub-protocols: boundary-declaration, agent-firewall, source-date-audit, temporal-scan, DA-hindsight-check, provenance-requirements. Model-knowledge capped at M confidence. >25% source rejection triggers finding re-examination. Integrated into sigma-lead.md+SKILL.md
+  |scope: ¬critical for standard market reviews, critical for retrospective/scenario/stress-test analyses
+  |lesson: governance layer only works when reviews route through skill→lead→directives chain. Direct agent spawns bypass all controls
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent
