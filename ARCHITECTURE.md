@@ -26,7 +26,7 @@ This principle — **deterministic state-driven navigation** — is then applied
 
 ### hateoas-agent
 
-A Python library (~2,060 LOC, 261 tests) that implements HATEOAS for AI agent tool use.
+A Python library (~3,320 LOC, 439 tests) that implements HATEOAS for AI agent tool use.
 
 **How it works:**
 ```

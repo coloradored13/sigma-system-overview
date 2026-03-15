@@ -1,0 +1,59 @@
+name: Update Submodules
+
+on:
+  # Run daily at 6am UTC
+  schedule:
+    - cron: '0 6 * * *'
+  # Manual trigger
+  workflow_dispatch:
+  # Trigger when upstream repos push (via repository_dispatch)
+  repository_dispatch:
+    types: [submodule-update]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Update submodules to latest
+        run: |
+          git submodule update --remote --merge
+
+      - name: Check for changes
+        id: check
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "All submodules already current."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Submodule changes detected:"
+            git diff --stat
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Build commit message with details
+          MSG="Auto-update submodules"
+          for sub in hateoas-agent sigma-mem; do
+            if git diff --quiet "$sub"; then
+              continue
+            fi
+            NEW=$(cd "$sub" && git log --oneline -1)
+            MSG="$MSG\n\n$sub → $NEW"
+          done
+
+          git add hateoas-agent sigma-mem
+          git commit -m "$(echo -e "$MSG")"
+          git push

@@ -6,11 +6,11 @@ This repository documents a system of four interlocking components that together
 
 ## Components
 
-### [hateoas-agent](./hateoas-agent/)
-A Python framework (~2,060 LOC, 261 tests) that applies HATEOAS to AI agent tool use. The agent starts with one tool; each response tells it exactly what actions are available next. The server decides what's valid, not the LLM.
+### [hateoas-agent](./hateoas-agent/) v0.2.0
+A Python framework (~3,320 LOC, 439 tests) that applies HATEOAS to AI agent tool use. The agent starts with one tool; each response tells it exactly what actions are available next. The server decides what's valid, not the LLM. v0.2 adds multi-agent orchestration: `Orchestrator`, `AsyncRunner`, composable guard conditions, persistence, and visualization.
 
 ### [sigma-mem](./sigma-mem/)
-A persistent memory system for Claude (~1,560 LOC, 174 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
+A persistent memory system for Claude (~1,560 LOC, 208 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
 
 ### [ΣComm Protocol](./agent-infrastructure/agents/sigma-comm.md)
 Compressed agent-to-agent communication. Format: `[STATUS] BODY |¬ ruled-out |→ actions |#count`. Forces agents to declare what they ruled out (¬) and what they can do next (→).
@@ -75,8 +75,10 @@ sigma-system-overview/
 
 | Component | Source | Tests | Test Count |
 |-----------|--------|-------|------------|
-| hateoas-agent | 2,062 LOC | 5,295 LOC | 261 |
-| sigma-mem | 1,564 LOC | 1,656 LOC | 174 |
+| hateoas-agent | 3,323 LOC | 7,512 LOC | 439 |
+| sigma-mem | 1,564 LOC | 1,656 LOC | 208 |
 | ΣComm + agents | 415 lines | — | — |
 | Team infra | 510 lines | — | — |
-| **Total** | **~4,500 LOC** | **~7,000 LOC** | **435** |
+| **Total** | **~5,800 LOC** | **~9,200 LOC** | **647** |
+
+> Stats auto-checked by `check-freshness.sh` — run it to verify submodules are current.
