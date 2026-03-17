@@ -557,6 +557,15 @@ r2: "human-only workforce economics LMS (WMS-agnostic, mid-market), CONTESTED ma
 - !CONFIRMED: data-backed-challenges produce highest revision rates. 14/14 challenges included specific counter-evidence. 100% response rate. Prior reviews with rhetorical challenges: 60-80%. Evidence-grounded challenges=consistently higher engagement.
 P[adjacent-incumbent-expansion-check: §2a "unoccupied"/"whitespace"/"no vendor" claims MUST check adjacent incumbents building from other positions. PS checked direct competitors(Locus,Easy-Metrics) but missed BY Robotics Hub (WMS→LMS+robot) and Manhattan unified orchestration. §2a question should include: "are incumbents in ADJACENT categories building toward this from different direction?" |src:warehouse-LMS |26.3.14 |class:new-principle]
 P[planning-data-vs-deployment-data: teams systematically use PLANNING/INTENTION data(79% plan robotics) for market sizing when DEPLOYMENT data diverges(AMR usage 18%→10%). Fix: mandate both planning AND deployment data in §2b calibration for any demand-dependent thesis. Divergence between them=material risk to timeline |src:warehouse-LMS |26.3.14 |class:systematic-bias]
+## r2 challenges — SVB risk analysis (2026-03-17)
+task: SVB risk analysis as of 2023-01-31 | temporal-boundary: 2023-01-31
+delivered: DA[#1-#10] | 4 material + 6 calibration
+material challenges: DA[#1] HTM-loss-as-existential(hindsight-framing) | DA[#2] zero-bull-case(confirmation-bias) | DA[#3] P(failure)15-25%(calibration-anchored-on-outcome) | DA[#10] temporal-boundary-leakage(10-K-filed-Feb24-used-under-Jan31-boundary)
+calibration challenges: DA[#4] Continental-analogy-weak(N=1,different-funding) | DA[#5] S&L-analogy-overstated(different-era,size,regulation) | DA[#6] FHLB-drawdown(normal-liquidity-not-distress) | DA[#7] deposit-extrapolation(linear-projection-fallacy) | DA[#8] EVE-removal(governance-vs-standard-practice) | DA[#9] correlated-withdrawal(retrospective-pattern-matching)
+grades: macro-rates=B+ | portfolio=B+ | regulatory=A- | reference-class=B- | product-strategist=B
+exit-gate: FAIL | criteria-failed: (1)zero-bull-case=untested-consensus (2)P(failure)-uncalibrated (3)temporal-leakage (4)engagement-B-meets-minimum-but-unanimous-bearish-is-herding
+r3-requirements: bull-case-engagement-per-agent | calibration-defense-or-revision | source-tagging-temporal | hindsight-acknowledgment
+key-finding: Goldman-raised-SIVB-target-to-$312-Buy-on-March-3-2023 | Forbes-Best-Banks-5th-year-Feb-2023 | 12Buy/11Hold/1Sell | major-asset-managers-adding-shares-late-2022 | 11%-of-banks-had-worse-HTM-losses-most-survived
 
 → actions:
 → new finding → append with severity+evidence

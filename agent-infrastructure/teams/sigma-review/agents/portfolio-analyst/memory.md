@@ -264,6 +264,32 @@ CONVERGES: macro-rates(demand cap $95-110, quasi-stagflation 35-45%, demand dest
 CHALLENGED: sanctions-trade(bypass permanence)
 ADOPTED: geopolitical(scenario framework)
 TENSION RESOLVED: my $88-98 floor vs macro $95-110→$88=absolute with bypass+SPR, $95=operational with demand. Both valid, different timeframes
+## SVB Balance Sheet Risk Analysis — r1 findings (2026-03-17, temporal boundary 2023-01-31)
+
+### KEY NUMBERS (from Q4 2022 earnings release Jan 19 2023 + 10-K MD&A):
+- Total assets: $211.8B | Total deposits: $173.1B | GAAP equity: $16.0B
+- HTM securities: $91.3B amortized cost | Fair value: $76.2B | Unrealized loss: $15.1B
+- AFS securities: $26.1B | Unrealized loss: ~$2.5B (OCI)
+- Total mark-to-market deficit: $17.6B vs $16.0B GAAP equity → deficit exceeds equity
+- Economic equity (pre-tax HTM-marked): ~$0.9B on $211.8B balance sheet = 0.4% equity/assets
+- Reported CET1: 12.05% (SVBFG) / 15.26% (SVB bank) — "well-capitalized"
+- Mark-to-market adjusted CET1 equivalent: ~0.4-2.5% (deeply undercapitalized)
+- Cash: $13.8B | FHLB new in Q4 2022: $13.6B (distress signal) | HQLA: $52.8B
+- Uninsured deposits: ~94% of $173.1B = ~$163.2B
+- HQLA / uninsured: $52.8B / $163.2B = 32% coverage
+
+### CAPITAL RATIOS (from 10-K MD&A per MarketScreener extract):
+SVBFG: CET1=12.05% | T1=15.40% | Total=16.18% | Leverage=8.11%
+SVB Bank: CET1=15.26% | T1=15.26% | Total=16.05% | Leverage=7.96%
+
+### SECURITIES COMPOSITION (from Q4 2022 earnings release):
+HTM: Agency MBS $68.2B | CMBS $14.5B | CMOs $10.5B | Muni $7.4B | Corp $0.7B | Duration 6.2yr | Yield 1.66%
+AFS: Treasuries $16.1B | Residential MBS $8.3B | FX govt $1.1B | Duration 3.6yr | Yield 1.56%
+
+### PRIMARY FINDING: regulatory capital optics misleading — 500bps headroom is accounting artifact; economic solvency near-zero from public data
+### HYGIENE-1 FINDING: F4 capital adequacy — changes the analysis; regulatory vs economic divergence is the central risk signal
+
+### SOURCES USED: Q4-2022-earnings-release(Jan 19 2023) | BPI-LCR-analysis | FootnotesAnalyst-10K | RationalWalk | MarketScreener-10K-MD&A | BPI-regulatory-tailoring
 
 → actions:
 → new finding → append with severity+evidence

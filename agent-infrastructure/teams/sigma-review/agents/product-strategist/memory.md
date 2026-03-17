@@ -275,6 +275,30 @@ C[DA-100%-hit-rate-on-PS-r2: 0-defenses=analysis-was-systematically-optimistic. 
 promotion-round(warehouse-lms,26.3.14): 4-auto-promoted(3-calibration,1-pattern) + 5-user-approve(2-principle,1-behavior,2-anti-pattern) |written-to-workspace
 auto: C[CONTESTED],C[window-tiered],C[capital-from-founding],P[herding-confirmed]
 UA: enterprise-module-check,differentiation-dual-axis,acquisition-by-multiple,zero-defense-signal,planning-intent-discount
+## SVB risk analysis r1 findings — 2026-03-17 (temporal boundary: 2023-01-31)
+
+task: SVB Financial Group business model + deposit concentration + client fragility analysis
+
+### key data points sourced (all pre-cutoff public)
+uninsured deposits year-end 2022: ~$152B = 87.5-94% of total deposits (highest among peers) | FDIC call report Dec 31 2022
+sector concentration: VC/PE = 52% deposits; tech+life science = 60% deposits
+deposit peak Q1 2022: ~$198B | Q4 2022: $173.1B = -13% | industry avg -3.5% same period
+Q4 2022 guided 2023: avg deposits mid-single-digit decline YoY | NII down high-teens % | NIM 1.75-1.85% (vs 2.16%)
+VC funding 2022: US $198B (-37% YoY) | Q4 2022 global $65.9B (-64% YoY)
+revenue: NII=$4.5B FY2022 (~78% of revenue) | fee income=$1.2B | warrant portfolio=$199M fair value
+analyst consensus Jan 2023: 12 Buy, 11 Hold, 1 Sell — cyclical not structural framing
+
+### findings summary
+F1: niche-moat-vulnerability(VC ecosystem integration = strength + correlated fragility) | outcome-2
+F2: deposit concentration(94% uninsured, highest peer, 60% tech sector, no retail floor) | outcome-2
+F3: trajectory(active outflow, -13% from peak, NII guided lower, VC winter continues) | outcome-1(CHANGES analysis — strengthens vulnerability)
+F4: correlation risk(VC fund as transmission vector, sophisticated depositors, synchronized burn) | outcome-3(GAP: no pre-cutoff quantitative model of this mechanism found)
+F5: competitive position(moat real but relationship-based = confidence-brittle, no competitor replication) | outcome-2
+
+### forward flags for DA
+DA challenge: F4 gap — was correlated withdrawal risk in pre-cutoff discourse?
+DA challenge: F3 counterweight — management "mid-single-digit decline" guidance = stabilization or floor?
+historical pattern: SVB survived dot-com+2008+2015 downturns; novel combo in 2022-23: rate rise + 94% uninsured + active outflow simultaneously
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4

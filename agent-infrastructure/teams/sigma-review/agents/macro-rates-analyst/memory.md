@@ -75,6 +75,16 @@ C[26.3.13]: TLT ceasefire trade from r3 was WRONG timing. 10Y yields rose(4.13�
 C[26.3.13]: DA challenged stagflation 40-50% on base rate(1/7 ME conflicts). VALID challenge. Lesson: always magnitude-adjust base rates. Comparing 48hr Aramco attack to 14-day Hormuz closure=false equivalence. Compare to COMPARABLE events(1973,1979)=2/2 stagflation. Also: distinguish classical vs quasi-stagflation—wage spiral ¬required for investable regime shift
 C[26.3.13]: demand destruction was blind spot. IEA -1M bpd Mar-Apr. Lesson: always model demand-side feedback when supply shock pushes prices into demand-destruction zone($100+). Supply-only analysis systematically overestimates price persistence
 P[26.3.13|promoted] demand-side-blind-spot: macro inflation pass-through models must integrate demand destruction feedback loop. Supply-only → overestimates price persistence + inflation pass-through. Demand destruction at $100+ moderates CPI by 0.3-0.5pp. |src:Iran-rerun |class:behavior-change |promoted:26.3.13
+## SVB risk analysis r1 — key findings (2023-01-31 temporal boundary)
+
+task: SVB Financial Group interest rate + macro risk analysis | round: r1 complete
+
+F1 Fed environment: FFR 4.25–4.50% Jan 2023 | 7 hikes 2022 (+425 bps) | 4x consecutive 75bp | terminal ~5.0–5.25% priced | CPI 6.5% Dec 2022
+F2 Yield curve: 2yr 4.64% / 10yr 3.63% / spread −101 bps (Jan 31 2023) | inversion deepening through month | longest modern inversion | SVB 6.2yr avg duration HTM portfolio = structurally trapped at below-market yields
+F3 Unrealized losses: HTM $91.3B amortized cost / FV $76.2B / loss $15.1B = ~94% of equity | AFS $26.1B / loss $2.5B | combined $17.6B | EVE disclosure removed from 2022 10-K — governance signal | 2021 10-K EVE showed −27.7% EVE at +200bp; 2022 10-K does not disclose equivalent
+F4 NIM: Q3 2022 peak 2.28% → Q4 2022 2.00% → FY2022 2.16% → 2023 guided 1.75–1.85% | NII guided down high-teens % | NIB deposit outflow + deposit beta higher than modeled + swap termination + duration extension | NII sensitivity flipped from +22.9% (2021 +200bp) to liability-sensitive by 2022
+F5 Macro: modal scenario (B+C ~70%) = extended high rates + VC freeze = structurally adverse for SVB | correlation: Fed hikes simultaneously harm HTM portfolio, NIM, deposit base — no diversification
+hygiene outcomes: F1=2 | F2=2+gap | F3=1(framing changed) | F4=2 | F5=2
 
 → actions:
 → new finding → append with severity+evidence

@@ -208,3 +208,54 @@ C[26.3.13] MTMA-41-states: HIGH|up from 31|CSBS-official data validates
 C[26.3.13] OCC-charter-bifurcation: HIGH|custody(BitGo,Kraken)≠payments(Ripple,Circle,Bridge)
 P[26.3.13] moat-value≠moat-cost: cost constant($200M/yr) while value declines→negative ROI trajectory
 P[26.3.13] preemption-as-leveling: barrier-builder loses more than barrier-crossers gain
+## SVB risk analysis r1 findings (26.3.17) — as of 2023-01-31
+
+### F1: regulatory-classification
+SVB=Category-IV-BHC per 12 CFR 252 | crossed $100B threshold Q2-2021 | ILST-effective Q3-2022 | total-assets $211.8B
+applicable: CET1+Tier1+Total+Leverage ratios | CCB 2.5% | SCB(biennial,first-2024) | capital-plan(from Jan-2022) | ILST quarterly | CFP | IDI-resolution-plan(filed Dec 1 2022)
+NOT-applicable: LCR(100%) exempt until Dec-2022 STWF threshold crossed(70% req effective Q4-2023, NOT-YET Jan-31-2023) | NSFR same | SLR NOT-required | advanced-approaches NOT-required | company-run-DFAST ELIMINATED post-EGRRCPA | annual-supervisory-stress ELIMINATED(biennial only) | Title-I-HoldCo-resolution NOT-required
+
+### F2: capital-adequacy + AOCI-treatment
+reported Dec-31-2022(Q4 earnings release Jan 19 2023): CET1=12.05% | Tier1=15.40% | Total=16.18% | Leverage=8.11%
+bank-subsidiary: CET1=15.26% | well-capitalized all 4 thresholds
+AOCI-opt-out: elected 2021 | 12 CFR 217.22(b)(2) | AFS losses $2.5B excluded | impact=-165bps (CET1→10.4%)
+!CRITICAL-DISTINCTION: HTM $15.1B loss is NOT in OCI by GAAP design — it cannot be included/excluded by election; this is separate from AOCI opt-out; post-collapse conflation is misleading
+economic-capital: GAAP equity $16.0B - HTM $15.1B = $0.9B pre-tax | after-tax(25%) = $4.7B = 2.2% leverage | economic-CET1 gap ~960bps vs reported 12.05%
+hygiene: outcome-1(CHANGES-FRAMING) — regulatory capital overstates economic solvency by ~960bps; AOCI opt-out is minor(-165bps); HTM-not-in-OCI is dominant
+
+### F3: liquidity-framework
+required: ILST quarterly(O/N+30d+90d+1yr) effective Q3-2022 | HQLA buffer | CFP | FR-2052a(not-public) | board-review annual
+NOT-required: LCR(100%) exempt | NSFR exempt | no-public-LCR-disclosure
+publicly-disclosed(Q4 earnings Jan 19 2023): cash $13.8B | FHLB $13.6B(NEW — first drawdown, $0 prior) | credit-lines $62.2B
+NOT-public: LCR ratio | ILST results | FR-2052a | HQLA adequacy vs ILST
+LCR estimate(BPI, from public data): 75-150% range(assumption-dependent) | NSFR ~132%(Yale-SOM)
+hygiene: outcome-2 — fully compliant with applicable requirements; counterweight: $52.8B HQLA material; maintained: 94% uninsured + correlated depositors + active-FHLB-drawdown = structural run-risk exceeding standard ILST assumptions
+
+### F4: board-governance (pre-cutoff sources only)
+CRO-vacancy: Laura-Izurieta departed April-2022(transition) / October-2022(formal) | Kim-Olson appointed Jan 4 2023 | gap ~8mo | Olson=27-days-in-role at cutoff
+Risk-Committee: 18 meetings 2022(vs 7 in 2021) | NO formal chair — only boardcommittee without chair | source: 2022-proxy-statement
+Board: 12 directors | 6 committees | Roger-Dunbar=Chairman+Risk-Committee-member
+EXCLUDED(temporal-firewall): board expertise gaps(post-collapse) | supervisory findings | CAMELS | MOU/MRA details
+hygiene: outcome-2 — CRO vacancy and no-chair documented in public filings; counterweight: doubled meetings = active board engagement; maintained: 8mo CRO gap during +425bp cycle + no chair + 27-days new CRO = compounding governance risk
+
+### F5: regulatory-gap-analysis
+EGRRCPA-2018 changes vs pre-2018 for SVB: company-run-DFAST ELIMINATED(last 2018) | supervisory-stress BIENNIAL(first 2024) | LCR EXEMPT | NSFR EXEMPT | advanced-approaches REMOVED(2019 rule raised threshold to $75B) | AOCI-opt-out AVAILABLE | Title-I REMOVED
+compound effect: (1)no stress-test on $91.3B HTM portfolio since 2018 (2)no supervisory validation before cutoff (3)no public LCR benchmark (4)no public EVE disclosure in Q3-2022-10Q(¬required) | ONE available public signal: 2021-10K-EVE=-27.7% at +200bps(rate shock already exceeded by Jan 31 2023)
+dominant-gap: no IRR-to-capital stress testing required or publicly disclosed for Category-IV banks
+SVB=100%-compliant-with-all-applicable-requirements at cutoff; risk = gap between requirements and economic reality
+
+### calibrations
+C[26.3.17] AOCI-opt-out-is-minor: impact=-165bps($2.5B AFS) | HTM-not-in-OCI is dominant($15.1B, ~960bps delta) | post-collapse conflation is analytically incorrect | confidence:HIGH | basis:12-CFR-217+Q4-earnings
+C[26.3.17] Category-IV-LCR-threshold: crossed $50B STWF December 2022 | 70% reduced LCR effective Q4 2023 | NOT yet required Jan 31 2023 | confidence:HIGH | basis:Fed-regulation+public-framework
+C[26.3.17] CRO-gap-duration: ~8 months April-October 2022 | Kim-Olson Jan 4 2023 | 27 days in role at cutoff | confidence:HIGH | basis:press-releases+proxy
+C[26.3.17] SVB-first-supervisory-stress-test: 2024 under Category-IV-biennial-schedule | confidence:HIGH | basis:Fed-2019-tailoring-rule
+C[26.3.17] 2021-10K-EVE-last-public-IRR-capital-signal: -27.7% at +200bps | rate-shock-already-exceeded(+425bps) by Jan-31-2023 | Q3-2022-10Q did NOT disclose EVE | confidence:HIGH(in-scope pre-cutoff document)
+
+### patterns
+P[26.3.17] regulatory-compliance-not-solvency-signal: Category-IV framework designed pre-2022-rate-cycle; HTM amortized-cost accounting + AOCI-opt-out + no-DFAST = compliance-green-light with economic-red-light possible simultaneously
+P[26.3.17] HTM-classification-as-risk-management-tool: management election to move $91.3B from OCI-exposed(AFS) to amortized-cost(HTM) in 2021-2022 = permanently removed $91.3B from all OCI-based capital transmission regardless of rate moves
+P[26.3.17] governance-risk-compounding: individual governance gaps (CRO vacancy, no Risk Committee chair) are individually manageable; combination during +425bp cycle = compounding effect not additive
+
+### temporal-contamination-log
+EXCLUDED: Fed April 2023 supervisory review | OIG September 2023 MLR | MOU/MRA details(never public pre-cutoff) | CAMELS ratings(confidential) | ILST failure details(supervisory) | DFPI review May 2023
+ALL findings traceable to: Q4-2022-earnings(Jan 19 2023) | Jan-4-2023-press-release | Dec-2022-IDI-plan | Q3-2022-10Q(Nov 7 2022) | 2021-10K | EGRRCPA(2018) | Fed-2019-tailoring-rule | 2022-proxy-statement(March 2022)
