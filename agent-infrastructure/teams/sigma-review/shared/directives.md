@@ -47,6 +47,7 @@ r1: domain agents research independently | DA observes ¬participates
   - ¬delays r2 significantly. Agents respond in single turn
   - DA reads CB responses alongside r1 findings when preparing r2 challenges
   - DA evaluates CB quality: genuine self-challenge vs performative. Weak CB = grade modifier in r2
+  - DA checks: were CB responses rooted in [independent-research] or still echoing [prompt-claim]? agents unified around prompt hypothesis ≠ consensus — note as herding-on-prompt (§2d, §7)
   - if CB produces genuine revision → agent updates finding before r2
   - if CB surfaces new disagreement → logged, DA incorporates into r2 challenges
 
@@ -128,18 +129,18 @@ example: r1-r2 ANALYZE → r3-r5 BUILD
 1→ CHECK CHANGES THE ANALYSIS
   check revealed something that alters recommendation, estimate, or framing
   action: revise finding BEFORE writing to workspace
-  format: "[finding] — revised from [original] because §2[a/b/c] found [evidence]"
+  format: "[finding] — revised from [original] because §2[a/b/c] found [evidence] |source:{type}"
 
 2→ CHECK CONFIRMS THE ANALYSIS (with acknowledged risk)
   check found concern but agent has SPECIFIC EVIDENCE for why position holds
   action: write finding WITH counterweight explicitly attached
-  format: "[finding] — §2[a/b/c] flag: [concern]. Maintained because: [specific evidence, ¬reassurance]"
+  format: "[finding] — §2[a/b/c] flag: [concern]. Maintained because: [specific evidence, ¬reassurance] |source:{type}"
   !test: would DA accept your "maintained because" reasoning? if not, you're rationalizing
 
 3→ CHECK REVEALS A GAP YOU CANNOT RESOLVE
   check surfaced something material that agent lacks expertise or data to evaluate
   action: flag for DA review or dynamic agent request
-  format: "[finding] — §2[a/b/c] gap: [what you can't assess]. Flagged for: [DA/lead/specialist]"
+  format: "[finding] — §2[a/b/c] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
 
 #### what is NOT acceptable
 
@@ -199,6 +200,28 @@ BUILD variant:
 3→ simplest version that works? how does proposal compare?
 4→ cost of being wrong? (reversal: day, week, month?)
 5→ workspace: outcome 1/2/3 format — ¬just "complexity: [label]"
+
+#### §2d source provenance (26.3.17)
+
+!purpose: prevent prompt laundering — user's assumptions entering as input, passing through research, returning as "findings." Source tags make provenance visible so DA can audit contamination
+!observed failure mode: user states hypothesis in prompt → agents treat as constraint ¬claim → findings echo prompt language with research authority → user reads own assumptions back as validated conclusions
+
+source types (every finding MUST carry one):
+  [independent-research] → found via web search, database, document, filing — agent can cite specific source
+  [prompt-claim] → restates, confirms, or directly derives from user's prompt claims (see workspace ## prompt-decomposition)
+  [cross-agent] → corroborates another agent's independent finding — cite which agent+finding
+  [agent-inference] → derived from reasoning across multiple inputs — ¬independently sourced
+
+!rules:
+  - every finding in workspace MUST include |source:{type} tag
+  - [prompt-claim] findings MUST be paired with independent corroboration OR explicitly marked as unverified
+  - [agent-inference] ¬substitutes for [independent-research] — inference is hypothesis ¬evidence
+  - source tag missing → process violation (same as missing hygiene check)
+
+!DA audit: during r2, DA checks source distribution across all agent findings:
+  - >30% [prompt-claim] without independent corroboration → structural contamination flag
+  - cluster of agents producing [prompt-claim] on same hypothesis → echo chamber flag
+  - [independent-research] that uses near-identical language to prompt → reclassify as [prompt-claim], challenge
 
 #### DA enforcement of hygiene checks
 
@@ -411,7 +434,7 @@ user may override tier selection
 !optional: lead or user can invoke /sigma-evaluate at any time
 modes: ANALYZE (analysis quality) | BUILD (code quality)
 
-#### ANALYZE rubric (7 criteria, 4-point scale)
+#### ANALYZE rubric (8 criteria, 4-point scale)
 1→ accuracy: factual claims correct, citations verified, numbers from reliable sources (4=all verified, 1=significant errors)
 2→ completeness: all major perspectives covered, no strawmanning, stakeholders represented (4=comprehensive, 1=one-sided)
 3→ logic: reasoning chains sound, conclusions follow from premises, no fallacies (4=rigorous, 1=significant flaws)
@@ -419,6 +442,7 @@ modes: ANALYZE (analysis quality) | BUILD (code quality)
 5→ calibration: confidence appropriate to uncertainty, assumptions explicit, ranges provided (4=explicit uncertainty, 1=false precision)
 6→ actionability: recommendations concrete, decision-relevant, implementation path clear (4=specific actions+criteria, 1=purely descriptive)
 7→ scope-integrity: analysis stays within stated scope, zero external contamination (4=perfectly scoped, 1=significant contamination)
+8→ source-provenance: findings properly tagged with source types (§2d), prompt claims independently verified, no echo clusters (4=all findings independently sourced with provenance, 3=≤10% [prompt-claim] without corroboration, 2=>10% unverified prompt-derived, 1=>30% or echo clusters detected)
 
 #### BUILD rubric (6 criteria, 4-point scale)
 1→ correctness: does it work? edge cases handled? error paths covered? (4=all cases handled, 1=fundamental bugs)
@@ -747,7 +771,7 @@ compression target: memory ≤ 200 lines per agent after any round
 ## context-contamination-protocol v1.1 (26.3.15)
 
 scope: all sigma-review operations — protects analysis integrity from context bleed
-companion: adversarial-layer v2.0, evaluation protocol
+companion: adversarial-layer v2.0, evaluation protocol, §7 prompt-decomposition-protocol (input-side prevention), §2d source provenance (tagging mechanism)
 
 !purpose: LLM context windows don't have scope boundaries. Topics discussed in the same session
 contaminate each other's outputs via salience bias (recency + emotional relevance + specificity).
@@ -900,6 +924,88 @@ retrievers (/sigma-retrieve): TIER-C for search, TIER-B for validation
 !rule: user can override: "use opus for all" or "use sonnet for all"
 !rule: lead can escalate: if TIER-B agent produces low-quality output, re-run as TIER-A
 !rule: lead reports model selection: "MODEL[{agent}]: {tier}({model}) |reason: {why}"
+
+## prompt-decomposition-protocol v1.0 (26.3.17)
+
+scope: all sigma-review operations — executed by lead before agent spawn
+modes: ANALYZE | BUILD (different decomposition, same principle)
+companion: §2d source provenance, §6 context-contamination-protocol, adversarial-layer v2.0
+
+!purpose: prevent user's hypotheses from entering agent research as assumed facts. Contamination is cheapest to catch at input — by the time DA reviews in r2, prompt claims are already laundered through 3-8 agents' findings. Decompose prompt BEFORE spawn → agents receive claims as testable hypotheses ¬background assumptions
+!observed failure mode (26.3.17): user prompt contains implicit claims ("market is underserved", "no major competitors") → agents absorb as context → research confirms via selective evidence → findings echo prompt with research authority → user reads own assumptions back as validated. Undetectable without provenance tracking
+
+### §7a decomposition — lead extracts three categories from user prompt
+
+1→ QUESTIONS: what user wants to learn
+  these define research scope — agents answer these
+  examples: "what is the competitive landscape?" | "what are adoption trends?" | "what risks exist?"
+
+2→ CLAIMS: what user asserts or assumes (often implicit)
+  ANALYZE detection heuristics:
+    - statements of fact without citation ("the market is underserved")
+    - framing language that presupposes outcome ("given the opportunity")
+    - comparative claims without evidence ("better than alternatives")
+    - causal assertions ("this will drive adoption")
+    - quantitative claims without source ("$500M market")
+  BUILD detection heuristics:
+    - scale assumptions without evidence ("needs to handle 10K concurrent users")
+    - technology assertions ("we need microservices for this")
+    - user behavior claims ("users will primarily access via mobile")
+    - performance requirements without measurement ("must be real-time")
+    - architecture claims ("monolith won't scale for this")
+  these become HYPOTHESES for agents to test — ¬context, ¬constraints, ¬facts
+
+3→ CONSTRAINTS: scope, timeline, market, methodology boundaries
+  these narrow the search — agents operate within these
+  examples: "US market only" | "2024-2026 timeframe" | "private credit" | "publicly available data"
+
+### §7b user confirmation — structured, scoped, ¬open-ended
+
+!rule: lead presents decomposition to user BEFORE spawning agents
+!rule: confirmation format is STRUCTURED — ¬open text, ¬"tell me more"
+!purpose: catch misunderstandings (lead misread prompt) without reinjecting bias
+
+format:
+```
+PROMPT-DECOMPOSITION:
+
+Questions (confirm — are these what you want answered?):
+  Q1: {question} — ✓/✗/revise
+  Q2: {question} — ✓/✗/revise
+
+Constraints (confirm — are these the right boundaries?):
+  C1: {constraint} — ✓/✗/revise
+  C2: {constraint} — ✓/✗/revise
+
+Claims extracted (awareness — agents will test these as hypotheses):
+  H1: {claim from prompt} → will test
+  H2: {claim from prompt} → will test
+  ↳ Recategorize only: should any of these be a constraint or question instead?
+```
+
+!rules:
+  - questions: user confirms scope (✓/✗/revise) — low bias risk
+  - constraints: user confirms boundaries (✓/✗/revise) — low bias risk
+  - claims: shown for AWARENESS ¬confirmation — user ¬asked "is this true?"
+  - user may RECATEGORIZE (move claim→constraint or claim→question) but ¬confirm/deny claims
+  - if user volunteers justification for claims → lead notes but does ¬pass to agents
+  - !anti-pattern: user says "H2 is definitely true" → lead responds: "noted — agents will still test it. If true, research will confirm independently"
+
+### §7c workspace integration
+
+!rule: decomposition written to workspace ## prompt-decomposition section (see workspace template)
+!rule: agents receive prompt-decomposition in spawn context — claims labeled as hypotheses
+!rule: agent spawn prompt includes: "Claims H1-HN are user hypotheses extracted from the prompt. Test these — find evidence FOR and AGAINST. Do ¬assume they are true. Tag findings that address claims with |source: and reference the hypothesis number"
+
+### §7d DA prompt audit (extends DA r2 responsibilities)
+
+!rule: DA receives original user prompt + decomposition in r2
+!rule: DA checks:
+  1→ which findings use language from user prompt (near-verbatim echo)
+  2→ which findings confirm prompt claims without independent sourcing ([prompt-claim] without corroboration)
+  3→ whether any implicit claims were MISSED in decomposition (lead failed to extract)
+  4→ whether research methodology COULD have produced contradictory result — if not, methodology was confirmatory ¬investigative
+!rule: DA reports prompt-audit in exit-gate assessment (see DA exit-gate criterion 5)
 
 → actions:
 → new directive → append with version+date

@@ -59,6 +59,26 @@ per agent, set model parameter in spawn:
 report: "MODEL[{agent}]: {tier}({model}) |reason: {why}"
 user may override: "use opus for all" | "use sonnet for all"
 
+#### 1c. Prompt decomposition (per directives §7)
+!purpose: extract user claims before they contaminate agent research or build decisions
+!when: both ANALYZE and BUILD — after complexity assessment, before workspace init
+
+1→ read user prompt → extract:
+  - QUESTIONS (Q1-QN): what user wants answered (ANALYZE) | what user wants built/solved (BUILD)
+  - CLAIMS (H1-HN): assertions/assumptions (use §7a detection heuristics — ANALYZE or BUILD variant)
+  - CONSTRAINTS (C1-CN): scope/timeline/methodology boundaries (ANALYZE) | tech stack/timeline/team constraints (BUILD)
+
+2→ present structured confirmation to user (§7b format):
+  - questions+constraints: user confirms ✓/✗/revise
+  - claims: shown for awareness — user recategorizes only, ¬confirms truth
+  - !wait for user response before proceeding
+
+3→ if user volunteers claim justification → note internally, do ¬pass to agents
+4→ write confirmed decomposition to workspace ## prompt-decomposition
+5→ include decomposition in agent spawn prompts (§7c): claims = hypotheses to test
+
+report: "PROMPT-DECOMPOSITION: Q:{count} |H:{count} |C:{count} |user-confirmed: {yes/pending}"
+
 - init workspace.md: task+agent-sections
 
 ### 2. Initialize workspace
@@ -78,6 +98,19 @@ temporal-boundary: {YYYY-MM-DD if task specifies "as of" date or information cut
   model-knowledge: post-cutoff knowledge of outcomes = OUT OF SCOPE
   confidential-to-public: info confidential at cutoff but later made public = OUT OF SCOPE
 Lead: before writing synthesis or documents, re-read this boundary.
+
+## prompt-decomposition
+### questions (user-confirmed)
+Q1: {question}
+Q2: {question}
+
+### constraints (user-confirmed)
+C1: {constraint}
+C2: {constraint}
+
+### claims → hypotheses (test, ¬assume)
+H1: {claim extracted from prompt} → agents test FOR and AGAINST
+H2: {claim extracted from prompt} → agents test FOR and AGAINST
 
 ## findings
 ### {agent-1-name}
@@ -157,10 +190,19 @@ You are analyzing as of this date. You do NOT know what happened after this date
   provenance types: filing | public-data | pre-cutoff-research | model-knowledge
   model-knowledge → confidence capped at M
 
+## Prompt Decomposition (read before researching)
+Check workspace ## prompt-decomposition for:
+- Questions (Q1-QN): these define your research scope
+- Claims (H1-HN): these are USER HYPOTHESES — test FOR and AGAINST, do ¬assume true
+- Constraints (C1-CN): operate within these boundaries
+Every finding MUST include |source:{type} tag per directives §2d:
+  [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
+If your finding addresses H1-HN, reference the hypothesis number and provide independent evidence.
+
 ## Work (exact sequence)
 1→ANALYZE: read code, research, etc.
 2→COMMUNICATE: SendMessage(type:message) peers=ΣComm | workspace open-questions=plain
-3→FINDINGS: write YOUR workspace section (ΣComm)
+3→FINDINGS: write YOUR workspace section (ΣComm) — every finding includes |source:{type}
 4→PERSIST (REQUIRED before ✓):
   store_agent_memory(tier:project, agent:{name}, team:sigma-review) → codebase findings
   store_agent_memory(tier:global, agent:{name}, team:sigma-review) → research/calibration if updated
@@ -264,13 +306,19 @@ write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
 3→any ◌|! → legacy: check inbox unread→re-spawn | native: SendMessage→continue|clarify
 4→any ? → surface Q to user → then next round
 
-### 4c. Contamination check (per directives §6)
+### 4c. Contamination check (per directives §6, §2d, §7)
 !MANDATORY before synthesis/report/document generation:
 1→re-read workspace ## scope-boundary
 2→identify session topics outside review scope
 3→write: "CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})"
 4→after generating any output, grep for contamination terms → revise if found
 5→shareable documents → spawn document agent (isolated context, workspace data ONLY)
+
+{ALSO per directives §2d — source provenance audit:}
+6→tally source tags across all agent findings in workspace
+7→write: "SOURCE-PROVENANCE[§2d]: independent-research:{N} |prompt-claim:{N} |cross-agent:{N} |agent-inference:{N} |prompt-claim-corroborated:{N}/{total-prompt-claims}"
+8→>30% [prompt-claim] without corroboration → flag structural contamination
+9→re-read workspace ## prompt-decomposition → verify all H[] hypotheses were addressed with [independent-research] sources
 
 {IF temporal-boundary ≠ none, ALSO per directives §6g:}
 6→SOURCE-AUDIT[§6g]: check every cited source publication date against temporal-boundary
@@ -352,6 +400,9 @@ synthesis→workspace convergence: resolved,open,agreements,dissent
 ### 4. Convergence guard
 pre-accept ✓: verify workspace findings ¬empty
 ✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
+✓+prompt-decomposition exists → verify all H[] hypotheses addressed:
+  per H[N]: ≥1 finding with [independent-research] source addressing it?
+  unaddressed hypotheses → flag in synthesis: "H{N} not independently tested"
 
 ### 5. Promotion Phase
 

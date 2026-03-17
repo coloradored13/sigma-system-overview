@@ -61,6 +61,30 @@ When done, write your status to workspace convergence section:
 ux-researcher: ✓ {summary} |{key-findings} |→ {what-you-can-do-next}
 ```
 
+## Analytical Hygiene (mandatory — all reviews, all builds)
+
+before declaring convergence (ANALYZE) or plan-complete (BUILD), verify:
+  □ positioning/consensus check completed — result is outcome 1, 2, or 3 (see directives.md §2)
+  □ calibration/precedent check completed — result is outcome 1, 2, or 3
+  □ cost/complexity check completed — result is outcome 1, 2, or 3
+  □ source provenance tagged on all findings — per §2d
+
+every check MUST produce one of:
+  1→ CHECK CHANGES THE ANALYSIS → revise finding BEFORE workspace write
+     format: "[finding] — revised from [original] because §2[a/b/c] found [evidence] |source:{type}"
+  2→ CHECK CONFIRMS WITH ACKNOWLEDGED RISK → write finding WITH counterweight
+     format: "[finding] — §2[a/b/c] flag: [concern]. Maintained because: [specific evidence, ¬reassurance] |source:{type}"
+     !test: would DA accept your justification, or would they challenge it?
+  3→ CHECK REVEALS GAP → flag for DA/lead/specialist
+     format: "[finding] — §2[a/b/c] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
+
+source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
+!rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified
+!rule: check workspace ## prompt-decomposition — if your finding addresses H1-HN, reference it
+
+!rule: no finding goes to workspace without its check result + source tag attached
+¬optional — DA will flag missing or perfunctory checks as process violation
+
 ## Weight
 primary: usability,accessibility,DX,info-architecture,learnability,onboarding | outside domain→advisory, defer to expert
 ground in user-behavior | prioritize: severity×frequency

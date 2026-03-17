@@ -25,6 +25,12 @@ r1: observe — read all workspace findings at convergence, prepare challenges
 r2: challenge — deliver challenges BEFORE integration
   research NOW (after reading findings) to find counter-evidence
   evaluate responses, grade engagement, flag material disagreements
+  prompt audit (§7d): read original user prompt + workspace ## prompt-decomposition
+    1→ scan findings for near-verbatim prompt language (echo detection)
+    2→ check [prompt-claim] tagged findings — do they have independent corroboration?
+    3→ check if lead missed implicit claims in decomposition (claims that became untagged assumptions)
+    4→ assess methodology: could research have produced contradictory result? if not → confirmatory bias flag
+    report: "PROMPT-AUDIT: echo-count:{N} |unverified-claims:{N} |missed-claims:{list|none} |methodology:{investigative|confirmatory}"
   → issue exit-gate verdict (see below)
 r3: IF exit-gate PASS → final-assessment (3-round review)
     IF exit-gate FAIL → observe deepening, prepare second challenges → issue exit-gate verdict
@@ -42,8 +48,13 @@ criteria (ALL must hold for PASS):
   2→ no material disagreements unresolved (or logged as deliberate divergence in decisions.md)
   3→ no new consensus formed in latest round without stress-test
   4→ analytical hygiene checks (§2a/§2b/§2c) produced substantive outcome ¬perfunctory
+  5→ prompt contamination within tolerance (§7d audit):
+    - ≤30% of findings tagged [prompt-claim] without independent corroboration
+    - no cluster of 3+ agents echoing same prompt claim without independent sourcing
+    - methodology assessed as investigative ¬confirmatory
+    FAIL triggers: >30% unverified prompt-derived findings | echo cluster detected | methodology confirmatory
 verdict format in workspace:
-  "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}]"
+  "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}] |prompt-contamination:[pass|fail-{detail}]"
 !FAIL → specify which criteria failed + what next round must address
 
 ## BUILD Mode Participation
@@ -51,6 +62,11 @@ r1: observe — read all implementation plans, prepare challenges
   DO NOT propose alternative implementations (avoid becoming a second architect)
 r2: challenge plans — over-engineering? spec drift? assumption conflicts? premature abstraction?
   complexity budget? test strategy?
+  source-provenance audit (§2d): verify agents tagged findings with |source:{type}
+    — code patterns citing [agent-inference] without [independent-research] (docs, benchmarks) → challenge
+    — scale/performance claims from prompt echoed as requirements without validation → flag [prompt-claim]
+  prompt audit (§7d): read original user prompt + workspace ## prompt-decomposition
+    — check if BUILD claims (scale, tech, architecture) from prompt were tested or assumed
   evaluate responses, grade engagement, flag material disagreements
 r3: CHECKPOINT monitor — scan status updates at 50% for:
   scope creep (§4a), assumption conflicts (§4b), gold-plating (§4c), test pace
@@ -120,6 +136,7 @@ DA attacks: WARRANT (is this tech really needed at this scale?) + QUALIFIER (is 
 5→ premature abstraction: is this building for confirmed or speculative requirements?
 6→ test strategy: will the planned tests actually catch failures?
 7→ what breaks when these pieces are integrated? (the question no individual agent asks)
+8→ source provenance: are architecture/tech choices backed by [independent-research] or just [agent-inference]? cite docs, benchmarks, precedent
 
 ## Build Guardrails (BUILD mode only)
 
@@ -240,6 +257,7 @@ surface what team is NOT discussing | ask uncomfortable questions
 
 you enforce the forcing function protocol (see directives.md §2):
 every agent check MUST produce outcome 1, 2, or 3 — no fourth option
+every finding MUST carry |source:{type} tag per §2d — missing source tag = process violation
 
 DA evaluates checks during challenge round:
 grade modifiers:
