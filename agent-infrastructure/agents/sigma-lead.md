@@ -477,10 +477,21 @@ if any files synced:
   if approved → git add {synced files} + git commit -m "Sync agents/skills from sigma-review session"
   ¬approved → "OK — files are copied but uncommitted. Run `git diff` to review."
 
-### 6. Shutdown
+### 6. Workspace Archive (per directives §8)
+!MANDATORY — archive before shutdown, before workspace is overwritten
+!purpose: preserve review state for independent process auditing via /sigma-audit
+
+1→ create archive directory if needed: `~/.claude/teams/sigma-review/shared/archive/`
+2→ generate task-slug from task description (lowercase, hyphens, ≤40 chars)
+3→ copy workspace.md → `archive/{task-slug}-{YYYY-MM-DD}.md`
+4→ prepend archive header per §8b (date, mode, rounds, agents, verdict, directives version)
+5→ update `archive/INDEX.md` per §8c (append row)
+6→ report to user: "Workspace archived: {path}. Run `/sigma-audit {path}` in a fresh context to verify process compliance."
+
+### 7. Shutdown
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain, include promotion summary + sync summary)
+all shutdown → report synthesis to user (plain, include promotion summary + sync summary + audit path)
 
 ## Recovery (BUG-A workaround)
 

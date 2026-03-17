@@ -1007,6 +1007,47 @@ Claims extracted (awareness — agents will test these as hypotheses):
   4→ whether research methodology COULD have produced contradictory result — if not, methodology was confirmatory ¬investigative
 !rule: DA reports prompt-audit in exit-gate assessment (see DA exit-gate criterion 5)
 
+## workspace-archiving-protocol v1.0 (26.3.17)
+
+scope: all sigma-review operations — lead archives workspace before shutdown
+companion: /sigma-audit skill (independent process verification)
+
+!purpose: preserve workspace state for post-review auditing. Workspace is overwritten by next review — archive ensures past reviews remain auditable in fresh context windows via /sigma-audit
+
+### §8a when to archive
+!rule: MANDATORY before shutdown for all completed reviews (ANALYZE or BUILD)
+!rule: lead copies workspace to archive BEFORE overwriting or clearing
+
+### §8b archive format
+!rule: archive path: `~/.claude/teams/sigma-review/shared/archive/{task-slug}-{YYYY-MM-DD}.md`
+!rule: archive = exact copy of workspace.md at time of synthesis completion
+!rule: lead prepends archive header:
+```markdown
+# ARCHIVED WORKSPACE — {task title}
+archived: {date} | mode: {ANALYZE|BUILD} | rounds: {N} | verdict: {from DA exit-gate}
+original: ~/.claude/teams/sigma-review/shared/workspace.md
+agents: {list of agents who participated}
+directives-version: {version from directives.md header}
+audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process compliance
+```
+!rule: archive includes full workspace content unchanged — ¬summarize, ¬redact
+
+### §8c archive index
+!rule: lead maintains `~/.claude/teams/sigma-review/shared/archive/INDEX.md`:
+```markdown
+# Workspace Archive Index
+| date | task | mode | rounds | agents | verdict | path |
+|------|------|------|--------|--------|---------|------|
+| {date} | {task-slug} | {mode} | {N} | {agent-list} | {DA verdict} | {relative path} |
+```
+!rule: append new row per archived review
+
+### §8d /sigma-audit integration
+!rule: archived workspace is the primary input to /sigma-audit
+!rule: /sigma-audit reads archived workspace independently in fresh context — no exposure to review conversation
+!rule: /sigma-audit produces verdict (GREEN/YELLOW/RED), flagged findings, remediation plan, calibration patterns
+!rule: calibration patterns stored to team patterns (store_team_pattern) for cross-review tracking
+
 → actions:
 → new directive → append with version+date
 → directive revision → update version, note change
