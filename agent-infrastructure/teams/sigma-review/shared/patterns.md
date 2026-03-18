@@ -94,6 +94,14 @@ confirmatory-hypothesis-testing-persists: teams test user hypotheses with eviden
 
 demand-side-gap-in-tech-analyses: technology landscape analyses focus on supply-side (what firms build) but omit demand-side (whether clients adopt). Client adoption barriers (IT governance, change management, procurement, compliance validation) are the binding constraint ¬feature availability. Only reference-class PM1b touched this (20-25% build-it-and-they-won't-come scenario) |agents: all |signal: zero analysis of portal usage metrics, adoption rates, or client satisfaction across entire review
 
+## sigma-audit calibration (26.3.17 | loan-admin-tech)
+
+AUDIT[26.3.17|loan-admin-tech]: R2-integration-skipped — agents declared convergence without writing DA response sections (concede/defend/compromise). Adversarial layer functioned as monologue ¬dialogue. DA assessed exit-gate without agent responses. |verdict:YELLOW |source:sigma-audit
+
+AUDIT[26.3.17|loan-admin-tech]: source-confidence-gap — §2d [independent-research] tag covers both company PR and third-party-verified data. DA[#9] proposed confidence tiering (Tier1=verified, Tier2=corroborated, Tier3=company-only) would close this. Consider directive update to §2d. |verdict:YELLOW |source:sigma-audit
+
+AUDIT[26.3.17|loan-admin-tech]: CONTAMINATION-CHECK-omission — formal §6c format not logged in workspace. DA prompt audit partially compensates but lead self-check serves different purpose (session bleed vs prompt echo). Consider adding CONTAMINATION-CHECK as exit-gate prerequisite. |verdict:YELLOW |source:sigma-audit
+
 → actions:
 → new pattern observed → append with |agents and |signal
 → pattern contradicted → move to ¬ section with explanation
