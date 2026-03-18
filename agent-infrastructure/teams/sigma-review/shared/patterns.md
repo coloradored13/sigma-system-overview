@@ -102,6 +102,8 @@ AUDIT[26.3.17|loan-admin-tech]: source-confidence-gap — §2d [independent-rese
 
 AUDIT[26.3.17|loan-admin-tech]: CONTAMINATION-CHECK-omission — formal §6c format not logged in workspace. DA prompt audit partially compensates but lead self-check serves different purpose (session bleed vs prompt echo). Consider adding CONTAMINATION-CHECK as exit-gate prerequisite. |verdict:YELLOW |source:sigma-audit
 
+EVAL[26.3.17|loan-admin-tech]: evidence-actionability-gap — evidence quality(2/4) and actionability(2/4) are systematic weaknesses while scope(4/4) and DA-quality are strengths. Pattern: team excels at structured process but underdelivers on output specificity for user persona. Opportunity tiers need cost/timeline/kill-criteria scaffolding. Source provenance needs confidence tiering. |grade:B(2.86/4.0) |source:sigma-evaluate
+
 → actions:
 → new pattern observed → append with |agents and |signal
 → pattern contradicted → move to ¬ section with explanation
