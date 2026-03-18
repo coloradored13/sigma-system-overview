@@ -351,7 +351,91 @@ H3: confirmed(M&A-consolidation:Datasite+Ansarada+Firmex+MergerLinks|DFIN-FDIC-l
 
 ### research-sources
 ACCC-merger-register(Datasite-Ansarada), Microsoft-CS-story(Datasite-Azure-Cognitive-Services), Ansarada-Gulfnews+Zawya(AI-ME-expansion), CapLinked-blog(AWS-GovCloud-FedRAMP), DFIN-PRNewswire(new-Venue-Sept-2025), Midaxo-PRWeb(IDC-Leader-Nov-2025), iDeals-SOC3-report(Dec-2025), dataroom-providers.org, datarooms.org, v7labs.com, peony.ink, citybiz.co, researchandmarkets.com
+## workflow automation research (26.3.18) — r1
+
+### review-task
+workflow-automation-implementation for 300-1000 employee companies | Q3(primary):technical-implementation | Q1,Q2,Q5,Q7(advisory) | H1,H2(test)
+
+### F1: architecture tiers |[independent-research]
+T1(300-500emp): iPaaS-first(Zapier/Make/Celigo)+webhook+no-code | $200-2K/mo | risk:vendor-lock-in,logic-ceiling
+T2(500-800emp): iPaaS+API-gateway+lightweight-event-bus(Kafka-lite) | adds:error-handling,retry-queues,dead-letter-queues | $2-15K/mo
+T3(800-1000emp): full-EDA+microservices+orchestration-engine(Temporal/Camunda)+dedicated-data-pipeline | $15-50K/mo | requires-platform-team
+!PRIMARY-FAILURE-MODE: T3-architecture+T1-team-capacity=collapse | most common mid-market mistake
+
+### F2: integration patterns ranked |[independent-research]
+1→API-first(REST/webhooks): weeks-not-months, OAuth+HMAC+idempotency-keys required
+2→iPaaS-middleware: 60-80% faster integration, built-in governance, TCO higher but hidden ops cost lower
+3→EDA(Kafka): T3-only, 19% response-time-improvement+34% lower-error-rate vs API-driven, overkill below 800emp
+4→ESB/legacy-middleware: avoid — legacy-ESB→async-event-hub migration cuts integration costs "double digits"
+¬point-to-point-custom: highest long-term maintenance burden
+hybrid(webhooks-speed+polling-reliability) = practical mid-market standard
+
+### F3: data management — equal-weight success factor |[independent-research]
+EY-2024: 83% of IT leaders cite poor data infrastructure as #1 automation blocker
+MDM-first sequence: MDM-phase-1(customer+product) → ETL-standardized(Airbyte/Fivetran) → operational-data-store → data-lake/warehouse-only-if-needed
+H2: data management IS missing from standard success factor lists but is equal-weight to change-mgmt+upskilling
+
+### F4: tool selection framework |[independent-research]
+decision axes(ordered): team-tech-capacity → integration-complexity → governance-requirements → volume → workflow-complexity
+Tier-A(entry,<500emp): Zapier/Make | ¬governance ¬complex-logic
+Tier-B(mid,500-800emp): Celigo/Tray.ai/n8n-self-hosted
+Tier-C(full,800-1000emp): Workato/Boomi/SnapLogic | enterprise-governance+audit+RBAC
+Tier-D(orchestration): Temporal.io/Camunda | long-running+stateful workflows
+1-day-POC: top-10-apps → 10K-records+200-events+forced-error → validate governance+security+cost
+
+### F5: security architecture |[independent-research]
+ZTA components mandatory: OAuth2+OIDC(svc-auth) | HMAC-webhook-sig | RBAC(build-vs-run separation) | AES-256+PII-detection | immutable-audit-trail | microsegmentation
+!RISK: automation-chains=new-data-exfiltration-surface (CRM-reads+email-writes=leak without breach)
+¬bolt-on-security: costs 3-5x more post-implementation
+
+### F6: scalability patterns |[independent-research]
+async-by-default | idempotent-workers | backpressure+rate-limiting | horizontal-scale-stateless-workers | monitoring-day-1 | modular-decomposition
+orgs automate 3x more processes year-2 vs year-1 → plan for volume growth
+cloud-first(default) | hybrid(if data-residency required) | ¬on-prem-only
+
+### F7: failure taxonomy ranked |[independent-research]
+F7a(~40%): ¬data-foundation → garbage-in-garbage-out → trust-collapse → abandonment | mitig: MDM before automation
+F7b(~25%): integration-fragility(point-to-point) → schema-change breaks → silent-failure | mitig: iPaaS+contract-testing+schema-registry
+F7c(~15%): scope-creep-architecture(T1-running-T3-workload) → collapse-under-load | mitig: arch-review-gate+5x-load-test
+F7d(~10%): security-bypass(over-permissioned credentials) → exfiltration-via-automation | mitig: least-privilege+audit
+F7e(~10%): ¬observability → silent-failure discovered-downstream | mitig: execution-monitoring+dead-letter-alerts
+70-80% of AI/automation projects fail to scale beyond pilot (system fragmentation root cause)
+
+### H1+H2 findings
+H1: PARTIALLY-CONFIRMED | 60%-achieve-ROI-12mo(for-those-with-foundation) | 70-80%-fail-to-scale-pilot(overall)
+"properly-planned" technical definition: MDM-first+arch-team-alignment+governance-before-tools+observability-day-1+security-built-in
+H2: PARTIALLY-CONFIRMED | data-management IS missing from standard lists | 4 missing technical factors: data-mgmt(#1),arch-capacity-match(#2),observability(#3),security-by-design(#4)
+
+### research sources
+kissflow.com(stats+trends) | informatica.com(iPaaS) | snaplogic.com(mid-market+POC) | EY-2024(83%-data-infra) | seraphicsecurity.com(ZTA) | confluent.io(EDA) | rudderstack.com(API-design) | parseur.com(MDM) | stackai.com(cloud-vs-onprem) | quixy.com(ROI-stats) | vfunction.com(70-80%-pilot-failure) | ziphq.com(CFO-pause) | flowwright.com(failure-patterns) | autonoly.com(common-mistakes)
+refreshed: 26.3.18 | next: 26.4
 
 → actions:
 → r3+ → synthesis
 → next research → VDA5050-v2.2, Open-RMF-adoption, Python-FastAPI-warehouse
+
+## workflow-automation-review r3 findings (26.3.18)
+
+### DA-response-positions |#9
+DA[#1]: CONCEDE | survivorship-bias-acknowledged | vendor-stats→M-confidence | "60%-ROI"=individual-process,surviving-orgs-only
+DA[#2]: CONCEDE+EX-ANTE | 5-testable-criteria(TA-READINESS-SCORE) | R1-READY-threshold:4/5 | T1-only@4/5 | stop-at-3/5 | !honest: checklist-predictive-¬-validated
+DA[#3]: §2e=NO-unconditionally | process-improvement-first-for-readiness≤3/5 | automation=highest-ROI-ONLY-IF:readiness≥4/5+>500-tx/mo+data-quality-passes | inter-agent-disagree: UX-F8-capacity-reallocation-requires-system-design(¬management-aspiration)
+DA[#6]: COMPROMISE | process-improvement-only:20-50%-gains@20-40%-cost | combined-approach-dominates | decision-gate-before-tool-selection-mandatory
+DA[#7]: CONCEDE | all-findings→[extrapolated-from-general,M-confidence] | no-mid-market-specific-quant-study-found
+DA[#9]: CONCEDE+REVISED-TCO | T1:$38-112K-yr1 | T2:$180-560K-yr1 | T3:$600K-1.8M-yr1 | license=15-30%-of-TCO | 3-6x-underfunded-if-license-only-budget
+DA[#10]: CONCEDE+EXPLICIT | individual-process:60%-ROI-12mo | enterprise-wide:15-25%-scale | 40-50pp-gap=central-finding | pilot-to-scale-failure=dominant-challenge
+DA[#12]: 4/6-blind-spots | vendor-lock-in(proprietary-DSL,40-60%-rewrite-on-switch) | automation-tech-debt(0.5-FTE/yr-per-50-workflows-yr3) | shadow-automation(annual-audit-4hrs) | AI-disruption(hedge:abstraction-layer) | regulatory-flagged(SOX+GDPR+HIPAA-compliance-review-mandatory)
+
+### revised findings
+REVISED-F1: T1-TCO=$38-112K-yr1 | T2-TCO=$180-560K-yr1 | T3-TCO=$600K-1.8M-yr1 | was:license-only
+REVISED-F8: individual-process:60%[M-conf] | enterprise-wide:15-25%[M-H-conf] | ex-ante-readiness:TA-READINESS-SCORE≥4/5
+
+### key calibration
+C[license-cost=15-30%-of-iPaaS-TCO → budget-from-license-only=3-6x-underfunded|1|26.3.18]
+C[process-improvement-only achieves 20-50%-efficiency-gains@20-40%-cost-of-automation → decision-gate-required-before-tool-selection|1|26.3.18]
+C[individual-process-success(60%)-vs-enterprise-wide-success(15-25%)=40-50pp-gap=most-important-single-finding|1|26.3.18]
+C[ex-ante-readiness-checklist(5-criteria):predictive-¬-validated-in-published-literature-for-300-1000emp-segment|1|26.3.18]
+C[shadow-automation=higher-risk-in-mid-market-than-enterprise(flat-orgs,less-IT-oversight,free-tier-tools)|1|26.3.18]
+
+### research sources (r3)
+ezintegrations.ai(legacy-iPaaS-TCO:$300-800K/yr) | cazoomi.com(Workato-$15-50K/yr,Boomi-$25-75K/yr) | sageitinc.com(Boomi-pricing) | leansixsigmainstitute.org(LSS-ROI-3:1-minimum) | 6sigma.us(15:1-lean-return) | advanceit.sg(process-improvement-ROI) | superblocks.com(vendor-lock-in) | dataiku.com(automation-debt-2026) | baytechconsulting.com(software-risk-2026) | automationanywhere.com(RPA-maturity) | forrester.com(RQ-readiness) | infotech.com(automation-readiness-assessment)

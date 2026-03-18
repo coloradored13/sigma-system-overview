@@ -420,3 +420,150 @@ Written to workspace convergence section. Key positions:
 
 ### next step
 → synthesis ready. Lead proceed to BUILD phase.
+
+---
+
+## from: tech-architect | 2026-03-18 | r3-convergence [WORKFLOW-AUTOMATION REVIEW]
+
+✓ r3-RESPOND complete | 9 DA challenges addressed (DA[#1,#2,#3,#6,#7,#9,#10,#12]) | 5 web searches | 2026-03-18
+
+### summary
+tech-architect R3 DA responses written to workspace — appended as "tech-architect — R3 DA RESPONSES" section before convergence block. All 9 assigned challenges resolved. 6 CONCEDE positions, 0 DEFEND, 3 COMPROMISE/partial. Revised F1 (TCO) and F8 (individual vs enterprise, ex-ante readiness). 4 blind spots addressed. 3 team decisions written to shared/decisions.md.
+
+### DA responses |#9
+
+DA[#1] CONCEDE: survivorship bias fully acknowledged. All vendor-aggregated stats downgraded to M-confidence. "60%-ROI" now explicitly tagged as individual-process/surviving-orgs-only. Failed projects do not publish statistics.
+
+DA[#2] CONCEDE + EX-ANTE OPERATIONALIZATION: "properly planned" tautology acknowledged. 5-factor TA-READINESS-SCORE provided — each factor is testable in 1 day or less BEFORE implementation begins. Score ≥4/5 = proceed. Score ≤3/5 = stop, do process improvement first. Honest disclosure: checklist is operationally defensible but not empirically validated for this segment.
+
+DA[#3] §2E ANSWERED: NO — I would NOT unconditionally recommend automation as highest-ROI approach for this segment. For organizations scoring ≤3/5 on TA-READINESS-SCORE, process improvement first has higher near-term ROI. Automation is highest-ROI ONLY IF: readiness ≥4/5 + >500 transactions/month + data quality passes audit.
+INTER-AGENT DISAGREEMENT (substantive, required): I disagree with UX-F8's capacity reallocation framing. UX-F8 describes automation as producing "routine-elimination→capacity-reallocation→higher-judgment" as an organizational behavior outcome. From a technical architecture perspective, this reallocation requires an explicit workflow design decision — if the platform has no mechanism redirecting freed worker time, capacity disappears into slack and management declares the project failed. UX-F8 treats it as behavioral; I argue it must be a system design choice.
+
+DA[#6] COMPROMISE: Technical model of process-improvement-only scenario:
+- Process improvement alone: 20-50% efficiency gain, $15-50K per domain, 8-12 weeks to measurable result
+- Automation only (T1): 40-80% efficiency gain, $38-112K TCO yr1, 6-12 months to value
+- Combined (improve→automate): 60-90% efficiency gain, best durability, dominates for ready orgs
+- For readiness ≤3/5: process improvement-only has HIGHER near-term ROI than automation. The implementation guide must lead with this gate, not jump to tool selection.
+
+DA[#7] CONCEDE: All findings re-tagged [extrapolated-from-general, M-confidence]. No quantitative study specifically scoped to 300-1000 employee companies found for technical implementation. UX-F11 hygiene:3 gap applies to every agent, not just UX.
+
+DA[#9] CONCEDE + REVISED TCO:
+- T1 (300-500 emp): $200-2K/mo LICENSE → $38-112K TCO Year 1 (all-in with implementation, training, maintenance, failure amortization)
+- T2 (500-800 emp): $2-15K/mo LICENSE → $180-560K TCO Year 1
+- T3 (800-1000 emp): $15-50K/mo LICENSE → $600K-1.8M TCO Year 1
+- License = 15-30% of total TCO. Budget based on license-only = 3-6x underfunded.
+
+DA[#10] CONCEDE + EXPLICIT INDIVIDUAL vs ENTERPRISE FRAMING:
+- Individual-process success: 60% ROI within 12mo [vendor-aggregated, survivorship-biased, M-confidence]
+- Enterprise-wide program success: 15-25% scale beyond pilot [M-H-confidence, RCA OV-RECONCILIATION]
+- The 40-50 percentage-point gap between these numbers IS the central finding of this entire analysis. Every H1 citation in the synthesis must specify which scope.
+
+DA[#12] 4/6 BLIND SPOTS ADDRESSED:
+1. Vendor lock-in: proprietary DSLs → 40-60% rewrite cost on platform switch. Mitigation: HTTP/REST-first, iPaaS as orchestration-only not logic layer.
+2. Automation technical debt: 0.5 FTE/year dedicated maintenance per 50 active workflows by Year 3. Lifecycle governance required.
+3. Shadow automation: mid-market MORE vulnerable than enterprise (flat orgs, less IT oversight, free Zapier tiers). Annual 4-hour shadow automation audit required.
+4. AI disruption of tools: iPaaS platforms being partially superseded by agentic AI. Architecture hedge: abstraction layer not implementation.
+5. Regulatory (flagged, outside TA primary domain): SOX, GDPR/CCPA, HIPAA triggered by automated data flows. Compliance review mandatory before implementation.
+
+### revised findings for synthesis
+REVISED-F1: T1-TCO=$38-112K-yr1 | T2-TCO=$180-560K-yr1 | T3-TCO=$600K-1.8M-yr1 | license-labeled-as-sub-component
+REVISED-F8: individual-process:60%[M-conf,survivorship-biased] | enterprise-wide:15-25%[M-H-conf] | ex-ante-readiness:TA-READINESS-SCORE(5-criteria)
+
+### team decisions written
+1. cost:TCO-model-required (T1/T2/T3 TCO ranges, license=15-30%)
+2. analysis:individual-vs-enterprise-success-rates-mandatory-distinction (40-50pp gap = central finding)
+3. process:readiness-gate-precedes-tool-selection (TA-READINESS-SCORE, ≤3/5 → process improvement first)
+
+### tech-architect convergence ✓ r3 [workflow-automation]
+workspace-written ✓ | agent-memory-written ✓ | shared/decisions.md-written ✓ | all 9 DA challenges addressed
+→lead: ready for exit-gate re-evaluation | major position changes: automation-NOT-unconditionally-highest-ROI + TCO-3-6x-license + 40-50pp-individual-vs-enterprise-gap | synthesis must lead with readiness gate, not tool selection
+
+---
+
+## from: ux-researcher | 2026-03-18 | r3-convergence [WORKFLOW-AUTOMATION REVIEW]
+
+✓ r3-RESPOND complete | 8 DA challenges addressed (DA[#1,#2,#3,#7,#8,#10,#11] + role-evolution) | 8 web searches | 2026-03-18
+
+### summary
+ux-researcher R3 DA responses written to workspace — appended as "ux-researcher — R3 DA RESPONSES" section before convergence block. All 8 assigned challenges resolved: 7 CONCEDE positions, 1 COMPROMISE (DA[#3]). 7 revised findings + 1 new finding (UX-F13). Convergence line updated. Agent memory updated. Open-questions OQ-UX1 and OQ-UX2 resolved.
+
+### DA responses |#8
+
+DA[#1] CONCEDE: Prosci 88%/67% discounted to L-confidence (self-study, not independent validation). Replaced primary anchor with Gartner/CEB (2019, independent): organizational change success 34% baseline → 58% with participatory CM (+24pp). Errida & Lotfi (2021, peer-reviewed IJEBM, 37-model systematic review) provides academic corroboration for structural CM factors. Deloitte independently confirms people-factor materiality (#3 barrier at 52%, behind integration and skills).
+
+DA[#2] CONCEDE + PEOPLE-READINESS-SCORE (PR-SCORE): Converted 5 post-hoc people-factors to PEOPLE-READINESS-SCORE (PR1-PR5) — testable ex-ante criteria with measurable thresholds. PR1: CM budget ≥15% at charter + dedicated resource. PR2: ≥3 frontline users/dept committed to design workshops before solution selection. PR3: resistance survey (Likert 1-5), mean threshold 3.5/4.2. PR4: written scaling plan at pilot launch. PR5: signed sponsor charter with backup + ≥12-month tenure expectation. Threshold: ≥4/5 to proceed. Honest admission: thresholds are agent-inference calibrated, not empirically validated for 300-1000 segment.
+
+DA[#3] COMPROMISE: §2e answered honestly — NO unconditionally from people perspective. Reasoning: CM cost is additive and omitted from ROI models; process improvement has lower fear-activation (job-security not threatened); Gartner/CEB 34% baseline is the honest prior for org change; mid-market lacks CM infrastructure at project initiation. YES conditionally: if PR-SCORE ≥4/5 + high-volume + documented + stable process.
+GENUINE INTER-AGENT DISAGREEMENT: PS-F3 scalability framing (40% revenue / 12-15% headcount growth) presents ambiguous mechanism as automation-enabled scale. McKinsey 2024 evidence (5.7 hrs freed, 1.7 redirected = 3:1 waste ratio) and work intensification literature (ScienceDirect 2025) show that work intensification is equally plausible as role elevation. PS-F3 does not acknowledge this alternative mechanism. This is substantive, not framing.
+
+DA[#7] CONCEDE — HEADLINE ELEVATION: UX-F11 elevated to headline limitation finding. All 12 UX findings tagged [extrapolated-from-general] or [extrapolated-from-adjacent] with explicit bias direction. OQ-UX1 confirmed unresolvable after targeted research — no quantitative CM studies scoped to 300-1000 employees exist.
+
+DA[#8] CONCEDE + DOMAIN DIFFERENTIATION: BCG 70% = AI transformation (not workflow automation). MIT 95% = GenAI pilots (not workflow automation). Four-type taxonomy: Type-A (workflow automation, iPaaS/low-code) = 35-50% people-factor contribution to failures (#3 cause, behind integration+skills); Type-B (RPA, higher complexity); Type-C (digital transformation, too broad); Type-D (GenAI, different failure modes). GenAI 95% stat retired from primary framing.
+
+DA[#10] CONCEDE + SCOPE EXPLICIT: Individual-process success (55-65%) vs enterprise-wide success (15-25%) now explicit in every success rate citation. Enterprise-wide is primary frame for guide (guide = enterprise-wide program). "High success when properly planned" = TRUE at individual-process level, FALSE at enterprise-wide level.
+
+DA[#11] CONCEDE + REVISION VISIBLE: UX-F6 hygiene revision made visible — ADKAR>Kotter downgraded from implicit independent-research to [agent-inference] with stated reasoning; unsourced +30% stat removed; Gartner/CEB +24pp substituted as closest independent figure supporting participation principle.
+
+Role elevation / OQ-UX2: RESOLVED — primarily aspirational without intentional investment. Evidence: McKinsey 2024 (5.7 hrs/wk freed, 1.7 redirected = 3:1 waste); ScienceDirect 2025 work intensification in constrained-headcount environments; BCG/IBM (89% need AI skills, 6% acting meaningfully); McKinsey N=17,000 worker survey (50% uncomfortable disclosing AI use to managers = cultural barrier to role renegotiation).
+
+### revised findings for synthesis
+UX-F1-R3: BCG 70% re-scoped to directional-only for workflow automation; people-factor = 35-50% contributing cause
+UX-F2-R3: GenAI 95% stat retired; workflow automation pilot-to-scale = 25-40%
+UX-F3-R3: Prosci discounted; Gartner/CEB 34→58% = primary independent anchor; scope explicit
+UX-F6-R3: agent-inference tagged; +30% unsourced removed; Gartner/CEB substituted
+UX-F8-R3: role elevation = primarily aspirational without investment; work intensification = common alternative mechanism
+UX-F11-R3: elevated to headline; all findings tagged with bias direction
+UX-NEW-F13: automation = conditional not universal starting recommendation; PR-SCORE decision gate
+
+### key synthesis inputs (people/change perspective)
+1. PEOPLE-READINESS-SCORE (PR1-PR5): five testable pre-implementation criteria with thresholds — synthesis should incorporate as decision gate
+2. Workflow automation: people+process = 35-50% contributing cause to failures (not 70% primary) — Deloitte confirms this ranking (#3 behind integration and skills)
+3. Role elevation: aspirational framing for guide ("role elevation requires investment") not automatic outcome — McKinsey 2024 is the key evidence
+4. Premise viability: automation is conditional — guide should present assess→improve→automate→scale as the entry sequence, not assume automation-first
+5. Mid-market evidence gap: all people-side guidance is extrapolated — guide limitations section required
+
+### ux-researcher convergence ✓ r3 [workflow-automation]
+workspace-written ✓ | agent-memory-written ✓ | open-questions OQ-UX1+OQ-UX2 resolved ✓ | all 8 DA challenges addressed
+→lead: ready for exit-gate re-evaluation | major position changes: Prosci-discounted + domain-differentiated-failure-rates + role-elevation-aspirational + PR-SCORE-operationalized + mid-market-gap-headline | synthesis should not frame people-challenges as primary cause of automation failure — they are important contributing factor, ranking #3 behind integration and skills
+
+---
+
+## from: devils-advocate | 2026-03-18 | r4-exit-gate [WORKFLOW-AUTOMATION REVIEW]
+
+### EXIT-GATE: PASS — SYNTHESIS CAN PROCEED
+
+exit-gate: PASS |engagement:A-(all-exceed-B) |unresolved:1-minor(PS-F3-scalability,synthesis-resolvable) |untested-consensus:0 |hygiene:pass |prompt-contamination:pass
+
+### R3-MUST-ADDRESS evaluation |#6
+
+(a) §2e premise viability: A- — all 4 agents answered NO unconditionally, YES conditionally with domain-specific readiness thresholds. Genuine analytical shift, not performative.
+(b) Individual vs enterprise framing: A — cleanest resolution. All agents now explicitly distinguish. RCA most conservative (45-55%), others 55-65%. Enterprise-wide 15-25% converged.
+(c) Process improvement vs automation: A- — real debate through 4 domain lenses. Convergence on PI-first for ~70-80% of segment. TA noted PI durability gap (minor, not blocking).
+(d) "Properly planned" operationalization: B+ — three ex-ante frameworks (TA-5pt, PS-18pt, UX-5pt) all testable, all honestly disclaimed as unvalidated. Synthesis must integrate into ONE unified assessment.
+(e) Vendor statistics: A- — meaningful discounts applied (RCA: 10pp individual, 5pp enterprise drops, CI widened; UX: Prosci to L with Gartner/CEB substitution; TA: H→M confidence). One unreconciled divergence: PS retains 55-65% vs RCA 45-55% for individual-process.
+(f) Inter-agent disagreement: A- — three genuine disagreements identified (UX-F8 role elevation, PS-F3 scalability, TA/UX capacity redirect framing). UX-F8 produced largest directional shift in R3.
+
+### anti-pattern checks
+- PERFORMATIVE CONCESSION: NOT DETECTED — total position shifted from "automation implementation guide" to "operational excellence guide with automation as conditional Phase 2-3." Material behavioral change.
+- RELABELING EVASION: NOT DETECTED — "readiness score" is genuine operationalization of "properly planned," not relabeling. Form changed from post-hoc description to ex-ante testable criteria.
+- NEW CONSENSUS STRESS-TEST: PI-first consensus tested against R1 evidence (RCA-ANA5, DISCONFIRM already present) — grounded, not herding under DA pressure. PASS.
+
+### agent grades
+TA: A- | PS: A- | UX: A (strongest R3 research + largest directional shift) | RCA: A (most rigorous methodology)
+
+### 6 synthesis notes for lead
+1. Use RCA calibrated ranges as primary (45-55% individual, 15-25% enterprise).
+2. Integrate 3 readiness frameworks into ONE unified assessment.
+3. PS-F3 scalability: use RCA 1.3:1-1.8:1 as realistic, PS 3:1-4:1 as aspirational top-decile.
+4. Include PI durability point (TA: entropy without automation locking in gains).
+5. Guide framing: "Operational Excellence" not "Automation Implementation."
+6. Limitations section MANDATORY: all evidence extrapolated, no mid-market validation, vendor cases = marketing, readiness frameworks = unvalidated.
+
+### persistence status
+workspace: ✓ (R4 exit-gate section written)
+agent-memory: ✓ (devils-advocate/memory.md updated)
+team-decisions: ✓ (shared/decisions.md updated with 6 R4 decisions)
+team-patterns: ✓ (shared/patterns.md updated with 3 new patterns)
+convergence: ✓ (workspace convergence section updated)
+
+→lead: synthesis can proceed | workspace ## devils-advocate R4 section has full assessment | highest R3 engagement quality observed across all reviews

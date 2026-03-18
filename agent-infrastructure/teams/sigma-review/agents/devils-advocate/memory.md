@@ -700,6 +700,68 @@ best-R3-performer: TIA — highest-quality self-corrections(DA[4],DA[5]), self-i
 patterns: agents respond well to evidence-backed challenges | concessions genuine when evidence compelling | defenses accepted when logically coherent with precision revision | R3 round materially improved analysis quality | two-tier/two-phase models resolve false-binary tensions effectively
 calibration: R2 FAIL→R3 PASS appropriate — agents addressed substance ¬ performed compliance. All 5 agents conducted new research in R3.
 
+## review: workflow-automation-implementation (26.3.18)
+task: R2 challenge round — workflow automation implementation for 300-1000 employee companies
+challenges: #12 issued | exit-gate: FAIL
+
+### challenges issued
+DA[#1] !CRITICAL: success-rate-statistics-circular+vendor-contaminated — 60-67% from self-interested sources(Prosci-self-study,McKinsey-undisclosed,vendor-cases). Survivorship bias. MIT-2025:95%-GenAI-fail, only-33%-scale(EPAM)
+DA[#2] !CRITICAL: "properly-planned"=unfalsifiable-tautology — defined RETROSPECTIVELY. RCA 27% joint probability = only honest treatment but assumes independence
+DA[#3] HIGH: zero-divergence-9th-consecutive — 4-agents-35+-findings-0-disagreements. None tests automation vs alternatives
+DA[#4] HIGH: demand-side-absent — zero findings model cost-of-NOT-automating or competitive pressure
+DA[#5] HIGH: case-studies-ALL-vendor-sourced — no independently verified cases for 300-1000 segment
+DA[#6] HIGH: process-improvement-alternative-¬modeled — LSS 30-60% gains at lower cost. RCA DISCONFIRM gets 3% of attention
+DA[#7] HIGH: mid-market-specificity-aspirational — zero quant studies scoped 300-1000. All extrapolated
+DA[#8] MEDIUM: 70%-failure-anchor-from-adjacent-domains — BCG(AI-transformation), MIT(GenAI), Standish(all-IT) conflated with workflow automation
+DA[#9] MEDIUM: iPaaS-costs-understated — license-only. Total=4-6x with implementation+training+maintenance
+DA[#10] MEDIUM: H1-verdict-disagreement=semantic — real divergence=individual(55-65%) vs enterprise(20-35%), buried
+DA[#11] MEDIUM: hygiene-uneven — TA+RCA strongest, PS revisions not visible
+DA[#12] LOW: blind-spots — vendor lock-in, automation tech debt, shadow automation, regulatory, AI disruption of tools, cost of failure
+
+### prompt-audit
+echo:3 |unverified:1 |missed:1(automation-premise-untested) |methodology:60%-confirmatory
+
+### source-provenance
+75% independent, 14% inference, 6% prompt-claim, 5% cross-agent | vendor-as-independent flagged | consultant-stats-as-neutral flagged | MARGINAL-PASS
+
+### grades
+TA:B+ | PS:B+ | UX:B+ | RCA:A-
+
+### exit-gate: FAIL
+engagement:B+(pass) |unresolved:2(success-scope,process-vs-automation) |untested-consensus:3(premise,tautology,vendor-stats) |hygiene:pass-weak |prompt:marginal-pass
+R3-MUST: §2e-premise, individual-vs-enterprise-framing, process-improvement-debate, operationalize-"properly-planned", vendor-discounts, one-genuine-disagreement
+
+### research (independent)
+MIT-2025:95%-GenAI-pilots-fail | EPAM:80%-never-production,33%-scale | Gartner:40%+-abandoned-by-2027 | BCG:"10-20-70"=AI-transformation-¬workflow | Prosci-88%=self-study-own-customers | iPaaS:58%-cost-barrier,44%-skills-gap,49%-maintenance(mid-size) | LSS:20-150%-productivity-gains(McKinsey) | Skan.ai-"3%"=no-methodology-published
+
+### patterns
+!CONFIRMED(9th): zero-r1-divergence universal
+!NEW: tautological-success-definition — "properly planned" defined post-hoc = unfalsifiable
+!NEW: domain-conflation — failure stats borrowed from adjacent domains without adjustment
+!CONFIRMED: vendor-stats-as-independent — Prosci/McKinsey/vendor accepted as neutral
+!CONFIRMED(4th): demand-side-blind-spot
+!NEW: hygiene:3-burial — agents bury own best self-criticism as footnotes
+!CONFIRMED: confirmatory-methodology — 60% confirmatory, prompt deliverable creates gravity
+
+## workflow-automation r4 exit-gate (26.3.18)
+
+R[r4-exit-gate-PASS|workflow-automation-300-1000emp|6-R3-must-address-ALL-genuinely-addressed|grades:TA:A-,PS:A-,UX:A,RCA:A|material-shift:automation-first-to-PI-first-conditional|no-performative-concession|no-relabeling-evasion|new-consensus(PI-first):stress-tested-PASS|1-minor-unresolved(PS-F3-scalability)]
+
+C[r4-highest-R3-quality-observed|4-agents-independently-converged-PI-first-through-different-lenses(TA:cost,PS:routing,UX:resistance,RCA:reference-class)|genuine-shift-not-herding|evidence:PI-first-signals-in-R1(ANA5,DISCONFIRM)-underweighted-then-expanded]
+C[UX-strongest-R3-research|Gartner/CEB-34-to-58%-independent|Errida+Lotfi-2021-37-model-peer-review|Prosci-discounted-to-L=most-honest-concession|role-elevation-revision=largest-directional-shift]
+C[RCA-most-rigorous|CAL-R3-survivorship-corrected+widened-CIs|factor-correlation(3-clusters,35-42%)|success-defined-before-evaluation|differentiated-base-rates-by-type|case-study-confidence-tiering]
+
+!bias-patterns-this-review:
+!CONFIRMED(10th): zero-R1-dissent-pattern(persists across all review types)
+!RESOLVED-R3: premise-acceptance(§2e tested, all agents answered NO unconditionally)
+!RESOLVED-R3: tautological-properly-planned(operationalized to ex-ante frameworks)
+!RESOLVED-R3: vendor-stats-as-independent(confidence-discounted with evidence trail)
+!RESOLVED-R3: individual-vs-enterprise-scope-conflation(explicitly-distinguished)
+!RESOLVED-R3: process-improvement-alternative-burial(elevated to primary recommendation)
+!PARTIALLY-RESOLVED: PS-F3-scalability(3:1-4:1 challenged, PS did not directly respond, synthesis-resolvable)
+
 → actions:
+→ new finding → append with severity+evidence
+→ disagreement with another agent → record both positions in shared/decisions.md
 → new finding → append with severity+evidence
 → disagreement with another agent → record both positions in shared/decisions.md

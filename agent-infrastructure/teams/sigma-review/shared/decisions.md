@@ -517,6 +517,60 @@ VDR-per-page-pricing-structural-weakness |by:product-strategist+economics-analys
   |ctx: per-page pricing ($0.35-0.85/page) generates 2-10x invoice overruns (SRS Acquiom 3,800-deal dataset). Creates buyer resentment, drives mid-market switching to flat-fee. Incumbents' Achilles heel. Per-page→subscription transition = 36% revenue compression short-term.
   |DA-validated: yes(cross-validated by all agents)
 
+## workflow-automation-implementation r2 challenge (26.3.18)
+
+challenge:success-rate-circularity |60-67%-from-self-interested-sources |survivorship-bias |must-distinguish-individual(55-65%)-vs-enterprise(20-35%) |by:devils-advocate |weight:primary
+  |ctx: DA[#1]+DA[#2]. "Properly planned"=post-hoc tautology. RCA 27% joint prob=only honest treatment
+
+challenge:premise-viability-untested |4-agents-accept-automation-without-testing-LSS/BPO/selective-manual |§2e-violation |by:devils-advocate |weight:primary
+  |ctx: DA[#3]+DA[#6]. LSS 30-60% gains at lower cost. ANA5 lesson=process improvement PRECEDED automation
+
+challenge:mid-market-evidence-gap |zero-quant-studies-300-1000 |all-extrapolated |vendor-cases-only-evidence |by:devils-advocate |weight:primary
+  |ctx: DA[#5]+DA[#7]. UX-F11 hygiene:3=best self-flagging but buried
+
+challenge:demand-side-absent+domain-conflation |cost-of-NOT-automating-unmodeled |70%-failure-from-adjacent-domains≠workflow-automation |by:devils-advocate |weight:advisory
+  |ctx: DA[#4]+DA[#8]. Different domains conflated without adjustment
+
+exit-gate:FAIL |unresolved:2 |untested-consensus:3 |by:devils-advocate |weight:primary
+  |ctx: R3 must address: §2e, scope distinction, process improvement debate, operationalize "properly planned", vendor discounts
+
+## workflow-automation-review R3 team decisions (26.3.18)
+
+cost:TCO-model-required-not-license-only |by:tech-architect |weight:primary
+  |ctx: T1-TCO=$38-112K/yr1, T2=$180-560K/yr1, T3=$600K-1.8M/yr1. License=15-30% of TCO. Presenting license-only figures misleads decision-makers, directly causes budget-exhaustion failure (RCA-PM6, 15-25% of failures). All deliverable cost figures must use TCO model with license clearly labeled as sub-component.
+  |confidence: M (extrapolated from enterprise iPaaS, no mid-market-specific TCO study found)
+
+analysis:individual-vs-enterprise-success-rates-must-be-distinguished |by:tech-architect+DA |weight:primary
+  |ctx: individual-process=60% ROI within 12mo (vendor-aggregated, survivorship-biased, M-conf). Enterprise-wide=15-25% scale beyond pilot (M-H-conf, RCA-OV). 40-50pp gap IS the central finding. Every citation must specify scope or it is analytically dishonest. This was the root cause of the H1 framing disagreement (partially-confirmed vs partially-falsified = same substance, different scope definitions).
+  |confidence: M-H
+
+process:readiness-gate-precedes-tool-selection |by:tech-architect |weight:primary
+  |ctx: TA-READINESS-SCORE (5 criteria, 1-day assessment) must gate the implementation guide. Score ≤3/5 → process improvement first (LSS/VSM, 8-16 weeks, $15-50K, 20-50% efficiency gain at 20-40% of automation cost). Score ≥4/5 → automation appropriate, proceed to tier selection. Combined approach dominates for ready organizations. Provides honest answer to DA §2e: automation is NOT unconditionally the highest-ROI approach for this segment.
+  |confidence: M (derived from LSS + manufacturing analogues, not mid-market-specific)
+
+## workflow-automation-review R4 exit-gate decisions (26.3.18)
+
+exit-gate:PASS |by:devils-advocate |weight:primary
+  |ctx: all 6 R3-must-address items genuinely addressed. Engagement A- to A across all 4 agents. Material analytical shift from automation-first to PI-first-conditional. No performative concession or relabeling evasion detected. New consensus (PI-first) stress-tested against R1 evidence (ANA5, DISCONFIRM) and PASSED. 1 minor unresolved: PS-F3 scalability figure (3:1-4:1 vs RCA 1.3:1-1.8:1, synthesis-resolvable). Synthesis can proceed.
+
+framing:success-rate-primary-figures |by:devils-advocate(primary)+reference-class-analyst(primary) |weight:primary
+  |ctx: individual-process:45-55%(RCA-calibrated,primary). Enterprise-wide:15-25%(all-converged). Guide must present BOTH with enterprise-wide as primary frame for implementation program context. PS and TA retain higher individual-process figures (55-65%, 60%) — use RCA's calibrated range as primary (survivorship-corrected), higher figures as upper-bound context.
+  |confidence: M (all extrapolated, no mid-market-specific studies)
+
+framing:PI-first-as-default-recommendation |by:all-4-agents+devils-advocate(stress-tested) |weight:primary
+  |ctx: process-improvement-first for ~70-80% of 300-1000 segment. Automation conditional on readiness assessment passing threshold. Three readiness frameworks produced (TA-5pt, PS-18pt, UX-5pt) — synthesis must integrate into ONE unified assessment. PI-first consensus stress-tested by DA: grounded in R1 evidence (ANA5, DISCONFIRM), expanded with independent evidence in R3 — not herding under DA pressure.
+
+framing:guide-title-and-structure |by:devils-advocate |weight:advisory
+  |ctx: guide should be framed as "Operational Excellence" or "Workflow Optimization" not "Automation Implementation" per §2e consensus. Must open with readiness assessment gate, include mandatory limitations section (all evidence extrapolated, no mid-market validation, vendor case studies = marketing, readiness frameworks = unvalidated).
+
+synthesis-note:PS-F3-scalability |by:devils-advocate |weight:advisory
+  |ctx: PS-F3 scalability ratio (3:1-4:1 headcount:revenue) challenged by RCA (realistic: 1.3:1-1.8:1) and UX (work intensification equally plausible as role elevation). PS did not directly respond. Synthesis should use RCA's figure as realistic target, PS's as aspirational top-decile with explicit label. Not exit-gate blocking.
+
+synthesis-note:readiness-framework-integration |by:devils-advocate |weight:advisory
+  |ctx: three separate readiness frameworks (TA: 5-pt binary, PS: 18-pt scored, UX: 5-pt PR-scored) need integration into ONE unified assessment for the guide. Raw material sufficient — all three are ex-ante testable with specified methods and timelines. Honest admission: all are unvalidated against outcome data.
+workflow-automation-review-complete |4-rounds(r1-research,r2-DA-FAIL,r3-response,r4-DA-PASS) |5-agents(TA,PS,UX,RCA,DA) |central-finding:process-improvement-first-for-70-80%-of-300-1000-segment,automation-conditional-on-readiness |success-rates-recalibrated:individual-45-55%(M),enterprise-15-25%(L-M) |deliverables:exec-summary+implementation-guide@~/Documents/ |key-shift:automation-first→PI-first-conditional(genuine-analytical-revision,¬performative) |all-evidence-extrapolated-from-general(zero-mid-market-specific-studies) |by:sigma-lead |weight:primary
+  |ctx: workflow automation implementation analysis for 300-1000 employee companies, 2026-03-18
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent

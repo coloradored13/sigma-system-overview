@@ -66,13 +66,6 @@ R[usability-frameworks: Nielsen 10 heuristics unchanged(1994, text updated 2020)
 
 R[review-implications: (1) validate-at-init confirmed—Pydantic proves runtime-validation-as-design wins, (2) error msgs must answer what-wrong+how-fix with progressive disclosure+fix-it hierarchy, (3) self-explanatory("understand without docs") confirmed top usability factor(arXiv 2026), (4) llms.txt relevant for AI-consumer projects, (5) cognitive-load-reduction>feature-completeness for DX grading, (6) conventions-adherence most cited API usability factor(9/16 devs) |refreshed: 26.3.7 |next: 26.4]
 
-→ actions:
-→ reviewing user-facing changes → check against Nielsen's 10 heuristics + Dain's 3 principles
-→ reviewing hateoas-agent v0.2 → check if ActionResult wrapper resolves _state convention, assess llms.txt addition
-→ new dual-user scenario → assess who is primary consumer, design translation layer
-→ reviewing error messages → apply Google's fix-it>show-it>tell-it hierarchy
-→ reviewing docs/README → check llms.txt relevance, progressive-disclosure structure
-→ grading DX → weight cognitive-load-reduction as primary metric
 
 ## warehouse-lms-research (2026-03-14)
 
@@ -135,3 +128,48 @@ C[warehouse-game: H5 is hypothesis-to-test ¬assumption; physical layout frictio
 C[warehouse-game: scale is a prerequisite decision gate ¬assumption; single-facility→think-aloud+WMS-first; game justified at multi-facility scale|1|26.3]
 C[warehouse-game: no-feedback constraint applies to efficiency feedback only ¬all feedback — completion progress + neutral framing acceptable during assessment window|1|26.3]
 C[warehouse-game: transparent framing requires worker-as-expert framing(collective benefit) ¬individual-surveillance disclosure; credibility requires architectural silo — framing without architecture is theater|1|26.3] |#3
+## workflow-automation-personnel-research (2026-03-18)
+
+R[automation-change-management-2026: BCG(2024)=70% of automation challenges are people+process ¬technical; McKinsey=effective-change-mgmt→143%ROI vs 35% without; Prosci=ADKAR 67% success rate; visible-leadership-support +30% success; combining Kotter(org structure)+ADKAR(individual tracking)=modern best practice; baseline failure without change mgmt ~70-80% |src:prosci.com,bcg.com,mckinsey.com |refreshed:2026-03-18 |next:2026-04-18]
+
+R[automation-pilot-to-scale-2026: MIT(2025)=95% of GenAI pilots fail to scale; 80.3% overall AI project failure; only 25% of orgs moved >40% pilots to production; 84% of failures leadership-driven(73% no clear metrics,68% underinvest foundations,56% lose C-suite sponsorship in 6mo); mid-market reaches full deployment 3x faster than large enterprise(scope effect, ¬inherent success rate difference) |src:fortune.com/MIT,workato.com,pertamapartners.com |refreshed:2026-03-18 |next:2026-04-18]
+
+R[automation-resistance-2026: 3-dimensional resistance model=affective(fear,anxiety)+cognitive(perceived usefulness,trust)+behavioral(workarounds,avoidance); SME workers=67% job security fear vs MNC 43%; status-quo-bias=structural preference for familiar even when new is objectively better(MDPI/Systems 2023); 62% workers distrust AI re: data practices(Gartner); predictors=¬skills+¬trust+perceived-unfairness; employee-involvement=2.5x success; pre-implementation resistance assessment=+40% acceptance; 3 mitigation pillars=learning+communication+PARTICIPATION(¬top-down-only) |src:tandfonline.com,mdpi.com,sciencedirect.com,emerald.com |refreshed:2026-03-18 |next:2026-04-18]
+
+R[automation-upskilling-2026: microlearning=80% completion vs 20% long-form; retention +25-60%; 93% orgs say essential; market $1.55B→$2.96B(2025); blended=technical+human skills; role-specific pathways > generic training; training during design ¬after deployment; DAPs(Digital Adoption Platforms)=in-tool real-time guidance=superior to pre-training; Amazon Mechatronics Apprenticeship=hourly→robotics,+40% wages; Walmart Live Better U=doubled certs 2024; 66% executives cite skill gaps as priority(McKinsey) |src:engageli.com,elearningindustry.com,atlascopco.com,careerminds.com |refreshed:2026-03-18 |next:2026-04-18]
+
+R[automation-role-evolution-2026: 50% of tasks(¬jobs) automatable(McKinsey); 90% execs expect automation to increase workforce capacity; +12% capacity confirmed in deployed orgs; customer service agents: task-driven→experience-orchestrators+problem-solvers; low-skill workers +35% speed with AI assistance; new roles=process-owners,automation-stewards,data-quality-monitors; caveat=orchestrator framing idealized, reality often=same headcount doing more tasks ¬genuine elevation |src:sharefile.com,callminer.com,goodcall.com |refreshed:2026-03-18 |next:2026-04-18]
+
+R[automation-mid-market-specific-2026: mid-market challenges=lean-HR+lean-IT+¬dedicated-change-manager+¬enterprise-L&D; resistance spreads faster through close-knit social networks; mid-market advantages=3x faster full deployment,cheaper participatory design(flatter structure),leadership proximity(stronger signal); RPA ROI=150-300% over 2-3yr,payback 12-24mo; strategic posture=leverage proximity, compensate via microlearning+DAPs+peer-champions |src:baass.com,kpcteam.com,cisin.com |refreshed:2026-03-18 |next:2026-04-18]
+
+F[workflow-automation-personnel,26.3.18] r1: 12 findings(UX-F1→UX-F12) | H1=PARTIALLY-FALSIFIED(failure rate far exceeds assumption,"properly planned"=5 specific factors) | H2=PARTIALLY-CONFIRMED(participation/co-design=critical missing factor) | Q4=fully-addressed | Q5,Q6,Q7=addressed | hygiene: all 12 findings tagged provenance+outcome | gap: no quantitative studies specifically 300-1000 employee range for change mgmt outcomes |#12
+
+F[workflow-automation-personnel,26.3.18] r3: 8 DA challenges(#1,#2,#3,#7,#8,#10,#11+role-evolution) | 7 revised findings + 1 new finding | revisions:
+- UX-F1-R3: BCG 70% re-scoped to [adjacent:AI-transformation], workflow automation people-factor = 35-50% contributing cause (not 70% primary)
+- UX-F2-R3: MIT 95% GenAI stat retired from primary framing; workflow automation pilot-to-scale = 25-40%
+- UX-F3-R3: Prosci confidence discounted to L (self-study); Gartner/CEB 34→58% (+24pp) substituted as primary independent anchor; Errida & Lotfi 2021 (peer-reviewed, 37-model) as academic corroboration
+- UX-F6-R3: ADKAR>Kotter tagged as [agent-inference]; unsourced +30% stat removed; Gartner/CEB +24pp substituted
+- UX-F8-R3: role elevation = PRIMARILY ASPIRATIONAL without intentional investment. McKinsey 2024 (5.7 hrs freed, 1.7 redirected = 3:1 waste ratio), ScienceDirect 2025 work intensification, BCG/IBM 89%/6% upskilling gap. OQ-UX2 RESOLVED.
+- UX-F11-R3: elevated to headline finding; all 12 findings tagged [extrapolated-from-general/adjacent] with bias direction; OQ-UX1 confirmed unresolvable
+- UX-NEW-F13: premise viability — automation conditional not universal; PR-SCORE decision gate
+- PEOPLE-READINESS-SCORE (PR1-PR5): testable ex-ante operationalization with measurable thresholds |#7-revised+1-new
+
+C[workflow-automation: 70/30 inversion=people/process are the hard part ¬tech; yet investment ratio is inverse — this is the single most important reframe for mid-market implementation planning|1|26.3]
+C[workflow-automation: participation/co-design is distinct from change-management-as-communication — it is structural co-creation; 2.5x success multiplier makes it the highest-leverage intervention|1|26.3]
+C[workflow-automation: mid-market has genuine advantages(proximity,speed,flatter structure) ¬just deficits — framing as "enterprise-lite" undervalues these structural benefits|1|26.3]
+C[workflow-automation: training AFTER deployment establishes resistance patterns that are very difficult to reverse — sequence is architectural, not scheduling preference|1|26.3]
+C[workflow-automation: "orchestrator" role framing is industry-idealized; implementation guide should acknowledge the gap between aspiration(role elevation) and common reality(same headcount,more tasks)|1|26.3]
+C[workflow-automation-r3: CM source quality: always check if CM framework citation is from a firm selling that framework (Prosci/ADKAR = Prosci research; Kotter = dual-OS consulting). These are self-interested sources, not independent validation|1|26.3]
+C[workflow-automation-r3: domain differentiation is load-bearing for failure rates — AI transformation / GenAI / digital transformation / RPA / workflow automation have materially different failure rates and failure modes. Never use GenAI or broad DT stats as primary evidence for iPaaS/low-code failure|1|26.3]
+C[workflow-automation-r3: role elevation without intentional investment = work intensification in disguise. McKinsey 2024 is key evidence: 5.7 hrs freed / 1.7 redirected = 3:1 waste ratio. Default framing should be "aspirational without design" not "expected outcome"|1|26.3]
+C[workflow-automation-r3: for workflow automation (not AI), people/resistance ranks #3 behind integration and skills deficits (Deloitte). Don't lead with people-first as if people = dominant failure cause — it's an important contributing factor but not the primary cause in isolation|1|26.3]
+C[workflow-automation-r3: mid-market evidence gap confirmed unresolvable — no quantitative CM studies scoped to 300-1000 employees exist as of 26.3.18. This is a headline limitation, not a footnote. Every UX finding for this domain is extrapolated.|1|26.3]
+C[workflow-automation-r3: "properly planned" tautology — any post-hoc list of success factors is unfalsifiable. Must convert to testable ex-ante criteria with measurable thresholds before implementation begins. PR-SCORE (PR1-PR5) is the pattern.|1|26.3]
+
+→ actions:
+→ reviewing user-facing changes → check against Nielsen's 10 heuristics + Dain's 3 principles
+→ reviewing hateoas-agent v0.2 → check if ActionResult wrapper resolves _state convention, assess llms.txt addition
+→ new dual-user scenario → assess who is primary consumer, design translation layer
+→ reviewing error messages → apply Google's fix-it>show-it>tell-it hierarchy
+→ reviewing docs/README → check llms.txt relevance, progressive-disclosure structure
+→ grading DX → weight cognitive-load-reduction as primary metric
