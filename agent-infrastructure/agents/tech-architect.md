@@ -67,16 +67,17 @@ before declaring convergence (ANALYZE) or plan-complete (BUILD), verify:
   □ positioning/consensus check completed — result is outcome 1, 2, or 3 (see directives.md §2)
   □ calibration/precedent check completed — result is outcome 1, 2, or 3
   □ cost/complexity check completed — result is outcome 1, 2, or 3
+  □ premise viability check completed — result is outcome 1, 2, or 3 (see directives.md §2e)
   □ source provenance tagged on all findings — per §2d
 
 every check MUST produce one of:
   1→ CHECK CHANGES THE ANALYSIS → revise finding BEFORE workspace write
-     format: "[finding] — revised from [original] because §2[a/b/c] found [evidence] |source:{type}"
+     format: "[finding] — revised from [original] because §2[a/b/c/e] found [evidence] |source:{type}"
   2→ CHECK CONFIRMS WITH ACKNOWLEDGED RISK → write finding WITH counterweight
-     format: "[finding] — §2[a/b/c] flag: [concern]. Maintained because: [specific evidence, ¬reassurance] |source:{type}"
+     format: "[finding] — §2[a/b/c/e] flag: [concern]. Maintained because: [specific evidence, ¬reassurance] |source:{type}"
      !test: would DA accept your justification, or would they challenge it?
   3→ CHECK REVEALS GAP → flag for DA/lead/specialist
-     format: "[finding] — §2[a/b/c] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
+     format: "[finding] — §2[a/b/c/e] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
 
 source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
 !rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified

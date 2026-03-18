@@ -82,7 +82,7 @@ r5: synthesis (hard cap — no further rounds)
   1→ engagement quality ≥ B across all agents
   2→ no material disagreements unresolved (or logged as deliberate divergence in decisions.md)
   3→ no new consensus formed in latest round without stress-test
-  4→ analytical hygiene checks (§2a/§2b/§2c) produced substantive outcome ¬perfunctory
+  4→ analytical hygiene checks (§2a/§2b/§2c/§2e) produced substantive outcome ¬perfunctory
 !DA verdict format in workspace: "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}]"
 !FAIL → DA must specify which criteria failed + what next round must address
 
@@ -223,6 +223,26 @@ source types (every finding MUST carry one):
   - cluster of agents producing [prompt-claim] on same hypothesis → echo chamber flag
   - [independent-research] that uses near-identical language to prompt → reclassify as [prompt-claim], challenge
 
+#### §2e premise viability (26.3.18)
+
+!purpose: prevent R1 premise anchoring — agents unconsciously validate user's proposed approach instead of genuinely testing it. Observed: warehouse-game review 26.3.18, 4/4 agents confirmed premise, DA caught in R2 (DA#1 crowding). This check forces explicit premise evaluation before convergence.
+
+ANALYZE variant:
+!applies-to: every major recommendation or conclusion
+1→ what must be true for the proposed approach to be the right one? (list load-bearing premises)
+2→ is any required premise unverified, contested, or historically unreliable?
+3→ what is the strongest alternative approach? (¬strawman — genuinely competitive)
+4→ if the user had not specified this approach, would you have independently recommended it?
+5→ workspace: outcome 1/2/3 format — ¬just "premises: valid"
+
+BUILD variant:
+!applies-to: every architectural choice or implementation plan
+1→ what assumptions must hold for this approach to succeed?
+2→ are assumptions about scale, usage patterns, or requirements verified or speculative?
+3→ what is the strongest alternative architecture? (cite precedent)
+4→ if the most speculative assumption is wrong, what's the fallback?
+5→ workspace: outcome 1/2/3 format — ¬just "assumptions: reasonable"
+
 #### DA enforcement of hygiene checks
 
 DA evaluates checks during challenge round:
@@ -234,7 +254,7 @@ grade modifiers:
   - check completed perfunctorily (filled section, didn't engage) → challenge issued
 
 DA challenge format for weak checks:
-  "DA[#N] process: §2[a/b/c] check on [finding] is perfunctory.
+  "DA[#N] process: §2[a/b/c/e] check on [finding] is perfunctory.
    You wrote '[what they wrote]' but then [what they did that contradicts it].
    |→ revise finding to reflect check result, or provide specific evidence
    for why concern doesn't apply. 'It's still the right approach' is ¬specific evidence."
@@ -261,7 +281,7 @@ cross-reference project CLAUDE.md test requirements | Tier 1 without test = CRIT
 
 ANALYZE mode:
 1→ zero rounds with zero-dissent convergence
-2→ positioning/calibration/valuation checks in r1 findings — each produces outcome 1/2/3 (¬perfunctory)
+2→ positioning/calibration/valuation/premise-viability checks in r1 findings — each produces outcome 1/2/3 (¬perfunctory)
 3→ DA challenges before integration
 4→ DA challenge held ratio 40-70%
 5→ DA exit-gate exercised (synthesis-ready verdict issued, ¬skipped)
@@ -684,7 +704,7 @@ DA ¬veto power — lead decides | DA objections recorded in decisions.md
 
 phase-1 DEFINE (lead):
   write agent definition: role(plain English), domain(ΣComm), weight, wake-for
-  !include: analytical hygiene (adversarial §2a-c)
+  !include: analytical hygiene (adversarial §2a-c,§2e)
   !include: ΣComm protocol reference
   !include: current task context + GAP that triggered creation
 
@@ -701,7 +721,7 @@ phase-3 INTEGRATE (new agent joins team):
     "new-agent:[role] |domain:[areas] |gap:[what I cover] |initial-findings: [top 3-5 ΣComm] |¬[investigated+ruled-out] |→[contribution to current task] |#[count]"
   receives peer inbox messages normally from this point
   DA includes new agent in challenge cycle
-  must complete analytical hygiene checks (adversarial §2a-c) before first convergence
+  must complete analytical hygiene checks (adversarial §2a-c,§2e) before first convergence
 
 phase-4 PERSIST (memory retained):
   memory: ~/.claude/teams/sigma-review/agents/{agent-name}/memory.md

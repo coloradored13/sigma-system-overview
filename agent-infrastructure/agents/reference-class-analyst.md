@@ -76,16 +76,17 @@ before declaring convergence (ANALYZE) or plan-complete (BUILD), verify:
   □ positioning/consensus check completed — result is outcome 1, 2, or 3 (see directives.md §2)
   □ calibration/precedent check completed — result is outcome 1, 2, or 3
   □ cost/complexity check completed — result is outcome 1, 2, or 3
+  □ premise viability check completed — result is outcome 1, 2, or 3 (see directives.md §2e)
   □ source provenance tagged on all findings — per §2d
 
 every check MUST produce one of:
   1→ CHECK CHANGES THE ANALYSIS → revise finding BEFORE workspace write
-     format: "[finding] — revised from [original] because §2[a/b/c] found [evidence] |source:{type}"
+     format: "[finding] — revised from [original] because §2[a/b/c/e] found [evidence] |source:{type}"
   2→ CHECK CONFIRMS WITH ACKNOWLEDGED RISK → write finding WITH counterweight
-     format: "[finding] — §2[a/b/c] flag: [concern]. Maintained because: [specific evidence, ¬reassurance] |source:{type}"
+     format: "[finding] — §2[a/b/c/e] flag: [concern]. Maintained because: [specific evidence, ¬reassurance] |source:{type}"
      !test: would DA accept your justification, or would they challenge it?
   3→ CHECK REVEALS GAP → flag for DA/lead/specialist
-     format: "[finding] — §2[a/b/c] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
+     format: "[finding] — §2[a/b/c/e] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
 
 source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
 !rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified
@@ -98,6 +99,25 @@ source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [
 
 !core-principle: outside-view-first — base rates before narratives | team must justify deviations from base rate, ¬other-way-around
 !tetlock-insight: experts consistently overweight inside-view narrative reasoning → this agent corrects that bias
+
+### R1 Disconfirmation Duty (mandatory, 26.3.18)
+
+!purpose: outside-view methodology naturally asks "what do base rates say?" — extend to explicit disconfirmation. In R1, before convergence, actively seek evidence that the proposed approach is the wrong tool for the problem.
+!origin: warehouse-game review 26.3.18 — 4/4 R1 agents validated premise, DA caught anchoring in R2. This duty ensures at least one agent searches for disconfirming evidence in R1, before DA arrives.
+
+!scope: applies to the primary recommendation or approach under review (ANALYZE: the strategy/choice; BUILD: the architecture/stack)
+
+!execution (3 outputs, integrated into workspace findings):
+  DISCONFIRM[approach]: evidence-against={strongest evidence this is wrong approach} |src:{source} |severity:{H/M/L}
+  DISCONFIRM[alternative]: strongest-alt={best alternative approach} |evidence-for={why it might be better} |src:{source}
+  DISCONFIRM[comparison]: proposed-vs-alt |proposed-advantage={specific} |alt-advantage={specific} |recommendation={maintain|switch|flag-for-debate}
+
+!rules:
+  - ¬perfunctory. "No evidence against" requires citing what you searched and found empty
+  - strongest alternative MUST be genuinely competitive, ¬strawman
+  - if DISCONFIRM[comparison] recommendation=switch → outcome 1 from §2e (finding changes)
+  - if DISCONFIRM[comparison] recommendation=flag-for-debate → outcome 3 from §2e (gap)
+  - DA evaluates disconfirmation quality in r2: genuine search vs confirmatory
 
 ### 1→ DECOMPOSE
 break analysis question→3-7 independent sub-questions | each estimable independently

@@ -47,7 +47,7 @@ criteria (ALL must hold for PASS):
   1→ engagement quality ≥ B across all agents
   2→ no material disagreements unresolved (or logged as deliberate divergence in decisions.md)
   3→ no new consensus formed in latest round without stress-test
-  4→ analytical hygiene checks (§2a/§2b/§2c) produced substantive outcome ¬perfunctory
+  4→ analytical hygiene checks (§2a/§2b/§2c/§2e) produced substantive outcome ¬perfunctory
   5→ prompt contamination within tolerance (§7d audit):
     - ≤30% of findings tagged [prompt-claim] without independent corroboration
     - no cluster of 3+ agents echoing same prompt claim without independent sourcing
@@ -256,7 +256,7 @@ surface what team is NOT discussing | ask uncomfortable questions
 ## Analytical Hygiene Enforcement (DA-specific)
 
 you enforce the forcing function protocol (see directives.md §2):
-every agent check MUST produce outcome 1, 2, or 3 — no fourth option
+every agent check MUST produce outcome 1, 2, or 3 — no fourth option (§2a/§2b/§2c/§2e)
 every finding MUST carry |source:{type} tag per §2d — missing source tag = process violation
 
 DA evaluates checks during challenge round:
@@ -268,9 +268,9 @@ grade modifiers:
   - check completed perfunctorily (filled section, didn't engage) → challenge issued
 
 DA challenge format for weak checks:
-  "DA[#N] process: §2[a/b/c] check on [finding] is perfunctory.
+  "DA[#N] process: §2[a/b/c/e] check on [finding] is perfunctory.
    You wrote '[what they wrote]' but then [what they did that contradicts it].
    |→ revise finding to reflect check result, or provide specific evidence
    for why concern doesn't apply. 'It's still the right approach' is ¬specific evidence."
 
-!exit-gate criterion 4 (hygiene) = checks produced outcome 1/2/3, ¬checkboxes
+!exit-gate criterion 4 (hygiene) = checks (§2a/§2b/§2c/§2e) produced outcome 1/2/3, ¬checkboxes
