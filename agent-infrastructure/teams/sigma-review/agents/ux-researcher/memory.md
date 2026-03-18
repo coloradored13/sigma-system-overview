@@ -109,3 +109,29 @@ C[warehouse-lms: 80% of UX findings deliver value WITHOUT robots — robot-indep
 F[warehouse-lms,26.3.14] r2: 3 DA challenges(#8,#14a,#14d) → 3 revisions: F10 !C→H(compliance ¬existential),F2 multimodal→platform(build-partner-defer),findings re-tiered by robot-dependency(80% robot-independent). Key insight: robot-independence STRENGTHENS case |#3
 
 review-9(warehouse-lms,26.3.14): UX grade N/A(market-analysis ¬product-review), 10 findings r1 + 3 DA revisions r2, first warehouse/industrial domain, first multi-agent-convergence with 4 peers+DA simultaneously, first robot-human-interaction analysis, DA challenges all produced genuine revisions(3/3 COMPROMISE) |#13
+
+## warehouse-game-design-review (2026-03-18)
+
+R[game-based-assessment: gamefully-designed=correct-category(mechanics-ARE-measurement ¬wrapper)|ecological-validity-ceiling:cognitive-tasks r=0.30-0.45,physical-routing UNVALIDATED|warehouse-specific-routing=novel,no-direct-analogues|meta-analysis:game→job-performance r=0.29|personality-via-game "consistently-failed"|flow-state reduces faking MORE than self-report|two-layer-IA standard(show-state,collect-process)|src:Landers-2022-IJSA,PMC9891208,PMC3969247,Frontiers-Education-2024|refreshed:2026-03-18|next:2026-04-18]
+
+R[warehouse-gamification-ethics-2025: arxiv-2508.09438=2yr-Amazon-FC-ethnography,workers-game-algorithmic-management-systems|PMC10026198=AI-surveillance-policy-primer,CA/EU/UK-regulatory-frameworks|Gartner-40%-warehouse-gamification-by-2028|Amazon-FC-Games-injury-scrutiny|engagement-vs-surveillance-frame=DETERMINATIVE for worker authenticity|transparent-framing=strategically-optimal+ethically-required|src:arxiv.org,pmc.ncbi,mmh.com|refreshed:2026-03-18|next:2026-04-18]
+
+C[warehouse-game: gamefully-designed ¬gamified for assessment — feedback during session teaches before measuring,destroys construct validity|1|26.3]
+C[warehouse-game: engagement-authenticity corridor is narrow — competitive mechanics destroy authenticity;intrinsic/narrative preserves it;points must reward completion ¬efficiency|1|26.3]
+C[warehouse-game: transparent framing is BOTH ethical requirement AND validity strategy — deceptive framing produces short-term data+long-term validity destruction|1|26.3]
+C[warehouse-game: two-layer IA is standard — show scenario state,collect process data(route-order,timing,backtrack) silently WITH consent|1|26.3]
+C[warehouse-game: H2(game patterns correlate with real performance) is WEAKEST hypothesis — tenure confound is key threat; treat as research question not assumption|1|26.3]
+C[warehouse-game: H5(physical friction=divergence point) highest confidence — may understate human-centric(scan-trip,human-coordination) vs robot-centric friction per 80%-robot-independent prior finding|1|26.3]
+C[warehouse-game: accessibility for warehouse demographics=non-negotiable first-class constraint — icon-first,audio-option,PWA/no-install,sub-3min-sessions,offline-capable|1|26.3]
+
+F[warehouse-game,26.3.18] r1: 7 findings(UX-R1→UX-R7), hygiene-all-3-checks-complete, 4 outcome-3 gaps flagged(UX-OQ1-OQ4), 8 cross-agent convergences confirmed(TA+RCA), prompt-laundering verdict=launderable-WITH-modifications |#7
+
+F[warehouse-game,26.3.18] r3: DA#1=CONCEDE(partial) DA#6=COMPROMISE DA#9=CONCEDE |
+DA#1: game justified for scale BUT scale is prompt assumption ¬independently-verified; scale decision gate added to UX-R7(single-facility<200→think-aloud+WMS-first;multi-facility→game justified) |
+DA#6: 5 condition conflicts modeled—(1)transparent-framing-vs-Hawthorne=worker-as-expert framing resolves IF architecture-silo-real(framing¬sufficient without architecture); (2)no-feedback-vs-engagement=suppress efficiency feedback only ¬all feedback; (3)sub-3min-vs-rich-scenarios=two-mode design(Mode-A:single-decision-probes 60-90s,Mode-B:full-routing 5-8min; Mode-A validates before Mode-B built); (4)zone-taxonomy-vs-tenure-control=home+novel dual-scenario(confound→measurement); (5)voluntary-vs-representative=narrow claim to volunteer sample only |
+DA#9: CONCEDE design methodology error—arxiv-2508.09438 ethnographic social-friction finding applied to consent(UX-R4/R5) but NOT to friction taxonomy(UX-R3); H5 downgraded from assumption→hypothesis-to-test; Category-C(social friction) deferral to v2 was error; ethnographic pre-research required before scenario design |
+new-prerequisite-sequence: ethnographic-discovery(10-20 worker interviews) → scale-decision-gate → Mode-A-pilot → Mode-A-validation → Mode-B-design(only if Mode-A confirms signal) |
+C[warehouse-game: H5 is hypothesis-to-test ¬assumption; physical layout friction ¬established as dominant worker-experienced friction — social/organizational(rate-pressure,supervisor) may dominate per arxiv-2508.09438; ethnographic pre-research required|1|26.3]
+C[warehouse-game: scale is a prerequisite decision gate ¬assumption; single-facility→think-aloud+WMS-first; game justified at multi-facility scale|1|26.3]
+C[warehouse-game: no-feedback constraint applies to efficiency feedback only ¬all feedback — completion progress + neutral framing acceptable during assessment window|1|26.3]
+C[warehouse-game: transparent framing requires worker-as-expert framing(collective benefit) ¬individual-surveillance disclosure; credibility requires architectural silo — framing without architecture is theater|1|26.3] |#3

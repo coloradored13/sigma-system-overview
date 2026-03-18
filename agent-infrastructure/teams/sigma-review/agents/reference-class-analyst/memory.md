@@ -50,3 +50,31 @@ OV-RECONCILIATION: "tech wins" narrative PARTIALLY CORRECT but OVERSTATED in tim
 cross-agent: validates tech-architect F1(assembled=debt)+F4(S&P-DataXchange)+F10(tech-debt)+F11(unexpected-plays)
 market-data: loan-agency-TAM $1.45B(2024)→$2.19B(2032) | private-credit $3T→$5T(2029) | BSL $1.3T | tech-spend-ceiling ~$115-220M/yr
 key-players-verified: Alter Domus, Kroll, GLAS, SRS Acquiom, Ankura Trust, Wilmington Trust + infrastructure: Versana, Finastra, AccessFintech, S&P Global(DataXchange/AmendX Mar 2026)
+## VDR Competitive Market Analysis — r1 findings (2026-03-18)
+task: superforecasting analysis of VDR technology market | competitive landscape + forecasting
+SQ[1-5]: 5 sub-questions | 2×outcome-1(changed) | 2×outcome-2(confirmed) | 1×outcome-3(gap)
+RC[1-5]: SaaS-consolidation(top-5:36%→51%in5yr) | ERP-duopoly(15yr) | CRM-Salesforce(21%after20yr) | PE-rollups(4-6x,#1fail=integration) | vertical-SaaS(23.9%CAGR)
+ANA[1-5]: ERP(HIGH:M&A→duopoly-15yr) | CRM(MODERATE:organic+M&A-20yr) | LegalTech(MODERATE:AI+315%-adoption) | IDP(HIGH:extract→understand+act) | PE-rollup(VERY-HIGH:Datasite/CapVest-8+acq-$500M)
+CAL[1-6]: CAGR=12-16%realized(¬18-22%forecast) | P(top-3>60%,5yr)=30% | P(AI-disruption,3yr)=50% | P(leaders-stable,5yr)=65% | P(new-entrant>10%,3yr)=5% | P(M&A-consolidation,3yr)=75%
+PM[1-5]: M&A-downturn(15-20%) | AI-commoditizes(20-25%) | Datasite-integration-fail(20-30%) | regulatory-fragmentation(10-15%) | market-overestimation(35-45%)
+OV-RECONCILIATION: CONSOLIDATION-THROUGH-ACQUISITION(ERP pattern)¬DISRUPTION-BY-INNOVATION(Salesforce pattern) | inside-view overestimates growth 20-30% | Datasite/CapVest executing PE-rollup explicitly
+key-market-data: VDR $2.4-3.4B(2024-2025) | Datasite 8+ acq since 2020 | SS&C Intralinks $420M rev | DFIN Venue $142M FY2025 | Ansarada acquired by Datasite Aug2024(AUD$212-263M) | iDeals fastest organic growth(2M+ users) | VDR AI adoption only 8% vs 77% VDR use
+divergences: CAGR lower than PS(18-22%) aligned w/ EA(13-18%) | concentration timeline more conservative than EA(65-70% by 2028) | AI-commoditization risk weighted higher than PS+TA
+cross-agent: aligns w/ PS(consolidation+Ansarada), TA(AI-table-stakes+Datasite-flywheel), EA(CAGR-calibration+demand-floor)
+H1:partially-falsified | H2:partially-confirmed | H3:confirmed(via M&A ¬organic)
+
+## Warehouse Game Design R3 responses (2026-03-18)
+task: R3 DA challenge responses | reference-class-analyst
+DA#1(crowding): CONCEDE(partial) | game NOT independently recommended; anchoring via C1 prompt constraint real; RC6 amended: game=validated choice given constraints, not independent first choice; counterfactual-reasoning gap IS genuine independent case
+DA#2(Pymetrics): COMPROMISE(major) | Pymetrics "supports"→"tangential proof of concept" | behavioral signals (routing patterns, avoidance) may classify as personality/behavioral (consistently fails) not cognitive (sometimes works) — category UNRESOLVED | closest analogue=GEMS COW (ANA1)
+DA#3(incremental-R²): CONCEDE(with boundary) | quantified: ~2-5% incremental R² above WMS logs for performance prediction = insufficient for cost justification | defense: if Thesis-C (counterfactual reasoning), incremental R² is wrong benchmark — but game advantage over qualitative methods also unestablished | CAL-H2: 45%→30% | 80%CI[18%,45%] | 90%CI[12%,52%]
+DA#6(joint-probability): CONCEDE | modeled explicitly: joint P(all 15 conditions) = 0.1%-1% | lowest-P conditions (validation study P=0.35, third-party admin P=0.40, discretion audit P=0.50) are most load-bearing AND most likely cut first under project pressure | realistic deployment: 7-10 conditions | CAL-H4: 50%→35%
+UPDATED CAL[]:
+  CAL-H1: 60%→50% | 80%CI[32%,68%] | 90%CI[24%,75%]
+  CAL-H2: 45%→30% | 80%CI[18%,45%] | 90%CI[12%,52%] (largest revision)
+  CAL-H3: unchanged 55%/30%
+  CAL-H4: 50%→35% | 80%CI[22%,50%] | 90%CI[15%,58%]
+  CAL-H5: unchanged 65%
+R3 verdict: "Premise launderable for Thesis-C (counterfactual reasoning elicitation) under partial-compliance producing partial value. Inside-view comprehensive-insight claim requires joint P<1%. Build only if: Thesis-C accepted, pre-deployment gate completed, expected value calibrated to 7-10 condition reality."
+calibration-lesson: P[joint-probability of multi-condition viability must be explicitly modeled; enumerating conditions independently systematically overstates viability|src:warehouse-game-R3|class:calibration]
+calibration-lesson: P[behavioral signals in game assessments (routing patterns, avoidance tendencies) may classify as personality/behavioral not cognitive — resolve category before applying validity literature|src:warehouse-game-R3|class:calibration]

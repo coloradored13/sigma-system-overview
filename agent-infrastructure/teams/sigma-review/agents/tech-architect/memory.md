@@ -313,6 +313,44 @@ C[Finley+Concord-merger=SaaS-platform+trust-company-wrapper=viable-greenfield-mo
 
 ### research-sources(new-26.3.17)
 AD-Vega(alterdomus.com), AD-Solvas-Digitize(alterdomus.com), Versana-platform(versana.io), S&P-DataXchange+AmendX(press.spglobal.com Mar-2026), Wilmington+AccessFintech(globenewswire Feb-2025), Computershare-TrustConnect(computershare.com), SRS-Acquiom-Deal-Dashboard(srsacquiom.com), Hypercore-Series-A(prnewswire Feb-2026), Oxane-Panorama(oxanepartners.com), Finastra-Loan-IQ-Nexus(finastra.com), Finley+Concord(finleycms.com 2026), Ankura-Trust(ankuratrust.com), GLAS-Oakley(glas.agency Jan-2026)
+## VDR competitive market analysis research (26.3.18) — r1
+
+### platform-architecture
+cloud-SaaS=dominant(all-8) |deployment-archetypes: T1-Enterprise-SaaS(Datasite/Azure,Intralinks,iDeals) T2-Compliance-SaaS(CapLinked/GovCloud/FedRAMP) T3-Deal-OS(Midaxo/lifecycle) T4-Vertical-Fintech(SRS-Acquiom/payments+escrow) T5-Regulatory-Bundle(DFIN-Venue/ActiveDisclosure-SEC)
+
+### !KEY-FACT: Ansarada-absorbed-by-Datasite
+Datasite acquired Ansarada AUD212M Aug-2024(ACCC-confirmed) |Ansarada=Datasite-product-¬independent-competitor |Ansarada-ESG/gov/board-carved-out→CEO-Sam-Riley-$500K |named-8-includes-absorbed-entity
+
+### security-differentiators
+AES-256+TLS=baseline-all |ABOVE: IRM/UNshare(Intralinks,pioneer,post-download-revocation) + CMEK(iDeals,RSA+AES-256-GCM) + BYOK(Datasite) + per-room-KMS-CMKs+S3-Object-Lock(CapLinked/GovCloud) + fence-view+remote-shred(iDeals)
+FedRAMP-High-aligned: CapLinked-ONLY-in-named-set(AWS-GovCloud,CMMC-2.0,DoD-IL5,ITAR) |¬others
+Compliance-above-baseline: Intralinks(ISO-27701,first-VDR) + iDeals(SOC3+HIPAA)
+
+### AI-capability-tiers
+TIER-A: Datasite(Azure-Cognitive-Services,3M-doc-training,100+-PII-types,80%-redaction-speed[vendor],Blueflame-LLM-unit) + Ansarada-IP-absorbed(Bidder-Prediction-97%[vendor],37K-deal-set,Smart-Sort)
+TIER-B: Intralinks(DealCentre-AI+VDRPro-redaction) + Midaxo(IDC-Leader-AI-Deal-Mgmt-2025) + DFIN-Venue(90%-contract-review[vendor])
+TIER-C: iDeals+SRS-Acquiom+CapLinked
+!MOAT: Datasite-3M-doc-flywheel+Ansarada-37K-deal-set=¬replicable-by-greenfield
+
+### tech-moats
+Datasite: STRONG(3M-doc-AI+Blueflame+M&A-Index-data)
+Intralinks: STRONG(IRM-pioneer+ISO-27701+30yr-Fortune-1000-network+Deal-Flow-Predictor)
+CapLinked: STRONG-in-gov(FedRAMP+CMMC+ITAR) MODERATE-outside
+iDeals: MODERATE(CMEK+fence-view+pricing-transparency+175K-clients)
+DFIN-Venue: MODERATE(ActiveDisclosure-SEC-bundle+captive-base)
+Midaxo: MODERATE-in-niche(lifecycle-breadth+IDC-Leader)
+SRS-Acquiom: MODERATE(vertical-stack+88%-global-PE+3800-deal-research)
+
+### pricing-signal
+per-page=incumbent-weakness(2-10x-overrun,>15%-deals=$50K+) |flat-rate=new-entrant-attack-vector |free-tier(Peony,Papermark)=SME-disruption
+
+### hypotheses
+H1: partially-falsified(missing: Firmex,Drooms-EU,ShareVault,FirmRoom,Imprima,Thomson-Reuters)
+H2: confirmed(new-entry=real,barriers=moderate-high,data-flywheel=strongest-barrier)
+H3: confirmed(M&A-consolidation:Datasite+Ansarada+Firmex+MergerLinks|DFIN-FDIC-loss-documented)
+
+### research-sources
+ACCC-merger-register(Datasite-Ansarada), Microsoft-CS-story(Datasite-Azure-Cognitive-Services), Ansarada-Gulfnews+Zawya(AI-ME-expansion), CapLinked-blog(AWS-GovCloud-FedRAMP), DFIN-PRNewswire(new-Venue-Sept-2025), Midaxo-PRWeb(IDC-Leader-Nov-2025), iDeals-SOC3-report(Dec-2025), dataroom-providers.org, datarooms.org, v7labs.com, peony.ink, citybiz.co, researchandmarkets.com
 
 → actions:
 → r3+ → synthesis

@@ -157,3 +157,46 @@ D[EV-base-rate] 2.2x gross,1.0-1.3x net at base rate=marginal|thesis requires ab
 D[revenue-timeline] founding→$1M=24-30mo|founding→breakeven=5-6yr|seed covers 18-24mo
 D[gap-narrowing] BY does orchestration ¬economics|gap=3 axes(cost engine,mid-market,vendor-agnostic)|narrower than r1
 C[26.3.14] lean-capital-imperative: SAM revision($450-600M) makes $40-65M path capital-inefficient(7.5-14.4% vs 3-8% benchmark)|$25-35M lean path=4.2-7.8%=viable|MUST discipline early spend
+## VDR market economics R1 findings (2026-03-18)
+
+R[topic:VDR-market-economics-comprehensive|src:MarketsandMarkets,Grand View Research,Fortune Business Insights,Mordor Intelligence,SNS Insider,dataroom-providers.org,Latka,CBInsights,Yahoo Finance,BusinessWire,PYMNTS,capitalbrief.com,CFO Dive,EY,PwC,KPMG,SRS Acquiom|refreshed:2026-03-18|next:2026-09-18]
+
+### Market Sizing
+TAM(2025): $2.83B–$3.61B(consensus ~$3.0-3.4B) | TAM(2029): $5.6B(MarketsandMarkets,18.1%CAGR) | TAM(2030): $5.2-7.7B range | TAM(2033-34): $16.9-17.5B
+Calibrated CAGR: 13-18% | CAUTION: 20%+ estimates include document-management scope inflation | pure-VDR 13-15% more defensible
+
+### Demand Floor / Macro Sensitivity
+VDR market grew +2.3% through 2022-2023 M&A trough (M&A –44%) = 40-50% non-cyclical demand floor confirmed
+Demand driver weights: M&A ~50-60%, PE/fundraising ~15-20%, compliance/regulatory ~10-15%, IPO ~10-15%, litigation ~5%
+Recession scenario: VDR demand –15 to –25% enterprise-tier; –10-15% mid-market/subscription (buffered by compliance floor)
+2026 tailwinds: rate cuts + PE dry powder + asset-mgmt M&A $50.8B(H1 2025,+76%) + DORA(EU Jan 2025)
+
+### Revenue Model Economics
+Per-page(legacy): $0.35-0.70/page; actual cost exceeded quote 2x-10x in 3,800+-deal dataset (SRS Acquiom)
+Flat-fee: $500-$5,000+/mo | CapLinked $399/mo flat | AI-tier $1,200-$5,000/mo
+AI pricing premium: 20-40% above base tier
+Shift: per-page defending at enterprise tier | subscription winning mid-market | per-page = NPS-destructive = churn risk
+
+### Competitor Revenue (estimates)
+Datasite: $157.9M(2025,Latka) | SS&C Intralinks segment: ~$420M | DFIN total: ~$850-900M | Ansarada: AU$56.7M(FY2024)
+Ansarada acquisition multiple: AUD$212-263M = ~1x-1.5x revenue = DEPRESSED mid-tier signal
+iDeals: private, est ~$40-80M | CapLinked: private, est $5-15M | Midaxo: private, est $5-10M(Owler)
+
+### Investment Flows
+Datasite: $500M CapVest commitment(2025) → Grata(Jun) + BlueFlame AI(Jul) + SourceScrub(Aug) = 3 acquisitions in 90 days
+Strategic pattern: Datasite building M&A intelligence PLATFORM (sourcing+execution+analytics), ¬just VDR
+
+### Switching Costs
+Enterprise churn est: ~5-10%/yr | mid-market ~15-25%/yr | SME ~30-50%/yr
+Lock-in sources: deal-team familiarity, archive continuity, integration depth, compliance cert alignment, proprietary data products
+
+### Geographic Economics
+NA: 40-41% share (~$1.2-1.4B) | Europe: ~25-30% | APAC: fastest growing(12-14.4% CAGR), $2.1B by 2030
+DORA specificity: EU financial entities must qualify VDR as operational resilience infrastructure = non-optional procurement
+
+### H3 Test Result
+PARTIALLY CONFIRMED — mechanism: consolidation(Ansarada absorbed) + pricing-model-transition(per-page→subscription) | NOT dramatic organic displacement | top-3 likely reach 65-70% share by 2028
+
+### Key Tensions (for DA)
+(a) CAGR variance 10-22% — defensible range? | (b) Datasite VDR vs platform expansion dilution? | (c) per-page persistence at enterprise? | (d) 40-50% demand floor — too generous?
+

@@ -77,6 +77,18 @@ R[disruption-base-rate-financial-admin: loan-admin≈fund-admin(relationship+tru
 ## review-9 findings
 review-9(loan-admin-agent,26.3.11): r1 research complete. 8 findings(F1-F8). Market timing favorable(4 tailwinds). Entry via mid-market private credit. Hypercore=closest startup competitor($13.5M,AI-native,tiny-$20B). Consensus positioning(5+ co-movers)→execution>novelty. Base rate:15-25% new-entrant share over 10yr. Entry cost:$15-30M to PMF. Strong alignment with tech-architect on AI-doc-parsing+API-first+configurable-waterfall as top differentiators.
 
+## review-10 findings — warehouse game (warehouse-lms-analysis, 26.3.18)
+
+R[warehouse-game-gamification-market: Gartner-40%-large-warehouse-adoption-by-2028 | Lucas-Systems-84%-workers-favorable-gamified-workplaces | Gen-Z-90%-favorable,Boomers-80%+ | current-warehouse-gamification=performance-motivation(leaderboards,badges) ¬cognitive-assessment | Pymetrics-model(12-games,91-traits)=closest-analogue-but-white-collar-hiring ¬warehouse | Infios/Korber/Kenco=active-deployments | src:gartner,lucasware.com,stratbeans.com,harver.com|refreshed:26.3.18|next:26.4]
+
+R[warehouse-game-authenticity-risk: arxiv-2508.09438=warehouse-workers-explicitly-game-algorithmic-management | assessment-context-suppresses-authentic-behavior | warehouse-game=domain-familiar-workers=obvious-right-answers=lower-signal-quality | H3-partially-challenged | src:arxiv,lucasware.com|26.3.18]
+
+R[warehouse-game-product-theses: Thesis-A=hiring-assessment(Pymetrics-model,EEOC-risk) | Thesis-B=training-gap-diagnostic | Thesis-C=operational-insight-workers-as-domain-experts | Thesis-C=most-defensible+least-legally-fraught+best-H3-mitigation | combine-with-movement-data=stated-vs-revealed-preference-analysis | src:agent-inference|26.3.18]
+
+R[warehouse-game-data-fusion: H4(game+movement=insight)=most-unvalidated-claim | requires:(a)identity-matching(b)temporal-alignment(c)construct-mapping | no-warehouse-specific-behavioral-correlation-precedent | treat-as-hypothesis-not-assumption | src:agent-inference|26.3.18]
+
+review-10(warehouse-game,26.3.18): ✓ 7-findings. 3-hygiene-checks(all-outcome-2). KEY: (1)game-justified-for-C1-accessibility ¬measurement-superiority (2)Thesis-C=recommended (3)H4=most-unvalidated (4)prompt-laundering=H2+H3+H4-as-assumptions (5)under-5min-sessions=prerequisite (6)alternatives:SJT+Alt-C-embedded-LMS-logging
+
 C[loan-admin=relationship-market: law-firms+PE-sponsors=primary-channels ¬direct-marketing |SRS:88%-PE=distribution-moat |1|26.3]
 C[consensus-positioning-risk: 5+-co-movers on AI-admin-thesis |execution-speed>thesis-novelty |Hypercore-12-18mo-head-start |1|26.3]
 C[mid-market-PC=best-entry: less-competitive,higher-pain,fastest-growing(BDC-explosion) ¬mega-BSL(AD-entrenched) |1|26.3]
@@ -359,6 +371,52 @@ Agency fees: flat annual + transaction fees. Tech does NOT enable direct premium
 
 ### private credit growth implication
 $3T→$5T by 2029-2030. Automation = survival, not differentiation. BDC growth forcing 1940 Act compliance tooling. Amendment frequency increasing. BSL/private credit convergence requires dual-market capability.
+## VDR market analysis r1 findings | 2026-03-18
+
+review: VDR competitive market analysis | r1-ANALYZE | 13 searches
+
+### market-sizing
+size-2025: ~$3.4B (range $3.0–3.61B) | size-2026: ~$4.1–4.37B | CAGR: 18–22% | target-2032: $7.6–11.37B
+NA-dominant: 39.7% share ($1.35B 2025) | use-case: M&A ~45%, rest=compliance+RE+LS+PE
+
+### competitive-tiers
+tier-1: Datasite(market-leader G2#1), SS&C Intralinks(enterprise-pioneer, 99% Fortune1000, SS&C parent $6B+)
+tier-2: iDeals(175K clients, $45M rev, UX-first, flat-fee), DFIN Venue(rebuilt Sept2025, SEC-filing integration), Ansarada(now Datasite subsidiary Aug2024 AUD$240M)
+tier-3-niche: CapLinked($399/mo, mid-market), Midaxo(M&A lifecycle ¬pure VDR, IDC Leader AI-Deal-Mgmt 2025), SRS Acquiom(advisory+VDR bundle, 88% global PE)
+
+### H-results
+H1-falsified-partial: missing from named-8 = Drooms(EU leader), Box(enterprise), ShareVault(FDIC win from DFIN), DealRoom, FirmRoom, Thomson Reuters
+H2-confirmed: Peony(free AI-native), Papermark(open-source), S&P Global Prism, Kiteworks entering
+H3-confirmed-nuanced: tier-1 stable | mid-tier consolidating | SME-tier disrupting
+
+### key-events-2024-2025
+Datasite acq Ansarada Aug2024 (AUD$240M) | iDeals acq EthosData Oct2024 (India) | DFIN lost FDIC contract to ShareVault May2025 | DFIN Venue rebuilt Sept2025 | Midaxo IDC Leader 2025
+
+### pricing-landscape
+per-page(legacy): $0.35–0.85/page — incumbent trap | per-user: $15–250/mo | flat-rate: $180–$5K/mo | free: Peony, Papermark
+per-page = incumbent structural weakness | SRS Acquiom data: real costs 2–10x quoted price across 3,800+ deals
+
+### risks-top3
+R1: M&A cycle dependence (H1'25: volume -17.7% YoY) | R3: Big Tech encroachment (MSFT+Google) | R6: mid-tier consolidation squeeze
+
+### strategic-moats (incumbents)
+Datasite M&A Index + deal pipeline data | Intralinks Deal Flow Predictor | SRS Acquiom deal terms studies | = data products = marketing + switching cost tools
+
+### open-questions
+[PS-1] Datasite/Ansarada brand strategy post-acq
+[PS-2] DFIN Venue rebuild — market reception?
+[PS-3] Peony revenue model sustainability?
+[PS-4] DORA impact on EU VDR compliance requirements?
+
+### warehouse-lms-game review (26.3.18)
+R1-verdicts: game-justified-as-deployment-strategy(not-measurement-superiority) | Thesis-C(operational-insight)=most-defensible | F4(H4-unverified) | F5(3-product-theses) | F6(commercial-path-complex)
+R3-DA-verdicts:
+  DA#1: CONCEDE — anchoring confirmed; Alt-C wins on ecological validity if C1 not hard constraint
+  DA#2: CONCEDE(Pymetrics) + DEFEND — Alt-C+Alt-D stronger validation for population+construct; Pymetrics=directionally-suggestive-only
+  DA#3: PARTIAL-CONCEDE — cost comparison valid only post Thesis-C+scale commitment
+  DA#4: CONCEDE — discretion audit=GATE; Thesis-C fails full-scope in directed-WMS; exception-scenario scope viable
+  DA#5: CONCEDE — EU AI Act high-risk likely applies; commercial path viability reduced; legal review=GATE
+  DA#8: CONCEDE — governance must be structural (aggregate-only+auto-delete at architecture layer), not policy
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4

@@ -245,3 +245,54 @@ P[26.3.17] collateral-agent-DLT-exposure: collateral agent function specifically
 P[26.3.17] integration-depth-moat: AI document parsing commoditizing across 10+ point tools; end-to-end pipeline integration (parse→waterfall→notice→Versana delivery) = real moat; ¬parsing capability alone
 P[26.3.17] infrastructure-player-pattern: non-agent infrastructure players (S&P Global, Versana, AccessFintech, iCapital DLT, DTCC) inserting into loan admin workflow from multiple directions simultaneously — the data/infrastructure layer race is the real competition
 P[26.3.17] private-credit-as-bespoke-driver: private credit requires configurable platforms (PIK, unitranche, delayed draw) ¬standard LoanIQ config; BSL requires connectivity/standardization; two different technology problems
+## r1 findings — VDR competitive market analysis (26.3.18)
+F[26.3.18] r1: 12 findings(TIA-1 to TIA-12)|see workspace|review: VDR competitive market analysis
+
+### player map — named 8 + ownership
+R[VDR-named-competitors-ownership|refreshed:26.3.18]
+- Datasite: CapVest Partners(PE)|$500M commitment 2025|3 acquisitions in 12mo (Ansarada Aug 2024, Grata Jun 2025, Sourcescrub Aug 2025)|55,000 transactions/yr data|"Deal OS" platform thesis
+- SS&C Intralinks: SS&C Technologies(NASDAQ:SSNC,~$6B+ rev)|Intralinks segment declined Q2-Q3 2025(2.8-4.5%)|Q4 partial recovery|DealCentre AI + LP survey data products
+- DFIN Venue: Donnelley Financial Solutions(NYSE:DFIN)|rebuilt Venue Sep 2025|lost FDIC contract May 2025 to ShareVault|tight DFIN ecosystem(Venue+ActiveDisclosure SEC filings)
+- iDeals: private/independent, London, founded 2008|~$45M revenue|282 employees|18% growth|acquired EthosData(Oct 2024)|175,000+ corporate clients
+- Ansarada: ABSORBED by Datasite (Aug 2024)|¬independent VDR competitor as of 2026|CEO Sam Riley retained ESG/GRC/Board products as standalone
+- CapLinked: private|Zero Trust + CMMC + AWS GovCloud + ITAR|defense/government niche|first-mover compliance moat
+- Midaxo: PE-backed (Idinvest,Tesi,Finnvera)|$23M total funding|$5.7M rev(2024)|IDC Leader AI-Enabled Deal Mgmt 2025|M&A intelligence platform ¬pure VDR
+- SRS Acquiom: Francisco Partners(PE)|M&A services firm|VDR = 1 of 5+ services|88% global PE + 84% top VC as clients|flat-rate pricing
+
+### key findings — TIA analysis
+R[VDR-saas-category-position|refreshed:26.3.18]
+- VDR=mid-maturity vertical-SaaS|core product commoditizing|differentiation→AI+compliance+deal-lifecycle-breadth+data-network-effects
+- Category at platform-bifurcation inflection: platform-builders(Datasite,Midaxo,DealRoom) vs compliance-specialists(CapLinked,DFIN,SRS-Acquiom)|middle-ground=commoditization-trap
+- Market size: ~$3.4B(2025)|CAGR: 13-18% defensible(calibrated with RCA)|$7-11B by 2030-32
+
+R[VDR-AI-three-layers|refreshed:26.3.18]
+- LAYER 1 — Native AI(enhancement): VDR providers embedding AI|table stakes by end-2026|¬disrupts category structure
+- LAYER 2 — Adjacent AI(1-2yr threat): Hebbia, Luminance($75M Series C Feb 2025), Kira|work ON TOP of VDR today|if adds storage+permissioning→VDR displacement for doc-analysis function
+- LAYER 3 — Agentic AI(3-5yr structural): full deal lifecycle orchestration|CALIBRATED: enterprise agentic at scale=2028-2031|STRUCTURAL PROTECTION: named VDR in deal docs=moat even in agentic world
+
+R[VDR-encroachment-vectors|refreshed:26.3.18]
+- 5 vectors confirmed active: CLM(Ironclad,DocuSign CLM)→VDR|Legal-tech-AI(Luminance,Kira)→VDR|Cloud-file-sharing(Box=limited threat,SharePoint=lacks VDR features)→VDR|Deal-intelligence(Grata→Datasite,S&P Global Prism)→VDR|Open-source(Papermark,Peony=pricing floor attack)→VDR
+- H2 CONFIRMED: enterprise barriers remain high|SMB/mid-market lower barrier=active disruption
+
+R[VDR-compliance-regulatory|refreshed:26.3.18]
+- EU AI Act: Aug 2025=general-purpose AI obligations LIVE|Aug 2026=high-risk AI requirements+€35M or 7% penalties|Ansarada ISO/IEC 42001(first-in-VDR)=first-mover cert advantage
+- DORA(EU Jan 2025): VDRs used by EU financial entities=DORA-scope|resilience requirements now contractual
+- Compliance-as-moat: cert stack(ISO 27001+SOC 2+ISO 42001)=12-18mo to build=genuine entry barrier
+
+R[VDR-market-share-dynamics|refreshed:26.3.18]
+- GAINING: Datasite(3 acquisitions), iDeals(EthosData+18% growth), ShareVault(won FDIC contract May 2025), new entrants(SMB long-tail)
+- LOSING: SS&C Intralinks(segment decline+legacy narrative), DFIN Venue(lost FDIC, mid-rebuild), Ansarada(absorbed)
+- STRUCTURAL: 2-player dominance forming at enterprise(Datasite+Intralinks)|mid-tier contested|SMB=new entrant territory
+
+R[VDR-named-list-completeness|refreshed:26.3.18]
+- Named 8 = upper-tier sample, North-America-centric
+- MISSING European players: FORDATA("#1 in Europe"), Drooms(Germany/EU), Imprima(EU AI VDR)
+- MISSING mid-market: Firmex(20K+ data rooms/yr), ShareVault(FDIC win), DealRoom(Midaxo competition)
+- MISSING disruption tier: Papermark, Peony, SecureDocs
+
+### patterns
+P[26.3.18] VDR-PE-pattern-confirmed: CapVest/Datasite=most aggressive(3 acq in 12mo)|public parents(SS&C,DFIN)=most constrained|cross-validates P[26.3.17] PE-as-tech-signal from loan-admin review|pattern is robust across deal-workflow SaaS categories
+P[26.3.18] VDR-platform-bifurcation: middle-ground VDR players face commoditization trap|must choose: Deal-OS-platform(data-network-effects path) OR compliance-specialist(regulatory-moat path)|pure-storage+permissions=no defensible position by 2028
+P[26.3.18] VDR-AI-layer-confusion: conflating 3 AI threat layers produces wrong strategic response|native-AI=table stakes(¬threat)|adjacent-AI(Hebbia,Luminance)=1-2yr competitive threat|agentic(3-5yr)=calibrate with enterprise-deployment slippage pattern
+P[26.3.18] EU-AI-Act-cert-race: Ansarada ISO/IEC 42001 first-in-VDR=first-mover advantage|Aug 2026 deadline=compliance sprint underway|ISO 42001 cert will become next differentiating cert race in 2026-27 for VDR providers with AI features
+P[26.3.18] VDR-geography-blind-spot: market analysis tends to be North-America-centric|European VDR market=distinct competitive structure (FORDATA,Drooms,Imprima)|EU regulatory environment(GDPR+DORA+EU-AI-Act)=different moat composition

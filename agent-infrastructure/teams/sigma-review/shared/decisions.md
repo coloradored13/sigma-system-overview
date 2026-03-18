@@ -474,6 +474,23 @@ EVAL-VERDICT:B(2.86/4.0) |review:loan-admin-agent-tech-landscape |date:26.3.17 |
   |weaknesses: evidence-quality(company-PR-as-independent-research), actionability(no-cost/timeline/kill-criteria), load-bearing-insights-buried(CAL2+CAL5)
   |improvements: §2d-three-tier-provenance, per-opportunity-scaffolding, elevate-CAL2+CAL5-to-headlines, demand-side-research-sprint
 
+## warehouse-lms-game review — R3 verdicts (26.3.18)
+
+verdict:DA#1-crowding-CONCEDE |by:product-strategist |weight:primary
+  |ctx: game would NOT have been independent recommendation; Alt-C (embedded LMS decision-logging) wins on ecological validity; game justified only if C1 (low-barrier deploy) is hard requirement with explicit validity tradeoff
+
+verdict:DA#2-pymetrics-analogy-DOWNGRADED |by:product-strategist |weight:primary
+  |ctx: category error confirmed — construct/population/relationship/scenario all differ; Alt-C + Alt-D have stronger existing validation for this specific use case; Pymetrics = "directionally suggestive, not validating"
+
+verdict:DA#4-discretion-audit=GATE |by:product-strategist |weight:primary
+  |ctx: Thesis-C fails for fully-directed WMS operations at full scope; exception-scenario scoping (returns/cross-dock/batch) viable narrow alternative; audit must gate proceed/no-proceed
+
+verdict:DA#5-EU-AI-Act-commercial-path-reduced |by:product-strategist |weight:primary
+  |ctx: high-risk classification likely applies even under Thesis-C; conformity assessment+monitoring+worker-rep-consultation add $50-120K+ costs; internal deployment viable; commercial requires legal-review GATE
+
+verdict:DA#8-governance=structural-not-policy |by:product-strategist |weight:primary
+  |ctx: aggregate-only query enforcement + auto-deletion required at architecture layer; policy fails under organizational pressure; structural constraints = Thesis-C commitment made credible
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent

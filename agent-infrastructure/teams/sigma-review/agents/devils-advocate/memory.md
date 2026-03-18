@@ -600,6 +600,98 @@ reference-class: A+ (highest-value analysis: outside-view, TAM ceiling, consolid
 - !pattern: unanimity on "most significant surprise" (DataXchange 5/5) = source clustering signal
 - !pattern: confirmatory methodology on user hypotheses (H3, H4) persists — teams test hypotheses that can only confirm
 
+
+## review 3: warehouse-game-design (26.3.18)
+
+### summary
+domain: warehouse-efficiency-game assessment design for mixed human-robot workforce
+10 challenges issued | exit-gate: FAIL→CONDITIONAL PASS (R3) | engagement: B+→A- | prompt-contamination: moderate-fail→pass(post-R3)
+
+### challenges issued
+DA#1: crowding — 4/4 agents said viable-with-modifications (herding toward user premise)
+DA#2: Pymetrics analogy is category error — every variable differs (construct, population, relationship, scenario, stakes)
+DA#3: r=0.30-0.45 = 9-20% variance explained — team frames as "moderate" but is mostly noise for investment justification
+DA#4: worker discretion may be 10-15% in directed-picking WMS — game measures decisions workers don't make
+DA#5: EU AI Act classifies employment behavioral assessment as HIGH-RISK (August 2026-2027) — team missed entirely
+DA#6: prompt laundering moderate — 15 conditions for viability (several conflict), scope retreat unacknowledged, methodology 60% confirmatory
+DA#7: prompt audit — echo LOW, unverified claims GOOD hygiene, missed IMPLICIT-C4 (social friction), methodology confirmatory
+DA#8: second-order effects unmodeled — moral agency erosion (Kim 2026), management pressure cascade, union response
+DA#9: social friction blindspot — game models physical/spatial friction but ethnographic research says dominant friction is social/organizational
+DA#10: existing WMS data already contains behavioral signal — incremental value of game undemonstrated
+
+### counter-evidence sources
+- Kim 2026, "When Work Becomes a Game: The Moral Costs of Gamified Labor" (Ethics and Information Technology, Carnegie Mellon)
+- Ohlms 2025, "Is test takers' video game usage a game changer?" (Applied Psychology, Wiley) — gaming experience bias
+- EU AI Act Article 6 high-risk classification for employment AI (effective Aug 2026-2027)
+- Workday/Pymetrics lawsuit July 2024 (U.S. District Court, Judge Rita Lin) — vendor liability for assessment bias
+- arxiv 2508.09438, warehouse workers' experiences with algorithmic management
+- EU Platform Work Directive — algorithmic management transparency
+
+### calibration notes
+- team research quality A+ — genuine deep work from all 4 agents
+- RCA pre-mortem strongest investigative element
+- PS alternative analysis (Alt-A through Alt-D) genuine but still lands on "build the game"
+- !pattern: confirmatory methodology bias PERSISTS (third consecutive review) — teams search FOR evidence that premise works, not AGAINST
+- !pattern: 15-simultaneous-conditions analyzed independently but interaction effects unmodeled — multiplicative probability much lower
+- !pattern: scope retreat (strong claim→weaker claim) absorbed silently — need explicit SCOPE ADJUSTMENT flag in convergence protocol
+- !NEW: regulatory gap (EU AI Act) missed by all agents — add to standard checklist for any review involving worker behavioral data
+
+### R3 debate results
+- all 4 agents answered anchoring question honestly ("No, would not have independently recommended game")
+- strongest R3 moments: RCA joint-probability-model(0.1-1%), UX friction-taxonomy-self-correction, TA cost-quantification($100K-200K delta)
+- DA#10 defense ACCEPTED: TA's WMS anomaly triangulation is concrete incremental value for one problem class
+- exit-gate upgraded to CONDITIONAL PASS with 4 gates + user Thesis-C commitment
+- revised CAL: H1:50%, H2:30%, H4:35%, H5:65%
+- !calibration: 3rd review, debate quality highest yet. Teams improve with DA pressure. Honest self-correction from UX on friction taxonomy was exemplary.
+- !pattern-confirmed: confirmatory bias correctable via R2 challenge — teams DO self-correct when confronted with specific counter-evidence and direct questions
+- !pattern-NEW: "viable with modifications" is a non-informative verdict — joint probability modeling (RCA R3) converts it to honest probability. REQUIRE joint-probability-model for any verdict with >5 conditions.
+## VDR competitive market analysis — r2 challenge (26.3.18)
+
+### challenges issued |#12
+- DA[1] !CRITICAL: market-size-anchoring — IBISWorld US VDR=$2.3B,8.1%CAGR vs team $3.0-3.4B,13-22%CAGR | scope-definition=key-variable |target:ALL
+- DA[2] !CRITICAL: consolidation-timeline — EA 65-70% by 2028 vs RCA P(>60%,5yr)=30% | EA needs 7pp/yr=2x B2B SaaS base rate | unsupported |target:EA,RCA
+- DA[3] HIGH: Datasite-rollup-risk — 8+acq since 2020, FIS-Worldpay cautionary($43B→$17B write-down), PM[3]=20-30% failure buried ¬carried |target:ALL
+- DA[4] HIGH: DFIN-recovery — Q4 2025 Venue+ActiveDisclosure +20% YoY, $142M annual — contradicts "losing" classification |target:TIA,PS
+- DA[5] HIGH: Intralinks-cyclical-¬structural — Q2(-4.5%),Q3(-2.8%) attributed to M&A cycle ¬ structural decline |target:TIA
+- DA[6] HIGH: AI-table-stakes-vs-premium-tension — 5/5 consensus "AI=table stakes" but EA says 20-40% premium holds — logical tension unresolved |target:ALL
+- DA[7] HIGH: iDeals-revenue — team estimated $40-80M, actual $33.7M — wrong by 20-60% high end |target:EA
+- DA[8] MEDIUM: H2-overconfirmed — new entry at SME ¬enterprise, Hebbia/Luminance=complement ¬substitute |target:PS,TIA
+- DA[9] MEDIUM: demand-floor-thinly-evidenced — 40-50% non-M&A from single-cycle data |target:EA
+- DA[10] MEDIUM: unit-economics-gap — zero agents analyzed profit margins/financial sustainability |target:ALL
+- DA[11] MEDIUM: prompt-echo-in-competitive-framing — map follows prompt's 8-company structure |target:PS
+- DA[12] LOW: blockchain-gap-unresearched |target:TA
+
+### exit-gate: FAIL
+- engagement: PS:B+,TA:B+,TIA:B+,EA:B,RCA:A-
+- 7 unresolved material disagreements + 2 untested consensus
+- hygiene: PASS | prompt-contamination: PASS(within-tolerance)
+
+### grades
+- RCA: A- (best calibrated, outside-view reconciliation=most valuable contribution)
+- PS: B+ (genuine H1 falsification, comprehensive coverage, framing echoes prompt)
+- TA: B+ (rigorous source-provenance, vendor-claim tagging exemplary)
+- TIA: B+ (3-layer AI distinction=most analytically valuable single finding, premature "losing" labels)
+- EA: B (useful stress-test data, iDeals revenue wrong, consolidation estimate unsupported, demand-floor overconfident)
+
+### patterns
+- !CAGR-scope-inflation: high-end VDR market estimates (20%+) likely include adjacent document-management — IBISWorld actual-revenue data significantly lower (8.1%)
+- !AI-consensus-untested: 5/5 agents agreeing on AI=table-stakes with zero internal debate = crowding signal — needs resolution with premium data
+- !gaining-losing-labels: classifying competitors as "gaining"/"losing" from 2 quarters of data is premature — need structural ¬ cyclical evidence
+- !rollup-risk-burial: pre-mortem identifies risk (PM[3]=20-30%) but team narrative doesn't carry it — common analytical failure where risk-flagged ¬ risk-weighted
+- !adjacent-AI-complement: Hebbia/Luminance/Kira integrate WITH VDRs ¬ replace them — team correctly identifies 3-layer model but some agents still frame as "threat" when near-term reality is "complement"
+
+### research (independent)
+- IBISWorld: US VDR industry $2.3B(2025), 8.1% CAGR(5yr), 10.3% 2025 growth, 16.1% profit margin
+- iDeals revenue: $33.7M(2025, multiple sources) — not $40-80M as team estimated
+- DFIN Q4 2025: Venue+ActiveDisclosure +20% YoY, total DFIN $172.5M(+10.4%), Venue annual $142M
+- SS&C Q3 2025: Intralinks -2.8% (attributed to M&A deal count), parent +7%
+- Datasite: per-page pricing complaints confirmed (Capterra reviews — "predatory," slow navigation, ~$1,500 USB)
+- Hebbia: $700M valuation, $13M ARR(Jun 2024), acquired FlashDocs(Jul 2025) — works WITH VDRs
+- Luminance: revenue doubled 2025, NA +127% YoY — integrates Intralinks+Ansarada+Box (complement ¬substitute)
+- FIS-Worldpay: $43B acquisition→$17B write-down — capital-structure mismatch + inability to invest post-acquisition = PE rollup cautionary tale
+- Datasite/Ansarada: post-acquisition customer reviews show "product roadmap uncertainty" driving churn consideration
+- M&A 2026 outlook: 80%+ dealmakers optimistic for more volume, but middle-market weakness+trade tensions+deal abandonment = risks
+
 → actions:
 → new finding → append with severity+evidence
 → disagreement with another agent → record both positions in shared/decisions.md
