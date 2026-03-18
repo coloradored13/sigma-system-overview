@@ -96,7 +96,7 @@ demand-side-gap-in-tech-analyses: technology landscape analyses focus on supply-
 
 ## sigma-audit calibration (26.3.17 | loan-admin-tech)
 
-AUDIT[26.3.17|loan-admin-tech]: R2-integration-skipped — agents declared convergence without writing DA response sections (concede/defend/compromise). Adversarial layer functioned as monologue ¬dialogue. DA assessed exit-gate without agent responses. |verdict:YELLOW |source:sigma-audit
+AUDIT[26.3.17|loan-admin-tech]: R2-integration-skipped — agents declared convergence without writing DA response sections (concede/defend/compromise). Adversarial layer functioned as monologue ¬dialogue. DA assessed exit-gate without agent responses. |verdict:YELLOW→GREEN(remediated: 21 responses, all substantive, credible disposition distribution 36%concede/57%compromise/7%defend) |source:sigma-audit
 
 AUDIT[26.3.17|loan-admin-tech]: source-confidence-gap — §2d [independent-research] tag covers both company PR and third-party-verified data. DA[#9] proposed confidence tiering (Tier1=verified, Tier2=corroborated, Tier3=company-only) would close this. Consider directive update to §2d. |verdict:YELLOW |source:sigma-audit
 

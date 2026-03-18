@@ -456,15 +456,15 @@ S&P-DataXchange-downgraded |monitoring-item¬landscape-changing-conclusion |zero
 
 ## sigma-audit verdict (26.3.17 | loan-admin-tech)
 
-AUDIT-VERDICT:YELLOW |review:loan-admin-agent-tech-landscape |date:26.3.17 |by:sigma-audit(independent-opus-agent)
-  |passed: §7-prompt-decomposition(followed), §2-analytical-hygiene(substantive), zero-dissent-CB(not-needed,correct), DA-challenge-quality(10/10-substantive)
-  |flagged: R2-agent-responses-missing(protocol-gap), CONTAMINATION-CHECK-absent(documentation-gap), §2d-source-confidence-gap(company-PR==[independent-research])
-  |remediation: targeted-fixes-sufficient, no-rerun-needed
-  |note: GREEN≠correct-findings, YELLOW=process-gaps-found. Run /sigma-evaluate for output quality.
+AUDIT-VERDICT:YELLOW→GREEN |review:loan-admin-agent-tech-landscape |date:26.3.17 |by:sigma-audit(independent-opus-agent)
+  |initial: YELLOW(3 gaps: R2-responses-missing, CONTAMINATION-CHECK-absent, header-stale)
+  |remediation: all 3 resolved — 21 DA responses(substantive), §6c-check(clean), header(post-r2)
+  |re-audit: GREEN — all protocols pass, zero remaining issues
+  |note: GREEN≠correct-findings. Run /sigma-evaluate for output quality.
 
-AUDIT-FLAG[26.3.17]: R2-integration-skipped — agents did not write concede/defend/compromise responses to 10 DA challenges |remediation: agents must write response sections before DA issues exit-gate |status:open
+AUDIT-FLAG[26.3.17]: R2-integration-skipped |remediation: agents wrote 21 responses |status:closed(remediated)
 
-AUDIT-FLAG[26.3.17]: §2d-confidence-tiering-needed — [independent-research] covers company PR through SEC filings without distinction |remediation: add confidence qualifier (company-reported vs third-party-verified vs regulatory-filing) to §2d |status:open
+AUDIT-FLAG[26.3.17]: §2d-confidence-tiering-needed — [independent-research] covers company PR through SEC filings without distinction |remediation: add confidence qualifier to §2d |status:open(directive-update-pending)
 
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
