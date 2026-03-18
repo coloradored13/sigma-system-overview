@@ -279,10 +279,12 @@ R[VDR-compliance-regulatory|refreshed:26.3.18]
 - DORA(EU Jan 2025): VDRs used by EU financial entities=DORA-scope|resilience requirements now contractual
 - Compliance-as-moat: cert stack(ISO 27001+SOC 2+ISO 42001)=12-18mo to build=genuine entry barrier
 
-R[VDR-market-share-dynamics|refreshed:26.3.18]
+R[VDR-market-share-dynamics|refreshed:26.3.18|r3-updated:26.3.18]
 - GAINING: Datasite(3 acquisitions), iDeals(EthosData+18% growth), ShareVault(won FDIC contract May 2025), new entrants(SMB long-tail)
-- LOSING: SS&C Intralinks(segment decline+legacy narrative), DFIN Venue(lost FDIC, mid-rebuild), Ansarada(absorbed)
-- STRUCTURAL: 2-player dominance forming at enterprise(Datasite+Intralinks)|mid-tier contested|SMB=new entrant territory
+- RECOVERING (revised from LOSING): DFIN Venue — Q4 2025 Venue+ActiveDisclosure +20% YoY confirmed(DFIN earnings prnewswire Feb 2026)|FDIC loss=isolated event ¬structural|public-co capital constraint=ceiling|ActiveDisclosure 17% FY2025=highest since 2021
+- CYCLICALLY PRESSURED STRUCTURALLY SOUND (revised from LOSING): SS&C Intralinks — SS&C Q4 2025 record results(investor.ssctech.com)|Intralinks "modest growth Q4+momentum 2026"|M&A-correlated dip confirmed cyclical ¬competitive|$35T++99% Fortune 1000+IDC CSAT=structural moat intact
+- ELIMINATED (unchanged): Ansarada absorbed
+- STRUCTURAL: enterprise-tier more stable than R1 characterized|DFIN recovering|Intralinks cyclical ¬structural|2-player dominance(Datasite+Intralinks) at enterprise still forming|mid-tier contested|SMB=new entrant territory
 
 R[VDR-named-list-completeness|refreshed:26.3.18]
 - Named 8 = upper-tier sample, North-America-centric
@@ -296,3 +298,15 @@ P[26.3.18] VDR-platform-bifurcation: middle-ground VDR players face commoditizat
 P[26.3.18] VDR-AI-layer-confusion: conflating 3 AI threat layers produces wrong strategic response|native-AI=table stakes(¬threat)|adjacent-AI(Hebbia,Luminance)=1-2yr competitive threat|agentic(3-5yr)=calibrate with enterprise-deployment slippage pattern
 P[26.3.18] EU-AI-Act-cert-race: Ansarada ISO/IEC 42001 first-in-VDR=first-mover advantage|Aug 2026 deadline=compliance sprint underway|ISO 42001 cert will become next differentiating cert race in 2026-27 for VDR providers with AI features
 P[26.3.18] VDR-geography-blind-spot: market analysis tends to be North-America-centric|European VDR market=distinct competitive structure (FORDATA,Drooms,Imprima)|EU regulatory environment(GDPR+DORA+EU-AI-Act)=different moat composition
+
+## r3 DA responses — VDR competitive market analysis (26.3.18)
+F[26.3.18] r3: 3 DA challenges|DA[4]CONCEDE(partial)|DA[5]CONCEDE(partial)|DA[6]DEFEND(with-model)
+
+C[26.3.18] DA[4]-forced: DFIN "losing"→"recovering-with-momentum"|Q4 2025 Venue+ActiveDisclosure +20% YoY(DFIN earnings prnewswire Feb 2026)|FDIC loss=isolated contract event coinciding with platform transition|public-co capital constraint ceiling retained|single-event-classification-error confirmed
+C[26.3.18] DA[5]-forced: Intralinks "losing"→"cyclically-pressured-structurally-sound"|SS&C Q4 2025 record results(investor.ssctech.com)|Intralinks "modest growth Q4+momentum 2026"|M&A-correlated dip ¬competitive|structural metrics intact|per-page pricing gap+PE capital asymmetry=residual risks stand
+C[26.3.18] DA[6]-defended: table-stakes vs premium resolved via two-phase model|PHASE 1(now-2026)=advanced AI differentiator 20-40% premium holds|PHASE 2(2027-2028)=basic commodity API AI collapses to table stakes|DATA-FLYWHEEL AI remains premium 2028+(Datasite 3M-doc,Ansarada 37K-deal,Intralinks IRM-integrated)|8%=Layer-2 specialized tools ¬VDR-native AI broadly|Deloitte 2025: 86% GenAI use but only 35% due diligence application=real adoption gap|original TIA-3 claim under-specified not analytically wrong
+
+P[26.3.18-r3] cyclical-vs-structural: M&A-correlated revenue dip ≠ competitive position loss|requires direct account defection evidence OR declining win rates OR deteriorating renewals to classify structural|Q4 recovery = cyclical confirmed
+P[26.3.18-r3] single-event-classification-error: never classify trajectory from one event without checking subsequent earnings data|FDIC loss alone = incomplete picture; FDIC loss + Q4 earnings together = correct picture
+P[26.3.18-r3] AI-table-stakes-must-specify-tier: basic(commodity API) vs advanced(data-flywheel-trained) vs architectural AI have different commoditization timelines|single undifferentiated "table stakes by X" claim is analytically under-specified
+P[26.3.18-r3] AI-premium-phased-model: EA 20-40% premium(now=Phase 1) + TIA table-stakes claim(2027=Phase 2) are consistent when phased|logical tension = spec error not analytical contradiction

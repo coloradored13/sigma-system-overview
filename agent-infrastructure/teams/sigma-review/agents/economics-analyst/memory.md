@@ -200,3 +200,24 @@ PARTIALLY CONFIRMED — mechanism: consolidation(Ansarada absorbed) + pricing-mo
 ### Key Tensions (for DA)
 (a) CAGR variance 10-22% — defensible range? | (b) Datasite VDR vs platform expansion dilution? | (c) per-page persistence at enterprise? | (d) 40-50% demand floor — too generous?
 
+## VDR market economics R3 DA responses (2026-03-18)
+
+F[26.3.18-vdr-r3] 5 DA challenges | 2 full-concedes(DA[2],DA[7]) | 2 partial-concedes(DA[1],DA[9]) | 1 new-finding(DA[10])
+
+DA[1] DEFEND(partial): IBISWorld US $2.3B / 40% NA share = $5.75B implied global = LARGER than team central ¬smaller. DA direction reversed. Scope: pure-VDR vs adjacent CLM/deal-mgmt inflation. Temporal: 8.1% = 5yr realized; team = forward with AI-cycle accelerant. CAGR revised 12-15% pure-VDR central. Aligns RCA 9-11% at narrow scope, 14-16% at workflow scope.
+
+DA[2] CONCEDE: 65-70% top-3 by 2028 = upside(P~20-25%) ¬central. B2B SaaS top-5 = 3pp/yr confirmed. My estimate required 7-8pp/yr = 2.5x base rate. RCA critical finding: actual top-3 share ~21% (not 40-45%) — makes 65-70% in 3yr even less plausible. Central revised: 35-45% in 5yr. Adopt P(top-3>60%,5yr)=25% (RCA CAL[2] revised).
+
+DA[7] CONCEDE: iDeals $31-35M (¬$40-80M). KonaEquity $31.3M + RocketReach $33.7M as best sources. ARPU $189/yr = SME/trial/transactional ¬enterprise M&A. Revenue top-3 = SS&C(~$420M)+Datasite(~$158M)+DFIN(~$142M) = ~$720M = ~21-25% global TAM.
+
+DA[9] CONCEDE(partial): confidence HIGH->MEDIUM. Floor 35-50% (¬40-50%). Two-cycle evidence preserved (2020+2022-23). "Deal count declined less than value" SUPPORTS floor. Per-page inflation as partial confound acknowledged.
+
+DA[10] NEW EF10: IBISWorld 16.1% margin below SaaS 20-30% = service-cost blend. Per-page->subscription: 36% revenue compression risk within 12mo, 3-5yr margin valley, long-term normalization + AI premium recovery. Capital-HAVE vs capital-HAVE-NOT = survival threshold. Peony(no VC confirmed) = ¬durable threat. AI premium (20-40%) provides partial offset for players who execute AI tier.
+
+C[26.3.18-vdr] IBISWorld-direction-error: US-only revenue / 40% share = implied global LARGER than team central; DA framing reversed direction of gap
+C[26.3.18-vdr] consolidation-speed-vs-direction: direction of consolidation = HIGH confidence; SPEED = LOW base-rate support; never conflate these two claims
+C[26.3.18-vdr] per-page-transition-valley: 36% revenue compression risk per deal; 3-5yr valley; explains Ansarada depressed 1-1.5x multiple; capital structure = survival variable
+
+P[26.3.18-vdr] two-cycle-demand-resilience: VDR grew through 2020(COVID) and 2022-23(rate-shock) M&A troughs; two-cycle evidence stronger than one; per-page inflation as confound remains unresolved
+P[26.3.18-vdr] geography-scope-confusion: IBISWorld US-only vs global research firm estimates requires explicit unit normalization before comparison; failure to normalize = apparent contradiction where none exists
+

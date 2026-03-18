@@ -692,6 +692,14 @@ DA#10: existing WMS data already contains behavioral signal — incremental valu
 - Datasite/Ansarada: post-acquisition customer reviews show "product roadmap uncertainty" driving churn consideration
 - M&A 2026 outlook: 80%+ dealmakers optimistic for more volume, but middle-market weakness+trade tensions+deal abandonment = risks
 
+## r3-exit-gate VDR review | 2026-03-18
+exit-gate: PASS | all 12 challenges addressed | 11 resolved, 1 partially-resolved (DA[2])
+engagement-revised: PS:A-,TA:A-,TIA:A,EA:B+,RCA:A
+key-outcomes: (1) CAGR→scope-conditional(pure-VDR 8-11%, workflow 12-16%, broad 18-22%) (2) consolidation-speed→EA retracted 65-70%, now 50-55% vs RCA 35-45%(deliberate divergence) (3) Datasite-rollup-risk→elevated-to-primary(P=30%) (4) DFIN→recovering¬losing (5) Intralinks→cyclically-pressured¬losing (6) AI→two-tier-model(basic-commoditizes,advanced-persists) (7) iDeals→$31-35M¬$40-80M (8) unit-economics→EF10-created (9) H2→PARTIALLY-CONFIRMED¬CONFIRMED (10) demand-floor→MEDIUM-confidence,35-50% (11) prompt-echo→ordering-corrected (12) blockchain→investigated,¬production
+best-R3-performer: TIA — highest-quality self-corrections(DA[4],DA[5]), self-identified confirmation-bias, detailed phased AI model
+patterns: agents respond well to evidence-backed challenges | concessions genuine when evidence compelling | defenses accepted when logically coherent with precision revision | R3 round materially improved analysis quality | two-tier/two-phase models resolve false-binary tensions effectively
+calibration: R2 FAIL→R3 PASS appropriate — agents addressed substance ¬ performed compliance. All 5 agents conducted new research in R3.
+
 → actions:
 → new finding → append with severity+evidence
 → disagreement with another agent → record both positions in shared/decisions.md

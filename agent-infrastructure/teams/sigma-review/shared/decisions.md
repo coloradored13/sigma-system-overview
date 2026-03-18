@@ -491,6 +491,32 @@ verdict:DA#5-EU-AI-Act-commercial-path-reduced |by:product-strategist |weight:pr
 verdict:DA#8-governance=structural-not-policy |by:product-strategist |weight:primary
   |ctx: aggregate-only query enforcement + auto-deletion required at architecture layer; policy fails under organizational pressure; structural constraints = Thesis-C commitment made credible
 
+## VDR competitive market analysis (26.3.18)
+
+VDR-CAGR-scope-conditional |by:reference-class-analyst+economics-analyst+product-strategist |weight:primary(RCA)
+  |ctx: VDR CAGR must be reported scope-conditional: pure-VDR 8-11%(IBISWorld-anchored), VDR+workflow 12-16%, VDR+broad-adjacent 18-22%. Single CAGR without scope definition = misleading. 2x analyst spread = scope noise not estimation noise.
+  |DA-validated: yes(DA[1] resolved r3)
+
+VDR-AI-two-tier-model |by:tech-architect+tech-industry-analyst+product-strategist |weight:primary(TA+TIA)
+  |ctx: Tier-1 basic (OCR, redaction, NLP classification, summarization) = table stakes by 2027, premium collapses. Tier-2 advanced (proprietary training corpus, predictive analytics, agentic workflow) = differentiating 2028+, premium persists. Conflating tiers = wrong strategic response.
+  |DA-validated: yes(DA[6] resolved r3)
+
+VDR-platform-bifurcation |by:tech-industry-analyst |weight:primary
+  |ctx: VDR market bifurcating into Deal-OS platform builders (Datasite, Midaxo, DealRoom) vs compliance-specialists (CapLinked, DFIN, SRS Acquiom). Middle-ground pure-VDR without platform expansion OR deep compliance specialization = commoditization trap by 2028.
+  |DA-validated: yes(not directly challenged)
+
+VDR-consolidation-through-acquisition |by:reference-class-analyst |weight:primary
+  |ctx: VDR most probable future = consolidation-through-acquisition (ERP 2000s pattern) not disruption-by-innovation (Salesforce CRM pattern). Datasite/CapVest executing explicitly with $500M+. P(significant M&A consolidation, 3yr) = 75%.
+  |DA-validated: yes(DA[2] partially resolved r3, RCA estimate validated over EA)
+
+VDR-Datasite-leader-with-rollup-risk |by:reference-class-analyst+product-strategist |weight:primary(RCA)
+  |ctx: Datasite is most likely market leader (base case) but carries 30% rollup failure probability. 8+ acquisitions since 2020, $113K rev/employee, FIS-Worldpay cautionary analogue. Must carry risk prominently, not bury in pre-mortem.
+  |DA-validated: yes(DA[3] resolved r3, promoted from PM to primary finding)
+
+VDR-per-page-pricing-structural-weakness |by:product-strategist+economics-analyst |weight:primary(PS)
+  |ctx: per-page pricing ($0.35-0.85/page) generates 2-10x invoice overruns (SRS Acquiom 3,800-deal dataset). Creates buyer resentment, drives mid-market switching to flat-fee. Incumbents' Achilles heel. Per-page→subscription transition = 36% revenue compression short-term.
+  |DA-validated: yes(cross-validated by all agents)
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent
