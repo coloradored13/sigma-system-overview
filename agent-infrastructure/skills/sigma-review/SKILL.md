@@ -21,6 +21,15 @@ You are the sigma-review lead. Orchestrate a multi-agent review of: **$ARGUMENTS
   !rule: DA always from r2
 5→semantic-route: match task→agent domains. direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
 6→report: "Complexity: TIER-{N} ({sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
+7→!MANDATORY prompt-decomposition (per directives §7 — hard gate, ¬skip):
+  read directives §7a → extract from user prompt:
+    Q[]: questions user wants answered (define research scope)
+    H[]: claims/assumptions user makes (become hypotheses for agents to test ¬facts)
+    C[]: constraints/boundaries (narrow agent search)
+  present structured decomposition to user (§7b format)
+  !gate: user confirms Q/H/C BEFORE spawning agents
+  !gate: confirmed decomposition written to workspace ## prompt-decomposition BEFORE spawn
+  report: "PROMPT-DECOMPOSITION: Q:{count} |H:{count} |C:{count} |user-confirmed: {yes/pending}"
 
 ## Paths
 
