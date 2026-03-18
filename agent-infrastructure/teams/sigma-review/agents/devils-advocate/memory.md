@@ -566,6 +566,39 @@ grades: macro-rates=B+ | portfolio=B+ | regulatory=A- | reference-class=B- | pro
 exit-gate: FAIL | criteria-failed: (1)zero-bull-case=untested-consensus (2)P(failure)-uncalibrated (3)temporal-leakage (4)engagement-B-meets-minimum-but-unanimous-bearish-is-herding
 r3-requirements: bull-case-engagement-per-agent | calibration-defense-or-revision | source-tagging-temporal | hindsight-acknowledgment
 key-finding: Goldman-raised-SIVB-target-to-$312-Buy-on-March-3-2023 | Forbes-Best-Banks-5th-year-Feb-2023 | 12Buy/11Hold/1Sell | major-asset-managers-adding-shares-late-2022 | 11%-of-banks-had-worse-HTM-losses-most-survived
+## review: loan-admin-agent-tech-landscape (26.3.17)
+task: R2 challenge round — loan admin agent technology for corporate lending (BSL+private credit)
+challenges: #10 issued | exit-gate: PASS
+
+### challenges issued
+DA[#1] timescale tension — reconciled: investment-urgency(18-36mo) vs advantage-expectations(5-10yr) vs market-share-shift(10-20yr). Both sides partially correct, different horizons.
+DA[#2] H2 framing — product-strategist "tech=floor¬ceiling" is correct synthesis. Adopted.
+DA[#3] Hypercore data integrity — CRITICAL: "20 employees" contradicted by Y Combinator(7)/Tracxn(5). All traction metrics self-reported from Series A PR. 75% fintech failure rate applies. No trust charter = regulatory ceiling.
+DA[#4] Kroll 8-day settlement — "47-day market average" is Kroll marketing ¬LSTA data. Actual LSTA Q2 2024 median = 12 days. Honest comparison: 8 vs 12 (33% better) ¬ 8 vs 47 (83% better).
+DA[#5] S&P DataXchange — 14 days post-launch, zero adoption data. 5/5 agents calling it "most significant" = source clustering + recency bias, not independent validation. Monitoring item ¬landscape-changing conclusion.
+DA[#6] H3 confirmation bias — team confirmed "technology race" by looking for investment activity (can only confirm). Normal business activity in growing market ≠ race. H3→"partially confirmed: investment race real, competitive tech race unconfirmed."
+DA[#7] client-side adoption gap — biggest missing piece. Supply-side analysis only. No demand-side adoption barriers analyzed (IT governance, change management, procurement cycles, compliance validation).
+DA[#8] AD crowding — "AD=scale leader" is market consensus ¬novel insight. Integration risk (FIS-Worldpay echo, 6+ acquired platforms, 3-5yr horizon) is the HIGH-VALUE finding and it's underweighted.
+DA[#9] source provenance — multiple self-reported metrics tagged [independent-research]: Hypercore(headcount+AUM), Kroll(settlement speed), GLAS(40% organic growth), AD(100K payments/day). Need confidence tiers.
+DA[#10] private credit forcing function — "forces adoption ≠ creates winners" is buried caveat that should be headline. PC grew 6x ($500B→$3T) with existing processes — why would next $2T be different? Named forcing functions (PIK+LME+amendment volume) more actionable than "growth."
+
+### prompt-audit
+echo-count:2(H3,H4) |unverified-claims:0 |missed-claims:1(C1-confirmatory-pressure) |methodology:mixed(H1+H5=investigative, H3=confirmatory, H2+H4=mixed)
+
+### engagement grades
+loan-ops: A- (data verification issue on Hypercore)
+product-strategist: A (strongest framing on H2)
+tech-architect: A (correct Hypercore skepticism, best architectural taxonomy)
+tech-industry: A (strongest unexpected-plays analysis)
+reference-class: A+ (highest-value analysis: outside-view, TAM ceiling, consolidation probability)
+
+### calibration notes
+- this review: domain-expert consensus was largely well-founded (unlike Iran conflict review where crowding was missed)
+- team's analytical quality HIGH — challenges were mostly about calibration+verification ¬fundamental errors
+- key contribution: data integrity challenge (DA[#3]), methodological challenge (DA[#4], DA[#6]), gap identification (DA[#7])
+- !pattern: teams accept press-release metrics as "independent research" — need data-verification protocol
+- !pattern: unanimity on "most significant surprise" (DataXchange 5/5) = source clustering signal
+- !pattern: confirmatory methodology on user hypotheses (H3, H4) persists — teams test hypotheses that can only confirm
 
 → actions:
 → new finding → append with severity+evidence

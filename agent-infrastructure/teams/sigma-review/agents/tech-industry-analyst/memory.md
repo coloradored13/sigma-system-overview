@@ -195,3 +195,53 @@ P[26.3.14] orchestration≠economics: orchestration gaps close fast(cloud-native
 P[26.3.14] legacy-assumption-trap: enterprise company≠legacy product|verify specific product arch before assuming constraint
 P[26.3.14] planning-deployment-gap: "plan to adopt" overstates 2-3x|decompose breadth vs depth|can move opposite
 P[26.3.14] volume-conflation-confirmed: cross-domain pattern(WU stablecoin vol + LMS robot adoption)|aggregate numbers obscure segment dynamics
+## r1 findings — loan admin agent technology landscape (26.3.17)
+F[26.3.17] r1: 12 findings(TIA-1 to TIA-12)|see workspace|
+
+### player map
+R[loan-admin-agents-verified|refreshed:26.3.17]
+- Alter Domus: EQT-backed, Agency360+Solvas(from Deloitte 2023)+CorTrade+VBO+CorPro, UiPath RPA, in-house AI team, 5,800 staff. 75% GPs cite automation as fund admin selection factor.
+- Kroll ATS (formerly Lucid): Bloomberg #3 Admin Agent Q1 2025; 8-day vs 47-day settlement; Business Connect KYC/workflow; claimed first cloud-native independent agent
+- GLAS: LLCP→Oakley Capital Jan 2026; AUA $120B→$750B (6x); 40% organic revenue growth; purpose-built proprietary; Oakley mandate = tech+AI enhancement
+- SRS Acquiom: Francisco Partners; Deal Dashboard (FX 130+ currencies); EU May 2025, UK FCA Sep 2025; expanding M&A escrow → loan admin → collateral agent
+- Ankura Trust: successor/distressed specialist; technology = "tailor-made, often technology/data enabled" — ¬proprietary platform claim
+- Wilmington Trust: M&T Bank; Loan IQ core + AccessFintech Synergy (Feb 2025) partnership; OCR for notice digitization; CLO+BSL+structured finance focus
+- OMISSIONS FROM PROMPT: Computershare ($6.6T debt under admin — likely #1-2 BSL volume), SS&C (Precision LM + agentic AI), Citco (loan servicing), TMF Group (Broadridge Sentry)
+
+### unexpected entrants (Q7/H5 findings)
+R[loan-admin-unexpected-entrants|refreshed:26.3.17]
+- Concord + Finley Technologies (Feb 2026): 35yr trust company ($60B+ AUM) acquires credit facility management SaaS → full-stack loan admin replacement; Valley Bank live Feb 2025
+- DTCC Collateral AppChain (Apr 2025): smart contracts for collateral operations; Centrifuge LIVE at $150M+ CLO scale; broad adoption 2028-2030 (DA-calibrated); direct threat to collateral agent role specifically
+- iCapital DLT on Canton Network: 100+ funds on-chain Mar 2025; Morgan Stanley adopted; Canton = same infra as DTCC; adjacency risk to loan admin if extended to loan instruments
+- S&P Global DataXchange+AmendX (Mar 2026): inserting into agent→lender notice routing; "become the pipe" strategy; cross-validated by tech-architect F4
+- Cardo AI: $15M raised, $90B AUM, 160+ integrations, covenant monitoring+margin grid+collateral — fastest-growing private credit infra
+
+### technology investment dynamics
+R[loan-admin-tech-investment|refreshed:26.3.17]
+- PE-backed = necessary condition for tech leadership: GLAS (LLCP→Oakley), Kroll (Stone Point), AD (EQT), SRS (Francisco Partners) — bank-affiliated agents incrementally modernize ¬build new stacks
+- Build vs buy: custom enterprise platform $10M-50M+; vendor stack (LoanIQ+Sentry/SS&C/Allvue) $2-5M/yr; proprietary only viable at AD/GLAS scale
+- AI: document extraction commoditizing (10+ point tools); moat = integration depth (parse→structure→waterfall→notice→reconcile→deliver via Versana/DataXchange), ¬parsing alone
+- Finastra LoanIQ+IBM LCS (Mar 2025): managed SaaS migration on Azure; IDC MarketScape 2025 Leader; 70-75% BSL volume
+- SS&C agentic AI Nov 2025; SS&C Credit Agreement Document Agent in production
+- Private credit ($3T→$5T by 2029) = technology forcing function; BSL = connectivity/standardization driver
+
+### Q6 answer (can technology replace the whole agent function?)
+R[loan-admin-replacement-assessment|refreshed:26.3.17]
+- PARTIAL: 40-60% of operational tasks replaceable today (covenant extraction, OCR, borrowing base, basic waterfall, notice gen)
+- 3-7yr DLT path: collateral agent most exposed; Centrifuge live $150M CLO; DTCC AppChain 2028-2030
+- NOT replaceable: regulatory/fiduciary designation (named legal entity with liability), distressed judgment, consent solicitation, cross-border complexity
+- STRUCTURAL BLOCKER: credit agreements name a specific agent entity — replacement requires legal restructuring + lender consent
+
+### hypothesis dispositions
+H1[PARTIALLY CONFIRMED]: all named verified; Computershare/SS&C/Citco/TMF absent — landscape larger
+H2[CONFIRMED WITH NUANCE]: tech = acquisition differentiator ¬retention moat; Kroll 8-day only quantified proof
+H3[CONFIRMED]: 5 significant plays in 13 months; PE capital flowing
+H4[CONDITIONALLY CONFIRMED]: incremental+M&A > moonshot; PE required
+H5[REFUTED]: real race = data/infrastructure LAYER ¬agent services
+
+### patterns
+P[26.3.17] PE-as-tech-signal: PE-backed agents systematically more tech-aggressive than bank-subsidiary agents — reliable predictor of technology investment level
+P[26.3.17] collateral-agent-DLT-exposure: collateral agent function specifically most exposed to smart contract replacement (Centrifuge live precedent, DTCC AppChain, iCapital DLT convergence on Canton Network)
+P[26.3.17] integration-depth-moat: AI document parsing commoditizing across 10+ point tools; end-to-end pipeline integration (parse→waterfall→notice→Versana delivery) = real moat; ¬parsing capability alone
+P[26.3.17] infrastructure-player-pattern: non-agent infrastructure players (S&P Global, Versana, AccessFintech, iCapital DLT, DTCC) inserting into loan admin workflow from multiple directions simultaneously — the data/infrastructure layer race is the real competition
+P[26.3.17] private-credit-as-bespoke-driver: private credit requires configurable platforms (PIK, unitranche, delayed draw) ¬standard LoanIQ config; BSL requires connectivity/standardization; two different technology problems

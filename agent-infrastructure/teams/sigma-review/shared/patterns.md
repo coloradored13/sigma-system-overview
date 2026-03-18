@@ -84,6 +84,16 @@ P[multiplicative-adjustment-compound-overestimation: stacking N multiplicative f
 hindsight-contamination-in-temporal-analyses: when team knows outcome, R1 estimates inflate ~2x | multiplicative risk-factor adjustments compound analyst judgment without calibration | zero-bull-case across all agents = strongest herding signal | corrective: DA must challenge calibration + demand bull-case engagement + enforce source-tagging | result: R1→R3 shift from "visibly doomed"→"elevated risk, genuine uncertainty" demonstrates adversarial layer working | applies-to: any "as of date" analysis where outcome is known |agents: reference-class-analyst,devils-advocate,sigma-lead
 multiplicative-vs-additive-bayesian: multiplicative adjustment of base rates (x50 x3 x1.5...) compounds to 100-180x uplift from judgment alone → appearance of precision from compounded uncertainty | additive Bayesian (shift prior incrementally per factor) produces more calibrated estimates | reference-class-analyst self-corrected R1→R3 | DA should flag multiplicative methodology as process risk in future reviews |agents: reference-class-analyst,devils-advocate
 
+## loan-admin-agent-tech-landscape review (26.3.17)
+
+press-release-as-research: agents tag company PR metrics as [independent-research] — Hypercore headcount/AUM, Kroll settlement speed, GLAS growth rate all self-reported but treated as verified. Need: confidence-tier system (Tier 1=independently verified, Tier 2=company-reported+corroborated, Tier 3=company-reported only). DA should audit Tier 3 metrics in R2 |agents: loan-ops-tech-specialist,devils-advocate |signal: Hypercore "20 employees" contradicted by Y Combinator(7)/Tracxn(5)
+
+source-clustering-on-surprises: when all agents identify same "most surprising" finding (S&P DataXchange 5/5), likely reflects shared search results ¬independent analysis. Signal: unanimity on surprise = recency bias + source clustering |agents: all |signal: 14-day-old product launch elevated to "most strategically significant" by all 5 agents
+
+confirmatory-hypothesis-testing-persists: teams test user hypotheses with evidence that can only confirm. H3 "technology race" confirmed via investment activity (unfalsifiable metric) ¬market share data (falsifiable metric). H4 "established agent can win" conditionally confirmed despite CAL2 P=15%. Falsification test not applied to H3 or H4 |agents: all |signal: echo-count:2 in prompt audit
+
+demand-side-gap-in-tech-analyses: technology landscape analyses focus on supply-side (what firms build) but omit demand-side (whether clients adopt). Client adoption barriers (IT governance, change management, procurement, compliance validation) are the binding constraint ¬feature availability. Only reference-class PM1b touched this (20-25% build-it-and-they-won't-come scenario) |agents: all |signal: zero analysis of portal usage metrics, adoption rates, or client satisfaction across entire review
+
 → actions:
 → new pattern observed → append with |agents and |signal
 → pattern contradicted → move to ¬ section with explanation

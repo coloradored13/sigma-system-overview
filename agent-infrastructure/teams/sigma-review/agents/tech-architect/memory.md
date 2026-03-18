@@ -283,6 +283,36 @@ C[canonical-robot-model=infeasible-across-paradigms|1|26.3.14]
 C[human-only-MVP=more-honest-than-unified-vision|1|26.3.14]
 C[Go+Python-for-startup=luxury|1|26.3.14]
 C[robotics-adoption-gap-real:planning↑-deployment↓|1|26.3.14]
+## loan-admin-agent tech research (26.3.17) — r1 fresh session
+
+### architecture-taxonomy |#3-tiers
+T1-Assembled/Acquired: AD(Agency360+Solvas+CorTrade+CorPro+VBO+Vega-portal), Computershare(TrustConnect+WF-inherited-systems) | integration-debt=$50-100M+3-5yr | "digital bridges" ¬native-integration
+T2-Purpose-Built-Proprietary: GLAS(conflict-free,single-system,40%-organic-growth), Kroll("first-cloud-native"-independent-agent,8-day-settlement), Hypercore(AI-native-2020,10K+loans,$20B+AUM) | greenfield-advantage
+T3-Configured-Vendor: Wilmington-Trust(Loan-IQ+AccessFintech-Synergy), Virtus/FIS(Loan-IQ+Glide+Nexus), Ankura(specialist/distressed) | roadmap-dependency
+
+### key-tech-findings |#12
+F1: build-vs-buy=primary predictor of architectural flexibility
+F2: Finastra Loan IQ=70-75% BSL volume, modernizing(Nexus+Build APIs), ¬SaaS-native, container-cloud options. Adapter-pattern mandatory ¬direct-coupling
+F3: Versana=$5T+notional,14-agent-banks, API-first, cloud-native(EY-built) | integration=table-stakes-for-BSL(T3 by 2027). API-first=3-6mo integration, monolith=12-18mo+
+F4: S&P-Global-DataXchange+AmendX(Mar-2026) = UNEXPECTED data-vendor-as-infrastructure-layer | agent→lender notice routing + amendment lifecycle | "become-the-pipe" strategy | Bloomberg-early-bond-market analogy | addresses H5+Q7
+F5: AI/NLP=commoditizing-point-tools(Ontra,V7,CovenantIQ) | integration-depth=differentiator ¬parsing-alone | AD-Solvas-Digitize=production-ML | Hypercore-"AI-Admin-Agent"=marketing-for-AI-assisted-SaaS+human-oversight ¬autonomous
+F6: Client-portals: AD-Vega(best-incumbent-unification,SSO), SRS-Acquiom-Deal-Dashboard(tech-born,real-time), Wilmington+AccessFintech-Synergy(shared-workflow-network-¬portal), Hypercore(unified-borrower+lender+LP-view). No-firm=full-single-pane-across-all-parties(gap)
+F7: Security: SOC2-Type-II=baseline, ZTA-emerging, compliance-native(event-sourced+deterministic+cryptographic-audit)=greenfield-wins-vs-retrofitted
+F8: Scalability: private-credit $3.5T→$5T(2029) forcing decisions now. Waterfall-calc+amendment-cascade=non-linear complexity. Batch-only=operationally-constrained. CQRS-real-time+batch=correct-architecture
+F9: Integration-burden-ADDITIVE: Versana+LSTA+Bloomberg+DTC+SFTP+AccessFintech+S&P-DataXchange. API-first=weeks per adapter. Monolith=months
+F10: Tech-debt: HIGH(AD,Computershare,Virtus/FIS), MODERATE(Wilmington,SRS-Acquiom,Ankura), LOW(GLAS,Kroll,Hypercore)
+F11: Unexpected-plays: S&P-DataXchange(#1-most-significant), Finley+Concord-merger(SaaS+trust-co-wrapper), Hypercore-"AI-Agent"-branding-bet, AccessFintech-Synergy-shared-workspace-network, Oxane-hybrid-service+software
+F12: H1=verified+incomplete(missing:Computershare,Versana,Hypercore,Oxane,S&P,AccessFintech), H2=partial(tech=acquisition-differentiator ¬retention-moat), H3=confirmed(race-real-13mo-sprint), H4=conditional(compliance-native+integration-depth wins), H5=FALSIFIED(landscape-under-defined)
+
+### calibration-updates(26.3.17)
+C[S&P-Global-DataXchange+AmendX=data-vendor-inserting-as-agent-workflow-infrastructure(Mar-2026)=most-unexpected-competitive-move|1|26.3.17]
+C[AI-Admin-Agent-framing(Hypercore)=marketing ¬technical-architecture-claim|1|26.3.17]
+C[integration-burden-is-additive-tax-on-monolithic-architectures=direct-operational-ROI-argument-for-API-first|1|26.3.17]
+C[no-firm-has-fully-cracked-single-pane-of-glass-across-all-deal-parties=open-gap|1|26.3.17]
+C[Finley+Concord-merger=SaaS-platform+trust-company-wrapper=viable-greenfield-model-template|1|26.3.17]
+
+### research-sources(new-26.3.17)
+AD-Vega(alterdomus.com), AD-Solvas-Digitize(alterdomus.com), Versana-platform(versana.io), S&P-DataXchange+AmendX(press.spglobal.com Mar-2026), Wilmington+AccessFintech(globenewswire Feb-2025), Computershare-TrustConnect(computershare.com), SRS-Acquiom-Deal-Dashboard(srsacquiom.com), Hypercore-Series-A(prnewswire Feb-2026), Oxane-Panorama(oxanepartners.com), Finastra-Loan-IQ-Nexus(finastra.com), Finley+Concord(finleycms.com 2026), Ankura-Trust(ankuratrust.com), GLAS-Oakley(glas.agency Jan-2026)
 
 → actions:
 → r3+ → synthesis

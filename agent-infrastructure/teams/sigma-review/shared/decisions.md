@@ -434,6 +434,26 @@ DA-exit-gate:PASS(r3) |engagement:B+/A- |P(failure):revised 15-25%→5-12%(~8%),
 SVB-risk-analysis(2023-01-31): P(failure)=5-12%(point~8%) after 3-round adversarial review | R1 overcalibrated at 15-25% due to hindsight contamination (~2x overestimate) | corrected via additive Bayesian replacing multiplicative adjustments | 3-4x market divergence defensible | key risk: 94% uninsured + near-zero economic equity + 4Q outflows = unprecedented combination | honest assessment: "elevated-risk outlier, not imminent crisis" | temporal boundary enforced 2023-01-31 |by:sigma-lead |weight:primary
   |ctx: First temporal-boundary financial institution risk analysis. DA exit-gate FAIL at R2 forced critical calibration revision. Team grade B+/A-.
 
+## loan-admin-agent-tech-landscape R2 decisions (26.3.17)
+
+DA-exit-gate:PASS(r2) |engagement:A(range A- to A+) |unresolved:none(3 tensions resolved) |untested-consensus:none |hygiene:pass |prompt-contamination:within-tolerance-with-flag(H3+H4 confirmatory) |→synthesis-ready |by:devils-advocate |weight:primary
+  |ctx: 10 challenges issued against 5 agents' R1 findings. 3 pre-identified tensions all resolved. Key contributions: data integrity challenge (Hypercore headcount discrepancy), methodological challenge (Kroll settlement benchmark, H3 confirmation bias), gap identification (client-side adoption barriers). Team analytical quality HIGH — challenges calibration+verification ¬fundamental errors.
+
+TENSION-1-resolved:timescale-reconciled |investment-urgency:18-36mo(loan-ops+tech-industry correct) |advantage-expectations:5-10yr(product-strategist correct) |market-share-shift:10-20yr(reference-class correct) |by:devils-advocate |weight:primary
+  |ctx: not a disagreement but different horizons. All agents partially correct about different questions. Synthesis: act on 18-36mo cycle, expect results on 5-10yr, expect market share shifts on 10-20yr.
+
+TENSION-2-resolved:H2-synthesis-adopted |"tech=floor¬ceiling"=product-strategist framing adopted |floor-is-rising(private-credit-growth) |"forces-adoption≠creates-winners" |by:devils-advocate |weight:primary
+  |ctx: loan-ops recalibrate from "tech drives wins" to "tech prevents losses + marginal advantage." reference-class caveat elevated to headline.
+
+TENSION-3-resolved:Hypercore-data-integrity-flagged |headcount:claimed-20,Y-Combinator-shows-7,Tracxn-shows-5 |all-metrics-self-reported |tech-architect-skepticism-most-warranted |by:devils-advocate |weight:primary
+  |ctx: loan-ops uncritically accepted Hypercore Series A PR metrics. 75% fintech failure rate applies. No trust charter = regulatory ceiling. Downgrade from "extraordinary ops leverage" to "unverified ops claims."
+
+Kroll-settlement-benchmark-corrected |use-8-vs-12(LSTA-Q2-2024-median)¬8-vs-47(Kroll-marketing) |33%-improvement¬83% |by:devils-advocate |weight:primary
+  |ctx: "47-day market average" is Kroll's own website language, not LSTA data. LSTA Q2 2024 median par settlement = 12 days. Bloomberg #3 is separate claim from settlement speed claim — ¬conflate.
+
+S&P-DataXchange-downgraded |monitoring-item¬landscape-changing-conclusion |zero-adoption-at-14-days-post-launch |5/5-unanimity=source-clustering-signal |by:devils-advocate |weight:primary
+  |ctx: all agents identified DataXchange as most significant unexpected finding — unanimity itself suspicious. Analyst coverage explicitly flags adoption risk.
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent

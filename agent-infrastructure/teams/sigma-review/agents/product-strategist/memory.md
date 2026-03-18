@@ -299,6 +299,66 @@ F5: competitive position(moat real but relationship-based = confidence-brittle, 
 DA challenge: F4 gap — was correlated withdrawal risk in pre-cutoff discourse?
 DA challenge: F3 counterweight — management "mid-single-digit decline" guidance = stabilization or floor?
 historical pattern: SVB survived dot-com+2008+2015 downturns; novel combo in 2022-23: rate rise + 94% uninsured + active outflow simultaneously
+## loan-admin-agent landscape review (26.3.17)
+
+### key research findings — competitive positioning
+- Alter Domus: SCALE LEADER. $1.4T AUA, €4.9B EV (Cinven), Agency360+Solvas+Vega. Bundling flywheel = strongest economic lock-in. Weakness: assembled architecture = technical debt (6+ acquired platforms).
+- Kroll (formerly Lucid): CHALLENGER. #3 Bloomberg Q1 2025. 8-day settlement (vs 47-day market avg) = best quantifiable tech claim. Business Connect = cloud-native. Largest independent EMEA.
+- GLAS: PURE-PLAY SPECIALIST. $750B+ AUM, $1.35B valuation (Oakley Capital Jan 2026). 40% organic revenue CAGR. Purpose-built architecture (low tech debt). Tech+AI+M&A mandate from Oakley.
+- SRS Acquiom: TECH-FORWARD NICHE. Digital-native DNA (M&A heritage). Loan Agency Dashboard = best portal UX. EU May 2025, UK Sept 2025. 100% top law firm coverage.
+- Ankura Trust: DISTRESSED SPECIALIST. Successor agent + restructuring. No distinct tech platform. Expertise-led. Low profile in performing loan market.
+- Wilmington Trust: CLO/TRUST ANCHOR. #1/#2 US trustee. AccessFintech Synergy partnership (Feb 2025) = real-time shared workflow, API-first, cloud-native.
+
+### additional players confirmed
+Ocorian (OPTICs dashboard), Apex Group (single-source bundle, Alt Credit Awards finalist), IQ-EQ (Alt Credit Awards finalist), CSC (Alt Credit Awards finalist), Vistra, Computershare (Wells Fargo CTS heritage, high tech debt), Oxane (hybrid service+software, $850B+ AUM, 13/top 25 banks).
+
+### unexpected players (Q7 — CRITICAL findings)
+1. S&P Global DataXchange+AmendX (Mar 3, 2026): inserting as routing/infrastructure layer between agents and lenders. No-fee for lenders. AI-powered data categorization. Bloomberg-style pipe strategy. Most unexpected strategic move in market.
+2. Versana: bank consortium ($5T notional, 14 institutions: JPM/BofA/Citi/DB/MS/WF/Barclays/Mizuho). BSL real-time data standard. Cashless roll Oct 2025. Table stakes for BSL by 2027.
+3. Hypercore AI: $13.5M Series A (Insight Partners, Feb 2026). AI-assisted SaaS for private credit admin. $20B+ AUM, 10K+ loans, CARR 3.5x YoY. First AI-native competitor targeting admin agent ops layer.
+4. Finley+Concord merger: API-first SaaS + 35yr trust company = fastest path to compete with incumbents. Valley Bank live Feb 2025.
+5. AccessFintech Synergy: 250+ member shared-workspace network. If becomes standard, agents lose "data hub" positioning.
+
+### H-dispositions
+H1: PARTIAL — named firms all correct, but missing significant players (see above)
+H2: NUANCED — tech is floor not ceiling; necessary to survive, insufficient to win mandates (relationships+regulation still dominate mandate selection)
+H3: CONFIRMED — S&P+Hypercore+GLAS+Wilmington+Kroll all invested/launched within 13 months
+H4: CONDITIONAL — win condition: compliance-native + Versana/DataXchange integration + relationship moat maintained
+H5: FALSIFIED — landscape not well-defined; real race is for data/infrastructure layer
+
+### buyer segmentation
+1. PE sponsors (private credit primary): trust-sensitive > price-sensitive, law firm-influenced
+2. CLO managers: tech integration fit (Allvue/Solvas) + compliance automation = primary criteria
+3. BDC managers: fastest-growing buyer segment (+33% YoY AUM to $554B Q2 2025)
+4. Banks as arrangers: settlement speed + Versana integration key
+5. Law firms: informal king-makers for independent agents (GLAS, Kroll, SRS Acquiom)
+
+### growth loops
+1. Data network effect (Versana/S&P DataXchange) — Versana at $5T = past tipping point for BSL
+2. Bundling flywheel (Alter Domus) — strongest economic lock-in
+3. Law firm recommendation loop (GLAS, Kroll, SRS Acquiom)
+4. Successor agent pipeline (Ankura, SRS Acquiom, Kroll) — growing with 2025 defaults
+5. Tech onboarding stickiness (SRS Acquiom, Alter Domus Vega)
+6. Regulatory trust compounding (Wilmington Trust, Ankura)
+
+### switching costs
+Relationship lock-in > tech lock-in. Tech FAILURE (errors, slow settlement, poor portal) = #1 trigger for switching-cost override. Tech is floor not ceiling.
+
+### consolidation trends
+3 PE-backed deals in 24 months (Cinven/AD, Oakley/GLAS, Levine Leichtman/GLAS prior). Convergence: fund admin + loan admin + agency bundling. Market will consolidate to <5 major players over 10-15 years (reference-class-analyst P=48%).
+
+### opportunities for established agent (Tier 1)
+1. Real-time lender portal with API access
+2. Amendment workflow automation (before S&P AmendX captures the workflow)
+3. AI-assisted notice processing + reconciliation (Hypercore-like capability)
+4. Versana + DataXchange early adoption (first-mover BSL credential)
+5. CLO compliance dashboard (OC/IC near-real-time monitoring)
+
+### pricing note
+Agency fees: flat annual + transaction fees. Tech does NOT enable direct premium pricing — indirect only (lower cost-per-facility). Bundling (Alter Domus) enables blended pricing power.
+
+### private credit growth implication
+$3T→$5T by 2029-2030. Automation = survival, not differentiation. BDC growth forcing 1940 Act compliance tooling. Amendment frequency increasing. BSL/private credit convergence requires dual-market capability.
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4
