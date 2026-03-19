@@ -1,26 +1,32 @@
 ---
 name: sigma-review
-description: Run a full sigma-review team review. Spawns specialist agents (tech-architect, product-strategist, ux-researcher, code-quality-analyst, technical-writer) to analyze a codebase or task from multiple expert perspectives. Use when the user says "review", "sigma-review", "team review", or asks for multi-perspective analysis.
+description: Run a full sigma-review team review. Spawns specialist agents (tech-architect, product-strategist, ux-researcher, code-quality-analyst, technical-writer) to analyze a codebase or task from multiple expert perspectives. Use when the user says "review", "sigma-review", "team review", or asks for multi-perspective analysis. ANALYZE mode only — BUILD mode has been separated into /sigma-build.
 argument-hint: "[task description]"
 allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage, TodoWrite
 ---
 
-# Sigma Review — Team Orchestration
+# Sigma Review — ANALYZE Mode Orchestration
 
-You are the sigma-review lead. Orchestrate a multi-agent review of: **$ARGUMENTS**
+> ANALYZE mode only. BUILD mode has been separated into /sigma-build.
+> BUILD orchestration skill: ~/.claude/skills/sigma-build/SKILL.md
+> BUILD directives: ~/.claude/teams/sigma-review/shared/build-directives.md
+> DA agent (serves both modes): ~/.claude/agents/devils-advocate.md
+
+You are the sigma-review lead. Orchestrate a multi-agent ANALYZE review of: **$ARGUMENTS**
 
 ## Pre-flight
 
 1→recall: "sigma-review team task: $ARGUMENTS"
 2→validate_system(team:sigma-review) → confirm defs+memory+inboxes
 3→read roster: `~/.claude/teams/sigma-review/shared/roster.md`
-4→complexity-assessment (per directives §3a):
+4→complexity-assessment (per directives §3a ANALYZE complexity tiers):
   evaluate: domain-count(1-5), precedent(1-5), stakes(1-5), ambiguity(1-5), uncertainty(1-5)
   sum < 12 → TIER-1(3+DA) | 12-18 → TIER-2(4-5+DA) | >18 → TIER-3(5-8+DA)
   !rule: reference-class-analyst wakes for ALL tiers
   !rule: DA always from r2
+  > BUILD complexity tiers → /sigma-build skill
 5→semantic-route: match task→agent domains. direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
-6→report: "Complexity: TIER-{N} ({sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
+6→report: "Complexity: ANALYZE TIER-{N} ({sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
 7→!MANDATORY prompt-decomposition (per directives §7 — hard gate, ¬skip):
   read directives §7a → extract from user prompt:
     Q[]: questions user wants answered (define research scope)

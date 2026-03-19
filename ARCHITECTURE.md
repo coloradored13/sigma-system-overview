@@ -26,7 +26,7 @@ This principle — **deterministic state-driven navigation** — is then applied
 
 ### hateoas-agent
 
-A Python library (~3,320 LOC, 439 tests) that implements HATEOAS for AI agent tool use.
+A Python library (~3,323 LOC, 439 tests) that implements HATEOAS for AI agent tool use.
 
 **How it works:**
 ```
@@ -72,7 +72,7 @@ The framework handles:
 
 ### sigma-mem
 
-A persistent memory system for Claude (~1,560 LOC, 174 tests), exposed as an MCP server. Built on hateoas-agent.
+A persistent memory system for Claude (~1,724 LOC, 186 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The memory system is itself a HATEOAS state machine. Claude calls `recall` (the gateway), describes the current context, and the system detects the conversation type (project work, debugging, being corrected, team work, etc.) and returns relevant memories with state-dependent actions.
@@ -152,21 +152,40 @@ File-based infrastructure for self-sufficient agent teams with persistent identi
 
 **Architecture:**
 ```
-~/.claude/agents/              # Global agent definitions
+~/.claude/agents/              # 21 global agent definitions
   sigma-lead.md                # Orchestrator protocol
   sigma-comm.md                # Communication protocol
-  tech-architect.md            # Agent: architecture specialist
-  product-strategist.md        # Agent: product/shipping specialist
-  ux-researcher.md             # Agent: developer experience specialist
-  code-quality-analyst.md      # Agent: code quality specialist
-  technical-writer.md          # Agent: documentation specialist
+  devils-advocate.md           # Adversarial analyst (exit-gate authority)
+  reference-class-analyst.md   # Superforecasting / calibration specialist
+  tech-architect.md            # Architecture specialist
+  product-strategist.md        # Product/market specialist
+  ux-researcher.md             # Developer experience specialist
+  code-quality-analyst.md      # Code quality specialist
+  technical-writer.md          # Documentation specialist
+  + 5 market-domain agents     # macro-rates, sanctions-trade, energy, geopolitical, portfolio
+  + 3 regulatory-domain agents # regulatory, tech-industry, economics
+  + 2 dynamic agents           # created mid-review when DA identifies domain gaps
+  _template.md                 # Canonical agent definition template
+
+~/.claude/skills/              # 7 orchestration skills
+  sigma-review/                # ANALYZE mode — multi-agent research with adversarial rounds
+  sigma-build/                 # BUILD mode — plan→challenge→build→review
+  sigma-evaluate/              # Rubric-based output evaluation (3 evaluators + judge)
+  sigma-audit/                 # Independent process quality verification
+  sigma-retrieve/              # Agentic RAG pipeline
+  sigma-research/              # Agent domain research refresh
+  sigma-init/                  # Team initialization
 
 ~/.claude/teams/sigma-review/  # Team instance
   shared/
-    roster.md                  # Who's on the team + domains + wake-for rules
+    roster.md                  # 17 agents with domains + wake-for rules
+    directives.md              # ANALYZE governance (902 lines)
+    build-directives.md        # BUILD governance (341 lines)
     decisions.md               # Expertise-weighted decisions with attribution
-    patterns.md                # Cross-agent observations
+    patterns.md                # Cross-agent observations (142 lines, growing)
     workspace.md               # Current task (agents read/write collaboratively)
+    orchestrator-config.py     # Automated phase transition CLI
+    archive/                   # 7 archived review workspaces
   agents/{name}/
     memory.md                  # Persistent personal memory (agent self-maintains)
   inboxes/{name}.md            # Markdown/ΣComm inbox (summarize-and-clear)
@@ -263,33 +282,31 @@ User interaction:
 
 ## Evidence it works
 
-The system has been through 6 rounds of self-review. The sigma-review team (tech-architect, product-strategist, ux-researcher) reviewed both sigma-mem and hateoas-agent using the infrastructure described here.
+The system has completed 7+ reviews across codebases, market analyses, and stress tests. Team composition has grown from 3 core agents to 17 roster agents with adversarial layer.
 
-**Review progression:**
-- Round 1: Found correctness issues (path traversal, logic bugs)
-- Round 2: Found polish issues (unused imports, docstring fixes)
-- Round 3: Architecture review (team memory design, inbox patterns)
-- Round 4: First review of hateoas-agent (9 findings, grades: arch A-, security A, DX B+)
-- Round 5: Delta review (6 resolved, 3 remaining, DX upgraded to A-)
-- Round 6: Full team protocol test (all agents self-sufficient, ΣComm inboxes operational, research-grounded)
+**Review history:**
+- Reviews 1-3 (sigma-mem): correctness issues → polish → architecture review
+- Review 4 (hateoas-agent): 9 findings, grades arch A-, security A, DX B+
+- Review 5 (hateoas-agent delta): 6 resolved, 3 remaining, DX A-
+- Review 6 (full protocol test): all agents self-sufficient, ΣComm operational, research-grounded. Ship decision: GO
+- Review 7 (Iran conflict / geopolitical): 5 market-domain agents, DA identified herding in R1 (zero-dissent across all agents), stress test round caught 3 biases. Led to zero-dissent circuit breaker protocol
+- Reviews 8-9 (loan-admin tech landscape): 5+DA agents, dynamic agent creation (regulatory-licensing-specialist created mid-review per DA gap identification), 5-round review, /sigma-audit run post-review (YELLOW→remediated to GREEN)
+- Review 10 (VDR market analysis): 5+DA, 3 rounds, CAGR scope-inflation pattern confirmed cross-review
+- Review 11 (biotech healthcare M&A): 6+DA, 3 rounds, AI-as-structural-accelerant framework, doc-generation-heredoc pattern discovered
+- Review 12 (workflow automation): highest R3 engagement grades observed (A-/A across all agents), genuine analytical shift under DA pressure (automation-first→PI-first-conditional)
 
-**Final grades (review 6):**
-- Architecture: A
-- API: A-
-- Security: A
-- Release readiness: A-
-- Developer experience: A-
-- Ship decision: GO (2 mechanical blockers: git init, rebuild dist)
-
-**Observed patterns:**
+**Observed patterns (from patterns.md, 142 lines):**
 - Review severity decreases with iteration (correctness → polish → acceptance)
 - Independent agents converge on the same issues from different domain angles
-- Persistent memory makes each review more efficient (agents reference past findings)
-- Research grounding improves review quality (agents cite current sources)
+- 2-agent teams herd faster than 5-agent teams — always include DA from R2
+- Data-backed DA challenges produce behavioral change; rhetorical challenges produce performative concession
+- Teams replace old consensus with new consensus under DA pressure → DA must stress-test new consensus too
+- Herding detected and addressed in 3+ reviews (Iran, loan-admin, workflow-automation)
+- Dynamic agent creation fills genuine domain gaps (regulatory-licensing-specialist, loan-ops-tech-specialist)
 
 ## What's novel
 
-1. **HATEOAS for AI agents** — applying a web architecture principle to make LLM tool selection deterministic rather than probabilistic. No other framework does this (confirmed by research: LangGraph, CrewAI, OpenAI Agents SDK, AutoGen/MS Agent Framework all use flat or probabilistic tool selection).
+1. **HATEOAS for AI agents** — deterministic tool selection via server-side state machines.
 
 2. **Self-navigating memory** — memory retrieval as a HATEOAS state machine where available actions change based on detected context. No static routing table.
 
@@ -299,14 +316,23 @@ The system has been through 6 rounds of self-review. The sigma-review team (tech
 
 5. **Self-sufficient agent teams on files** — persistent agent teams that boot themselves, communicate through inboxes, maintain their own memory, and declare convergence — all on markdown files with zero infrastructure.
 
-6. **Research-grounded agents** — agents periodically refresh domain knowledge via web research, stored in compressed notation, creating a curated and updatable knowledge base rather than relying solely on training data.
+6. **Adversarial exit-gate** — Devil's Advocate agent controls synthesis timing via mandatory challenge rounds. Agents must concede, defend, or compromise on each DA challenge with evidence. DA grades engagement quality and can FAIL the exit-gate to force additional rounds.
+
+7. **Analytical hygiene forcing function** — every finding must produce outcome 1 (changes analysis), 2 (confirms with evidence), or 3 (reveals gap). No fourth option. Prevents checks from being checkboxes.
+
+8. **Zero-dissent circuit breaker** — mandatory self-challenge when all agents agree without tension in R1. Addresses documented herding pattern (7 consecutive reviews with zero R1 dissent).
+
+9. **Cross-session calibration** — agents accumulate patterns, anti-memories, and failure logs across reviews via persistent memory. Each review makes future reviews more informed.
 
 ## Stats
 
 | Component | Source LOC | Test LOC | Tests | Files |
 |-----------|-----------|----------|-------|-------|
-| hateoas-agent | 2,062 | 5,295 | 261 | 13 modules, 19 test files, 12 examples |
-| sigma-mem | 1,564 | 1,656 | 174 | 5 modules, test files |
-| ΣComm protocol | — | — | — | 123 lines spec |
-| Agent infrastructure | — | — | — | 5 agent defs (415 lines), team files (510 lines) |
-| **Total** | **3,626** | **6,951** | **435** | |
+| hateoas-agent | 3,323 | 7,630 | 439 | 19 modules, 25 test files, 12 examples |
+| sigma-mem | 1,724 | 1,749 | 186 | 5 modules, 5 test files |
+| Agent definitions | 2,890 | — | — | 21 agent files |
+| Skills | 1,641 | — | — | 7 skills |
+| Directives | 1,243 | — | — | ANALYZE (902) + BUILD (341) |
+| **Total** | **~10,800** | **~9,400** | **625** | |
+
+**Team scale:** 17 roster agents, 7 skills, 7 archived reviews, 142-line cross-agent pattern log

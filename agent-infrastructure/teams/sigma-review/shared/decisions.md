@@ -728,6 +728,16 @@ stress-test:new-consensus-survives |by:devils-advocate |weight:primary
 synthesis-guidance:volume-vs-premium-separation |by:devils-advocate |weight:directive
   |ctx: PA R3 §2e identified: review conflated "M&A happening" (robust, cliff-driven) with "AI premiums sustainable" (fragile, Phase-3-contingent). These are ¬equivalent claims
   |decision: synthesis MUST present these as separate theses. M&A VOLUME thesis = HIGH CONFIDENCE. AI PREMIUM thesis = CONDITIONAL. Conflating them misrepresents the evidence base
+meta-review-H1:UNCONFIRMED|structural-mechanisms-real(context-firewall,persistent-calibration)|net-quality-vs-cost-unmeasured|CAL-H1=45%|80%CI[28%,62%]|Google/MIT:multi-agent-degrades-sequential-39-70%|MAD:debate≈voting|→controlled-comparison-designed(DC-market-topic)|26.3.19 |by:sigma-lead |weight:primary
+  |ctx: meta-review of sigma-review system — 4 agents + DA, 3 rounds, exit-gate PASS
+meta-review-H4:NOT-PLATFORM-QUALITY|sigma-mem-blocks(1175L-handlers-SRP,0%-server-cov)|hateoas-agent=platform-quality(91%cov,typed,zero-deps)|infra=partial|CAL-H4=8%|addressable-users=100-500(¬10K-50K)|P(fail-3yr)=75-85%|→do-NOT-pursue-platformization|26.3.19 |by:sigma-lead |weight:primary
+  |ctx: meta-review — all agents converged after DA challenge
+build-mode-spinoff:COMPLETE|/sigma-build skill created(262L)|build-directives.md created(257L)|directives.md→ANALYZE-only|DA-agent-updated(cross-ref both)|¬content-lost→moved+cross-referenced|26.3.19 |by:sigma-lead |weight:primary
+  |ctx: user decision to separate BUILD into own skill for independent curation
+H1-power-binding: PARTIALLY CONFIRMED with multi-constraint model — power binds regionally (PJM/ERCOT); labor binds construction nationally; chips create global ceiling; community opposition creates political ceiling; tariffs create cost ceiling. No single constraint is "the" constraint |proposed-reconciliation: all agents adopt multi-constraint framing |by:devils-advocate |weight:primary
+  |ctx: DA[#6] challenge — TA rated H1 CONFIRMED, EMA/RCA rated PARTIAL. Independent research confirms power is A constraint not THE constraint. Labor (439K shortage), chips (36-52wk GPU lead, 70% global memory to DC), community opposition ($64B blocked, 12 states moratorium bills), tariffs (+16% cost) all co-bind
+H4-nuclear: SPLIT VERDICT — restart-CONFIRMED(TMI/Clinton/Susquehanna, ~4GW by 2030, credible) | new-build/SMR-DISCONFIRMED for 2026-2030(P≤10%, zero operating SMRs, NuScale cancelled then restarted for 2032, reference class devastating) |proposed-reconciliation: EMA+RCA adopt two-part verdict |by:devils-advocate |weight:primary
+  |ctx: DA[#7] challenge — EMA CONDITIONAL-CONFIRMED conflates two structurally different nuclear paths. RCA DISCONFIRMED(P=5%) doesn't credit restart deals. Resolution separates restart (credible, near-term) from new-build/SMR (reference-class-devastating, 2032+ at best)
 
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory

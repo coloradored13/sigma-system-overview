@@ -1,9 +1,14 @@
 # sigma-review directives
 
+## scope: ANALYZE mode only (BUILD mode → see build-directives.md and /sigma-build skill)
+> BUILD mode directives extracted to: ~/.claude/teams/sigma-review/shared/build-directives.md
+> BUILD orchestration skill: ~/.claude/skills/sigma-build/SKILL.md
+> DA agent (serves both modes): ~/.claude/agents/devils-advocate.md
+
 ## adversarial-layer v2.0 (26.3.11)
 
-scope: all sigma-review operations — review, research, analysis, AND build
-modes: ANALYZE | BUILD | HYBRID (lead declares at task creation)
+scope: sigma-review ANALYZE operations — review, research, analysis
+modes: ANALYZE (BUILD mode → /sigma-build skill)
 
 ### round structure
 
@@ -86,35 +91,7 @@ r5: synthesis (hard cap — no further rounds)
 !DA verdict format in workspace: "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}]"
 !FAIL → DA must specify which criteria failed + what next round must address
 
-#### BUILD mode
-rounds: plan(r1) → challenge-plan(r2) → build+checkpoint(r3) → review(r4)
-
-r1: lead decomposes task → agents write implementation plans
-  → each plan: scope, assumptions, interfaces needed, complexity, risks
-  → DA observes ¬participates
-
-r2: DA challenges plans BEFORE code written
-  → focus: over-engineering, spec drift, assumption conflicts, premature abstraction
-  → agents refine plans + address challenges
-  → lead confirms cross-agent coherence
-
-r3: agents build in parallel per refined plans
-  → CHECKPOINT at ~50%: status/drift/surprises to workspace
-  → DA scans for scope creep, gold-plating, test gaps, plan divergence
-  → DA delivers mid-build corrections IF drift detected (lightweight, ¬full debate)
-  → agents complete build
-
-r4: standard sigma-review of completed build
-  → DA serves as adversarial reviewer
-  → findings, convergence, decisions per standard protocol
-
-#### HYBRID mode
-lead declares mode transitions explicitly
-example: r1-r2 ANALYZE → r3-r5 BUILD
-!rule: findings from ANALYZE rounds become constraints in BUILD rounds
-!rule: DA adjusts challenge framework at each transition
-
-#### shared rules (both modes)
+#### shared rules (ANALYZE mode — BUILD mode rules in build-directives.md)
 !rule: DA challenges PRECEDE work ¬follow it (plans in BUILD, integration in ANALYZE)
 !rule: agents cannot declare convergence without addressing ALL DA challenges
 !rule: lead does NOT advance to synthesis until DA exit-gate PASS
@@ -153,53 +130,32 @@ example: r1-r2 ANALYZE → r3-r5 BUILD
 
 #### §2a positioning & consensus
 
-ANALYZE variant:
 !applies-to: recommendations involving markets,adoption,competition,resource allocation
 1→ who else is recommending this?
 2→ is this already the consensus?
 3→ what happens if everyone acts simultaneously?
 4→ workspace: outcome 1/2/3 format (see above) — ¬just "positioning: [label]"
 
-BUILD variant:
-!applies-to: any agent proposing architecture,framework,library,pattern
-1→ is this the default/popular approach?
-2→ ecosystem trajectory? (growing,stable,declining,abandoned)
-3→ migration cost if wrong? (lock-in assessment)
-4→ simpler alternative that solves 80%?
-5→ workspace: outcome 1/2/3 format — ¬just "approach: [label]"
+> BUILD variant → see build-directives.md §2a
 
 #### §2b external calibration / precedent
 
-ANALYZE variant:
 !applies-to: probability estimates,forecasts,timeline predictions,severity assessments
 1→ search prediction markets,base rates,historical data
 2→ if divergence >15pp → MUST be outcome 1 or 2 with specific justification
 3→ workspace: outcome 1/2/3 format — ¬just "calibration: [source] says [X]"
 
-BUILD variant:
-!applies-to: effort estimates,complexity assessments,timeline predictions
-1→ precedent: has this team/codebase done similar? (check project memory)
-2→ industry norm for this type of work in this stack?
-3→ where did prior estimates go wrong? (calibration data)
-4→ no precedent → outcome 3 (gap) — explicitly flag for DA review+checkpoint scrutiny
-5→ workspace: outcome 1/2/3 format — ¬just "estimate: [X]"
+> BUILD variant → see build-directives.md §2b
 
 #### §2c cost & complexity
 
-ANALYZE variant:
 !applies-to: "highest conviction" or "top priority" or equivalent superlatives
 1→ what does recommendation COST?
 2→ is cost already elevated?
 3→ consensus view on this cost?
 4→ workspace: outcome 1/2/3 format — ¬just "valuation: [level]"
 
-BUILD variant:
-!applies-to: architecture,abstractions,patterns that persist beyond current phase
-1→ maintenance cost? (who maintains after build? their capability?)
-2→ justified by CURRENT or FUTURE requirements? (confirmed or speculative?)
-3→ simplest version that works? how does proposal compare?
-4→ cost of being wrong? (reversal: day, week, month?)
-5→ workspace: outcome 1/2/3 format — ¬just "complexity: [label]"
+> BUILD variant → see build-directives.md §2c
 
 #### §2d source provenance (26.3.17)
 
@@ -227,7 +183,6 @@ source types (every finding MUST carry one):
 
 !purpose: prevent R1 premise anchoring — agents unconsciously validate user's proposed approach instead of genuinely testing it. Observed: warehouse-game review 26.3.18, 4/4 agents confirmed premise, DA caught in R2 (DA#1 crowding). This check forces explicit premise evaluation before convergence.
 
-ANALYZE variant:
 !applies-to: every major recommendation or conclusion
 1→ what must be true for the proposed approach to be the right one? (list load-bearing premises)
 2→ is any required premise unverified, contested, or historically unreliable?
@@ -235,13 +190,7 @@ ANALYZE variant:
 4→ if the user had not specified this approach, would you have independently recommended it?
 5→ workspace: outcome 1/2/3 format — ¬just "premises: valid"
 
-BUILD variant:
-!applies-to: every architectural choice or implementation plan
-1→ what assumptions must hold for this approach to succeed?
-2→ are assumptions about scale, usage patterns, or requirements verified or speculative?
-3→ what is the strongest alternative architecture? (cite precedent)
-4→ if the most speculative assumption is wrong, what's the fallback?
-5→ workspace: outcome 1/2/3 format — ¬just "assumptions: reasonable"
+> BUILD variant → see build-directives.md §2e
 
 #### DA enforcement of hygiene checks
 
@@ -259,45 +208,19 @@ DA challenge format for weak checks:
    |→ revise finding to reflect check result, or provide specific evidence
    for why concern doesn't apply. 'It's still the right approach' is ¬specific evidence."
 
-### build-mode guardrails (DA-specific, BUILD only)
+> build-mode guardrails (§4a-d: scope creep, assumption conflicts, gold-plating, test integrity) → see build-directives.md
 
-#### §4a scope creep detection
-at checkpoint (~50%): files+functions planned vs actual, TODO density, test-to-code ratio
-severity: INFO|LOW|MEDIUM(affects interfaces)|HIGH(solving other agent's problem or future phase)
+### success criteria (ANALYZE mode)
 
-#### §4b assumption conflict detection
-at plan challenge (r2) AND checkpoint (r3): interface mismatches, data model disagreements, dependency ordering, naming conflicts, error handling divergence
-!BUILD equivalent of herding — agents assume compatibility without verifying
-
-#### §4c gold-plating detection
-flag: abstractions for speculative requirements, optimizing before measuring, configuring single-value settings, admin features not in phase, refactoring out-of-scope code
-question: does DESIGN DOCUMENT or CURRENT PHASE require this?
-
-#### §4d test integrity check
-at review (r4): behavior vs runs, requirements vs implementation, failure cases, hardcoded-value test, real infra vs mocks
-cross-reference project CLAUDE.md test requirements | Tier 1 without test = CRITICAL
-
-### success criteria
-
-ANALYZE mode:
 1→ zero rounds with zero-dissent convergence
 2→ positioning/calibration/valuation/premise-viability checks in r1 findings — each produces outcome 1/2/3 (¬perfunctory)
 3→ DA challenges before integration
 4→ DA challenge held ratio 40-70%
 5→ DA exit-gate exercised (synthesis-ready verdict issued, ¬skipped)
+6→ debate produces clear rulings on ≤2 contested claims per cycle
+7→ deliverable includes ruling AND dissent
 
-BUILD mode:
-5→ zero architectural decisions during build that should have been in plan
-6→ assumption conflicts detected at plan challenge (r2), ¬after build
-7→ scope creep caught at checkpoint (r3), ¬at review (r4)
-8→ gold-plating flagged with design doc citation
-9→ test integrity catches ≥1 weak test pattern per cycle
-10→ zero agents building organizational infrastructure instead of product
-
-both modes:
-11→ debate produces clear rulings on ≤2 contested claims per cycle
-12→ deliverable includes ruling AND dissent
-13→ BUILD: losing positions become test cases or reversal triggers
+> BUILD mode success criteria → see build-directives.md
 
 ### review clause
 after 3 cycles (≥1 ANALYZE + ≥1 BUILD) → DA assesses adversarial layer value vs overhead → patterns.md
@@ -308,8 +231,8 @@ after 3 cycles (≥1 ANALYZE + ≥1 BUILD) → DA assesses adversarial layer val
 
 ## superforecasting protocol v1.1 (26.3.15)
 
-scope: all sigma-review operations requiring estimates, forecasts, or probability assessments
-modes: ANALYZE (market/domain forecasts) | BUILD (effort/complexity estimates)
+scope: sigma-review ANALYZE operations requiring estimates, forecasts, or probability assessments
+modes: ANALYZE (market/domain forecasts) — BUILD variant → see build-directives.md
 companion: adversarial-layer v2.0, analytical-hygiene forcing function
 
 ### §3 superforecasting methodology (Tetlock)
@@ -318,32 +241,21 @@ companion: adversarial-layer v2.0, analytical-hygiene forcing function
 
 #### decomposition mandate
 
-ANALYZE variant:
 !rule: complex questions MUST be decomposed into 3-7 independent sub-questions before analysis
 format per sub-question:
   "SQ[{N}]: {sub-question} |estimable: {yes/no} |method: {base-rate/analogue/data} |→ {which-agent-best-answers}"
 !purpose: prevents anchoring on a single narrative. Each sub-question gets independent analysis.
 
-BUILD variant:
-!rule: build scope MUST be decomposed into estimable sub-tasks before implementation
-format per sub-task:
-  "SQ[{N}]: {sub-task} |estimable: {yes/no} |method: {precedent/analogue/decompose} |→ {which-agent-owns}"
-!purpose: prevents anchoring on optimistic single-estimate. Each sub-task gets independent estimation.
+> BUILD variant → see build-directives.md §3 decomposition
 
 #### reference class forecasting
 
-ANALYZE variant:
 !rule: before ANY original analysis, identify the reference class
 format:
   "RC[{question}]: reference-class={category} |base-rate={frequency} |sample-size={N} |src:{source} |confidence:{H/M/L}"
 !rule: team estimates that deviate >15pp from reference class base rate MUST justify deviation with specific evidence (outcome 1 or 2 from §2 hygiene)
 
-BUILD variant:
-!rule: before effort estimation, identify reference class for build scope
-format:
-  "RC[{task}]: reference-class={similar-builds-in-stack} |base-rate={typical-duration} |sample-size={N} |src:{source} |confidence:{H/M/L}"
-!rule: "How long do similar builds take in this stack?" Apply base rates to timeline estimates.
-!rule: team estimates that deviate >30% from reference class MUST justify with specific evidence
+> BUILD variant → see build-directives.md §3 reference class forecasting
 
 #### historical analogues
 !rule: identify 3-5 historical analogues for each major analysis question
@@ -353,31 +265,21 @@ format:
 
 #### calibrated probability estimates
 
-ANALYZE variant:
 !rule: key estimates must include calibrated ranges, ¬point estimates only
 format:
   "CAL[{estimate}]: point={best} |80%=[{low},{high}] |90%=[{lower},{higher}] |assumptions:{what-must-be-true} |breaks-if:{condition}"
 !enforcement: DA checks calibration quality. Overconfident ranges (80% band < 20% of point estimate) → challenge
 
-BUILD variant:
-!rule: effort estimates must include calibrated ranges, ¬point estimates only
-format:
-  "CAL[{task}]: point={best-estimate} |80%=[{low},{high}] |90%=[{lower},{higher}] |breaks-if:{dependency-delays}"
-!enforcement: DA checks: is 80% band realistic? Does it account for integration risk?
+> BUILD variant → see build-directives.md §3 calibrated probability estimates
 
 #### pre-mortem analysis
 
-ANALYZE variant:
 !rule: every ANALYZE review must include pre-mortem: "It's 3 years later and this failed. What happened?"
 format:
   "PM[{N}]: {failure-scenario} |probability:{%} |early-warning:{signal} |mitigation:{prevention}"
 !minimum: 3 failure scenarios, each with probability estimate
 
-BUILD variant:
-!rule: every BUILD plan must include pre-mortem: "It's 6 months later and this codebase is unmaintainable. What happened?"
-format:
-  "PM[{N}]: {failure-scenario} |probability:{%} |early-warning:{signal} |mitigation:{prevention}"
-!minimum: 3 failure scenarios focused on: technical debt, scaling bottlenecks, integration failures
+> BUILD variant → see build-directives.md §3 pre-mortem
 
 #### outside-view reconciliation
 !rule: AFTER all agents complete inside-view analysis, reference-class-analyst produces reconciliation
@@ -389,7 +291,7 @@ format:
 ### §3a adaptive agent count v1.1 (26.3.15)
 
 !purpose: right-size team to task complexity. Research shows (AgentDropout 2025) not all agents needed for all questions. Reduces 15-26x cost multiplier to 3-5x for simple analyses.
-modes: ANALYZE (analysis complexity) | BUILD (build complexity)
+modes: ANALYZE (analysis complexity) — BUILD complexity tiers → see build-directives.md §3a
 
 #### ANALYZE complexity tiers
 
@@ -408,27 +310,9 @@ TIER-3 (complex, 5-8+DA agents):
   team: 3-5 domain agents + reference-class-analyst + dynamic specialists + DA(from-r2)
   cost: ~15-26x single-agent
 
-#### BUILD complexity tiers
+> BUILD complexity tiers → see build-directives.md §3a
 
-TIER-1 (single module, 2+DA):
-  criteria: small feature, well-defined scope, existing patterns
-  team: primary builder + reviewer + DA
-  factors: module-count(1-2), interface-changes(0-1), test-complexity(low)
-
-TIER-2 (multi-module, 3-4+DA):
-  criteria: multi-module feature, interface changes, new patterns
-  team: 2-3 builders + reviewer + DA
-  factors: module-count(3-5), interface-changes(2+), test-complexity(moderate)
-
-TIER-3 (system build, 5-8+DA):
-  criteria: new system, multiple services, cross-cutting concerns
-  team: 3-5 builders + integration specialist + DA
-  factors: module-count(5+), interface-changes(many), test-complexity(high), dependency-risk(high)
-
-BUILD complexity scoring: module-count(1-5) + interface-changes(1-5) + test-complexity(1-5) + dependency-risk(1-5) + team-familiarity(1-5)
-sum < 12 → TIER-1 | 12-18 → TIER-2 | >18 → TIER-3
-
-#### complexity detection
+#### complexity detection (ANALYZE)
 lead evaluates at task creation:
   1→ domain count: how many expertise areas touched?
   2→ precedent availability: well-trodden or novel?
@@ -452,7 +336,7 @@ user may override tier selection
 !purpose: measure quality systematically. Replaces ad-hoc "was it good?" with rubric-based evaluation.
 !when: after synthesis complete (post-DA-exit-gate), before promotion phase
 !optional: lead or user can invoke /sigma-evaluate at any time
-modes: ANALYZE (analysis quality) | BUILD (code quality)
+modes: ANALYZE (analysis quality) — BUILD rubric → see build-directives.md §3b
 
 #### ANALYZE rubric (8 criteria, 4-point scale)
 1→ accuracy: factual claims correct, citations verified, numbers from reliable sources (4=all verified, 1=significant errors)
@@ -464,18 +348,7 @@ modes: ANALYZE (analysis quality) | BUILD (code quality)
 7→ scope-integrity: analysis stays within stated scope, zero external contamination (4=perfectly scoped, 1=significant contamination)
 8→ source-provenance: findings properly tagged with source types (§2d), prompt claims independently verified, no echo clusters (4=all findings independently sourced with provenance, 3=≤10% [prompt-claim] without corroboration, 2=>10% unverified prompt-derived, 1=>30% or echo clusters detected)
 
-#### BUILD rubric (6 criteria, 4-point scale)
-1→ correctness: does it work? edge cases handled? error paths covered? (4=all cases handled, 1=fundamental bugs)
-2→ test-coverage: behavior tested (¬just runs)? failure cases? integration tests? (4=comprehensive behavioral, 1=minimal/absent)
-3→ maintainability: clear naming? reasonable complexity? future developer can understand? (4=self-documenting, 1=opaque)
-4→ performance: appropriate for scale? no obvious bottlenecks? measured ¬assumed? (4=measured+optimized, 1=unmeasured+bottlenecked)
-5→ security: input validation? auth/authz? OWASP top 10 addressed? (4=defense-in-depth, 1=no validation)
-6→ api-design: consistent? self-documenting? backward compatible? error responses clear? (4=exemplary contract, 1=inconsistent+undocumented)
-
-BUILD evaluator assignment:
-  Evaluator 1: Correctness + Security (code review perspective)
-  Evaluator 2: Test Coverage + Maintainability (quality perspective)
-  Evaluator 3: Performance + API Design (architecture perspective)
+> BUILD rubric → see build-directives.md §3b
 
 #### grading
 A: 3.5-4.0 avg | B: 2.8-3.4 | C: 2.0-2.7 | D: 1.5-1.9 | F: <1.5
@@ -490,8 +363,8 @@ format: "OUTCOME[{review}:{prediction}]: predicted={X} |actual={Y} |error={delta
 
 ## bayesian-consensus-tracking v1.1 (26.3.15)
 
-scope: all sigma-review operations — replaces fixed round-count heuristic with evidence-based stopping
-modes: ANALYZE → P(consensus) | BUILD → P(implementation-ready)
+scope: sigma-review ANALYZE operations — replaces fixed round-count heuristic with evidence-based stopping
+modes: ANALYZE → P(consensus) — BUILD → P(implementation-ready) → see build-directives.md §4
 companion: adversarial-layer v2.0, superforecasting protocol
 
 ### §4 belief-state round management
@@ -528,21 +401,9 @@ BELIEF[r{N}]: P={posterior} |prior={X} |agreement={ratio} |revisions={quality} |
   |→ {synthesis-ready|continue(target:{gaps})|deep-disagreement(trigger:{action})}
 ```
 
-#### BUILD belief state: P(implementation-ready)
-!purpose: P(implementation-ready) instead of P(consensus) for BUILD mode
-weighted components:
-  interface-agreement: all agents agree on API contracts (weight 0.3)
-  no-assumption-conflicts: §4b cross-checked (weight 0.25)
-  test-strategy-defined: accepted by all agents (weight 0.2)
-  effort-calibrated: estimates calibrated against reference class (weight 0.15)
-  DA-exit-gate: plan quality (weight 0.1)
+> BUILD belief state P(implementation-ready) → see build-directives.md §4
 
-BUILD stopping rules:
-  P > 0.85 → proceed to build (r3)
-  P 0.6-0.85 → another planning round (resolve specific gaps)
-  P < 0.6 → significant disagreement — Toulmin debate on contested architecture decisions
-
-#### why this matters
+#### why this matters (ANALYZE)
 - r1 with 9 tensions and 0.3 prior → P(consensus)≈0.25 → clearly needs r2 (correct)
 - r2 with 14/14 DA challenges addressed, all agents B+ → P≈0.88 → synthesis-ready (correct)
 - prevents wasted rounds when consensus is genuine
@@ -551,8 +412,8 @@ BUILD stopping rules:
 
 ### §4a agentic retrieval protocol v1.1 (26.3.15)
 
-scope: structured data retrieval during sigma-review operations
-modes: ANALYZE (market research) | BUILD (code patterns + API docs)
+scope: structured data retrieval during sigma-review ANALYZE operations
+modes: ANALYZE (market research) — BUILD retrieval strategies → see build-directives.md §4a
 companion: superforecasting protocol (base rate retrieval), analytical hygiene (evidence quality)
 
 !purpose: replace ad-hoc web search with quality-scored retrieval. Inspired by MAIN-RAG (ACL 2025) multi-agent filtering and Corrective RAG patterns.
@@ -584,23 +445,14 @@ filter threshold: total ≥ 10/15 passes | <10 flagged as low-confidence
 - reference-class-analyst uses retrieval for base rates and analogues
 - DA uses retrieval for counter-evidence
 
-#### BUILD retrieval strategies
-!rule: BUILD mode retrieves code patterns, ¬market research
-strategies:
-  CODE-PATTERN: search for implementations of specific patterns in production codebases (GitHub, docs, technical blogs)
-  LIBRARY-EVAL: compare libraries/frameworks (features, maintenance, community, license)
-  API-REFERENCE: fetch current API docs for dependencies being integrated
-  FAILURE-SEARCH: "What goes wrong when you build X this way?" (Stack Overflow, post-mortems, retrospectives)
-
-BUILD authority scoring:
-  official docs=5 | GitHub production examples=4 | tutorial with tests=3 | untested snippet=1
+> BUILD retrieval strategies → see build-directives.md §4a
 
 see /sigma-retrieve skill for full pipeline (query decomposition → parallel retrieval → validation → synthesis)
 
 ### §4b knowledge graph protocol v1.1 (26.3.15)
 
-scope: structured domain knowledge for sigma-review operations
-modes: ANALYZE (market entities) | BUILD (codebase structure)
+scope: structured domain knowledge for sigma-review ANALYZE operations
+modes: ANALYZE (market entities) — BUILD codebase graph → see build-directives.md §4b
 location: agent-infrastructure/knowledge-graphs/{domain}/
 
 !purpose: provide structured entity-relationship data that enables multi-hop reasoning. Web search finds text; knowledge graphs find connections.
@@ -634,20 +486,7 @@ agents read graph files during boot or analysis:
 - graphs grow across reviews — each review adds domain knowledge
 - format: "KG-UPDATE[{domain}]: +E[{entity}] |+R[{relationship}] |src:{review-name} |date:{date}"
 
-#### BUILD codebase graph
-!purpose: map codebase structure for impact analysis, dependency visualization, test gap identification
-
-BUILD entity types: module, service, function, class, API-endpoint, database-table, config, dependency
-BUILD relationship types: depends-on, calls, implements, extends, reads-from, writes-to, integrates-with, tested-by
-
-enables:
-  impact analysis: "if I change this interface, what breaks?"
-  dependency visualization: module coupling map
-  test gap identification: untested integration points
-  dead code detection: unreferenced entities
-
-seeded from: codebase analysis during BUILD r1 (agents read code and populate graph)
-format: same E[]/R[] format as ANALYZE graphs
+> BUILD codebase graph → see build-directives.md §4b
 
 #### available graphs
 warehouse-supply-chain (seeded 26.3.14 from warehouse LMS review)
@@ -790,7 +629,8 @@ compression target: memory ≤ 200 lines per agent after any round
 
 ## context-contamination-protocol v1.1 (26.3.15)
 
-scope: all sigma-review operations — protects analysis integrity from context bleed
+scope: sigma-review ANALYZE operations — protects analysis integrity from context bleed
+BUILD scope boundary → see build-directives.md §6f
 companion: adversarial-layer v2.0, evaluation protocol, §7 prompt-decomposition-protocol (input-side prevention), §2d source provenance (tagging mechanism)
 
 !purpose: LLM context windows don't have scope boundaries. Topics discussed in the same session
@@ -828,14 +668,7 @@ Observed 26.3.14: casual career discussion contaminated system documentation.
   2=noticeable: post-cutoff framing present, some claims lack pre-cutoff sourcing
   1=significant: confidential-then-public data used, outcome knowledge shapes analysis, sources mostly post-cutoff
 
-### §6f BUILD scope boundary
-!rule: BUILD scope-boundary prevents scope creep (aligns with §4a scope creep detection)
-BUILD format:
-  "## scope-boundary
-   This build implements: {phase description, specific features}
-   This build does NOT implement: {future phases, nice-to-haves, features not in spec}
-   Lead: before accepting agent output, verify it builds ONLY what's in scope."
-!rule: same contamination mechanism that prevents topic bleed in analysis prevents scope creep in build
+> §6f BUILD scope boundary → see build-directives.md §6f
 
 ### §6g temporal scope boundary (26.3.15)
 
@@ -947,8 +780,8 @@ retrievers (/sigma-retrieve): TIER-C for search, TIER-B for validation
 
 ## prompt-decomposition-protocol v1.0 (26.3.17)
 
-scope: all sigma-review operations — executed by lead before agent spawn
-modes: ANALYZE | BUILD (different decomposition, same principle)
+scope: sigma-review ANALYZE operations — executed by lead before agent spawn
+modes: ANALYZE — BUILD decomposition → see build-directives.md §7
 companion: §2d source provenance, §6 context-contamination-protocol, adversarial-layer v2.0
 
 !purpose: prevent user's hypotheses from entering agent research as assumed facts. Contamination is cheapest to catch at input — by the time DA reviews in r2, prompt claims are already laundered through 3-8 agents' findings. Decompose prompt BEFORE spawn → agents receive claims as testable hypotheses ¬background assumptions
@@ -967,13 +800,9 @@ companion: §2d source provenance, §6 context-contamination-protocol, adversari
     - comparative claims without evidence ("better than alternatives")
     - causal assertions ("this will drive adoption")
     - quantitative claims without source ("$500M market")
-  BUILD detection heuristics:
-    - scale assumptions without evidence ("needs to handle 10K concurrent users")
-    - technology assertions ("we need microservices for this")
-    - user behavior claims ("users will primarily access via mobile")
-    - performance requirements without measurement ("must be real-time")
-    - architecture claims ("monolith won't scale for this")
   these become HYPOTHESES for agents to test — ¬context, ¬constraints, ¬facts
+
+  > BUILD detection heuristics → see build-directives.md §7a
 
 3→ CONSTRAINTS: scope, timeline, market, methodology boundaries
   these narrow the search — agents operate within these

@@ -2,7 +2,7 @@
 
 This document defines the coupling points between sigma-system-overview, sigma-mem, and hateoas-agent. Changes to any interface listed here require coordinated updates across repos.
 
-Last verified: 2026-03-11
+Last verified: 2026-03-19
 
 ## Dependency Chain
 
@@ -121,6 +121,11 @@ Both repos assume these paths:
 | `~/.claude/teams/sigma-review/agents/{name}/memory.md` | Agent memory | all agents (Boot) |
 | `~/.claude/teams/sigma-review/agents/{name}/inbox/` | Agent inbox | sigma-lead, all agents |
 | `~/.claude/teams/sigma-review/shared/` | Team shared files | setup.sh, sigma-lead |
+| `~/.claude/teams/sigma-review/shared/directives.md` | ANALYZE governance | sigma-lead, DA, all agents |
+| `~/.claude/teams/sigma-review/shared/build-directives.md` | BUILD governance | sigma-lead (BUILD mode), DA |
+| `~/.claude/teams/sigma-review/shared/archive/` | Archived review workspaces | sigma-lead, /sigma-audit |
+| `~/.claude/skills/sigma-review/SKILL.md` | ANALYZE orchestration | sigma-lead |
+| `~/.claude/skills/sigma-build/SKILL.md` | BUILD orchestration | sigma-lead |
 | `~/.claude/teams/sigma-review/shared/portfolio.md` | Project portfolio | sigma-lead (Promotion) |
 | `<project>/.claude/teams/sigma-review/` | Project team tier | setup-project.sh, agents with tier:project |
 | `~/.claude/sigma-venv/` | Python venv | setup.sh, ~/.claude.json MCP config |

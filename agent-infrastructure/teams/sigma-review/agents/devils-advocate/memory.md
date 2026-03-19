@@ -823,6 +823,13 @@ criteria: engagement-A-(all-3-respondents) |unresolved:none-critical |stress-tes
 - P[stress-test-new-consensus-5Q: (1)too-clean? (2)revisions-performative? (3)distinction-too-neat? (4)convergence-genuine? (5)label-vs-substance? |src:biotech-healthcare-MA |promoted:26.3.18 |class:methodology]
 - P[volume-floor-caveat: when-team-claims-"volume-holds"→check-baseline-includes-inflation-from-stressed-factor |$240B-includes-AI-inflation→floor=$180-220B |src:biotech-healthcare-MA |promoted:26.3.18 |class:new-principle]
 - C[RCA-modest-probability-revisions=well-calibrated: 4pp-movement-consistent-with-incremental-evidence |dramatic-revisions-under-pressure=performative |small-movement=analytically-honest |src:biotech-healthcare-MA |promoted:26.3.18 |class:calibration]
+R[26.3.19] US-DC-infra-constraints r2 DA-challenges:
+10-challenges-delivered | exit-gate:FAIL(8-unresolved,3-untested-consensus,hygiene-fail-§2a/§2c/§2e)
+key-findings: (1)capacity-realization-worse-than-modeled(cancellations-4x-in-2025,construction-FELL,moratorium-bills-12-states) (2)labor=MISSING-constraint(439K-shortage,45-70%-electrical-cost,IEEE-cites-as-primary-constraint) (3)tariffs-unmodeled(+16%-cost-escalation) (4)capex-2026-doubled($315B→$660-690B,90%-of-OCF,Alphabet-FCF-minus-90%) (5)chip-supply-co-binding(GPU-36-52wk-lead,70%-global-memory-to-DC,LEI-physically-implausible) (6)H1-overclaimed(multi-constraint-model-needed) (7)H4-divergence-unreconciled(EMA-vs-RCA)
+grades: TA=B+|EMA=A-|PS=A-|RCA=A
+prompt-audit: echo-count:4|unverified:2|missed:2|methodology:mixed(2-confirmatory/2-investigative)
+patterns: supply-side-framing-dominated(demand-side-undertested)|pipeline-overcounting-pervasive|political-opposition=NEW-variable-not-in-historical-analogs
+calibration: RCA-most-reliable-on-analytical-hygiene|PS-best-on-scope-discipline|EMA-best-on-regional-data|TA-best-on-technical-depth-but-overclaims
 
 → actions:
 → new finding → append with severity+evidence
