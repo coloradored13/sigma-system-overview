@@ -1,5 +1,63 @@
 # team decisions — expertise-weighted
 
+## biotech-healthcare M&A review (26.3.18)
+
+H1-reconciliation:AI=deal-shaper-¬deal-engine |by:product-strategist(r3-concession)+RCA(r1) |weight:primary
+  |ctx: PS revised H1 from CONFIRMED→PARTIALLY CONFIRMED after DA[#1] challenge |RCA outside-view (additive ¬primary) now accepted by PS
+  |evidence: patent cliff + rates + $2.1T firepower = 75-80% of M&A volume motivation | AI = 20-25% by 2031, 10% 2025
+  |decision: H1 synthesis anchor = "AI is deal shaper ¬deal engine" | AI creates new target categories + reshapes premium structures WITHIN cliff-driven M&A cycle ¬creates independent demand
+  |falsification: ≤3 AI-native acq >$1B 2026-2028 + Phase III failures → thesis falsified | AI-biotech correction >40% → premium thesis falsified
+
+173-programs-phase-decomposition:~120-P1/~45-P2/~8-P3 |by:product-strategist(r3) |weight:supporting
+  |ctx: DA[#8] challenge — "173" cited by 5 agents without quality decomposition
+  |evidence: BiopharmaTrend sample ratio P1-dominant (55%+) | systematic review 2015-2025: 23.1% Phase I | 15-20 pivotal = 9-12% of 173
+  |decision: M&A-relevant near-term = 15-20 pivotal programs | AI-molecule-driven M&A peak = 2028-2030 ¬2026 | platform M&A (buy engine) window = 2026-2027
+
+liquid-biopsy-multi-omics=TIER-1-M&A |by:product-strategist(r3) |weight:primary
+  |ctx: material omission from R1 sector ranking | Abbott/Exact Sciences, Samsung/GRAIL, Natera/Foresight = active NOW
+  |evidence: ~$60B diagnostics M&A 2025 | Abbott/Exact Sciences Q2-2026-close | liquid biopsy market $46.8B by 2030 CAGR 11.52%
+  |decision: liquid biopsy + multi-omics AI = TIER-1 alongside drug discovery + medical imaging | not subsumed under diagnostics
+
+deal:AI-premium-bifurcated |by:portfolio-analyst |weight:primary
+  |ctx: Recursion+Exscientia merged=$1.8B combined(two leading AI firms) |platform-alone ¬sufficient for premium |Recursion P/S 33-41x vs sector 10-11x when clinical proof present |preclinical platforms 40-70% premium vs approved products 80-120%
+  |decision: AI premium REAL for Tier-1(clinical validation) ¬universal |clinical proof = separator
+
+deal:CVR-prevalence-structural |by:portfolio-analyst |weight:primary
+  |ctx: avg 37% of total deal size in larger transactions |milestone payment +255% Q4 2025 vs Q3 |Pfizer/Metsera $4.9B upfront+$2.3B CVRs |Lilly/Adverum $3.56+$8.91 CVR
+  |decision: CVR structures structurally embedded in pharma M&A ¬tactical exception |signals sustained buyer risk-aversion to binary clinical outcomes 2026-2031
+
+deal:China-licensing-primary-structure |by:portfolio-analyst |weight:primary
+  |ctx: 32% of worldwide out-licensing value H1 2025(up from 21% 2023-24) |$57.3B deal value at only $3.9B upfront(leverage ~15x) |AZ/CSPC $5.3B total $110M upfront
+  |decision: licensing ¬full acquisition = Western pharma preferred structure for China-sourced assets |geopolitical+IP risk drives structure choice ¬clinical quality
+
+deal:FTC-preclinical-overlap-risk-confirmed |by:portfolio-analyst |weight:primary
+  |ctx: Edwards/JC Medical+JenaValve blocked Aug 2025 on TAVR-AR clinical trial overlap(¬commercial overlap)
+  |decision: FTC preclinical overlap = material deal risk ¬theoretical |AI platform acquisitions face LESS scrutiny than therapeutic pipeline overlaps |favors platform M&A strategy
+
+deal:biotech-MA-cycle-late-expansion |by:portfolio-analyst |weight:primary
+  |ctx: 2025 M&A $228-240B announced |deal count 50(highest since 2021) |structural gap $370B by 2032 |$2.1T firepower vs <65% coverage ratio
+  |decision: current cycle late-expansion ¬peak |2015-2016 analog(structural LOE pressure) ¬2021 froth |multi-year durability justified ¬cyclical fade
+
+deal:public-biotech-arbitrage-open |by:portfolio-analyst |weight:primary
+  |ctx: healthcare sector at 30% discount to broader market |~50% of public US biotech trade below cash NAV |XBI recovery ¬yet erased discount
+  |decision: public-to-private arbitrage window STILL OPEN entering 2026 |watch signal: XBI <15% discount to market P/E = window closing
+
+deal:AI-premium-compression-already-occurring |by:portfolio-analyst(r3) |weight:primary
+  |ctx: DA[#2] challenge — AI premium not modeled for compression risk
+  |evidence: Recursion RXRX $3.39 (Mar 16 2026) down from ATH $41.33 (Jul 2021), -31% prior 12mo |BenevolentAI delisted Mar 2025 |genomics bubble 2000-2001: -70-80% compression ¬eliminated M&A, delayed+repriced it |CRISPR collapse 2021-2022: -50-80%, forced licensing-before-acquisition structures
+  |decision: 40% premium compression restructures M&A (volume holds, deal values fall 25-40%) ¬kills it | 60% extreme collapses AI-only platforms to acqui-hire | M&A VOLUME thesis ROBUST (patent cliff drives regardless) | AI PREMIUM thesis FRAGILE (requires Phase 3 clinical proof) — synthesis must separate these two claims
+  |leading-indicators: Insilico rentosertib Phase 3 readout (!CRITICAL), Recursion cash runway sub-18mo, Dalio euphoria composite >90%
+
+deal:post-acquisition-integration-risk-AI-specific |by:portfolio-analyst(r3) |weight:primary
+  |ctx: DA[#4] challenge — integration risk absent from all R1 analyses
+  |evidence: 40-60% general pharma M&A integration failure base rate | AI-specific +10-15pp = 50-70% | Watson Health: $5B+ acquisitions → $1B (2022), 80% value destruction | root causes: Blue Washing (forced tech stack migration), talent flight, culture clash | McKinsey: outperformers 3.4-8.2x better on SAME assets — execution variance as large as asset quality
+  |decision: archetype ranking REVISED (integration-adjusted): RANK-1=late-stage-pipeline, RANK-2=platform+clinical-validation(20-25% expected-value haircut), RANK-3=China-licensing(avoids integration), RANK-4=PE-take-private, RANK-5=AI-only-platform(double-penalized) | recommend option-to-acquire ¬outright acquisition for AI-native platforms
+
+deal:BIOSECURE-scope-distinction-critical |by:portfolio-analyst(r3) |weight:primary
+  |ctx: DA[#6] challenge — China licensing sustainability questioned
+  |evidence: BIOSECURE targets CDMO/CRO service providers (WuXi AppTec, BGI etc.) ¬innovative drug developers | PA-F9 $57.3B = innovative drug licensing ¬CDMO contracts | cross-border deals 42/$1.1B (2022) → 93/$5.6B (2025) = 400% upfront value increase | 2026 pace holding steady, on track for new record
+  |decision: near-term (2026-2027) China licensing channel OPEN and accelerating | 3-horizon: OPEN→STRESSED(2027-2029)→AT-RISK(2029-2031) | P(>50% contraction by 2031)=25-35% | RANK-3 temporalized: maintained 2026-2027, degraded to RANK-4 equivalent 2028-2030 | all new licensing structures require manufacturing-rights clauses + US FDA filing provisions + IP audit rights
+
 ## sigma-mem v0.1 review (26.3.7)
 
 arch:weighted-state-detection |by:tech-architect |weight:primary
@@ -159,6 +217,28 @@ bias:anchoring-corrected |$90 floor→$80-85 conditional, $120 cliff→$85-90/$1
 
 bias:herding-significantly-corrected |5-0 consensus→genuine disagreements+ceasefire bucket+sizing reductions |by:devils-advocate |weight:primary
   |ctx: crowding acknowledged, defense 12→7%, energy 15→11%, ceasefire 22-28%→35-40%, ceasefire bucket 0→7%. 100% war/0% peace→barbelled. !caution: over-correction risk—war-thesis positions remain fundamentally sound(Hormuz IS closed)
+
+## biotech-healthcare-MA-AI-2026-2031 r1 ANALYZE (26.3.18)
+
+regulatory:bifurcated-MA-catalyst |by:regulatory-analyst |weight:primary
+  |decision: regulatory-regime=ACCELERANT-for-large-pharma,CHILLING-for-sub-$500M-acquirers
+  |ctx: FDA-PCCP-framework(Dec-2024-final,Jan-2025-draft)+EMA-qualification-opinions+biosimilar-acceleration=catalysts-for-large-compliant-players | EU-dual-compliance($8-15M)+notified-body-bottleneck(18-24mo)+US-state-fragmentation=barriers-for-smaller-acquirers | net-effect-is-not-uniform
+
+regulatory:FDA-cleared-SaMD-PCCP-as-MA-moat |by:regulatory-analyst |weight:primary
+  |decision: FDA-cleared-AI-SaMD-with-PCCP-in-hand=defensible-acquisition-asset|regulatory-approval-¬replicable-organically-in-reasonable-timeframe|acquirers-paying-premium-for-pre-cleared-platforms
+  |ctx: 295-AI-devices-cleared-2025,PCCP-eliminates-future-510k-for-planned-modifications,SaMD-market-$3.81B→$19.58B-2030 | supports-H1(actionable-MA-opportunities) | supports-H4-partial(regulatory-moat=acquisition-imperative)
+
+regulatory:IRA-restructures-deal-mix-toward-biologics |by:regulatory-analyst |weight:primary
+  |decision: IRA-pill-penalty(small-mol-9yr-vs-biologic-13yr)+small-mol-funding-DOWN-70%=structural-shift-of-MA-toward-biologics,gene-therapy,ADCs,RNA
+  |ctx: 10-drugs-negotiated-prices-live-Jan-2026|post-IRA-large-pharma-RD+MA-INCREASED|biologics-exclusivity-advantage-structural|small-biotech-exclusion-through-2028-protects-pipeline-targets
+
+regulatory:biosimilar-wave-non-AI-MA-catalyst |by:regulatory-analyst |weight:primary
+  |decision: biosimilar-approval-acceleration(EMA-44-2025-record,FDA-streamlining-Oct-2025)+patent-cliff-wave(Stelara,Eylea,Prolia)=non-AI-driven-MA-urgency-for-reference-biologic-IP-defense
+  |ctx: BPCIA-patent-dance-unchanged-despite-regulatory-streamlining|reference-biologic-IP-acquisition=defensive-MA-strategy|timing:2025-2028-peak-cliff-window
+
+regulatory:federated-learning-gradient-definition-gap |by:regulatory-analyst |weight:primary
+  |decision: regulatory-gap-on-whether-model-gradient-sharing=data-sharing-under-GDPR-HIPAA-is-¬resolved|resolution-expected-2026-2027|companies-building-federated-architectures-NOW-face-retroactive-compliance-risk
+  |ctx: EDPB-Dec-2024-legitimate-interest-opinion+Digital-Omnibus-GDPR-amendments=partial-signal|cross-border-federated-learning-still-conflicting-consent-standards
 
 assessment:debate-quality |team A-, all 5 engaged honestly, 3 defenses beat DA on merit(base-rate,ceasefire-def,gold) |by:devils-advocate |weight:primary
   |ctx: 6/10 challenges held, 3/10 fell, 1/10 partial. Healthy ratio. Energy+sanctions admitted measuring wrong things(positioning,prosecution rate)→rare analytical maturity
@@ -570,6 +650,84 @@ synthesis-note:readiness-framework-integration |by:devils-advocate |weight:advis
   |ctx: three separate readiness frameworks (TA: 5-pt binary, PS: 18-pt scored, UX: 5-pt PR-scored) need integration into ONE unified assessment for the guide. Raw material sufficient — all three are ex-ante testable with specified methods and timelines. Honest admission: all are unvalidated against outcome data.
 workflow-automation-review-complete |4-rounds(r1-research,r2-DA-FAIL,r3-response,r4-DA-PASS) |5-agents(TA,PS,UX,RCA,DA) |central-finding:process-improvement-first-for-70-80%-of-300-1000-segment,automation-conditional-on-readiness |success-rates-recalibrated:individual-45-55%(M),enterprise-15-25%(L-M) |deliverables:exec-summary+implementation-guide@~/Documents/ |key-shift:automation-first→PI-first-conditional(genuine-analytical-revision,¬performative) |all-evidence-extrapolated-from-general(zero-mid-market-specific-studies) |by:sigma-lead |weight:primary
   |ctx: workflow automation implementation analysis for 300-1000 employee companies, 2026-03-18
+
+## biotech-healthcare AI M&A review — tech-industry-analyst decisions (26.3.18)
+
+tech:AI-modality-maturity-bimodal |by:tech-industry-analyst |weight:primary
+  |ctx: Radiology AI (1,356 FDA-cleared devices, Aidoc foundation model Jan 2026) = PRODUCTION-READY. Protein structure prediction = commoditized by end-2026 (AlphaFold3, Boltz-2, ESMFold all open). Small-molecule drug discovery AI = ACCELERATING (173 clinical programs, first Phase 3 expected 2026). Biologics/cell/gene therapy AI = still RESEARCH-STAGE. Longevity reversal drugs = MOSTLY HYPE (no Phase 2 data). Blanket "AI is transforming biotech" = analytically under-specified.
+
+tech:structure-prediction-moat-gone |by:tech-industry-analyst |weight:primary
+  |ctx: AlphaFold3 partially open-sourced; OpenFold3 community approaching parity; Boltz-2 (MIT+Recursion, Jun 2025) fully open, structure+binding affinity jointly, 1,000× faster than FEP, 200+ biotech adopters; ESMFold (Meta) 700M+ predictions free. New data moat = phenomics (Recursion 8yr head start), clinical outcome data (Epic-controlled), surgical recordings (Intuitive Surgical 10M+ procedures). Structure prediction ¬moat by end-2026.
+
+tech:isomorphic-proprietary-model |by:tech-industry-analyst |weight:primary
+  |ctx: Isomorphic Labs $600M raise Mar 2025 kept proprietary successor to AlphaFold3 (¬open-sourced unlike AlphaFold2/3). Strategy = vertical integration (foundation model → drug pipeline → IND-enabling studies). Targeting first clinical trials 2026-2027. NOT a platform licensor like Recursion. Distinct strategy from open-source ecosystem.
+
+tech:NVIDIA-infra-layer-not-biotech-acquirer |by:tech-industry-analyst |weight:primary
+  |ctx: NVIDIA positioned as compute infrastructure layer (BioNeMo, $1B Eli Lilly partnership Jan 2026, Novo Nordisk Gefion supercomputer Jun 2025). Analogy to Zebra+Fetch infrastructure acquisition (P[26.3.14]) = more likely to acquire biotech-specific AI infrastructure tools (data management, workflow orchestration) ¬drug assets ¬pharmaceutical companies. OpenAI ¬primary drug discovery actor.
+
+tech:GLP-1-platform-molecule-disruption-risk |by:tech-industry-analyst |weight:advisory
+  |ctx: TIA-10 D4. Emerging evidence GLP-1 agonists reduce Alzheimer's risk + cardiovascular events + addiction (non-metabolic indications). If Phase 3 trials confirm, GLP-1 becomes platform molecule → massive revaluation + new M&A wave in CNS/cardio for GLP-1 combos. HIGHEST PROBABILITY disruption not captured in standard M&A frameworks. Current deal analysis focused only on metabolic/obesity angle.
+
+tech:AI-Phase3-failure-material-downside |by:tech-industry-analyst |weight:advisory
+  |ctx: TIA-10 D6. First AI-discovered drugs expected to hit Phase 3 in 2026. If they fail, AI-biotech narrative deflates → platform acquisitions repriced → capital exits AI-biotech. Current analyst frameworks price in success scenario. Failure scenario = MATERIAL DOWNSIDE RISK to H1 (AI creating significant M&A opportunities). Flag for DA priority challenge.
+
+tech:H4-partially-falsified |by:tech-industry-analyst |weight:primary
+  |ctx: H4 (AI as net M&A catalyst vs enabling organic build) = PARTIALLY FALSIFIED. Mega-pharma is BOTH building internally (Lilly TuneLab Sep 2025, $1B NVIDIA AI factory; Novo Nordisk Gefion sovereign supercomputer Jun 2025) AND acquiring AI-native startups. Answer is SPLIT by company size: mid/small pharma = acquisition primary; mega-pharma = hybrid (build+partner+acquire). ¬universal net M&A catalyst direction.
+
+## biotech-healthcare AI M&A review — DA r2 challenge decisions (26.3.18)
+
+challenge:H1-divergence-is-central-unresolved-question |PS:CONFIRMED(AI=primary-catalyst) vs RCA:ADDITIVE(cliff+rates=80%+-regardless) |both-cannot-be-synthesis-conclusion |R3-must-reconcile-or-split-with-probabilities |by:devils-advocate |weight:primary
+  |ctx: DA[#1]. This is the CENTRAL question of the review. PS treats AI as the engine driving M&A. RCA treats AI as flavor added to structurally-driven M&A. External evidence supports RCA: CNBC Jan 2026 "big pharma race to snap up biotech assets as $170B patent cliff looms" — headline is cliff ¬AI. AlphaSense, ING, PwC all cite patent cliff+rates as PRIMARY. AI = secondary/emerging
+
+challenge:AI-premium-unmodeled-correction-risk |Recursion-33-41x-vs-sector-10-11x-but-0-FDA-approvals+REC-994-discontinued+BenevolentAI-delisted |Dalio-"80%-euphoria"+Altman-"overexcited"+AI=50%-all-VC-2025 |premium-compression-30-50%-unmodeled |by:devils-advocate |weight:primary
+  |ctx: DA[#2]. PA-F4 documents premium but not sustainability. AI sector concentration at 50yr high. If correction occurs, deal economics change materially. Must model compressed-premium scenario for synthesis
+
+challenge:post-acquisition-integration-failure-unaddressed |pharma-MA-integration-40-60%-value-destruction-rate+Watson-$5B→$1B(80%-loss)+AI-adds-complexity(talent-retention,data-systems,culture) |$240B-deals=$96-144B-potential-destruction-at-base-rate |by:devils-advocate |weight:primary
+  |ctx: DA[#4]. Zero agents modeled post-acquisition outcomes. Approval of deals ¬ success of deals. Synthesis that projects M&A volume without integration risk = incomplete
+
+challenge:adoption-gap-undermines-AI-premium-thesis |1,356-FDA-cleared-devices+73%-clinician-override+30%-non-use+91%-integration-difficulty |approved-¬adopted-¬value-creating |by:devils-advocate |weight:primary
+  |ctx: DA[#5]. If AI assets don't translate to clinical adoption, acquirer ROI disappoints, premiums compress. This is the mechanism by which AI premium correction could occur. Links DA[#2] to DA[#5]
+
+assessment:exit-gate-FAIL |engagement:B+(range-B+-to-A) |unresolved:H1-divergence+AI-premium-sustainability |untested-consensus:H3-unanimous+AI-catalyst-framing |hygiene:pass-with-flags |prompt-contamination:within-tolerance |by:devils-advocate |weight:primary
+  |ctx: R3-MUST: (1)H1 reconciliation PS vs RCA, (2)AI premium compression modeling, (3)post-acquisition integration risk, (4)173-programs phase decomposition, (5)§2e premise checks by PS+PA
+
+assessment:RCA-best-calibrated-synthesis-must-anchor |additive-¬primary|Watson-disconfirmation|calibrated-CIs|outside-view-reconciliation |synthesis-that-contradicts-RCA-without-explanation=analytically-dishonest |by:devils-advocate |weight:advisory
+  |ctx: DA[#12]. RCA = only agent that ran disconfirmation duty, provided calibrated probabilities with CIs, and identified that inside-view overstates AI causal role
+
+## biotech-healthcare AI M&A review — RCA r3 DA-response decisions (26.3.18)
+
+H1-reconciliation:AI-as-Structural-Accelerant(3-category-framework) |AI-irrelevant=55-65%|AI-additive=20-30%|AI-primary=8-15%→20-25%-by-2031 |PS-RCA-CONVERGENT("deal-shaper-¬deal-engine") |by:reference-class-analyst+product-strategist |weight:primary
+  |ctx: DA[#1] CRITICAL. PS R1=CONFIRMED, RCA R1=ADDITIVE. R3: PS conceded PARTIALLY CONFIRMED + "deal-shaper ¬deal-engine." RCA proposed quantified 3-category framework. CONVERGENCE achieved. Structural forces (cliff+rates+firepower) drive 55-65%. AI grows ~10%→20-25% by 2031 but never dominates
+
+173-decomposition:M&A-relevant=28-34(Phase2+)=16-20%-of-173 |expected-FDA-AI-drugs-by-2031:4-8(optimistic)/2-5(base-rate) |by:reference-class-analyst |weight:primary
+  |ctx: DA[#5]. Phase breakdown: ~40 P1, ~26-31 P2, 2-3 P3, 0 NDA. Base rates: P1→P2=47%, P2→P3=28%, P3→NDA=55%, LOA=6.7%. AI P1 claimed 80-90% vendor-forward → blended 63%. "173 programs" anchor deflated to ~28-34 M&A-relevant
+
+Eroom's-compositional-assessment:~50%-compositional+~50%-real|reversal-UNDEMONSTRATED |AI-R&D-productivity-~50%-overstated-vs-inside-view |by:reference-class-analyst |weight:primary
+  |ctx: DA[#3]. 85% accelerated approval=oncology, 57% failed confirmatory trials, P3 required 26% AA vs 75% regular. Real component: ROI 1.2→5.9%, biomarker stratification. Net: market pricing AI reversal; evidence = partial deceleration partially artifactual. STRENGTHENS RCA R1
+
+AI-healthcare-failure-catalogue:N≥5/$14B+-systematic-pattern |Watson+Olive+Babylon+Pear+BenevolentAI |ANA[5]-ELEVATED |PM[2]=20-25% |by:reference-class-analyst |weight:primary
+  |ctx: DA[#8]. Watson NOT N=1 outlier. Extended: Olive($4B→$0), Babylon($4.2B→$0), Pear(→$6M), BenevolentAI(delisted). Pattern: marketing>capability, ambitious scope, data quality underestimated, adoption assumed. Healthcare 0.8%→2.8% of ALL startup shutdowns
+
+CAL-revisions-R3:H1=72→68%|H1a=55→50%|H4=62→60%|PM[2]=15-20→20-25%|H2,H3-unchanged |by:reference-class-analyst |weight:primary
+  |ctx: net modest-downward. DA challenges STRENGTHENED RCA R1 position on 3/4 items (Eroom's compositional, failure catalogue, 173 decomposition). Only H1-reconciliation was compromise ¬ concession
+
+## biotech-healthcare AI M&A review — DA r3 exit-gate decisions (26.3.18)
+
+exit-gate:R3-PASS |by:devils-advocate |weight:primary
+  |ctx: R2 exit-gate FAIL had 2 critical issues: (1) H1 divergence PS-vs-RCA, (2) AI premium compression unmodeled. Both resolved in R3. PS conceded H1 to PARTIALLY CONFIRMED. PA modeled 40%/60% compression scenarios. RCA proposed 3-category framework. All 10 DA challenges resolved (8 direct, 2 by proxy)
+  |decision: synthesis authorized. R3 quality exceeds R1 across responding agents. DA pressure materially improved review analytical quality
+
+assessment:R3-agent-grades |by:devils-advocate |weight:primary
+  |ctx: PS(B+→A-: H1 concession+§2e+sector gap-fill), PA(B+→A: compression modeling+integration risk+volume/premium separation=best R3 contribution), RCA(A maintained: framework+Eroom's compositional+failure catalogue)
+  |decision: all 3 responding agents engaged substantively with new evidence ¬restated R1. Engagement quality ≥ A- across all. TIA/EA/RA maintained R1 grades (¬responded R3)
+
+stress-test:new-consensus-survives |by:devils-advocate |weight:primary
+  |ctx: "AI as Structural Accelerant" 3-category framework stress-tested on 5 dimensions: (1) category boundary fuzziness=valid-concern-¬undermining, (2) RCA probability revisions=modest-but-honest-¬performative, (3) volume/premium separation=valid-with-caveat(floor=$180-220B-¬$240B), (4) convergence asymmetry=genuine(PS-moved-more-than-RCA=appropriate), (5) label-vs-substance=acceptable-if-synthesis-presents-quantified-breakdown
+  |decision: new consensus survives stress-test. 2 minor caveats for synthesis: volume floor $180-220B, present 3-category quantification ¬just label
+
+synthesis-guidance:volume-vs-premium-separation |by:devils-advocate |weight:directive
+  |ctx: PA R3 §2e identified: review conflated "M&A happening" (robust, cliff-driven) with "AI premiums sustainable" (fragile, Phase-3-contingent). These are ¬equivalent claims
+  |decision: synthesis MUST present these as separate theses. M&A VOLUME thesis = HIGH CONFIDENCE. AI PREMIUM thesis = CONDITIONAL. Conflating them misrepresents the evidence base
 
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory

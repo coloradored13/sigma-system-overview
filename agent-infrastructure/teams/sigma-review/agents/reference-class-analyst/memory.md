@@ -78,3 +78,27 @@ UPDATED CAL[]:
 R3 verdict: "Premise launderable for Thesis-C (counterfactual reasoning elicitation) under partial-compliance producing partial value. Inside-view comprehensive-insight claim requires joint P<1%. Build only if: Thesis-C accepted, pre-deployment gate completed, expected value calibrated to 7-10 condition reality."
 calibration-lesson: P[joint-probability of multi-condition viability must be explicitly modeled; enumerating conditions independently systematically overstates viability|src:warehouse-game-R3|class:calibration]
 calibration-lesson: P[behavioral signals in game assessments (routing patterns, avoidance tendencies) may classify as personality/behavioral not cognitive — resolve category before applying validity literature|src:warehouse-game-R3|class:calibration]
+## AI Biotech Healthcare M&A — r1 findings (2026-03-18)
+task: superforecasting analysis of AI impact on biotech/healthcare M&A 2026-2031
+SQ[1-5]: 5 sub-questions | 2×outcome-1(changed) | 2×outcome-2(confirmed) | 1×outcome-3(gap)
+RC[1-5]: tech-M&A-lag(7-15yr,AI~12yr=EARLY-WAVE) | exit-outcomes(60-65%M&A,15-20%IPO) | macro-STRONGLY-favorable(cliff+rates=structural) | transform-5yr(20-30%base-rate) | 25%-techs-never-trigger-wave
+ANA[1-5]: genomics(HIGH:partnership→acquisition-15yr) | mRNA(HIGH:crisis-compressed) | CRISPR(HIGH:licensing→partnership→acq) | comp-chem(MODERATE:embedded-tool-¬wave) | Watson(VERY-HIGH:$5B→$1B-FAILURE)
+CAL[H1-H4]: P(AI-accelerates-M&A,2031)=72% | P(>$5B-AI-acq-by-2028)=55% | P(medtech>$10B)=82%broad/45%native | P(M&A>2023)=88% | P(AI-net-catalyst)=62%
+PM[1-5]: clinical-fail(20-25%) | Watson-2.0(15-20%) | regulatory-geopolitical(15-20%) | recession(10-15%) | embedded-tool(15-20%) | joint-P(≥1)=55-65%
+OV-RECONCILIATION: inside-OVERSTATES-AI-causal-role | M&A-volume=HIGH-CONF(88%)-driven-by-NON-AI(cliff,rates,firepower) | AI-SPECIFIC=MOD-CONF(72%) | AI=15-25%-of-total-M&A-by-2031(vs~8-10%-now)
+key-insight: patent-cliff($236-400B)+macro=primary-M&A-driver|AI=additive-new-target-category ¬ primary-cause|inside-view-narrative-conflates-AI-contribution-with-structural-macro-forces
+cross-agent: aligns PS(non-AI-triple),PA(cliff-primary,premium-bifurcated),RA(regulatory-bifurcated),EA(CAGR-calibration,Eroom's)|diverges PS(AI-as-primary-vs-additive)
+H1:partially-confirmed | H2:partially-confirmed | H3:confirmed+caveat(peak-may-extend-2033-35) | H4:split(62/38)
+calibration-lesson: P[M&A-driven-by-EXPECTED(narrative)-value-independent-of-REALIZED(evidence)-value — hype-itself-drives-deals-before-clinical-validation|src:AI-biotech-review-R1|class:calibration]
+calibration-lesson: P[patent-cliff-is-stronger-M&A-predictor-than-technology-narrative — $236-400B-at-risk-creates-structural-buying-urgency-regardless-of-AI|src:AI-biotech-review-R1|class:pattern]
+## AI Biotech Healthcare M&A — R3 DA responses (2026-03-18)
+task: R3 DA challenge responses | DA[#1]+DA[#3]+DA[#5]+DA[#8]
+DA[#1] H1-reconciliation: proposed 3-category framework (AI-irrelevant 55-65%|AI-additive 20-30%|AI-primary 8-15%→20-25% by 2031) | PS-RCA CONVERGENCE achieved — PS R3 adopted "deal-shaper ¬deal-engine" = aligned
+DA[#5] 173-decomposition: ~40 Phase1|~26-31 Phase2|2-3 Phase3|0 NDA | M&A-relevant(P2+)=28-34=16-20% of 173 | expected 4-8 FDA AI drugs by 2031(optimistic) / 2-5(base rate) | base rates: P1→P2=47%, P2→P3=28%, P3→NDA=55%, overall LOA=6.7% | AI P1 claimed 80-90% but vendor-forward → blended 63%
+DA[#3] Eroom's: ~50% compositional(oncology/rare-disease accelerated approval lower bar: 85% AA drugs=oncology, 57% failed confirmatory, Phase III required 26% AA vs 75% regular) + ~50% real(ROI 1.2→5.9%, biomarker stratification) | reversal UNDEMONSTRATED | STRENGTHENS R1 position | AI R&D productivity claims ~50% overstated
+DA[#8] failure-catalogue: Watson+Olive($4B)+Babylon($4.2B)+Pear($6.1M auction)+BenevolentAI(delisted Mar 2025)+Recursion(REC-994)+Cano+Mindstrong+HealthIQ = N≥5, $14B+ destroyed | systematic pattern ¬ outlier | ANA[5] ELEVATED | PM[2] revised 15-20%→20-25%
+CAL revisions: H1=72→68% | H1a=55→50% | H4=62→60% | PM[2]=15-20→20-25% | H2,H3 unchanged
+net: DA challenges STRENGTHENED RCA position on 3/4 items | modest-downward revision
+calibration-lesson: P[173-as-anchor-requires-phase-decomposition;M&A-relevant-pipeline=16-20%-of-headline;headline-pipeline-numbers-systematically-inflate-perceived-near-term-opportunity|src:AI-biotech-R3|class:calibration]
+calibration-lesson: P[Eroom's-deceleration-~50%-compositional-from-oncology/rare-disease-accelerated-approval-with-lower-evidence-bar;market-pricing-AI-as-reversing-Eroom's-when-evidence-shows-partial-deceleration-partially-artifactual|src:AI-biotech-R3|class:pattern]
+calibration-lesson: P[AI-healthcare-systematic-failure-N≥5-$14B+-is-reference-class-¬-anecdote;Watson-was-not-N=1-outlier-but-representative-of-pattern(marketing>capability,ambitious-scope,data-quality,adoption-assumed)|src:AI-biotech-R3|class:pattern]

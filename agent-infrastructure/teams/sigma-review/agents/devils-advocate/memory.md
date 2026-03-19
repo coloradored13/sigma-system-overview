@@ -760,8 +760,70 @@ C[RCA-most-rigorous|CAL-R3-survivorship-corrected+widened-CIs|factor-correlation
 !RESOLVED-R3: process-improvement-alternative-burial(elevated to primary recommendation)
 !PARTIALLY-RESOLVED: PS-F3-scalability(3:1-4:1 challenged, PS did not directly respond, synthesis-resolvable)
 
+## biotech-healthcare-AI-MA r2 (26.3.18)
+
+### challenges issued |#12
+- DA[#1] !C: H1-divergence(PS:CONFIRMED-vs-RCA:ADDITIVE) |target:PS,RCA
+- DA[#2] !C: AI-premium-sustainability-unmodeled(0-FDA,Dalio-80%,50%-all-VC) |target:PA,EA
+- DA[#3] H: clinical-failure-cascade(REC-994,BEN-2293,3-tabled) |target:TIA,RCA,PS
+- DA[#4] H: post-acquisition-value-destruction(40-60%-fail,Watson-$5B→$1B) |target:PA,PS
+- DA[#5] H: adoption-gap(73%-override,30%-non-use,91%-difficulty) |target:TIA,RA,PA
+- DA[#6] H: Eroom's-deceleration-artifact(oncology+rare-disease-lower-bar) |target:EA,RCA
+- DA[#7] M: $240B-record-year-anchoring |target:ALL
+- DA[#8] M: 173-quantity-vs-quality(15-20-pivotal=9-12%) |target:TIA,EA,RCA
+- DA[#9] M: PE-exit-quality-dilution |target:PA
+- DA[#10] M: BIOSECURE-2.5yr-limbo |target:EA,RA
+- DA[#11] M: H3-unfalsifiable-unanimous |target:ALL
+- DA[#12] L+: RCA=best-calibrated→anchor-synthesis |target:lead
+
+### grades: PS(B+),TIA(A-),EA(A-),RA(A-),PA(B+),RCA(A)
+### exit-gate: FAIL |R3-MUST:5-items
+
+### key research
+- BenevolentAI-BEN-2293-failed→delisted→Osaka |Recursion-REC-994+3-tabled
+- 40%-AI-startups-dead-24mo |73%-clinician-override |30%-non-use
+- Dalio-80%-euphoria+Altman-overexcited |$202.3B=50%-all-VC
+- Eroom's-artifact(lower-bar-oncology+rare) |BIOSECURE-enforcement-~Sep-2028
+
+### patterns
+- !6th-zero-r1-divergence |consensus-thesis-hardest-to-challenge
+- record-year-anchoring |pipeline-quantity→quality |H3-unfalsifiable
+- inside-view-overstates-AI-causal(confirmed-across-reviews)
+
+### prompt-audit
+echo:4 |unverified:1 |missed:0 |methodology:mixed(2-confirm,2-invest,2-balanced)
+
+## biotech-healthcare AI M&A review R3 exit-gate (26.3.18)
+
+### r3 exit-gate: PASS
+criteria: engagement-A-(all-3-respondents) |unresolved:none-critical |stress-test:5/5-passed(2-caveats) |hygiene:pass |prompt-contamination:pass(echo-4→2)
+
+### r3 grades
+- product-strategist: A- (up from B+) |H1-concession+§2e+liquid-biopsy-gap-fill
+- portfolio-analyst: A (up from B+) |best-R3-contribution:compression-modeling+integration-risk+volume/premium-separation
+- reference-class-analyst: A (maintained) |framework+Eroom's-compositional+failure-catalogue
+- tech-industry-analyst: A- (maintained, ¬responded R3)
+- economics-analyst: A- (maintained, ¬responded R3)
+- regulatory-analyst: A- (maintained, ¬responded R3)
+
+### challenge scorecard (12 challenges)
+- 10/12-resolved(8-direct,2-proxy) |1-superseded(DA[#11]) |1-validated(DA[#12])
+- DA[#1]!C:RESOLVED(PS-concession+RCA-framework) |DA[#2]!C:RESOLVED(PA-compression-modeled)
+- DA[#3]H:RESOLVED(RCA-Eroom's-compositional) |DA[#4]H:RESOLVED(PA-integration-risk)
+- DA[#5]H:RESOLVED(PS+RCA-decomposed) |DA[#6]H:RESOLVED(PA-BIOSECURE-correction-valid)
+- DA[#7]M:RESOLVED(PS-sector-gaps) |DA[#8]M:RESOLVED(RCA-failure-catalogue)
+- DA[#9]M:RESOLVED(PS-§2e) |DA[#10]M:RESOLVED(PA-§2e-volume/premium)
+
+### new patterns (26.3.18)
+- !CONFIRMED: DA-pressure-improves-review-quality(PS-B+→A-,PA-B+→A)→R3>R1-across-all-respondents
+- !CONFIRMED: asymmetric-convergence=healthy(weaker-position-moves-more=genuine-reconciliation)
+- !NEW: volume/premium-separation=synthesis-essential→reviews-conflating-"activity-exists"-with-"premium-sustainable"=analytically-weak
+- !NEW: compression-modeling-as-standard-§2c→whenever-team-documents-premium→DA-must-require-compression-scenario
+- !SELF-CORRECTION: DA[#6]-partially-misdirected(BIOSECURE-covers-CDMO-¬drug-licensing)→verify-regulatory-scope-before-challenging
+- P[stress-test-new-consensus-5Q: (1)too-clean? (2)revisions-performative? (3)distinction-too-neat? (4)convergence-genuine? (5)label-vs-substance? |src:biotech-healthcare-MA |promoted:26.3.18 |class:methodology]
+- P[volume-floor-caveat: when-team-claims-"volume-holds"→check-baseline-includes-inflation-from-stressed-factor |$240B-includes-AI-inflation→floor=$180-220B |src:biotech-healthcare-MA |promoted:26.3.18 |class:new-principle]
+- C[RCA-modest-probability-revisions=well-calibrated: 4pp-movement-consistent-with-incremental-evidence |dramatic-revisions-under-pressure=performative |small-movement=analytically-honest |src:biotech-healthcare-MA |promoted:26.3.18 |class:calibration]
+
 → actions:
-→ new finding → append with severity+evidence
-→ disagreement with another agent → record both positions in shared/decisions.md
 → new finding → append with severity+evidence
 → disagreement with another agent → record both positions in shared/decisions.md

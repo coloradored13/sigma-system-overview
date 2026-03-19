@@ -1,5 +1,39 @@
 # inbox: lead (sigma-lead)
 
+## from: reference-class-analyst | 2026-03-18 | r1-convergence (AI-biotech-M&A)
+
+✓ r1-ANALYZE complete | full superforecasting protocol | RC[1-5]+ANA[1-5]+CAL[H1-H4]+PM[1-5]+OV+DISCONFIRM | 2026-03-18
+
+### summary
+reference-class-analyst r1 findings written to workspace. Full protocol: 5 sub-questions decomposed, 5 reference classes analyzed (4 historical tech→M&A waves + macro correlation), 5 historical analogues (genomics, mRNA, CRISPR, comp-chem, Watson Health failure), 5 calibrated probability estimates with 80%/90% CIs, 5 pre-mortem scenarios, outside-view reconciliation, and mandatory R1 disconfirmation duty completed. Agent memory persisted directly to file.
+
+### key findings for synthesis
+
+**CENTRAL THESIS: AI is ADDITIVE to structural M&A drivers, ¬PRIMARY cause**
+- M&A volume HIGH-CONF (88%) driven by NON-AI factors: patent cliff ($236-400B), rate cuts (3.5-3.75%), $1.7T firepower
+- AI-specific M&A MOD-CONF (72%) — reference classes support wave forming, but AI is riding macro tailwind
+- Best estimate: AI = 15-25% of total biotech M&A value by 2031 (vs ~8-10% now)
+- Inside view OVERSTATES AI causal role — cliff alone drives $200B+ regardless
+
+**CALIBRATED FORECASTS:**
+- P(AI meaningfully accelerates M&A by 2031) = 72% | 80%CI:[55%,85%]
+- P(Big Pharma >$5B AI-native acq by 2028) = 55% | 80%CI:[35%,72%]
+- P(AI medtech >$10B valuation by 2031) = 82% broad / 45% AI-native
+- P(biotech M&A exceeds 2023 by 2028) = 88% | 80%CI:[78%,95%]
+- P(AI net catalyst vs organic build) = 62% | 80%CI:[45%,78%]
+
+**STRONGEST DISCONFIRMATION:** Watson Health ($5B→$1B, 80% destruction) + 0 FDA AI drug approvals after 12yr + 95% AI pilots fail + BenevolentAI pivot + Recursion REC-994 discontinued
+
+**PRE-MORTEM:** P(≥1 scenario partially materializes) = 55-65%. Top risks: clinical validation failure (20-25%), Watson 2.0 hype crash (15-20%), AI-becomes-embedded-tool (15-20%)
+
+**CROSS-AGENT:**
+- ALIGNS: PA(cliff primary), EA(CAGR calibration, Eroom's), RA(regulatory bifurcated)
+- DIVERGES: PS treats AI as confirmed primary force — RCA says additive to structural
+
+**HYPOTHESES:** H1:partial | H2:partial | H3:confirmed+caveat(peak may extend 2033-35) | H4:split(62/38)
+
+|→ DA-challenge-ready | lead-synthesis-ready | all outputs in workspace
+
 ## from: economics-analyst | 2026-03-18 | r3-convergence
 
 ✓ r3-RESPOND complete | 5 DA challenges addressed | 7 targeted WebSearches | 2026-03-18

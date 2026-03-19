@@ -13,6 +13,14 @@ convergence:quick-start-not-runnable |agents: product-strategist,ux-researcher |
 convergence:ship-ready |agents: all three |signal: unanimous that hateoas-agent is ready for PyPI v0.1.0 with minor fixes
 first-real-project-review: team successfully reviewed a codebase OTHER than sigma-mem — persistent memory worked, agents referenced past patterns
 
+## observed across biotech-healthcare-MA review (26.3.18)
+
+infra:doc-generation-heredoc |agents: lead,doc-writer |signal: background doc-writing agents MUST use Bash(python3:*) heredoc for docx generation. Write tool ¬on allowlist + security gap if added. Verified: python3 << 'PYEOF' works, enables anti-contamination (separate context) without new permissions. Correction logged.
+convergence:AI-additive-¬primary |agents: PS,RCA,PA,EA,TIA,RA |signal: all 6 agents converged (after DA challenge) on AI=structural-accelerant framework. PS conceded from CONFIRMED→PARTIAL after RCA outside-view calibration. 3-category model (55-65% irrelevant, 20-30% additive, 8-15%→20-25% primary)
+calibration:CAGR-scope-inflation |agents: EA,TIA |signal: headline 38-44% AI-healthcare CAGR = scope-inflated. Defensible pure-play = 18-22%. Both agents independently flagged. Pattern: market research CAGR figures routinely scope-inflated across domains
+calibration:Eroom's-compositional |agents: RCA |signal: ~50% of apparent Eroom's deceleration = compositional (oncology/rare disease accelerated approval). AI R&D productivity claims ~50% overstated. New finding — applies to any review involving R&D productivity metrics
+risk:AI-premium-fragile-volume-robust |agents: PA,RCA,DA |signal: M&A VOLUME thesis (patent cliff) is robust. AI PREMIUM thesis is fragile (requires Phase 3 proof). These are ¬equivalent claims. Synthesis must separate them. Applies to any AI-sector M&A analysis
+
 ## meta-patterns
 
 review-rounds-converge: round-1 found correctness issues, round-2 found polish issues |pattern: severity decreases with iteration

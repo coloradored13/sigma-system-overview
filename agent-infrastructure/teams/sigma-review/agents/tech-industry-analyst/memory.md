@@ -310,3 +310,75 @@ P[26.3.18-r3] cyclical-vs-structural: M&A-correlated revenue dip ≠ competitive
 P[26.3.18-r3] single-event-classification-error: never classify trajectory from one event without checking subsequent earnings data|FDIC loss alone = incomplete picture; FDIC loss + Q4 earnings together = correct picture
 P[26.3.18-r3] AI-table-stakes-must-specify-tier: basic(commodity API) vs advanced(data-flywheel-trained) vs architectural AI have different commoditization timelines|single undifferentiated "table stakes by X" claim is analytically under-specified
 P[26.3.18-r3] AI-premium-phased-model: EA 20-40% premium(now=Phase 1) + TIA table-stakes claim(2027=Phase 2) are consistent when phased|logical tension = spec error not analytical contradiction
+
+## r1 findings — AI Impact on Biotech & Healthcare M&A (26.3.18)
+F[26.3.18-biotech] r1: 11 findings(TIA-1 to TIA-11)|see workspace|review: AI impact on biotech/healthcare M&A landscape 2026-2031
+
+### biotech-AI modality maturity
+R[biotech-AI-modality-maturity|refreshed:26.3.18|next:26.4.18]
+PRODUCTION: protein structure prediction(AlphaFold3,ESMFold,Boltz-2,200M+ structures), radiology AI(1356 FDA-cleared,Aidoc foundation model Jan 2026), clinical operations AI(FDA agentic AI Dec 2025), generative chemistry small molecule
+ACCELERATING: biologics design(GNNs+diffusion), multi-omics integration, AI clinical trial simulation(FDA draft guidance Jan 2025), GLP-1/peptide AI optimization(Septerna $2.2B Novo deal May 2025)
+RESEARCH-STAGE: virtual cell models(npj Digital Medicine 2025 ¬production), agentic drug discovery pipelines(Lilly TuneLab Sep 2025 early commercial ¬validated end-to-end)
+HYPE: AI gene therapy at scale(manufacturing+delivery bottlenecks dominant), longevity reversal drugs(Insilico 20+ preclinical ¬Phase 2,Elevian $50M Series B), fully autonomous pipeline(FDA oversight requirement=structural blocker)
+173 AI-discovered drug programs in clinical development; 87% pharma alliance investment = AI-pharma alliances
+
+### biotech-AI company strategies
+R[biotech-AI-company-strategies|refreshed:26.3.18]
+- Isomorphic Labs: $600M Mar 2025; proprietary AlphaFold3 successor (kept private, ¬open); IND-enabling studies oncology+immune; first clinical trials targeting 2026-2027; vertical integration strategy ¬licensing
+- NVIDIA: BioNeMo; $1B Lilly partnership Jan 2026; Novo Nordisk Gefion; compute infra layer ¬drug developer ¬biotech acquirer
+- Google: TxGemma Mar 2025 (open models); ~40% Alphabet 13F in healthcare/biotech
+- Recursion+Exscientia(merged Nov 2024): phenomic+chemistry; 10+ clinical programs; $20B+ milestone potential; Boltz-2 open-sourced Jun 2025; REC-394 Phase 2+REC-1245 Phase 1 data H1 2026
+- Insilico Medicine: rentosertib (IPF) Phase IIa → Phase III; zasocitinib (Takeda) Phase III psoriasis positive Dec 2025; 20+ anti-aging preclinical; most clinically advanced AI-native pipeline
+- Absci: ABS-101 in trials; 2yr discovery vs 5.5yr avg; VC skepticism Feb 2025 (StatNews)
+- Generate Biomedicines: platform-licensing; equity retention; proprietary generative AI
+- Chai Discovery: ex-Absci CAIO Joshua Meier+ex-Stripe Jack Dent; Chai 2 Jun 2025; $130M Oak HC/FT+General Catalyst
+
+### open source biology AI dynamics
+R[open-source-biology-AI|refreshed:26.3.18]
+- Boltz-2(MIT+Recursion,Jun 2025): fully open; structure+binding affinity jointly; 1000× faster than FEP; 200+ adopters
+- OpenFold3: approaching AlphaFold3 parity; Federated OpenFold3(5 pharma+Apheris)
+- ESMFold(Meta): 700M+ metagenomic predictions free
+- OpenCRISPR-1: first AI-designed gene editor via LLMs; reduced off-target+immunogenicity
+- IMPLICATION: structure prediction moat ≈ GONE by end-2026; new moat = phenomics+clinical outcome data+surgical recordings
+
+### compute and data moats
+R[biotech-AI-compute-data-moats|refreshed:26.3.18]
+- Intuitive Surgical: 10M+ surgical procedure recordings — unmatched surgical AI training data moat; compounding with every da Vinci 5 procedure
+- Recursion: phenomic dataset (billions cell images under perturbation); 8yr head start; ¬replicable quickly
+- Lilly AI Factory($1B NVIDIA deal Jan 2026) + Novo Nordisk Gefion sovereign supercomputer = large-pharma compute moats
+- 23andMe bankruptcy 2025 = genomic data M&A moment (resolved via acquisition)
+
+### talent markets biotech AI
+R[biotech-AI-talent-market|refreshed:26.3.18]
+- Triple-threat (ML+biology+domain) = highest demand; 28-67% salary premium over traditional tech
+- SF $212K, Boston $194K, US avg $108K
+- 2026 hiring frenzy starting: biotech index +30% from Apr 2025 lows
+- Acqui-hire premium confirmed: small AI biotech with 5-15 scientists may be acquired for talent ¬pipeline
+- 23andMe bankruptcy freed significant genomic ML talent pool
+
+### M&A pairings 2026-2028
+R[biotech-MA-pairings|refreshed:26.3.18]
+- Merck KGaA → Recursion: MEDIUM-HIGH; $3B+ committed to Valo Health; trigger = REC-1245 Phase 1 H1 2026
+- AstraZeneca → Generate Biomedicines or Absci: MEDIUM; 27 AI collaborations → logical full acquisition; 2026-2027
+- Novo Nordisk → Septerna: HIGH within collaboration; $2.2B deal May 2025; trigger = Phase 2 success; 2027-2028
+- Pfizer → AI chemistry platform (Insilico/Chai Discovery): MEDIUM; post-Metsera; 2026-2027
+- Abbott (post-Exact Sciences $21B close Q2 2026) → AI diagnostics expansion: HIGH
+- GLP-1/metabolic consolidation: VERY HIGH; 60+ companies, 120+ assets; Novo acquiring next oral GLP-1 post-Metsera loss
+- Longevity/anti-aging: LOW near-term; RISING by 2028-2030; probable acquirers: J&J Consumer+insurers+Alphabet (Calico/Verily)
+
+### disruptions
+D4[HIGHEST PROBABILITY]: GLP-1 as platform molecule — emerging evidence for CNS/cardio/addiction indications ¬in standard frameworks
+D6[MATERIAL RISK]: AI Phase 3 failure scenario — first AI-discovered drugs fail Phase 3 2026-2027 → narrative deflates → platform acquisitions repriced; flag for DA
+
+### hypothesis dispositions (TIA lens)
+H1: PARTIALLY CONFIRMED — real catalysts but no Phase 3 completions; medtech/radiology = production-confirmed; drug discovery = promising but clinical proof pending
+H2: PARTIALLY CONFIRMED WITH GAPS — GLP-1/metabolic+diagnostics/radiology+clinical ops AI = MISSING from user list; life extension/tissue regen = research-stage ¬primary 2026-2028
+H3: CONFIRMED — 2026-2031 IS active window; $240B/yr already; peak wave 2027-2029
+H4: PARTIALLY FALSIFIED — mega-pharma building internally (Lilly TuneLab, Novo Gefion) WHILE acquiring; SPLIT by company size ¬universal
+
+## patterns (biotech review additions)
+P[26.3.18-biotech] biotech-platform-bifurcation-cross-domain: platform-bifurcation pattern confirmed in biotech (consistent with VDR P[26.3.18]); platform builders (NVIDIA BioNeMo, Google TxGemma, Lilly TuneLab, Recursion OS) vs vertical specialists (Isomorphic, Insilico) vs commoditized point solutions (structure prediction tools, EHR AI); cross-domain pattern is robust
+P[26.3.18-biotech] pharma-as-platform-provider: Eli Lilly TuneLab Sep 2025 = novel hybrid category (large pharma opens trained AI to external biotech partners); ¬captured in prior reviews; new strategic archetype
+P[26.3.18-biotech] open-source-biology-moat-timeline: structure prediction moat ≈ GONE by end-2026 (Boltz-2+OpenFold3+ESMFold); new moat frontier = phenomics (Recursion), clinical outcome data (Epic-controlled), surgical recordings (Intuitive); moat migration faster than expected
+P[26.3.18-biotech] volume-conflation-biotech: AI drug discovery market CAGRs of 38-44% are scope-inflated (include hospital ops, admin AI); defensible pure-play drug discovery CAGR = 18-22%; consistent with P[26.3.13] volume-conflation pattern across reviews
+P[26.3.18-biotech] acqui-hire-as-M&A-modality: AI biotech acqui-hire premium (small team with 5-15 key scientists acquired for talent ¬pipeline) is confirmed modality in 2026-2028; consistent with tech industry acqui-hire pattern; distinct from pipeline-asset acquisitions
