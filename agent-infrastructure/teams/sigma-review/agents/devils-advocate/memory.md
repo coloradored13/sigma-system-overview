@@ -830,6 +830,57 @@ grades: TA=B+|EMA=A-|PS=A-|RCA=A
 prompt-audit: echo-count:4|unverified:2|missed:2|methodology:mixed(2-confirmatory/2-investigative)
 patterns: supply-side-framing-dominated(demand-side-undertested)|pipeline-overcounting-pervasive|political-opposition=NEW-variable-not-in-historical-analogs
 calibration: RCA-most-reliable-on-analytical-hygiene|PS-best-on-scope-discipline|EMA-best-on-regional-data|TA-best-on-technical-depth-but-overclaims
+## US-DC-infrastructure-constraints-review(26.3.19)
+
+### r2 challenges issued |#10
+- DA[#1]ALL:capacity-realization-haircut(pipeline≠buildout,30-50%-at-risk)
+- DA[#2]ALL:labor-omission(439K-shortage,electrician-acute,4-5K-crews)
+- DA[#3]TA+EMA+PS:tariff-shock(16%-cost-escalation,Taiwan-32%,steel-25%)
+- DA[#4]PS+RCA+EMA:capex-sustainability($660-690B-at-90%-OCF+$100B-debt+3-5yr-useful-life)
+- DA[#5]TA+EMA+PS:chip-supply-co-binding(GPU-36-52wk,HBM-70%-global-memory,LEI-90%-global-chips-for-77%-US)
+- DA[#6]TA:H1-power-binding-too-strong(multi-constraint-required)
+- DA[#7]EMA+RCA:H4-nuclear-reconciliation(restart-vs-SMR-must-bifurcate)
+- DA[#8]TA+EMA+RCA:DeepSeek-efficiency-vs-Jevons(unresolved-fork)
+- DA[#9]PS:market-sizing-scope-inflation(figures-stale+no-realization-haircut)
+- DA[#10]ALL:structural-gaps(insurance,stranded-assets,geopolitical,demand-cyclicality,Scope1,export-controls)
+
+### r2 grades: TA(B+),EMA(A-),PS(A-),RCA(A)
+### r2 exit-gate: FAIL |8-unresolved-items |3-untested-consensus |hygiene-fail-§2a/§2c/§2e
+
+### r3 exit-gate: PASS
+grades: TA(A),EMA(A-),PS(A),RCA(A)
+challenges: 10/10-held(100%)
+- DA[#1]HELD:4/4-concede/compromise(pipeline→30-50%-realization)
+- DA[#2]HELD:4/4-full-concessions(labor-integrated-independently)
+- DA[#3]HELD:3/3(TA-transformer-finding=best-new-R3-contribution)
+- DA[#4]HELD:3/3(RCA-55%→42%,PS-$315B→$660-750B)
+- DA[#5]HELD:3/3(TA-three-window-model=best-analytical-framework)
+- DA[#6]HELD:1/1(H1-CONFIRMED→PARTIALLY-CONFIRMED)
+- DA[#7]HELD:2/2(EMA-RCA-divergence-RESOLVED-via-bifurcation)
+- DA[#8]HELD:3/3(TA+RCA-fork-models-quantified;EMA-adequate)
+- DA[#9]HELD:1/1(PS-canonical-statement-synthesis-ready)
+- DA[#10]HELD:4/4-addressed-≥2-gaps
+
+!calibration: 100%-hit-rate=unusually-high(normal=60-80%). Dominant-explanation: R1-had-significant-gaps(labor,tariffs,chips,demand-side-ALL-omitted). Agents-defended-where-evidence-supported(EMA-nuclear-restarts,RCA-chip-supply)→analytical-honesty-¬compliance.
+
+### key-synthesis-ready-findings
+1→multi-constraint-model:7-simultaneous(power/labor/chips/community/transformers/water/tariffs)
+2→three-window-constraint-rotation(TA):chips→power→political/labor
+3→capacity-realization:35-45GW-2030(30-50%-of-pipeline)
+4→capex-sustainability:42%-through-2028(RCA);100x-revenue-gap=primary-risk
+5→canonical-market-sizing(PS):Tier-A-$20-25B/Tier-B-35-45GW/Tier-D-$660-750B
+6→H4-bifurcated:restart-CONFIRMED-~4GW/SMR-DISCONFIRMED-2026-2030
+7→DeepSeek-fork:Jevons-P=55-65%/efficiency-P=20-25%/balanced-P=15-25%
+8→stranded-assets:$5-100B;three-state-40GW(AI-capable-15GW/re-tentable-15-20GW/stranded-5-10GW)
+9→BTM-emissions:~74-100MMtCO2e/yr-at-25GW;regulatory-LOW→HIGH-by-2030
+10→transformer-supply-chain(TA-NEW):18-24mo+tariff+274%-demand=concurrent-critical-path
+
+### patterns(new)
+- !4-agent-teams-respond-well-to-structured-challenges(all-brought-independent-evidence-¬cosmetic-concessions)
+- !R1-omissions-create-high-DA-hit-rate(100%): when-R1-misses-entire-categories(labor,tariffs,chips,demand-side)→DA-challenges-all-hold
+- !transformer-supply-chain=example-of-challenge-sparking-BETTER-finding-than-challenge-itself(DA[#3]-asked-about-tariffs→TA-found-LPT-bottleneck)
+- !multi-constraint-convergence-without-herding: 4-agents-brought-different-domain-evidence-to-same-conclusion→tested-by-evidence-diversity
+- !prompt-contamination-correctible-in-1-round: R1-supply-side-framing-bias→R3-demand-side-modeled-by-all-4→methodology-shift-confirmatory→investigative
 
 → actions:
 → new finding → append with severity+evidence

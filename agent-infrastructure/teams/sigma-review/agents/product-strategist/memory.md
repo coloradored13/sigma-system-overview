@@ -445,6 +445,32 @@ R3-DA-verdicts:
   DA#5: CONCEDE — EU AI Act high-risk likely applies; commercial path viability reduced; legal review=GATE
   DA#8: CONCEDE — governance must be structural (aggregate-only+auto-delete at architecture layer), not policy
 
+## review-11: US data center market — infrastructure constraints (26.3.19)
+
+### r3 DA responses (26.3.19)
+
+DA[#1]-CONCEDE: pipeline=$1T→$500-600B-deliverable(40-50%-realization-haircut) |political-opposition=NEW-constraint-¬in-historical-analogs |2030-capacity=35-45GW(from-45GW-RCA) |competitive-moat=operators-with-power-already-delivered
+DA[#2]-CONCEDE: labor=material-omission |439K-worker-shortage(ITIF-Jan-2026) |349K-net-new-needed-2026(CNBC-Mar-2026) |electricians=45-70%-DC-construction-cost |Oracle-2027→2028-slip |new-PS-findings:labor-as-incumbent-moat+6-18mo-timeline-premium+30-40%-PE-cost-overrun-risk
+DA[#3]-COMPROMISE: $/MW-standard=$11-17M(tariff-adj,was-$10-15M) |AI-liquid-cooled=$22-24M+/MW |tariff-escalation=14%-less-capacity-per-dollar |hyperscaler-absorption-defended(guidance-post-tariff) |colo-developers-more-exposed |PE-IRR-1-2pp-compression |OQ-PS-1-RESOLVED
+DA[#4]-CONCEDE: $315B=2025-actuals(¬stale,relabeled) |2026-guidance=$660-750B(top-5) |100x-revenue-gap=primary-H2-risk-flag(Bain:$2T-needed/$20B-current) |H2-bifurcation-strengthened |RCA-capex-sustained-42%=appropriate-or-slightly-generous |90%-OCF+$100B-new-debt
+DA[#5]-COMPROMISE: chip-supply=co-binding-demand-ceiling(70%-global-HBM→DCs,36-52wk-GPU-lead) |power=supply-ceiling |both-simultaneous ¬substitutable |new-M&A-dimension:chip-access-premium |Google-lease-preference-partially-explained |utilization-rate-matters-for-revenue/MW
+DA[#9]-CONCEDE+RECONCILE: taxonomy-maintained |Tier-A-colo-$20-25B-2030 |Tier-B-35-45GW-2030 |Tier-D-$660-750B-2026 |pipeline-$500-600B-deliverable |$/MW-resolved |revenue/MW-resolved |canonical-statement-written
+DA[#10]-2-gaps: PE-obsolescence-risk(IRR-3-5%-bust-scenario,2021-cohort-mid-exposed,bespoke-most-exposed,Equinix-least) |insurance(0.5-1.5%/yr-asset-value,1-2%-cap-rate-headwind,Aon-DCLP-new,Descartes-parametric)
+
+§2a-hygiene-OUTCOME-1: simultaneous-$660B=coordination-failure |30-50%-multi-constraint-haircut-applies-to-all-announced-pipeline |market-strained-¬just-large |individually-rational→collectively-self-defeating
+
+demand-scenario-modeled: AI-monetization-failure(P=20-25%) →capex-$330-375B-2028 →wholesale-vacancy-8-12% →PE-IRR-3-5% →M&A-12-15x-wholesale/16-20x-retail →Equinix-resilient →STACK/Vantage/Aligned-most-exposed →counter-cyclical-Blackstone-buys-at-40-50%-of-peak
+
+### calibration updates (26.3.19)
+C[$315B-capex-was-2025-actuals-¬stale-error;2026-guidance-$660-750B=acceleration-not-revision|1|26.3.19]
+C[simultaneous-hyperscaler-crowding=coordination-failure;30-50%-multi-constraint-haircut-applies-to-announced-pipeline|1|26.3.19]
+C[labor=co-binding-constraint-missed-in-R1;must-be-in-EVERY-infrastructure-market-analysis-from-R1|2|26.3.19]
+C[chip-access-premium=underpriced-in-DC-M&A-underwriting;NVIDIA/AMD-supply-agreements-worth-more-than-equivalent-MW-without-them|1|26.3.19]
+C[insurance-cost-escalation=systematic-headwind;0.5-1.5%-asset-value/yr-vs-0.2-0.4%-pre-2022;belongs-in-every-PE-DC-underwriting-model|1|26.3.19]
+C[PE-vintage-2021-2022-obsolescence-risk=real;exit-window-2027-2029-at-AI-density-upgrade-inflection;Equinix-10K+-tenants=most-insulated|1|26.3.19]
+C[100x-revenue-gap=most-important-risk-signal-in-DC-market;Bain-$2T-needed/$20B-current;4yr-window-unprecedented|1|26.3.19]
+
+
 → actions:
 → evaluating shipping readiness → check gap table from review-4
 → new product idea → assess audience, differentiation, effort

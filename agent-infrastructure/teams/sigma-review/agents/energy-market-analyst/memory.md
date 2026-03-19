@@ -257,6 +257,39 @@ P[26.3.13-r2] bypass-ceiling:
 - bypass only addresses producers WITH alternative infrastructure(Saudi,UAE)
 - producers WITHOUT bypass(Iraq,Kuwait)=irreducible disruption floor regardless of bypass expansion
 P[26.3.13|promoted] demand-side-blind-spot: supply-disruption analyses must include demand destruction modeling from R1. IEA -1M bpd Mar/Apr was MATERIAL but not modeled until DA challenged. Self-limiting mechanism creates declining price ceiling over time. |src:Iran-rerun |class:behavior-change |promoted:26.3.13
+## r3 findings — data-center infrastructure review (26.3.19)
+F[26.3.19-r3] DA-challenge-responses:
+- DA[#1]COMPROMISE: 252GW gas pipeline=headline|deliverable 2026-2028=50-80GW(30-50% realization+labor)|applied ERCOT-skepticism uniformly(was asymmetric)
+- DA[#2]CONCEDE: labor=material-omission|IBEW electricians=45-70% DC construction cost|349K workers needed 2026+|BTM timeline revised 18-36mo→24-48mo
+- DA[#3]COMPROMISE: tariffs=real+material|PPA revised $35-89→$40-106/MWh|large-frame BTM 3yr lead+steel-tariff=4-6yr effective|small-aeroderivative 6-18mo still viable
+- DA[#4]COMPROMISE: $660-690B capex=90% OCF+debt-funded|2026-2028 demand defensible(committed contracts)|2028-2030 capex-sustainability caveat|game-theoretic-lockout prevents unilateral pullback
+- DA[#5]CONCEDE: chip supply=PHYSICAL ceiling|LEI: 90% global chips for 77% US demand=implausible|DC shells w/o chips draw zero AI workload power|demand ceiling 20-40% BELOW grid projections
+- DA[#7]ACCEPT-FRAMEWORK: restart-CONFIRMED(~4GW TMI+Clinton+Susquehanna 2027-2030/35-50% delivery probability)|SMR+greenfield-DISCONFIRMED(P≤10% 2026-2030/RCA correct for new-build reference class)|EMA-RCA divergence resolved by segmentation
+- DA[#8]COMPROMISE: DeepSeek net electricity demand ~neutral(-10-20% centralized/offset by edge-inference-proliferation)|topology shift centralized→edge|point estimate shift toward lower-end of LBNL range|efficiency-dominant vs Jevons-dominant branching required
+- DA[#10]ADDRESS: BTM Scope1(~80-100MMtCO2e/yr if 25GW deploys/EPA NSPS 2025 tightening/hyperscaler ESG conflict)|insurance(thin market/BTM adds env-liability/climate-physical-risk/ERCOT-Feb2021-analog)
+
+## r3 calibration (26.3.19)
+C[26.3.19-r3] key revisions:
+- CAL[power-2030]: point=320TWh(was 380)|80%CI=[220,500]|90%CI=[180,630]
+- CAL[power-2030-capex-downside-40-50%-cut]: point=280TWh|80%CI=[200,350]
+- CAL[nuclear-restart-delivery-~4GW-by-2030]: P=35-50%(§2b calibrated|restart-specific ref class|¬new-build)
+- CAL[gas-pipeline-realization-2026-2028]: 50-80GW(¬252GW)|base-rate 30-50% applied uniformly
+- BTM-timeline: large-scale 24-48mo|aeroderivative tactical 6-18mo
+- PPA range: $40-$106/MWh constrained regions (was $35-$89)
+- asymmetric-skepticism-correction: applied ERCOT queue skepticism but NOT gas pipeline in R1|error acknowledged|now uniform
+
+## r3 patterns (26.3.19)
+P[26.3.19-r3] data-center-power:
+- !asymmetric-skepticism: apply same realization-rate haircut to ALL pipeline figures|ERCOT queue AND gas pipeline subject to 30-50% cancellation
+- !labor-as-co-constraint: always include labor in construction timeline estimates|electricians=45-70% DC cost|acute shortage compounds EVERY infrastructure timeline
+- !chip-supply-ceiling: power-supply-based demand projections overstate actual consumption|data centers need both power AND chips|shells without chips draw zero AI workload power
+- !BTM-emissions-tradeoff: BTM gas trades grid-queue-risk for Scope-1-emissions-risk|¬clean-cost-avoidance|EPA NSPS tightening creates compliance costs
+- !restart-vs-newbuild-segmentation: nuclear analysis MUST segment restart/SMR/greenfield|single "nuclear" verdict collapses 3 categories with radically different reference classes
+- !topology-vs-quantum: DeepSeek-type efficiency shifts WHERE power consumed(centralized→edge) more than HOW MUCH total|net kWh effect ~neutral; regional utility implications material
+P[26.3.19-r3] capex-sustainability:
+- 90%-OCF-threshold: hyperscalers at capex=90% OCF|game-theoretic-lockout prevents unilateral pullback|but ~2028 rationalization likely as winners emerge
+- fiber-optic-analog: funded by FCF-rich companies (different from 2001)|but ROI gap ($25B revenue vs $660B capex)|20-25% P(40-50% capex cut by 2028)
+- utility-IRP-risk: utility IRPs filed 2025-2026 assume continued demand growth|capex downside scenario creates stranded generation investment risk not modeled in most IRP filings
 
 → actions:
 → new finding → append with severity+evidence

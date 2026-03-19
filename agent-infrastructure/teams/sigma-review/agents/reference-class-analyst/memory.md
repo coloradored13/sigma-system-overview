@@ -102,3 +102,37 @@ net: DA challenges STRENGTHENED RCA position on 3/4 items | modest-downward revi
 calibration-lesson: P[173-as-anchor-requires-phase-decomposition;M&A-relevant-pipeline=16-20%-of-headline;headline-pipeline-numbers-systematically-inflate-perceived-near-term-opportunity|src:AI-biotech-R3|class:calibration]
 calibration-lesson: P[Eroom's-deceleration-~50%-compositional-from-oncology/rare-disease-accelerated-approval-with-lower-evidence-bar;market-pricing-AI-as-reversing-Eroom's-when-evidence-shows-partial-deceleration-partially-artifactual|src:AI-biotech-R3|class:pattern]
 calibration-lesson: P[AI-healthcare-systematic-failure-N≥5-$14B+-is-reference-class-¬-anecdote;Watson-was-not-N=1-outlier-but-representative-of-pattern(marketing>capability,ambitious-scope,data-quality,adoption-assumed)|src:AI-biotech-R3|class:pattern]
+## US Data Center Infrastructure Constraints — R3 DA responses (2026-03-19)
+task: R3 DA challenge responses | US data center market infrastructure constraints
+DA-grade: A(r1) | DA challenges directed: #1,#2,#4,#5,#7,#8,#10a,#10b
+
+### DA responses summary
+DA[#1] CAPACITY REALIZATION: COMPROMISE | base-rate REVISED 20-60%→15-45% | political-opposition=NEW constraint(not in fiber/nuclear/EV/shale analogs) | construction-fell-5.7%(Bloomberg Feb 2026) | 25-cancellations-2025(21-in-H2) | $64B-blocked | distribution-bimodal(hyperscaler-BTM=35-45%/grid-connected-colo=15-25%) |source:independent-research
+DA[#2] LABOR: CONCEDE(material-omission) | 439K-worker-shortage(ITIF) | 349K-NET-NEW-needed-2026(CNBC) | electricians=45-70%-DC-construction-cost | crew-sizes-750→4000-5000 | labor-MULTIPLIER-on-delay(¬standalone) | BTM-¬bypasses-labor | timeline-extension-6-18mo-across-2026-2029 | PM3-revised-25-30%→30-35% |source:independent-research
+DA[#4] CAPEX SUSTAINABILITY: CONCEDE | $660-690B-at-90%-OCF | $100B-bonds-+record-CDS-protection | $25B-revenue-vs-$450B-AI-capex(5.6%-ratio) | MIT-95%-no-meaningful-revenue-increase | fiber-analog-STRENGTHENING | REVISED-P=55%→42% | arms-race-lock-in=real-floor(prevents-<25%) | P-NOT-uniform-across-5(MSFT-Azure-more-durable) |source:independent-research
+DA[#5] CHIP SUPPLY: DEFEND+STRENGTHEN | HBM-sold-out-through-2026(Micron) | AI-firms-locked-supply-into-2027 | 1GB-HBM=4x-fab-capacity-standard-DRAM(multiplicative-shortage) | 20%-of-global-DRAM-wafer-capacity-to-AI-2026(TrendForce) | UPGRADED: harder-ceiling-than-power | power=geographic+solvable-via-BTM | chips=global+NO-WORKAROUND | LEI-finding-validated |source:independent-research
+DA[#7] H4 NUCLEAR: ACCEPT-DA-framework | bifurcation-correct | MY-P=5%-conflated-restart+new-build(imprecise) | CAL[restart-4GW-2030]=P=70%(80%CI=[50%,85%]) | TMI-80%-staffed/500+-on-site/2027-target-ahead-of-schedule/DOE-$1B-loan-Q1-2026 | CAL[SMR-5GW-2035]=P=10%(maintained,minor-upper-nudge) | resolves-EMA-RCA-divergence | EMA-right-on-restarts/RCA-right-on-new-build |source:independent-research
+DA[#8] DEEPSEEK: RESOLVE | Fork-A(efficiency-dominant)=P=20-25%→implied-230-310TWh | Fork-B(Jevons-dominant)=P=55-60%→implied-420-580TWh | Fork-C(balanced)=P=15-25%→implied-340-420TWh | Jevons-modal | temporal-fork:Jevons-dominates-2026-2028/Fork-A/C-may-emerge-2029-2030 | pop-weighted-expected-value≈423TWh(close-to-IEA/GS-base) | 360TWh-estimate-sits-below-consensus-for-defensible-reasons |source:independent-research
+DA[#10a] DEMAND CYCLICALITY: COMPROMISE | PM1-REVISED-P=20-25%→25-30% | MIT-95%-no-revenue-increase | $25B-vs-$450B-ratio | cascade-risk(one-cuts=reduces-competitive-pressure-for-others-to-maintain) |source:independent-research
+DA[#10b] STRANDED ASSETS: RESOLVE(new) | retrofit-cost=$1-5M/MW | $20-100B-unrecognized-liability(20GW-pre-2022-vintage×$1-5M) | KKR-CyrusOne($15B-2022)+Blackstone-QTS($10B-2021)=most-acute | PM6(NEW)=P=15-20% | PM1+PM3+PM6-positively-correlated |source:independent-research
+
+### updated CAL estimates
+CAL[US-DC-power-2030]: R1=380TWh→R3=360TWh | 80%CI=[240,510] | 90%CI=[195,640]
+CAL[US-DC-capacity-2030]: R1=45GW→R3=38GW | 80%CI=[25,55] | 90%CI=[18,70]
+CAL[hyperscaler-capex-sustained-2028]: R1=55%→R3=42% | 80%CI=[25%,62%]
+CAL[nuclear-restart-4GW-2030]: NEW=70% | 80%CI=[50%,85%]
+CAL[nuclear-SMR-5GW-2035]: MAINTAINED=10% | 80%CI=[3%,22%]
+
+### hygiene check
+§2b-OUTCOME-2: 360TWh(15-18%-below-IEA/GS-426TWh-base) | maintained-because: Bloomberg-construction-decline(revealed-preference>forward-projection) + Sightline-31%-realization + HBM-chip-ceiling + historic-base-rate-no-boom->60% | upside-preserved-in-upper-CI
+
+### OV-reconciliation
+inside-view=360-420TWh/38-45GW | outside-view-range=240-430TWh/20-50GW | gap=team-at-lower-optimistic-end-of-base-rate-range | 30-35%-probability-2030-outcomes-below-revised-estimates | fiber-analog=assets-survive-but-on-7-12yr-lag | key-question=whether-3-5yr-useful-life-generates-returns-before-next-generation-makes-vintage-obsolete
+
+### key calibration lessons
+P[multi-constraint-joint-probability: 4 simultaneous constraints(political-opposition/chip-supply/labor/capital) partially sequential; resolving 3-of-4 produces MUCH-less than 75% of potential capacity; joint-favorable-resolution-probability-LOW|src:US-DC-R3|class:calibration]
+P[chip-supply-creates-HARDER-ceiling-than-power: power=geographic+solvable-via-BTM; chips=global+NO-WORKAROUND; BYOP-gas-cannot-fill-GPU-starved-DC|src:US-DC-R3|class:pattern]
+P[political-community-opposition-is-NEW-additive-infrastructure-constraint-not-in-fiber/nuclear/EV/shale-analogs: construction-can-DECLINE-while-announcements-GROW(Bloomberg-2026)|src:US-DC-R3|class:pattern]
+P[H4-nuclear-requires-bifurcation: restarts(P=70%-credible/signed/financing-secured) vs new-build-SMR(P=10%/zero-operating/reference-class-devastating) are TWO different claims; conflating them produces wrong verdict|src:US-DC-R3|class:calibration]
+P[Jevons-paradox-fork: efficiency-dominant-P=20-25% is meaningful tail not dismissible; Jevons-dominant-P=55-60% is modal; temporal-bifurcation(Jevons-early-elasticity-phase/efficiency-dominates-as-saturation-approaches)|src:US-DC-R3|class:pattern]
+P[stranded-asset-cascade: $20-100B-unrecognized-retrofit-liability on 2021-2022-PE-acquisitions; 6yr-depreciation-schedules vs 24mo-economic-obsolescence; PM1+PM3+PM6-positively-correlated-cascade-risk|src:US-DC-R3|class:risk]

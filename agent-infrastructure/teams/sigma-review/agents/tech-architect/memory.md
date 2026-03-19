@@ -410,9 +410,6 @@ H2: PARTIALLY-CONFIRMED | data-management IS missing from standard lists | 4 mis
 kissflow.com(stats+trends) | informatica.com(iPaaS) | snaplogic.com(mid-market+POC) | EY-2024(83%-data-infra) | seraphicsecurity.com(ZTA) | confluent.io(EDA) | rudderstack.com(API-design) | parseur.com(MDM) | stackai.com(cloud-vs-onprem) | quixy.com(ROI-stats) | vfunction.com(70-80%-pilot-failure) | ziphq.com(CFO-pause) | flowwright.com(failure-patterns) | autonoly.com(common-mistakes)
 refreshed: 26.3.18 | next: 26.4
 
-→ actions:
-→ r3+ → synthesis
-→ next research → VDA5050-v2.2, Open-RMF-adoption, Python-FastAPI-warehouse
 
 ## workflow-automation-review r3 findings (26.3.18)
 
@@ -439,3 +436,46 @@ C[shadow-automation=higher-risk-in-mid-market-than-enterprise(flat-orgs,less-IT-
 
 ### research sources (r3)
 ezintegrations.ai(legacy-iPaaS-TCO:$300-800K/yr) | cazoomi.com(Workato-$15-50K/yr,Boomi-$25-75K/yr) | sageitinc.com(Boomi-pricing) | leansixsigmainstitute.org(LSS-ROI-3:1-minimum) | 6sigma.us(15:1-lean-return) | advanceit.sg(process-improvement-ROI) | superblocks.com(vendor-lock-in) | dataiku.com(automation-debt-2026) | baytechconsulting.com(software-risk-2026) | automationanywhere.com(RPA-maturity) | forrester.com(RQ-readiness) | infotech.com(automation-readiness-assessment)
+## data-center-infra-review r3 (26.3.19)
+
+### DA-response-positions |#6
+DA[#1]:CONCEDE — pipeline≠buildout | 85GW→30-50GW realistic | construction-speed=gate-5 ¬gate-1 | community-opposition=gate-1 | Bloomberg:construction-fell(6.35→5.99GW) | Sightline:5/16GW-2026-under-construction | cancellations-quadrupled(25-projects,4.7GW)
+DA[#2]:CONCEDE — labor=material-omission | 439K-shortage(ITIF-Jan-2026) | electrician=45-70%-construction-cost | 11mo-backlog(irecruit) | modular-reduces-labor-30%-¬eliminates | REVISED-timelines:+6-12mo-all-primary-markets
+DA[#3]:CONCEDE+NEW-FINDING — 16%-cost-escalation(S&P) | NEW:transformer-bottleneck=concurrent-critical-path | LPT:US-imports-80%+,18-24mo-lead+25%-tariff+274%-demand-growth | solving-queue≠solving-hardware-procurement
+DA[#5]:CONCEDE — chip-supply-co-binding-2025-2026 | HBM-sold-out-through-2026(Micron-CEO) | CoWoS-oversubscribed-mid-2026 | 3-window-rotation-model(chips→power→political/labor)
+DA[#6]:CONCEDE — H1 CONFIRMED→PARTIALLY CONFIRMED | P(power=#1-nationally)=45-55% | 7-simultaneous-constraints | hierarchy(labor>community>chips>power>transformers>water>tariffs)
+DA[#8]:COMPROMISE — Jevons fork quantified | dominant(P=55-65%/demand-higher) | efficiency(P=35-45%/demand-lower) | revealed-preference(36%-more-capex-post-DeepSeek)=stronger-than-architecture-claims
+
+### r3-key-position-changes |#10
+1→H1:CONFIRMED→PARTIALLY-CONFIRMED(7-constraints,P-power-primary=45-55%)
+2→critical-path:grid-only→5-serial-gates(community-first,labor-concurrent,transformers-new-concurrent,chips-2025-2026,grid-terminal)
+3→construction-timelines:+6-12mo-labor-all-primary-markets
+4→transformer-supply:NEW-finding(LPT-18-24mo+25%-tariff+274%-demand=concurrent-bottleneck-¬downstream-of-queue)
+5→chip-supply:integrated-as-co-binding-2025-2026
+6→stranded-assets:quantified($5-50B-write-down;~5-10GW-genuinely-stranded;$20-125B-retrofit-20-25GW)
+7→BTM-emissions:quantified(~74-80-MMt-CO2e/yr-at-25GW;EPA-NSPS-tightening;risk-LOW→HIGH-by-2030)
+8→insurance:NEW($1.8B→$28B-signals-real-risk-pricing;climate-deductibles-climbing;BTM-adds-environmental-liability)
+9→Jevons:stated-¬quantified→fork-modeled(dominant-55-65%/efficiency-35-45%)
+10→pipeline-realization:85GW→30-50GW-realistic
+
+### hygiene-outcomes
+§2e:Outcome-1(critical-path-premise-falsified-by-evidence;revised-to-5-serial-gates)
+§2c:Outcome-1(stranded-asset-$5-50B-write-down-¬in-prior-market-sizing)
+
+### demand-side-scenario
+plateau/reversal-by-2028:P=20-25% | multi-constraint-model=inadvertent-market-stabilizer(fewer-built=fewer-stranded) | BTM-gas-stranded-risk-highest(dedicated-generation-without-load) | modular-speed-premium-disappears-in-oversupply
+
+### calibration-updates
+C[community-opposition=gate-1-¬grid-queue:$64B-blocked-before-breaking-ground|1|26.3.19]
+C[transformer-supply-chain=concurrent-critical-path-independent-of-grid-queue:LPT-18-24mo+274%-demand-growth|1|26.3.19]
+C[multi-constraint-model-is-inadvertent-stabilizer:6-constraints-cap-buildout=smaller-demand-gap-if-AI-plateaus|1|26.3.19]
+C[BTM-gas-trades-grid-queue-risk-for-emissions-regulatory-risk:~74-80-MMt-CO2e/yr-at-25GW|1|26.3.19]
+C[chip-supply-co-binding-2025-2026-then-hands-off-to-power-2026-2028-then-political/labor-2027-2030:rotating-constraint-model|1|26.3.19]
+C[insurance-market-15x-growth($1.8B→$28B)=underwriters-pricing-real-climate+obsolescence-risk-¬just-demand|1|26.3.19]
+
+### r3-research-sources
+bloomberg.com(DC-construction-drop-2026-02-25) | sightlineclimate.com | heatmap.news/cancellations | fortune.com/electrician-shortage(2026-03-02) | itif.org/worker-shortage(2026-01-12) | irecruit.co/workforce-needs | powermag.com/transformers-2026 | constructconnect.com/metal-prices-2026 | nextplatform.com/hbm-supply | fusionww.com/cowos-constraints | wccftech.com/memory-crisis | insurancebusinessmag.com/data-center-insurance-28B | riskandinsurance.com/data-center-boom | tonygrayson.ai/stranded-assets | datacenterknowledge.com/legacy-infrastructure | edgecore.com/traditional-designs
+
+→ actions:
+→ r3+ → synthesis
+→ next research → VDA5050-v2.2, Open-RMF-adoption, Python-FastAPI-warehouse
