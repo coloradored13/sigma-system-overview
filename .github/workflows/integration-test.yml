@@ -1,0 +1,78 @@
+name: Integration Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  # Run after submodule updates
+  workflow_run:
+    workflows: ["Update Submodules"]
+    types: [completed]
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install all packages from submodules
+        run: |
+          python -m pip install --upgrade pip
+          pip install ./hateoas-agent[dev]
+          pip install ./sigma-mem[dev]
+          pip install ./sigma-verify[dev]
+
+      - name: Run hateoas-agent tests
+        run: pytest hateoas-agent/tests/ -q --override-ini="addopts="
+
+      - name: Run sigma-mem tests
+        run: pytest sigma-mem/tests/ -q --override-ini="addopts="
+
+      - name: Run sigma-verify tests
+        run: pytest sigma-verify/tests/ -q --override-ini="addopts="
+
+      - name: Cross-package import smoke test
+        run: |
+          python -c "
+          from hateoas_agent import StateMachine
+          from hateoas_agent.mcp_server import serve
+          from sigma_mem.machine import build_machine as build_mem
+          from sigma_verify.machine import build_machine as build_verify
+
+          # Verify machines build without error
+          mem = build_mem()
+          assert mem.name == 'sigma_mem'
+          assert 'recall' == mem._gateway_name
+
+          verify = build_verify()
+          assert verify.name == 'sigma_verify'
+          assert 'init' == verify._gateway_name
+          assert set(verify._action_defs.keys()) == {'get_models', 'verify_finding', 'cross_verify', 'challenge'}
+
+          # Verify sigma-mem has expected actions
+          expected_mem_actions = {'search_memory', 'store_memory', 'check_integrity', 'get_meta',
+                                  'get_project', 'get_decisions', 'log_decision', 'get_failures',
+                                  'log_failure', 'get_corrections', 'log_correction', 'update_belief',
+                                  'get_user_model', 'get_patterns', 'get_conversations', 'full_refresh',
+                                  'verify_beliefs', 'get_roster', 'get_team_decisions', 'get_team_patterns',
+                                  'get_agent_memory', 'wake_check', 'validate_system', 'store_team_decision',
+                                  'search_team_memory', 'store_agent_memory', 'store_team_pattern'}
+          assert set(mem._action_defs.keys()) == expected_mem_actions
+
+          print('All cross-package imports and machine builds OK')
+          "

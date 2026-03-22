@@ -47,7 +47,7 @@ jobs:
 
           # Build commit message with details
           MSG="Auto-update submodules"
-          for sub in hateoas-agent sigma-mem; do
+          for sub in hateoas-agent sigma-mem sigma-verify; do
             if git diff --quiet "$sub"; then
               continue
             fi
@@ -55,6 +55,6 @@ jobs:
             MSG="$MSG\n\n$sub → $NEW"
           done
 
-          git add hateoas-agent sigma-mem
+          git add hateoas-agent sigma-mem sigma-verify
           git commit -m "$(echo -e "$MSG")"
           git push
