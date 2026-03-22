@@ -257,6 +257,57 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
 
 !cost: ~10-15% per-agent processing increase. Zero additional agents.
 
+#### §2h cross-model verification — ΣVerify protocol (26.3.22)
+
+!purpose: reduce single-model blind spots by verifying findings against external AI models (OpenAI, Google AI) via sigma-verify MCP server. Different training data → different confabulation patterns → genuinely independent signal (complementary to DA's independent information-state challenge).
+
+!when: OPTIONAL. agents MAY invoke sigma-verify tools during analysis. NOT mandatory — use when:
+  - high-conviction finding (>70% confidence) that is load-bearing for conclusions
+  - finding relies heavily on [agent-inference] without strong [independent-research] backing
+  - DA requests cross-model check during r2 challenge
+  - cross_verify particularly valuable when agents converge unanimously (zero-dissent signal)
+
+!tools (via sigma-verify MCP):
+  init → check provider availability (call once per session)
+  verify_finding(finding, context, provider?) → single-model verification
+  cross_verify(finding, context) → all-model comparison
+  challenge(claim, evidence, provider?) → external devil's advocate
+
+!source provenance: results carry |source:external-{provider}-{model}| tag
+  these are a NEW source type alongside existing §2d types
+  [external-verification] → cross-model corroboration or challenge from non-Claude model
+  weight: advisory (different model ¬domain expert) — informs confidence ¬overrides domain analysis
+
+#### three verification states (agents MUST distinguish)
+
+1→ XVERIFY[{provider}:{model}]: {assessment}({confidence}) |{reasoning} |source:external-{provider}-{model}|
+  verification SUCCEEDED. result is evidence. write to workspace findings.
+
+2→ XVERIFY-FAIL[{provider}:{model}]: {error-class} |attempted:{tool} |finding:{brief} |→ verification-gap
+  verification ATTEMPTED but FAILED for technical reasons (rate-limit, timeout, auth-error, token-limit, network-error).
+  this is a GAP (analytical hygiene outcome 3). write to workspace findings.
+  !rule: XVERIFY-FAIL ¬invisible. agent MUST report failed attempts in workspace.
+  !rule: downstream agents and DA MUST NOT assume verification occurred when XVERIFY-FAIL is present.
+  !rule: cross_verify returning partial results (1-of-N providers) → flag as partial coverage.
+
+3→ no XVERIFY tag
+  verification was never attempted. neutral — no claim of external validation.
+
+!failure handling:
+  sigma-verify classifies errors automatically: auth-error|rate-limit|timeout|token-limit|network-error|parse-error
+  agent receives structured error with error_class, sigma notation, and "status": "failed"
+  agent writes XVERIFY-FAIL to workspace findings section
+  if ALL providers fail → agent notes "external verification unavailable" and proceeds without it
+  ¬retry: if provider fails, do NOT retry in same round (budget protection). flag gap and move on.
+
+!DA audit of verification:
+  - XVERIFY-FAIL present but not flagged as gap → process violation
+  - agent claims "externally verified" but no XVERIFY tag in workspace → challenge
+  - cross_verify with partial coverage treated as full validation → challenge
+  - unanimous XVERIFY agreement ¬sufficient to override domain expertise (advisory weight)
+
+!cost: per-call API cost to external providers. Agents should be selective — verify load-bearing findings ¬every data point.
+
 #### DA enforcement of hygiene checks
 
 DA evaluates checks during challenge round:

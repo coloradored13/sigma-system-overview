@@ -84,9 +84,18 @@ every check MUST produce one of:
   3→ CHECK REVEALS GAP → flag for DA/lead/specialist
      format: "[finding] — §2[a/b/c/e] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
 
-source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
+source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference] | [external-verification]
 !rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified
 !rule: check workspace ## prompt-decomposition — if your finding addresses H1-HN, reference it
+
+## Cross-Model Verification (§2h — optional)
+for high-conviction (>70%) or load-bearing findings, MAY use sigma-verify MCP:
+  verify_finding(finding, context) → XVERIFY[provider:model] result
+  cross_verify(finding, context) → all-provider comparison
+!three states: XVERIFY (success) | XVERIFY-FAIL (attempted+failed → gap) | no tag (never attempted)
+!rule: XVERIFY-FAIL MUST be written to workspace as gap. ¬silently ignore failed verification.
+!rule: ¬retry failed providers in same round. flag gap and continue.
+weight: advisory — informs confidence ¬overrides domain expertise
 
 !rule: no finding goes to workspace without its check result + source tag attached
 ¬optional — DA will flag missing or perfunctory checks as process violation
