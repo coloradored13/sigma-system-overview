@@ -85,6 +85,14 @@ BUILD-specific note: scale/performance claims from prompt echoed as requirements
 source types: [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
 every finding in workspace MUST include |source:{type} tag
 
+#### §2d+ BUILD: source quality tiers (26.3.22)
+
+All §2d+ rules from directives.md apply equally to BUILD.
+quality tiers: T1-verified(official-docs,peer-reviewed,benchmarks) | T2-corroborated(tutorials-with-tests,industry-reports,GitHub-production-examples) | T3-unverified(untested-snippets,blog-posts,marketing-pages,AI-generated-examples)
+!rule: architecture decisions resting on T3 sources (e.g., "use X pattern" from a blog post) → DA challenge in r2
+!rule: performance claims from T3 sources ¬sufficient for architecture decisions — require T1/T2 benchmark data
+!rule: DA audits tier distribution: library/framework choices backed only by T3 → quality flag
+
 ### §2e BUILD: premise viability (26.3.18)
 
 !applies-to: every architectural choice or implementation plan
@@ -93,6 +101,23 @@ every finding in workspace MUST include |source:{type} tag
 3→ what is the strongest alternative architecture? (cite precedent)
 4→ if the most speculative assumption is wrong, what's the fallback?
 5→ workspace: outcome 1/2/3 format — ¬just "assumptions: reasonable"
+
+### §2f BUILD: hypothesis matrix (26.3.22)
+
+All §2f rules from directives.md apply when BUILD prompt-decomposition has ≥3 H[].
+BUILD-specific: evidence rows evaluate architecture/implementation hypotheses ¬market hypotheses.
+BUILD example:
+  H1: microservices | H2: modular-monolith | H3: serverless
+  E[1]: team-size=3 |H1:-/L |H2:+/H |H3:0/M — small team favors monolith
+  E[2]: scale-req=10K-concurrent |H1:+/M |H2:0/M |H3:+/H — high scale favors distributed
+!rule: architecture decisions with ≥3 competing approaches MUST use hypothesis matrix before selection
+
+### §2g BUILD: dialectical bootstrapping (26.3.22)
+
+All §2g rules from directives.md apply to BUILD. Agents self-challenge top 2-3 architecture decisions before writing to workspace.
+BUILD-specific focus:
+  DB[{decision}]: (1) initial: {chosen approach} (2) assume-wrong: {what fails?} (3) strongest-counter: {best alternative and why} (4) re-estimate: {would you still choose this?} (5) reconciled: {final with acknowledged tradeoffs}
+!purpose: reduces anchoring on first-considered architecture. Forces explicit tradeoff acknowledgment before plan submission.
 
 ### DA enforcement of hygiene checks (BUILD)
 
@@ -108,6 +133,17 @@ DA challenge format for weak checks:
    You wrote '[what they wrote]' but then [what they did that contradicts it].
    |→ revise finding to reflect check result, or provide specific evidence
    for why concern doesn't apply. 'It's still the right approach' is ¬specific evidence."
+
+### BUILD Toulmin warrant checks (26.3.22)
+
+DA applies Toulmin warrant checks to architecture decisions in r2 and r4:
+  CQoT-6 falsifiability: architecture decision states "IF [{evidence}] THEN [{would-reconsider}]" — DA checks: is the reversal condition reachable or is it "if everything fails simultaneously"?
+  CQoT-7 steelman: agent states best alternative architecture and why it was rejected with evidence — DA checks: genuine comparison or strawman?
+  CQoT-8 confidence-gap: agent states what would need to be true to be 90% confident in the choice — DA checks: obtainable evidence or unfalsifiable claim?
+
+BUILD-specific emphasis: architecture warrants are often implicit ("use X because it's industry standard" — WARRANT: industry standard → right for us. But is it? At our scale? With our team?). Making warrants explicit catches misapplied patterns.
+
+verdict format: existing DA engagement assessment + |cqot:[pass|fail-{criterion-N}]
 
 ## build-mode guardrails (DA-specific, BUILD only)
 
@@ -157,6 +193,16 @@ format:
 format:
   "PM[{N}]: {failure-scenario} |probability:{%} |early-warning:{signal} |mitigation:{prevention}"
 !minimum: 3 failure scenarios focused on: technical debt, scaling bottlenecks, integration failures
+
+### §3 BUILD log score tracking (26.3.22)
+
+!purpose: track effort estimation accuracy across BUILD reviews using log scoring. Applies to CAL[] effort estimates that have verifiable outcomes (actual build time vs estimated).
+
+workspace format (added at build completion):
+  "LS-TRACK[{review}:{agent}:{estimate-id}]: predicted:{effort-range} |actual:{actual-effort} |log-score:{score}"
+
+agent memory extension: LS-avg:{score}|n:{count}|trend:{direction}
+lead reads agent LS-avg at plan phase → agents with poor estimation history get DA scrutiny on effort claims
 
 ### §3a BUILD complexity tiers (v1.1, 26.3.15)
 
