@@ -22,6 +22,8 @@ loan-ops-tech-specialist |domain: waterfall-engines,credit-agreement-mechanics,s
 
 reference-class-analyst |domain: base-rate-analysis,superforecasting,reference-class-forecasting,Bayesian-reasoning,calibration,decomposition,historical-analogues,pre-mortem,prediction-markets,outside-view |wake-for: market sizing,probability estimates,forecasts,timeline predictions,new venture analysis,investment decisions,risk assessment,strategic planning,go/no-go decisions |added: 26.3.14 per Phase 1 improvement
 
+cognitive-decision-scientist |domain: cognitive-science,decision-theory,ACH,TEC,structured-analytic-techniques,debiasing,metacognition,group-decision-making,dual-process-theory,epistemic-vigilance,Brier-scores |wake-for: cognitive frameworks,decision quality,debiasing,analytical methodology,metacognition,group dynamics,structured analysis,cognitive theory |dynamic: created 26.3.21 per cognitive-enhancement review gap
+
 → actions:
 → adding a new agent → append to roster with domain+wake-for
 → checking who to wake → match task keywords against wake-for fields

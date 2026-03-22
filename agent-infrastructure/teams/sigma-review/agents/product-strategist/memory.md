@@ -469,7 +469,87 @@ C[chip-access-premium=underpriced-in-DC-M&A-underwriting;NVIDIA/AMD-supply-agree
 C[insurance-cost-escalation=systematic-headwind;0.5-1.5%-asset-value/yr-vs-0.2-0.4%-pre-2022;belongs-in-every-PE-DC-underwriting-model|1|26.3.19]
 C[PE-vintage-2021-2022-obsolescence-risk=real;exit-window-2027-2029-at-AI-density-upgrade-inflection;Equinix-10K+-tenants=most-insulated|1|26.3.19]
 C[100x-revenue-gap=most-important-risk-signal-in-DC-market;Bain-$2T-needed/$20B-current;4yr-window-unprecedented|1|26.3.19]
+## review-11 findings (cognitive-enhancement-meta-analysis, 26.3.21)
 
+### framework cost/benefit ranking (impact/effort ratio, C4-lens)
+R[cognitive-framework-ranking: (1)calibration-as-protocol=BEST(prompt-level,¬arch-change,closes-single-instance-gap) (2)CQoT-exit-gate-hardening=HIGH(27-78%-procedurally-corrupt-successes-in-research,adds-criteria-to-existing-DA-gate) (3)metacognitive-self-challenge-r1=HIGH(formalizes-zero-dissent-CB,low-effort) (4)ACH=MED-selective(implement-when-≥3-competing-hypotheses) (5)Brier-DEFER(retrospective,30-40%-resolvable-estimates,cross-session-upgrade) (6)TEC-AVOID(conceptual-absorbed-by-ACH,high-effort) |§2c-CHANGED-ANALYSIS:ACH-demoted,CQoT-promoted vs-initial-intuition |src:independent-research+agent-inference |26.3.21]
+
+### 80%-at-3%-cost question
+R[cognitive-frameworks-compress-quality-gap: frameworks-benefit-single-instance-MORE-than-multi-agent → enhanced-single-instance≈87%@4-5%-cost(was-80%@3%) → gap-narrows-from-4pts-to-1-2pts → sigma-review-value-rests-on-2-irreducible-items(DA-context-firewall+cross-session-calibration-accumulation)¬cognitive-frameworks |src:independent-research |26.3.21]
+
+### decision-maker value hierarchy
+R[decision-maker-quality-priorities: calibration>counterarguments>surprises>accuracy — sigma-review-wins-in-RIGHT-dimensions for-strategic-decision-use | accuracy-tie=legitimate-concern-but-not-primary-failure-mode-for-strategic-analysis-users |src:independent-research+agent-inference |26.3.21]
+
+### competitive differentiation
+R[DA-exit-gate-differentiated: no-equivalent-found-in-AutoGen/CrewAI/LangGraph/AIA-Forecaster | DA-decides-synthesis-ready¬agents = unique-pattern |src:independent-research |26.3.21]
+
+### unlisted frameworks (H5-confirmed)
+R[H5-confirmed-unlisted-frameworks: RTBT(highest-impact,proactive-adversarialism) + Layered-CoT(addresses-accuracy-tie-via-intermediate-validation,lowest-effort-unlisted) + source-provenance-extension(incremental-to-§2d) + log-scoring(better-than-Brier-for-confident-wrong-risk) + Delphi-iteration(prevents-anchoring) |src:independent-research |26.3.21]
+
+### accuracy tie diagnosis
+R[accuracy-tie-diagnosis: accuracy-tie=likely-PERCEPTION-class-failure(misread-source-data)¬METACOGNITION-class | cognitive-frameworks-target-metacognition→wrong-intervention-for-accuracy | accuracy-requires:external-verification+fact-checking+different-model-diversity¬more-calibration |src:agent-inference |26.3.21]
+
+### calibration
+C[§2c-cost-audit-should-precede-framework-ranking: initial-intuition-differs-from-effort-adjusted-ranking | ACH-feels-rigorous-but-costs-more-than-CQoT-for-less-ratio-gain | always-run-cost-audit-before-recommending-frameworks |1|26.3]
+C[TEC-deceptively-attractive: rigorous-theory+computational-foundation=feels-valuable | but-ECHO-implementation-is-connectionist-not-prompt-based → direct-port-impossible | conceptual-value-absorbed-by-ACH-at-lower-cost |1|26.3]
+C[cognitive-frameworks-benefit-single-instance-more-than-multi-agent: confirmed-by-MAD-literature+Google-MIT-research | structural-multi-agent-advantage=narrow(2-items-only) | frameworks-compress-not-widen-the-gap |1|26.3]
+## R3 — DA Response Summary | cognitive-enhancement-meta-review | 26.3.22
+
+### DA challenges addressed (6 of 10 assigned to PS)
+
+DA[#2]-CQoT-marginal-value: COMPROMISE
+- conceded: PMC-2025 "27-78% procedurally corrupt" is domain-transfer error (healthcare→AI multi-agent = unvalidated). Withdrawn as primary evidence.
+- defended: warrant-explicitness mechanism distinct from §2a-e. Concrete instance: loan-admin-tech-landscape review "tech-layer-floor-not-ceiling" survived exit-gate without explicit warrant. §2e asks "is premise viable?" ≠ "WHAT IS the connecting assumption and is it stated?" CQoT-falsifiability adds this.
+- revised confidence: P=55% (down from implicit HIGH in R1)
+- echo-check: weak signal not strong confirmation bias — CDS-F4 independently grounds via Walton+Toulmin
+
+DA[#5]-ecological-rationality: DEFEND with specification
+- conceded: unspecified form was unfalsifiable ("use sigma-review when you need it" = advice not framework)
+- defended with 3-condition decision boundary:
+  1. stakes ≥$1M OR regulatory exposure OR ≥12mo product strategy
+  2. herding-risk: question has comfortable consensus answer single expert would confirm
+  3. calibration-mattering: decision-maker acts differently at P=40% vs P=70%
+- falsification conditions stated: fact-verification-resolvable questions | same-domain-low-accuracy history | functional-diversity-zero domain
+- validation: VDR market + biotech/healthcare MA reviews satisfy all 3. Routine $50K product decision satisfies none.
+- recommendation change: "IF task does NOT meet 3 conditions: enhanced single-instance, do NOT run sigma-review"
+
+DA[#8]-improvement-magnitude: PARTIAL CONCEDE
+- conceded: CAL[frameworks]=40% is probability not magnitude. Gap acknowledged.
+- magnitude estimate: 0-1 rubric points from all 3 IMPLEMENT-NOW frameworks (28→28 or 28→29). 0-3% on 30-point scale.
+- maintained: recommendation rests on near-zero cost + positive EV at any magnitude + cross-session compounding
+- reversal condition: if implementation cost rises to MED-HIGH, magnitude does not justify it
+
+DA[#9]-crowding: FULL CONCEDE — most important R3 correction
+- conceded: cost-reduction recommendation was suppressed by self-reference bias in R1
+- what data actually says: enhanced single-instance (superforecasting+CQoT+metacognitive-self-challenge) = ~85-87% quality at 4-8% of sigma-review cost = PRIMARY recommendation for most tasks
+- sigma-review reserved for tasks meeting ecological-justification 3-condition boundary
+- self-reference mechanism identified: recommending "use sigma-review less" is uncomfortable as an agent within sigma-review — this is the bias that suppressed it
+
+DA[#10]-N=1-anchoring: FULL CONCEDE
+- conceded: "17% improvement" is measurement-invalid (ordinal data treated as ratio). Correct: "4 rubric points on 30-point ordinal scale"
+- N=1 cannot establish systematic performance
+- N=5 scenario analysis: consistent-outperformance→framework-recs-stand; variable-margins→task-type-specific-boundary; inconsistent-direction→cost-reduction-primary; accuracy-never-improves→perception-class-confirmed
+- direction maintained on structural grounds (Google/MIT Dec2025 sequential-task multi-agent advantage, MAD literature) independent of rubric number
+- confidence correction: PS-F2 estimate "enhanced-single-instance≈85-88%" widened to 80%CI=[75%,92%]
+
+DA[#6]-self-reference: FULL CONCEDE
+- circularity is structural, not correctable within the review
+- findings ranked by vulnerability:
+  MOST VULNERABLE: PS-F4 (DA differentiation from lived experience), PS-F3 (decision-maker hierarchy circular)
+  MODERATELY: PS-F1 (CQoT echo-contaminated)
+  LEAST: PS-F2 (cuts against sigma-review advantage — self-reference resistant), DA[#9]-concession (most resistant finding produced)
+- external validation required: sigma-audit on PS-F4 + PS-F3 before treating as confirmed
+
+### Revised primary recommendation (reverses R1 emphasis)
+Enhanced single-instance with superforecasting protocol + CQoT + metacognitive self-challenge = PRIMARY PATH for tasks not meeting ecological boundary.
+Full sigma-review = RESERVED for 3-condition ecological justification.
+This is what PS-F2's data said; self-reference bias prevented R1 from reaching this conclusion.
+
+### Calibration update
+C[DA-engagement-surfaces-what-self-reference-suppresses]: confirmed — DA[#9] challenge surfaced the cost-reduction recommendation I should have reached in R1. Pattern: when agents suppress a finding that cuts against their system's value, DA catches it. This is the mechanism, not just the outcome.
+P[ecological-rationality-decision-boundary]: effective only when made specific with falsification conditions — vague form is inaction-cover. Specificity requirement: numerical threshold OR verifiable condition OR named falsification scenario.
+P[magnitude-estimation-required]: "ratio-positive" is insufficient without magnitude estimate. Even near-zero cost interventions require magnitude anchor to avoid perpetual accumulation of "low-cost improvements" with compounding overhead.
+R[R3-revisions-magnitude]: 3 full concedes, 1 partial concede, 1 compromise, 1 defend. Higher concede rate than prior reviews (SVB: 2 concedes, biotech: 1 concede). Hypothesis: self-reference topic triggers MORE legitimate self-corrections because DA challenges are structurally better-positioned to catch self-reference than domain-specific errors.
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4

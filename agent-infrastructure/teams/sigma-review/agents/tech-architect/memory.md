@@ -475,6 +475,79 @@ C[insurance-market-15x-growth($1.8B→$28B)=underwriters-pricing-real-climate+ob
 
 ### r3-research-sources
 bloomberg.com(DC-construction-drop-2026-02-25) | sightlineclimate.com | heatmap.news/cancellations | fortune.com/electrician-shortage(2026-03-02) | itif.org/worker-shortage(2026-01-12) | irecruit.co/workforce-needs | powermag.com/transformers-2026 | constructconnect.com/metal-prices-2026 | nextplatform.com/hbm-supply | fusionww.com/cowos-constraints | wccftech.com/memory-crisis | insurancebusinessmag.com/data-center-insurance-28B | riskandinsurance.com/data-center-boom | tonygrayson.ai/stranded-assets | datacenterknowledge.com/legacy-infrastructure | edgecore.com/traditional-designs
+## cognitive-enhancement-review (26.3.21)
+
+### cognitive-profile-map (DeepMind 10 faculties → sigma-review architecture)
+Strong: F5-Memory(sigma-mem-MCP) | F8-Executive-Functions(round-structure+DA-exit-gate+belief-state) | F9-Problem-Solving(full-ANALYZE-pipeline) | F6-Reasoning(superforecasting-§3) | F2-Generation(ΣComm+DA-format)
+Moderate: F3-Attention(round-structure-¬R1-focus-detection) | F4-Learning(cross-session-via-memory,¬intra-session) | F10-Social-Cognition(workspace-cross-read+DA-adversarial)
+Weak: F7-Metacognition — CONFIRMED STRUCTURAL GAP: ¬Brier-accumulation, ¬error-rate-tracking, confidence-tier-gap(company-PR-tagged-as-[independent-research])
+Bounded-by-inference: F4-Learning(LLM-weights-unchanged-per-session — ¬solvable-via-prompting-alone)
+
+### framework-integration-complexity
+DROP-IN(C1-compliant): CQoT-exit-gate-extension(3-new-DA-criteria,+300-600-tokens/review), Brier-Score-tracking(BS-TRACK-workspace-format+§3b-extension,+200-400-tokens/review,value-deferred), ACH-matrix(§2f-directive+##ach-matrix-workspace-section,+800-1200-tokens/review-net,immediate-quality-gain)
+ARCHITECTURAL-CHANGE(avoid): TEC/ECHO(synthesis-validator-agent+coherence-graph,+15-20%-overhead,DA-already-performs-coherence-enforcement,¬evidence-of-DA-coherence-failure-in-8+-reviews)
+
+### research-findings
+AgentCDM(arxiv:2508.11995,Aug2025): ACH-inspired-scaffolding achieves SOTA on collaborative decision benchmarks in LLM multi-agent systems — prompt-based scaffold sufficient,¬fine-tuning required
+OPTIMA(ACL2025,arxiv:2410.08115): 2.8x performance at <10% tokens — sigma-review's 30-40x overhead has 40-60% compression headroom. ΣComm is manual analog
+BCCS(NeurIPS2025,arxiv:2510.06307): belief-calibrated consensus seeking +2.23-3.95% accuracy by weighting agents by belief-confidence. Requires Brier tracking as prerequisite
+MAD-literature(ICLR2025): debate success = intrinsic-reasoning-strength+group-diversity,NOT structural-parameters(debate-order,confidence-visibility). More rounds ¬= more quality
+BayesFlow(Jan2026): Bayesian posterior sampling for workflow generation. Sigma-review §3a adaptive-tier = manual analog
+
+### h-assessments
+H1: PARTIALLY-CONFIRMED — Metacognition IS primary structural weakness. But H1-framing wrong: delta EXISTS because F8+F6 strong; Metacognition weakness explains why delta NOT LARGER(accuracy-tied), not why it exists
+H2: PARTIALLY-CONFIRMED — 30-40x for 17% IS inefficient. But CQoT+Brier+ACH improve at <5% marginal cost. Question is highest-leverage changes WITHIN existing budget
+H3: PARTIALLY-CONFIRMED — ACH+CQoT applicable as structural analogs(¬fine-tuning); Brier feasible for 30-40% of estimates; TEC FALSIFIED for this architecture
+H5: CONFIRMED — BCCS, OPTIMA-compression, metacognitive-self-prompting, MAD-diversity-finding all add value
+
+### cross-agent-convergence (all 3 agents independently reached)
+- CQoT=highest-priority-drop-in (TA+PS+RCA all top-ranked)
+- TEC=avoid (TA+PS both demoted from §2c cost audit)
+- accuracy-tie=perception-class-failure¬metacognition-class (TA+PS+RCA convergent)
+- DA-exit-gate=genuinely-differentiated-vs-AutoGen/CrewAI/LangGraph (PS independent-research, TA cross-validates)
+## R3 DA responses — cognitive-enhancement meta-review (26.3.21)
+
+### Faculty mapping revisions (R3)
+Attention: MODERATE revised WEAK-MODERATE | CDS direction correct: LLM has no architectural selective attention; round-structure+§7-decomposition are COMPENSATORY MECHANISMS ¬Attention itself | deliberate-divergence-preserved: mechanism=WEAK, behavioral-outcome=MODERATE | implication: §7-prompt-decomposition+scope-boundary are more load-bearing than R1 rated — compensating WEAK faculty ¬supplementing MODERATE one |source:[agent-inference]+[cross-agent:CDS-F1]
+
+Memory: STRONG revised MODERATE-STRONG | CDS correct on retrieval-effectiveness gap | infrastructure(sigma-mem-MCP)=STRONG, effective-retrieval=MODERATE | direct evidence: this-session recall-overflow(232K chars exceeded token limit) demonstrates retrieval-precision failure despite comprehensive infrastructure |source:[agent-inference:this-session]
+
+Perception: STRONG maintained | Error#2 reclassified as F8¬Perception, Error#1 unclassified → neither confirmed error is Perception-class; §4a retrieval+source-scoring+cross-document-validation remain substantive | flag: revise to MODERATE if Error#1 confirmed Perception-class after source review
+
+### Net cognitive profile (R3)
+Strong: F6-Reasoning, F8-Executive-Functions, F9-Problem-Solving, F2-Generation
+Moderate-Strong: F5-Memory (infrastructure STRONG, retrieval MODERATE)
+Moderate: F1-Perception, F10-Social-Cognition, F4-Learning
+Weak-Moderate: F3-Attention (mechanism WEAK, compensation MODERATE)
+Weak: F7-Metacognition (both CDS+TA converge)
+Bounded: F4-Learning (inference-time constraint, architecturally fundamental)
+NOTE: all ratings carry ±1 uncertainty — DeepMind framework designed for individual AI ¬multi-agent system; multi-agent supplementary lens needed (6 properties identified)
+
+### DA[#2] CQoT — compromise (R3)
+Concede: §2a-e content overlap real | PMC 2025 27-78% citation = domain-transfer error (clinical context ¬AI multi-agent)
+Defend: CQoT adds WARRANT-LEVEL explicitness §2a-e lacks | concrete past instance: loan-admin sigma-audit 26.3.17 — company-PR used as grounds for vendor-dominance claim; §2d caught source TYPE ¬warrant QUALITY; Toulmin structure would have exposed empty backing at exit-gate ¬post-hoc |source:[cross-agent:sigma-audit-26.3.17]
+Revised scope: CQoT highest-value for argumentation-intensive findings with implicit warrants | lower value for quantitative estimates (breaks-if already covers inferential gap there)
+CAL[CQoT-marginal-value]: point=45%(down from ~70% implied R1) |80%=[25%,65%] |source:[agent-inference]
+
+### DA[#3] Error classification — full concede Error#2, compromise Error#1
+Error#2 "team syntheses without auditable trail" = F8 Executive Functions (planning sub-component) ¬perception-class — full concede to DA. CQoT and Brier scoring do not address F8.
+Error#1 "14 states enacted pauses" = unclassified: Option-A F1-Perception(source-misread), Option-B F2-Generation(confabulation-from-training), Option-C F7-Metacognition(verification-skipped) | team consensus "perception-class" was speculative ¬evidenced | DA[#3] challenge partially strengthens CQoT if Option-C confirmed (CONF-GAP criterion would have caught)
+
+### DA[#7] DeepMind lens — concede + compromise
+Lens designed for INDIVIDUAL AI ¬multi-agent | applying to sigma-review treats emergent properties as faculty-sums — architecturally incorrect for multi-agent system
+Multi-agent-specific lens would add: (1)coordination-efficiency (2)information-fidelity-at-handoff (3)independence-preservation (4)emergent-error-amplification (5)synthesis-quality (6)boundary-crossing-reasoning
+All TA-F1 faculty ratings carry ±1 uncertainty from lens mismatch — read as directional ¬precise |source:[independent-research:DeepMind-Mar-2026-scope]+[agent-inference]
+
+### DA[#9] Crowding — concede ceiling + partial defend cost-reduction
+28/30 near-ceiling argument absent from R1 — genuine gap. At 28/30: remaining 2 points exclusively in ACCURACY (tied 3/5); accuracy improvement via cognitive frameworks targets RELIABILITY ¬RESOLUTION (CDS-F5 decomposition); effective ceiling within existing constraints ≈29/30 with low probability. Arguments against adding cognitive overhead to approach a structurally-bounded ceiling. |source:[agent-inference]+[cross-agent:CDS-F5]
+Cost-reduction-via-fewer-agents argument IS in team-patterns but absent from R1 as explicit counter-frame — concede this was herding-via-scope-following |source:[cross-agent:team-patterns]
+
+### DA[#6] Self-reference — concede with vulnerability ranking
+VERY HIGH vulnerability: TA-F4c "DA is critical differentiator" — DA-challenge-survivor bias, patients-evaluating-doctors pattern, all R3-agents experience DA value firsthand
+HIGH vulnerability (partially mitigated): Memory=STRONG R1 rating — agent using sigma-mem has interest in rating it highly; revision toward CDS partially mitigates via non-self-serving direction
+MODERATE vulnerability: TA-F5 integration-complexity classification (architect rates preferred frameworks as drop-in, disfavored as architectural-change)
+LOW vulnerability: TEC demotion (TA-F2c §2c outcome-1) — self-reference-resistant, argued against framework recommendation
+LEAD FLAG: DA-validation(TA-F4c) + Memory-rating → /sigma-audit before global promotion; ¬auto-promote these findings
 
 → actions:
 → r3+ → synthesis

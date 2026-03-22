@@ -881,6 +881,39 @@ challenges: 10/10-held(100%)
 - !transformer-supply-chain=example-of-challenge-sparking-BETTER-finding-than-challenge-itself(DA[#3]-asked-about-tariffs→TA-found-LPT-bottleneck)
 - !multi-constraint-convergence-without-herding: 4-agents-brought-different-domain-evidence-to-same-conclusion→tested-by-evidence-diversity
 - !prompt-contamination-correctible-in-1-round: R1-supply-side-framing-bias→R3-demand-side-modeled-by-all-4→methodology-shift-confirmatory→investigative
+## cognitive-enhancement-meta-review R2 (26.3.21)
+F[r2-challenges-delivered]: 10 challenges to 4-agent R1 findings on cognitive frameworks for sigma-review |src:cognitive-enhancement-meta-review
+DA[#1]: dialectical-bootstrapping-75%-is-human-data-anchoring — CDS classifies as FORMAT(HIGH-transfer) but mechanism IS cognitive reframing(35%-transfer) — self-contradiction
+DA[#2]: CQoT-marginal-value-over-§2a-e — 4/4 convergence on CQoT but no agent named specific finding CQoT catches that existing hygiene misses — herding-on-prompt-suggestion
+DA[#3]: accuracy-tie=perception-class UNVERIFIED — no agent classified actual rubric errors — consensus without evidence
+DA[#4]: FORMAT/COGNITIVE-distinction-boundary-problem — every format depends on cognitive execution — 85%/35% split may be unfalsifiable
+DA[#5]: ecological-rationality=unfalsifiable-framing — no falsification condition provided — provides cover for inaction
+DA[#6]: self-reference-circularity — sigma-review reviewing itself cannot find fundamental flaws using its own methodology
+DA[#7]: DeepMind-10-faculty-lens-unquestioned — designed for individual AI ¬multi-agent — CDS-vs-TA faculty disagreements suggest underspecified mapping
+DA[#8]: prompt-engineering-diminishing-returns — base rate for improvements to already-well-structured systems = low
+DA[#9]: 4/4-convergence-on-6-items = herding — no agent argues 28/30=near-ceiling or cost-reduction-via-fewer-agents
+DA[#10]: N=1-rubric-anchoring — ordinal-scores-treated-as-ratio — 17% may not generalize
+PROMPT-AUDIT: echo-count:3 |unverified-claims:4 |missed-claims:rubric-validity,problem-framing,lens-selection |methodology:mixed
+EXIT-GATE: FAIL |engagement:B+ |unresolved:faculty-mapping+priority-ordering |untested-consensus:CQoT-marginal-value+accuracy-classification+FORMAT-COGNITIVE |hygiene:pass |prompt-contamination:borderline
+C[CDS-engagement=A-]: strongest agent — 4×outcome-1, most original research, genuine self-revision. highest quality R1 findings
+C[RCA-engagement=A-]: proper DISCONFIRM, calibrated estimates, independent research
+C[TA-engagement=B+]: solid architecture mapping, concrete implementations, good cost analysis
+C[PS-engagement=B+]: good ratio analysis, competitive survey, cost-driven reranking
+## cognitive-enhancement-review (26.3.22)
+
+R3-exit-gate: PASS |engagement:A- |unresolved:none |untested-consensus:none |hygiene:pass |prompt-contamination:pass
+
+R2-challenges-delivered: 10 |R2-exit-gate: FAIL(3-untested-consensus+2-material-disagreements)
+R3-requirements: 6/6 met
+
+P[R1→R3-analytical-inversion]: R1="add-frameworks" → R3="cost-reduction-via-implementation-triage+enhanced-single-instance-as-primary" | DA[#9]-crowding-challenge=primary-driver of shift | PS-full-concede-on-self-reference-suppression-of-cost-reduction-argument
+P[3-instance-CQoT-validation]: 3-agents-cited-3-different-past-reviews(loan-admin-warrant,sigma-audit-backing,biotech-warrant) for CQoT marginal value — reduces echo risk below threshold | CQoT narrowed to warrant-only, P=45-55%(down from implied HIGH)
+P[self-reference-engagement-quality]: all-4-agents-produced-vulnerability-rankings-with-convergent-logic(DA-validation=most-circular,findings-against-sigma-review=least-circular) — genuine ¬performative
+P[dialectical-bootstrapping-contradiction-resolution]: CDS conceded FORMAT classification self-contradictory per own taxonomy → revised mechanism via self-consistency+structured-prompt-variation → transfer MODERATE(55-65%) → demoted #1→#3-4 | strongest R3 response quality
+P[accuracy-tie-retraction]: R1 consensus "perception-class" retracted by all 4 agents | Error#2=F8-executive-functions(definitive) | Error#1=generation/confabulation-P=50-60%(revised) | PM[4] wrong-problem-risk reduced 20-25%→12-18%
+P[faculty-mapping-resolution]: Attention=WEAK-MODERATE(level-dependent-deliberate-divergence) | Memory=MODERATE-STRONG(TA-revised-using-this-session-recall-overflow) | Perception=MODERATE-STRONG(CDS-concession)
+C[engagement-upgrade-R2→R3]: B+→A- | TA=A(best-R3,evidence-based-self-revision) | CDS=A(resolved-genuine-contradiction-via-better-research) | PS=A-(strongest-self-correction-on-cost-suppression) | RCA=A-(proper-N=1-qualification+ceiling-analysis)
+C[10-challenge-hit-rate]: 10/10 produced substantive responses(0 performative dismissals) | challenges #1,#9,#10 produced largest analytical shifts | #6(self-reference) produced deepest engagement across all agents
 
 → actions:
 → new finding → append with severity+evidence
