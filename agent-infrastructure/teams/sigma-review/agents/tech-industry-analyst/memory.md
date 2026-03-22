@@ -382,3 +382,92 @@ P[26.3.18-biotech] pharma-as-platform-provider: Eli Lilly TuneLab Sep 2025 = nov
 P[26.3.18-biotech] open-source-biology-moat-timeline: structure prediction moat ≈ GONE by end-2026 (Boltz-2+OpenFold3+ESMFold); new moat frontier = phenomics (Recursion), clinical outcome data (Epic-controlled), surgical recordings (Intuitive); moat migration faster than expected
 P[26.3.18-biotech] volume-conflation-biotech: AI drug discovery market CAGRs of 38-44% are scope-inflated (include hospital ops, admin AI); defensible pure-play drug discovery CAGR = 18-22%; consistent with P[26.3.13] volume-conflation pattern across reviews
 P[26.3.18-biotech] acqui-hire-as-M&A-modality: AI biotech acqui-hire premium (small team with 5-15 key scientists acquired for talent ¬pipeline) is confirmed modality in 2026-2028; consistent with tech industry acqui-hire pattern; distinct from pipeline-asset acquisitions
+## research
+
+R[topic:frontier-model-releases-march-2026|key-findings:
+- GPT-5.4: OpenAI flagship, API $2.50/$15 per M input/output tokens; Pro variant $30/$180; leads coding+agentic benchmarks
+- Claude Opus 4.6: SWE-Bench Verified 80.8% (#1 code), Sonnet 4.6 mid-tier workhorse; Anthropic not rushing Claude 5
+- Gemini 3.1 Pro: strongest all-around general-purpose model Mar 2026; $2.00/M input=best price-to-performance; 60fps video processing native
+- Grok 4.20: xAI latest; competitive but behind top 3 on most benchmarks
+- TREND: gap between frontier models shrinking fast; reasoning+multimodal+efficiency all improving; GPT-4-level performance now available at dramatically lower costs
+- KEY SHIFT: reasoning models (o-series, R1) trading speed for accuracy; multimodal now standard; agentic capability=primary differentiator
+|src:llm-stats.com,renovateqr.com,tweaktown.com,vellum.ai,labla.org|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:AI-company-strategy-2026|key-findings:
+- OPENAI: $25B annualized revenue (Feb 2026); $730B pre-money valuation ($110B raise Feb 2026: SoftBank $30B, NVIDIA $30B, Amazon $50B); for-profit PBC conversion Oct 2025 (Foundation retains control, ~$130B equity); ChatGPT subscriptions=bulk of revenue; projecting $280B revenue by 2030; cash burn $17B projected 2026; cash-flow positive target 2030; IPO filing H2 2026/listing 2027; shopping feature with Walmart/Target/Etsy integration
+- ANTHROPIC: $19B annualized revenue (Mar 2026, up from $9B end-2025=2x in 3mo); $380B valuation ($30B Series G Feb 2026, led by Coatue+GIC+Microsoft+NVIDIA); 300K+ business customers (80% of revenue); 8/10 Fortune 10; Claude Code=$2.5B annualized (Feb 2026); Claude for Healthcare (HIPAA-ready); marketplace planned (no commission); sustainability+reliability strategy
+- GOOGLE: integration-wins strategy; Gemini 3.1 Pro=strongest generalist; video+spatial+massive context natively; TxGemma for biotech
+- META: democratization via open-source Llama 4; Llama 4 Scout (17B active/109B total, 10M context), Maverick (17B active/128 experts, 1M context), Behemoth (288B active, still training); Llama Community License (700M MAU threshold)
+- xAI: $20B Series E (Jan 2026) at $230B valuation; Memphis supercomputer scaling 200K to 1M GPUs; Grok 5 in training; hiring Wall Street talent for finance-specific training; vertical integration (SpaceX/Tesla resources); 2 co-founders pushed out Mar 2026
+- DEEPSEEK: V3.2 (685B params, MIT license); V4 trillion-param multimodal expected Mar 2026; optimized for Huawei/Cambricon chips (not NVIDIA); input cost ~$0.14/M tokens (half prior version); Chinese models=41% HuggingFace downloads; triggered $1T US tech selloff (Jan 2025 precedent)
+- INDUSTRY SHIFT: hype→pragmatism; smaller models where they fit; embedding intelligence into physical devices; agentic workflows moving demos→production via MCP
+|src:sacra.com,cnbc.com,anthropic.com,crunchbase.com,techcrunch.com,technologyreview.com,ai.meta.com,x.ai|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:open-source-AI-2026|key-findings:
+- Llama 4: Scout(17B/109B,10M ctx), Maverick(17B/128experts,1M ctx), Behemoth(288B,training); MoE architecture; 200 languages; Llama Community License (not OSI-approved, 700M MAU limit)
+- DeepSeek V3.2: 685B params, 128K ctx, MIT license; Speciale variant surpasses GPT-5/matches Gemini 3 Pro on AIME/HMMT; V4 trillion-param multimodal imminent
+- Mistral: Large 3 (675B total MoE); 92% of GPT-5.2 at ~15% price; Ministral 3B/8B for mobile (<500ms on phones); multilingual focus
+- Qwen 2.5: Alibaba; 0.5B-1.5B for edge; competitive on benchmarks
+- TREND: open-source models now compete with/beat frontier closed models on specific benchmarks; MoE architecture dominant; Chinese labs dominate open-source downloads (41% HuggingFace)
+- COST DISRUPTION: Chinese models run at 1/4-1/6 cost of comparable US systems (RAND report); DeepSeek price war forcing industry-wide repricing
+- LICENSING: true OSI open-source (DeepSeek MIT) vs restricted open-weight (Llama Community License, Mistral); licensing governance remains fragmented
+|src:ai.meta.com,contabo.com,o-mega.ai,bentoml.com,machinebrief.com,capmad.com,csis.org|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:compute-infrastructure-GPU-2026|key-findings:
+- NVIDIA DOMINANCE: B200/GB200 Blackwell sold out through mid-2026; 3.6M unit backlog; volume production started Feb 2026; ~35K NVL72 racks shipping 2026=~$105B revenue; B200 production cost $5.7-7.3K, sale price $30-40K (82% gross margin); GB200 $60-70K; NVL72 rack ~$3M
+- H100 PRICING: purchase $25K+; cloud $2.85-3.50/hr (down 64-75% from peak, stabilizing); H200 $30-40K purchase, $3.72-10.60/hr cloud
+- SUPPLY: B200 availability pushing down prior-gen prices 10-20%; multi-year H100 reservations expiring 2026→more secondary supply; competition among cloud providers intensifying (differentiation via networking, storage, compliance, not just price)
+- SOVEREIGN AI: $250B ecosystem shift to localized compute; >$100B global spending projected 2026; India BharatGen $100B (Adani+Google+Microsoft); Deutsche Telekom+NVIDIA sovereign Industrial AI Cloud; France leading EU sovereign compute
+- CLOUD vs ON-PREM: hybrid convergence year; IDC: 75% enterprises adopt hybrid by 2027; 3-tier model (cloud elasticity, on-prem production inference, edge real-time); cloud costs exceed 60-70% of on-prem equivalent→capital investment attractive for predictable workloads; data sovereignty driving on-prem
+- INFERENCE SHIFT: inference=2/3 of all AI compute demand; infrastructure focus shifting from training→continuous production inference
+|src:docs.jarvislabs.ai,silicondata.com,intuitionlabs.com,epoch.ai,financialcontent.com,mckinsey.com,nartaq.com,deloitte.com|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:AI-talent-market-2026|key-findings:
+- SHORTAGE: demand exceeds supply 3.2:1 globally; 1.6M open positions vs 518K qualified candidates; AI job postings +78% YoY, talent pool +24% only
+- SALARIES: median AI professional $160K; 67% premium over traditional SWE; top 1% researchers >$1M packages ($2-4M stock at Series D); North America avg $285K; Singapore leads Asia at $115K
+- GEOGRAPHIC: APAC highest shortage (1:3.6 ratio); Eastern Europe 20-90% cost savings vs US; 76% AI positions now remote-eligible
+- HIRING SHIFTS: AI/ML hiring +88% YoY; admin roles -35.5%; entry-level (P1/P2) -73.4%; increasingly selective=specialized AI skills over entry-level
+- ENTERPRISE: larger companies (1000+ employees) demonstrate broader adoption, more use cases, greater ROI
+- PATTERN: K-shaped talent market mirrors K-shaped VC funding; elite AI talent commands outsized premiums while entry-level opportunities contract
+|src:secondtalent.com,riseworks.io,patentpc.com,hakia.com,ravio.com,jeeviacademy.com|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:AI-compliance-tooling-GRC-2026|key-findings:
+- EU AI ACT TIMELINE: Aug 2025=general-purpose AI obligations LIVE; Aug 2026=high-risk AI requirements+penalties (up to €35M or 7% global revenue); NIST AI RMF+ISO 42001 frameworks complementary
+- MARKET: Gartner forecasts 50% growth in GRC tool investment by 2026; fragmented AI regulation→4x growth covering 75% of world's economies→$1B total compliance spend by 2030
+- PURPOSE-BUILT LEADERS: Credo AI ($39.3M raised, Gartner Market Guide Representative Vendor, Gartner Cool Vendor AI Cybersecurity Governance), Holistic AI (London, founded 2020, AI governance+risk+compliance), Arthur AI (monitoring+evaluation)
+- ENTERPRISE GRC: OneTrust (most feature-rich dedicated AI tooling in enterprise GRC; algorithmic impact assessments, model risk documentation, ML platform integration)
+- MARKET STRUCTURE: GRC automation vs enterprise AI governance vs developer observability vs workflow runtime control=4 distinct jobs; most GRC platforms retrofitting AI onto existing frameworks; few purpose-built AI Act tools
+- CERT RACE: ISO 42001 (AI management system) emerging as differentiating certification; 12-18mo to build cert stack (ISO 27001+SOC 2+ISO 42001)=genuine entry barrier
+- GAP: >50% organizations lack systematic AI system inventories; can't classify risk without knowing what AI exists
+|src:delve.co,secureprivacy.ai,kla.digital,venvera.com,vectra.ai,enactia.com,credo.ai|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:foundation-model-economics-2026|key-findings:
+- INFERENCE COST CRISIS: OpenAI spending $1.35 for every $1 earned; inference costs=primary economic bottleneck; race-to-zero pricing funded by VC+hyperscaler cross-subsidies; price normalization upward="when not if"
+- TRAINING COSTS: custom model from scratch $500K-$5M+ compute; fine-tuning open-source $15K-$80K
+- API PRICING (Mar 2026): GPT-5.4 $2.50/$15 per M I/O tokens; GPT-5.4 Pro $30/$180; Gemini 2.5 Pro $1.25/$10; Claude Opus 4.6 comparable to GPT-5.4; Amazon Nova Micro $0.000035/1K input (428x cheaper than Opus-class); typical enterprise usage $500-5K/month
+- COST DECLINE: AI inference costs fell 78% through 2025 for some providers; batch inference=50% savings vs on-demand
+- OPTIMIZATION: quantization (INT8/INT4)=2-4x reduction; distillation=90%+ capability at fraction of cost; KV cache compression more impactful than weight quantization for long-context; sub-billion models now handle many practical tasks
+- EDGE: ExecuTorch 1.0 GA (Oct 2025, 50KB base, 12+ hardware backends); Llama 3.2 1B/3B, Gemma 3 270M, Phi-4 mini 3.8B, SmolLM2 135M-1.7B all targeting on-device
+- PROFITABILITY: OpenAI projects cash-flow positive 2030; Anthropic revenue doubling quarterly but profitability timeline unclear; Chinese models 4-6x cheaper=structural price pressure
+|src:aiautomationglobal.com,go-cloud.io,intuitionlabs.com,pricepertoken.com,redis.io,gpunex.com,edge-ai-vision.com,deloitte.com|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:AIaaS-market-structure-2026|key-findings:
+- MARKET SIZE: AIaaS $20.26B(2025)→$91.20B(2030) @35.1% CAGR; AI software platforms $29.3B(2026)→$96.8B(2035) @14.2%
+- ENTERPRISE ADOPTION: 64% organizations actively using AI in operations; moving from pilots→scaled deployment; 86% say AI budget will increase 2026; 40% say increase ≥10%
+- DEPLOYMENT: cloud-based AI=61.7% market share by 2035; but "three-tier hybrid" emerging (cloud elasticity, on-prem consistency, edge latency)
+- NO-CODE/LOW-CODE: highest CAGR segment; enabling non-technical users to build+deploy AI
+- AGENTIC AI: experiments→full deployments early 2026; MCP=97M monthly SDK downloads (Feb 2026); adopted by all major AI providers; time-to-integration months→weeks; development costs -70%; productivity +35-40% within 6 months
+- MCP GOVERNANCE: Linux Foundation Agentic AI Foundation (AAIF) launched Dec 2025; co-founders=OpenAI,Anthropic,Google,Microsoft,AWS,Block; MCP+A2A under AAIF; 75% gateway vendors expected to integrate MCP features by 2026
+- ENTERPRISE CONSOLIDATION: VCs predict enterprises spending more on AI through fewer vendors in 2026; proprietary data+non-replicable products=most defensible
+- VC FUNDING: AI startups=41% of $128B VC in 2025; Feb 2026=$189B single month (record, +780% YoY); 83% to just 3 companies (OpenAI $110B, Anthropic $30B, Waymo $16B); K-shaped/bifurcated market; seed AI companies command 42% valuation premium vs non-AI
+|src:marketsandmarkets.com,deloitte.com,nvidia.com,techcrunch.com,crunchbase.com,onereach.ai,arcade.dev|refreshed:2026-03-22|next:2026-04-22]
+
+R[topic:AI-industry-cross-cutting-patterns-2026|key-findings:
+- PATTERN-1 K-SHAPED-BIFURCATION: capital, talent, and enterprise spend all concentrating into fewer winners; 83% VC to 3 companies; top 1% researchers >$1M; enterprises consolidating vendors
+- PATTERN-2 CHINESE-COST-DISRUPTION: DeepSeek+Qwen+ByteDance models at 1/4-1/6 US cost; 41% HuggingFace downloads; optimizing for non-NVIDIA chips (Huawei/Cambricon); structural price pressure on US frontier labs
+- PATTERN-3 INFERENCE-ECONOMICS-CRISIS: all frontier labs unprofitable; OpenAI $1.35 spend per $1 revenue; race-to-zero unsustainable; price normalization inevitable but timing uncertain; optimization (quantization/distillation/edge) partially offsetting
+- PATTERN-4 AGENTIC-INFLECTION: MCP standardization (97M downloads, all major providers) enabling real enterprise agent deployment; integration (not intelligence) is primary bottleneck; agentic capability becoming model differentiator
+- PATTERN-5 SOVEREIGN-COMPUTE-EMERGENCE: $250B shift to national AI infrastructure; compute=strategic asset like oil/defense; India $100B, France leading EU; Deutsche Telekom sovereign cloud; regulatory+data sovereignty driving
+- PATTERN-6 OPEN-SOURCE-FRONTIER-CONVERGENCE: open models (DeepSeek, Llama, Mistral) now competitive with/beating closed frontier on specific benchmarks; MoE architecture enabling; structure prediction (bio) moat already gone via open-source; moat shifting to proprietary data+integration depth
+- PATTERN-7 COMPLIANCE-REGULATORY-ACCELERATION: EU AI Act Aug 2026 high-risk deadline approaching; ISO 42001 cert race; >50% orgs lack AI inventories; GRC investment +50% 2026; compliance becoming genuine entry barrier AND enterprise sales driver
+|refreshed:2026-03-22|next:2026-04-22]

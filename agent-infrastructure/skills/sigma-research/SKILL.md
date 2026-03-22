@@ -58,7 +58,9 @@ Research current best practices, frameworks, and patterns in your domain areas.
 
 ## Format
 Store research as:
-R[{topic}:{key-findings}|src:{source-urls}|refreshed:{YYYY-MM-DD}|next:{suggested-next-refresh}]
+R[{topic}:{key-findings}|src:{source-urls}|refreshed:{YY.M.D}|next:{YY.M.D}]
+
+Date format MUST be YY.M.D (e.g. 26.3.22 for 2026-03-22). This is required for the freshness validator.
 
 One R[] block per topic area. Include sources for verification.
 ```
