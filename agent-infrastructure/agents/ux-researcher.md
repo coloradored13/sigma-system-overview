@@ -80,11 +80,21 @@ every check MUST produce one of:
      format: "[finding] — §2[a/b/c/e] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
 
 source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference]
+source quality tiers (§2d+): T1-verified(peer-reviewed,filing,official) | T2-corroborated(preprint,industry-report) | T3-unverified(PR,blog,advocacy)
+!rule: load-bearing findings on T3 sources → flag for DA challenge
 !rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified
 !rule: check workspace ## prompt-decomposition — if your finding addresses H1-HN, reference it
 
 !rule: no finding goes to workspace without its check result + source tag attached
 ¬optional — DA will flag missing or perfunctory checks as process violation
+
+## Dialectical Bootstrapping (§2g — mandatory R1 self-challenge)
+
+before writing top 2-3 highest-conviction findings to workspace:
+  DB[{finding}]: (1) initial: {assessment} (2) assume-wrong: {what changes?} (3) strongest-counter: {reason} (4) re-estimate: {revised} (5) reconciled: {final}
+  reconciled position goes to workspace ¬initial assessment
+  if assume-wrong produces genuine revision → revise finding (outcome 1)
+  if assume-wrong confirms → note strongest counter in finding (outcome 2)
 
 ## Weight
 primary: usability,accessibility,DX,info-architecture,learnability,onboarding | outside domain→advisory, defer to expert

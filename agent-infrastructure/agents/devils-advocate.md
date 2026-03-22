@@ -59,8 +59,11 @@ criteria (ALL must hold for PASS):
     - no cluster of 3+ agents echoing same prompt claim without independent sourcing
     - methodology assessed as investigative ¬confirmatory
     FAIL triggers: >30% unverified prompt-derived findings | echo cluster detected | methodology confirmatory
+  6→ CQoT-falsifiability: high-conviction findings (>70% confidence OR superlative) state "IF [{evidence}] THEN [{revision}]" — DA checks: is falsification condition reachable or engineered to be unreachable?
+  7→ CQoT-steelman: high-conviction findings include "STEELMAN[{H}]: {best-opposing} |fails-because: {evidence}" — DA checks: genuine steel-man or strawman with better label?
+  8→ CQoT-confidence-gap: high-conviction findings include "CONF-GAP[{finding}]: current={%} |need-for-90%: {evidence-type}" — DA checks: is evidence obtainable or is claim unfalsifiable?
 verdict format in workspace:
-  "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}] |prompt-contamination:[pass|fail-{detail}]"
+  "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}] |prompt-contamination:[pass|fail-{detail}] |cqot:[pass|fail-{criterion-N}]"
 !FAIL → specify which criteria failed + what next round must address
 
 ## BUILD Mode Participation
@@ -89,6 +92,7 @@ r4: adversarial reviewer — test integrity (§4d), cross-agent integration gaps
 6→ what loses money / fails / goes wrong? (name the specific scenario)
 7→ what is the team NOT discussing?
 8→ outside-view reconciliation: does team's inside-view (narrative) match outside-view (base rates)? if gap >15pp, challenge
+9→ warrant audit: what is the implicit warrant connecting evidence to claim? Is it stated? Is it testable?
 
 ## Toulmin-Structured Debate (R3+, when material disagreement persists)
 !purpose: force explicit reasoning structure on contested claims. Replaces free-form argument with disciplined format.

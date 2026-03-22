@@ -179,6 +179,23 @@ source types (every finding MUST carry one):
   - cluster of agents producing [prompt-claim] on same hypothesis → echo chamber flag
   - [independent-research] that uses near-identical language to prompt → reclassify as [prompt-claim], challenge
 
+#### §2d+ source quality tiers (26.3.22)
+
+!purpose: distinguish source QUALITY within source TYPE. [independent-research] from Wikipedia ≠ [independent-research] from peer-reviewed journal. Agents tag quality tier alongside source type.
+
+quality tiers (every [independent-research] and [cross-agent] finding SHOULD carry one):
+  T1-verified: peer-reviewed journal, regulatory filing, audited financial statement, official government data
+  T2-corroborated: preprint (arxiv), industry report (Gartner/McKinsey), company-reported with independent corroboration
+  T3-unverified: company PR, blog, advocacy source, derivative media, commentary
+
+!rules:
+  - load-bearing findings resting on T3 sources → DA challenge in r2
+  - T3-only findings ¬sufficient for high-conviction conclusions (>70% confidence)
+  - agents SHOULD tag tier but ¬required for every finding (pragmatic — tag when tier matters for claim strength)
+  - DA audits tier distribution: >50% T3 on load-bearing claims → quality flag
+
+format extension: |source:[independent-research:T1] or |source:[independent-research:T2]
+
 #### §2e premise viability (26.3.18)
 
 !purpose: prevent R1 premise anchoring — agents unconsciously validate user's proposed approach instead of genuinely testing it. Observed: warehouse-game review 26.3.18, 4/4 agents confirmed premise, DA caught in R2 (DA#1 crowding). This check forces explicit premise evaluation before convergence.
@@ -191,6 +208,54 @@ source types (every finding MUST carry one):
 5→ workspace: outcome 1/2/3 format — ¬just "premises: valid"
 
 > BUILD variant → see build-directives.md §2e
+
+#### §2f hypothesis matrix (26.3.22)
+
+!purpose: when ≥3 hypotheses in prompt-decomposition, force systematic evidence evaluation against ALL hypotheses ¬just confirmatory search for preferred hypothesis. Based on ACH (Heuer) structure validated for LLM multi-agent by AgentCDM (arxiv:2508.11995).
+
+!applies-to: ANALYZE reviews where prompt-decomposition ## H[] count ≥ 3
+!does-NOT-apply: reviews with <3 hypotheses, BUILD mode
+
+!rule: agents completing R1 MUST populate evidence rows for their domain findings against all H[]
+!rule: lead integrates agent evidence rows at R1 convergence into unified matrix
+!rule: DA checks for confirmation bias: evidence items that only confirm ¬test
+
+workspace format:
+```
+## hypothesis-matrix
+H1:{text} | H2:{text} | H3:{text}
+E[1]:{evidence} |H1:{+/-/0} |H2:{+/-/0} |H3:{+/-/0} |weight:{H/M/L} |src:{type}
+E[2]:{evidence} |H1:{+/-/0} |H2:{+/-/0} |H3:{+/-/0} |weight:{H/M/L} |src:{type}
+Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
+→ least-inconsistent: {Hn} — lead synthesis must begin here
+```
+
+!constraint: structure-only. Do NOT implement diagnosticity weighting (Dhami 2019: only 11% of trained analysts utilized diagnosticity effectively). Agents evaluate evidence as +supporting/-inconsistent/0-neutral per hypothesis. Lead/DA compute inconsistency scores.
+
+!DA enforcement: DA checks hypothesis matrix for:
+  - evidence rows that are +/+/+ across all hypotheses → non-diagnostic, challenge
+  - hypotheses with zero negative evidence → likely under-tested, challenge
+  - evidence concentrated from single source type → diversity gap
+
+#### §2g dialectical bootstrapping — R1 self-challenge (26.3.22)
+
+!purpose: reduce herding and overconfidence in R1 by forcing agents to self-challenge BEFORE writing workspace findings. Based on Herzog & Hertwig (2009): "crowd within" technique improved accuracy 75% in humans. LLM transfer rate: MODERATE (55-65%) — mechanism is self-consistency via structured prompt variation ¬genuine cognitive reframing.
+
+!applies-to: ALL agent R1 findings (ANALYZE and BUILD)
+!when: BEFORE writing finding to workspace, AFTER completing analysis
+
+!execution: each agent applies to their top 2-3 highest-conviction findings:
+  "DB[{finding}]: (1) initial: {assessment} (2) assume-wrong: {what changes?} (3) strongest-counter: {reason you could be wrong} (4) re-estimate: {revised from opposite perspective} (5) reconciled: {final position integrating both}"
+
+!rules:
+  - ¬full re-analysis. Brief self-challenge per finding. ~3-5 sentences per DB[]
+  - reconciled position goes to workspace ¬initial assessment
+  - if assume-wrong produces genuine revision → revise finding before workspace write (outcome 1)
+  - if assume-wrong confirms original → note strongest counter in finding (outcome 2)
+  - DA evaluates DB[] quality in r2: genuine self-challenge vs performative
+  - performative DB[] (initial and reconciled are identical with no real engagement) → grade modifier
+
+!cost: ~10-15% per-agent processing increase. Zero additional agents.
 
 #### DA enforcement of hygiene checks
 
@@ -331,6 +396,26 @@ scoring: 1-5 per factor. Sum < 12 → TIER-1 | 12-18 → TIER-2 | >18 → TIER-3
 format: "complexity-assessment: {tier} |scores: domain({N}),precedent({N}),stakes({N}),ambiguity({N}),uncertainty({N}) |total:{sum} |team-size:{N}"
 user may override tier selection
 
+### §3c implementation triage — when to use sigma-review (26.3.22)
+
+!purpose: formalize decision boundary for sigma-review vs enhanced single-instance. Research confirms enhanced single-instance achieves ~85-88% of sigma-review quality at ~4-5% cost. Sigma-review justified only when its irreducible advantages (DA context firewall + cross-session calibration) are load-bearing.
+
+!decision-rule: ALL three conditions must hold for sigma-review:
+  1→ stakes: ≥$1M financial impact OR regulatory consequence OR 12+ month strategic decision
+  2→ herding-risk: contested claims, multiple plausible hypotheses, confirmation bias danger
+  3→ calibration-matters: decision depends on probability estimates being accurate ¬just directionally correct
+
+!fail-any → use enhanced single-instance with cognitive frameworks (calibration protocol + Toulmin warrants + dialectical self-challenge + source tiers + pre-mortem)
+
+!sigma-review NOT justified when:
+  - question is fact-verifiable (correct answer exists — look it up)
+  - domain has zero accumulated sigma-review calibration history
+  - zero functional diversity needed (single domain, single perspective sufficient)
+
+!lead reports triage decision:
+  format: "TRIAGE: sigma-review|single-instance |stakes:{met/not-met} |herding:{met/not-met} |calibration:{met/not-met}"
+  user may override triage
+
 ### §3b evaluation protocol v1.1 (26.3.15)
 
 !purpose: measure quality systematically. Replaces ad-hoc "was it good?" with rubric-based evaluation.
@@ -360,6 +445,29 @@ see /sigma-evaluate skill for full evaluation pipeline (3 evaluator agents + jud
 !rule: when predictions from past reviews resolve (outcomes known), update agent calibration data
 format: "OUTCOME[{review}:{prediction}]: predicted={X} |actual={Y} |error={delta} |→ calibration-update"
 !purpose: each review makes future reviews more accurate through tracked calibration
+
+#### log score tracking (26.3.22)
+
+!purpose: formally track agent calibration across reviews using log scoring (preferred over Brier for sigma-review's use case — log scoring penalizes confident-wrong more heavily, which is the identified failure mode). Only ~30-40% of estimates have resolvable outcomes; value compounds cross-session.
+
+!workspace format (added at review close for resolvable estimates):
+```
+## calibration-tracking
+LS-TRACK[{review}:{agent}:{estimate-id}]: predicted:{point} |range:{80%=[lo,hi]} |resolution-date:{date|none} |outcome:PENDING |log-score:PENDING
+```
+
+!agent memory extension:
+  agents with resolved estimates update: LS-avg:{score}|n:{count}|trend:{improving|stable|declining}
+
+!lead usage at synthesis:
+  read agent LS-avg from memory → weight agent probability claims by historical calibration quality
+  agents with declining trend + high confidence → DA flag
+
+!resolution protocol:
+  when estimate outcome becomes known → lead updates LS-TRACK with outcome + log-score
+  lead stores OUTCOME[{review}:{prediction}] per existing §3b format
+  log-score = -log2(predicted probability of actual outcome)
+  lower score = better calibration
 
 ## bayesian-consensus-tracking v1.1 (26.3.15)
 
