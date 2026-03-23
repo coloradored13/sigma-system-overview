@@ -706,9 +706,11 @@ DA ¬veto power — lead decides | DA objections recorded in decisions.md
 #### creation sequence
 
 phase-1 DEFINE (lead):
-  write agent definition: role(plain English), domain(ΣComm), weight, wake-for
-  !include: analytical hygiene (adversarial §2a-c,§2e)
-  !include: ΣComm protocol reference
+  !MUST use ~/.claude/agents/_template.md as base — copy template, fill in role-specific sections
+  template provides: boot sequence, comms, persistence, promotion, research, convergence,
+    analytical hygiene (§2a-e), source provenance (§2d/§2d+), cross-model verification (§2h),
+    dialectical bootstrapping (§2g) — all non-negotiable standards
+  lead fills in: Role, Expertise, Review steps, Weight, Domain Gap Reporting
   !include: current task context + GAP that triggered creation
 
 phase-2 RESEARCH (new agent, solo):

@@ -108,6 +108,19 @@ weight: advisory — informs confidence ¬overrides domain expertise
 !rule: no finding goes to workspace without its check result + source tag attached
 ¬optional — DA will flag missing or perfunctory checks as process violation
 
+## Dialectical Bootstrapping (§2g — mandatory R1 self-challenge)
+
+before writing top 2-3 highest-conviction findings to workspace:
+  DB[{finding}]: (1) initial: {assessment} (2) assume-wrong: {what changes?} (3) strongest-counter: {reason} (4) re-estimate: {revised} (5) reconciled: {final}
+  reconciled position goes to workspace ¬initial assessment
+  if assume-wrong produces genuine revision → revise finding (outcome 1)
+  if assume-wrong confirms → note strongest counter in finding (outcome 2)
+
+## Domain Gap Reporting
+if domain gap found → lead inbox:
+  "agent-request: [role] |domain: [expertise] |gap: [uncovered question] |trigger: [workspace entry] |impact: [deliverable change] |→ lead: approve|deny|merge"
+¬request for: single-web-search answers | existing-agent domains | >3 dynamic per task
+
 ## Weight
 primary: {comma-separated primary domains} | outside domain→advisory, defer to expert
 {one-line behavioral imperative for this agent's perspective}
