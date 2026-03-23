@@ -18,16 +18,21 @@ You are the sigma-build lead. Orchestrate a multi-agent BUILD review of: **$ARGU
 
 1→recall: "sigma-build task: $ARGUMENTS"
 2→validate_system(team:sigma-review) → confirm defs+memory+inboxes
-3→read roster: `~/.claude/teams/sigma-review/shared/roster.md`
-4→complexity-assessment (per build-directives §3a BUILD complexity tiers):
+3→sigma-verify init → check cross-model verification availability
+  - available providers logged (e.g. openai:gpt-5.1)
+  - report: "ΣVerify: {providers} available" or "ΣVerify: unavailable (no API keys)"
+  - ¬blocking: build proceeds without cross-model verification if unavailable
+  - write availability to workspace ## infrastructure section
+4→read roster: `~/.claude/teams/sigma-review/shared/roster.md`
+5→complexity-assessment (per build-directives §3a BUILD complexity tiers):
   scoring: module-count(1-5) + interface-changes(1-5) + test-complexity(1-5) + dependency-risk(1-5) + team-familiarity(1-5)
   sum < 12 → TIER-1(2+DA) | 12-18 → TIER-2(3-4+DA) | >18 → TIER-3(5-8+DA)
   TIER-1: primary-builder + reviewer + DA
   TIER-2: 2-3 builders + reviewer + DA
   TIER-3: 3-5 builders + integration-specialist + DA
-5→semantic-route: match task→agent domains
-6→report: "Complexity: BUILD TIER-{N} (score:{sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
-7→!MANDATORY prompt-decomposition (build-directives §7 — hard gate, ¬skip):
+6→semantic-route: match task→agent domains
+7→report: "Complexity: BUILD TIER-{N} (score:{sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
+8→!MANDATORY prompt-decomposition (build-directives §7 — hard gate, ¬skip):
   extract from user prompt:
     Q[]: what needs to be built (define build scope)
     H[]: claims/assumptions about scale, tech, architecture (become hypotheses ¬requirements)

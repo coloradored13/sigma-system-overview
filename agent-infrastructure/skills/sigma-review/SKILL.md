@@ -18,16 +18,21 @@ You are the sigma-review lead. Orchestrate a multi-agent ANALYZE review of: **$A
 
 1→recall: "sigma-review team task: $ARGUMENTS"
 2→validate_system(team:sigma-review) → confirm defs+memory+inboxes
-3→read roster: `~/.claude/teams/sigma-review/shared/roster.md`
-4→complexity-assessment (per directives §3a ANALYZE complexity tiers):
+3→sigma-verify init → check cross-model verification availability
+  - available providers logged (e.g. openai:gpt-5.1)
+  - report: "ΣVerify: {providers} available" or "ΣVerify: unavailable (no API keys)"
+  - ¬blocking: review proceeds without cross-model verification if unavailable
+  - write availability to workspace ## infrastructure section
+4→read roster: `~/.claude/teams/sigma-review/shared/roster.md`
+5→complexity-assessment (per directives §3a ANALYZE complexity tiers):
   evaluate: domain-count(1-5), precedent(1-5), stakes(1-5), ambiguity(1-5), uncertainty(1-5)
   sum < 12 → TIER-1(3+DA) | 12-18 → TIER-2(4-5+DA) | >18 → TIER-3(5-8+DA)
   !rule: reference-class-analyst wakes for ALL tiers
   !rule: DA always from r2
   > BUILD complexity tiers → /sigma-build skill
-5→semantic-route: match task→agent domains. direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
-6→report: "Complexity: ANALYZE TIER-{N} ({sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
-7→!MANDATORY prompt-decomposition (per directives §7 — hard gate, ¬skip):
+6→semantic-route: match task→agent domains. direct-match→wake | indirect→wake | uncertain→wake (perspective>tokens)
+7→report: "Complexity: ANALYZE TIER-{N} ({sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
+8→!MANDATORY prompt-decomposition (per directives §7 — hard gate, ¬skip):
   read directives §7a → extract from user prompt:
     Q[]: questions user wants answered (define research scope)
     H[]: claims/assumptions user makes (become hypotheses for agents to test ¬facts)
