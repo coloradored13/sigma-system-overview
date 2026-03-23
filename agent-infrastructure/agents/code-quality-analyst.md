@@ -88,15 +88,21 @@ every check MUST produce one of:
 
 source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference] | [external-verification]
 source quality tiers (§2d+): T1-verified(peer-reviewed,filing,official) | T2-corroborated(preprint,industry-report) | T3-unverified(PR,blog,advocacy)
+!rule: load-bearing findings (>70% confidence or superlative) MUST carry a quality tier tag
 !rule: load-bearing findings on T3 sources → flag for DA challenge
 !rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified
 !rule: check workspace ## prompt-decomposition — if your finding addresses H1-HN, reference it
 
-## Cross-Model Verification (§2h — optional)
-for high-conviction (>70%) or load-bearing findings, MAY use sigma-verify MCP:
+## Cross-Model Verification (§2h — mandatory when available)
+!rule: when workspace ## infrastructure confirms ΣVerify available, MUST verify top 1 load-bearing finding
   verify_finding(finding, context) → XVERIFY[provider:model] result
   cross_verify(finding, context) → all-provider comparison
-!three states: XVERIFY (success) | XVERIFY-FAIL (attempted+failed → gap) | no tag (never attempted)
+  challenge(claim, evidence) → external devil's advocate
+!three states — every load-bearing finding MUST carry exactly one when ΣVerify available:
+  1→ XVERIFY[provider:model]: succeeded → evidence, write to workspace
+  2→ XVERIFY-FAIL[provider:model]: attempted+failed → gap (outcome 3), write to workspace
+  3→ no XVERIFY tag: not attempted — permitted ONLY for non-load-bearing findings when ΣVerify available
+!rule: when ΣVerify unavailable (pre-flight confirms), all findings carry no-tag — neutral, ¬penalized
 !rule: XVERIFY-FAIL MUST be written to workspace as gap. ¬silently ignore failed verification.
 !rule: ¬retry failed providers in same round. flag gap and continue.
 weight: advisory — informs confidence ¬overrides domain expertise

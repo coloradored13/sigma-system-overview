@@ -183,16 +183,18 @@ source types (every finding MUST carry one):
 
 !purpose: distinguish source QUALITY within source TYPE. [independent-research] from Wikipedia ≠ [independent-research] from peer-reviewed journal. Agents tag quality tier alongside source type.
 
-quality tiers (every [independent-research] and [cross-agent] finding SHOULD carry one):
+quality tiers:
   T1-verified: peer-reviewed journal, regulatory filing, audited financial statement, official government data
   T2-corroborated: preprint (arxiv), industry report (Gartner/McKinsey), company-reported with independent corroboration
   T3-unverified: company PR, blog, advocacy source, derivative media, commentary
 
 !rules:
+  - load-bearing findings (>70% confidence or superlative) MUST carry a quality tier tag
+  - non-load-bearing findings SHOULD carry a quality tier tag (pragmatic — tag when tier matters for claim strength)
   - load-bearing findings resting on T3 sources → DA challenge in r2
   - T3-only findings ¬sufficient for high-conviction conclusions (>70% confidence)
-  - agents SHOULD tag tier but ¬required for every finding (pragmatic — tag when tier matters for claim strength)
   - DA audits tier distribution: >50% T3 on load-bearing claims → quality flag
+  - missing quality tier on load-bearing finding → DA flags as process violation (same as missing source tag)
 
 format extension: |source:[independent-research:T1] or |source:[independent-research:T2]
 
@@ -261,11 +263,12 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
 
 !purpose: reduce single-model blind spots by verifying findings against external AI models (OpenAI, Google AI) via sigma-verify MCP server. Different training data → different confabulation patterns → genuinely independent signal (complementary to DA's independent information-state challenge).
 
-!when: OPTIONAL. agents MAY invoke sigma-verify tools during analysis. NOT mandatory — use when:
+!when: MANDATORY when ΣVerify available (workspace ## infrastructure confirms). Each agent MUST verify their top 1 load-bearing finding. Use additionally when:
   - high-conviction finding (>70% confidence) that is load-bearing for conclusions
   - finding relies heavily on [agent-inference] without strong [independent-research] backing
   - DA requests cross-model check during r2 challenge
   - cross_verify particularly valuable when agents converge unanimously (zero-dissent signal)
+!when-unavailable: if pre-flight confirms ΣVerify unavailable (no API keys), all findings carry no-tag — neutral, ¬penalized
 
 !tools (via sigma-verify MCP):
   init → check provider availability (call once per session)
@@ -278,7 +281,7 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
   [external-verification] → cross-model corroboration or challenge from non-Claude model
   weight: advisory (different model ¬domain expert) — informs confidence ¬overrides domain analysis
 
-#### three verification states (agents MUST distinguish)
+#### three verification states — every load-bearing finding MUST carry exactly one when ΣVerify available
 
 1→ XVERIFY[{provider}:{model}]: {assessment}({confidence}) |{reasoning} |source:external-{provider}-{model}|
   verification SUCCEEDED. result is evidence. write to workspace findings.
@@ -291,7 +294,8 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
   !rule: cross_verify returning partial results (1-of-N providers) → flag as partial coverage.
 
 3→ no XVERIFY tag
-  verification was never attempted. neutral — no claim of external validation.
+  verification was never attempted. permitted ONLY for non-load-bearing findings when ΣVerify available.
+  when ΣVerify unavailable → all findings carry no-tag, neutral, ¬penalized.
 
 !failure handling:
   sigma-verify classifies errors automatically: auth-error|rate-limit|timeout|token-limit|network-error|parse-error
@@ -301,6 +305,7 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
   ¬retry: if provider fails, do NOT retry in same round (budget protection). flag gap and move on.
 
 !DA audit of verification:
+  - ΣVerify available (per workspace ## infrastructure) but agent has zero XVERIFY/XVERIFY-FAIL on load-bearing findings → process violation (verification skipped)
   - XVERIFY-FAIL present but not flagged as gap → process violation
   - agent claims "externally verified" but no XVERIFY tag in workspace → challenge
   - cross_verify with partial coverage treated as full validation → challenge

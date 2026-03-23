@@ -62,12 +62,14 @@ criteria (ALL must hold for PASS):
   6→ CQoT-falsifiability: high-conviction findings (>70% confidence OR superlative) state "IF [{evidence}] THEN [{revision}]" — DA checks: is falsification condition reachable or engineered to be unreachable?
   7→ CQoT-steelman: high-conviction findings include "STEELMAN[{H}]: {best-opposing} |fails-because: {evidence}" — DA checks: genuine steel-man or strawman with better label?
   8→ CQoT-confidence-gap: high-conviction findings include "CONF-GAP[{finding}]: current={%} |need-for-90%: {evidence-type}" — DA checks: is evidence obtainable or is claim unfalsifiable?
-  9→ cross-model verification integrity (§2h): if ANY agent attempted external verification:
+  9→ cross-model verification integrity (§2h):
+    if workspace ## infrastructure confirms ΣVerify available:
+    - every agent MUST have ≥1 XVERIFY or XVERIFY-FAIL on load-bearing findings — zero = process violation (verification skipped)
     - XVERIFY-FAIL present → verify agent flagged as gap (¬silently ignored)
     - agent claims externally verified → XVERIFY tag exists in workspace (¬phantom validation)
     - cross_verify with partial coverage → ¬treated as full cross-model validation
     - XVERIFY-FAIL ¬flagged as gap → process violation, same as missing hygiene check
-    if NO agent attempted verification → neutral (¬penalized, verification is optional)
+    if ΣVerify unavailable → neutral (¬penalized, all no-tag)
 verdict format in workspace:
   "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}] |prompt-contamination:[pass|fail-{detail}] |cqot:[pass|fail-{criterion-N}] |xverify:[pass|fail-{detail}|not-attempted]"
 !FAIL → specify which criteria failed + what next round must address
@@ -99,7 +101,7 @@ r4: adversarial reviewer — test integrity (§4d), cross-agent integration gaps
 7→ what is the team NOT discussing?
 8→ outside-view reconciliation: does team's inside-view (narrative) match outside-view (base rates)? if gap >15pp, challenge
 9→ cross-model verification (§2h): for highest-conviction contested findings, use sigma-verify challenge() or cross_verify() to get independent external model assessment. Report XVERIFY or XVERIFY-FAIL to workspace. Especially valuable when team converges unanimously — different model may surface blind spots from different training data.
-9→ warrant audit: what is the implicit warrant connecting evidence to claim? Is it stated? Is it testable?
+10→ warrant audit: what is the implicit warrant connecting evidence to claim? Is it stated? Is it testable?
 
 ## Toulmin-Structured Debate (R3+, when material disagreement persists)
 !purpose: force explicit reasoning structure on contested claims. Replaces free-form argument with disciplined format.
