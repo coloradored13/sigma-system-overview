@@ -1063,6 +1063,45 @@ audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process 
 !rule: /sigma-audit produces verdict (GREEN/YELLOW/RED), flagged findings, remediation plan, calibration patterns
 !rule: calibration patterns stored to team patterns (store_team_pattern) for cross-review tracking
 
+## §9 post-review-calibration-protocol (26.3.23)
+
+!purpose: close the feedback loop between user ground truth and agent calibration. Without this, calibration is self-referential — agents grade themselves. User corrections are the missing signal.
+
+skill: /sigma-feedback
+two tracks:
+  datum(verifiable-factual) → pushback-once(reference-original-source)→user-confirms→accept→update
+  concept(structural/interpretive) → mini-review(domain-agent+DA)→same-evidentiary-standards-as-review→accept|reject|synthesize
+
+### §9a classification boundary
+datum: specific number|date|name|fact | binary right/wrong | source-checkable
+concept: how-something-works|why-something-happens|framework|mechanism | multiple valid framings
+!rule: lead classifies, user confirms|overrides
+!rule: mixed corrections → split into separate tracks (datums first, then concepts)
+!escalation: datum pushback reveals structural implication → reclassify as concept (user confirms)
+
+### §9b datum rigor
+!rule: exactly one pushback round — reference original source ¬restate finding
+!rule: if lead can verify inline → verify before pushback (skip if verified-correct)
+!rule: user confirms → accept immediately ¬second pushback
+!rule: cascade check mandatory — scan workspace for references to corrected value
+
+### §9c concept rigor
+!rule: user's correction formulated as H[user-correction] — tested ¬assumed
+!rule: mini-review: domain-agent(research independently) + DA(steelman original, challenge correction)
+!rule: same evidentiary standards as full review: §2d source provenance, §2d+ quality tiers
+!rule: rejection requires specific evidence presented to user ¬"the team disagrees"
+!rule: user may provide additional evidence → one more round max
+!rule: domain-agent + DA disagree → user decides (has domain context agents may lack)
+!rule: user-override after 2 rejections → accepted with flag (legitimate — domain context)
+
+### §9d calibration tracking
+correction entry: `C[{track}|{date}]: F[{agent}:{finding}] ...` in agent memory
+error classes:
+  datum: factual-error | source-misread | stale-data | transcription
+  concept: framing-error | omission | oversimplification | domain-gap
+pattern detection: same agent+error-class ≥3 → SYSTEMIC[agent] | same error-class across agents ≥3 → SYSTEMIC[process]
+workspace: corrections appended to archive ## post-review-calibration (DC[] for datum, CC[] for concept)
+
 → actions:
 → new directive → append with version+date
 → directive revision → update version, note change
