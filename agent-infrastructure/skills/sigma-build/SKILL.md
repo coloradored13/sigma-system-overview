@@ -163,7 +163,9 @@ lead runs cross-model code review via sigma-verify:
        security (input validation, injection risks). Cite specific lines."
      UI-REVIEW prompt (for Streamlit/frontend files): "Review this UI code for: usability
        (information hierarchy, interaction flow), state management (race conditions, stale state),
-       accessibility, error states (empty data, loading, failure). Cite specific lines."
+       accessibility, error states (empty data, loading, failure), design best practices
+       (visual consistency, spacing/layout, color usage, typography hierarchy, responsive patterns,
+       component reuse, progressive disclosure). Cite specific lines."
   3→ collect external model feedback per file
   4→ write to workspace ## cross-model-code-review:
      format: "XREVIEW[{provider}:{model}][{file}]: {assessment} |issues:{count} |severity:{H/M/L per issue}"
