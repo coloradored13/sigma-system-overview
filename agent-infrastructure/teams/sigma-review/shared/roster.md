@@ -4,6 +4,7 @@ tech-architect |domain: architecture,security,performance,infra,api-design |wake
 product-strategist |domain: market,growth,monetization,prioritization,user-segmentation |wake-for: feature decisions,positioning,launch readiness,competitive analysis
 ux-researcher |domain: usability,accessibility,mental-models,information-architecture,learnability |wake-for: user-facing changes,flow design,dual-user questions,onboarding
 code-quality-analyst |domain: code-quality,test-coverage,style-consistency,dead-code,edge-cases |wake-for: code review,test analysis,quality audit,style check
+ui-ux-engineer |domain: visual-design,component-architecture,layout,styling,interaction-design,accessibility-implementation,data-visualization,design-systems,frontend-build |wake-for: UI build,frontend implementation,Streamlit app,design quality,component design,styling,responsive layout,data display
 technical-writer |domain: documentation,narrative,examples,onboarding,cross-doc-consistency |wake-for: documentation review,readme,setup docs,api docs,writing quality
 
 devils-advocate |domain: bias-detection,assumption-stress-testing,contrarian-analysis,crowding-risk,narrative-critique |wake-for: consensus challenge,groupthink,stress test,contrarian view,risk underweighting,crowded trades
