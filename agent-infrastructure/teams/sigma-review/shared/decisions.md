@@ -761,6 +761,15 @@ REVISED-PRIMARY-RECOMMENDATION: enhanced single-instance with superforecasting p
 Attention faculty rating is level-dependent: mechanism=WEAK (LLM has no architectural selective attention, uniform salience weighting), behavioral-outcome=MODERATE (round-structure+§7-decomposition compensate). For recommendations, mechanism-level is operationally more important — compensations can fail under prompt-load or time pressure. Deliberate divergence between CDS(WEAK) and TA(WEAK-MODERATE) is evidential not disagreement — both correct descriptions of different levels. |by:tech-architect |weight:primary
   |ctx: cognitive-enhancement meta-review R3, resolving CDS vs TA Attention faculty rating disagreement, 26.3.21
 
+## sigma-audit: kaggle-agi-benchmark (26.3.23)
+
+AUDIT-FLAG[26.3.23]: CB-hard-gate-violated — lead advanced R1→R2 without firing zero-dissent circuit breaker despite DA documenting zero divergence across 5 agents on 4 major claims |remediation:lead must implement CB hard gate check before R2 advancement |status:closed(process-gap-analytically-compensated:DA-R2-herding-challenges-produced-genuine-revisions—PS-EF→Metacog-concession,CDS-72%→62%,RCA-Lake-Wobegon-correction;forward-fix-logged-in-patterns)
+AUDIT-FLAG[26.3.23]: §2d+-quality-tiers-skipped — zero T1/T2/T3 tags on any finding including load-bearing (CDS P=72%→62%, RCA P(baselines)=72%, contamination claims) |remediation:all agents must tag load-bearing findings with quality tiers |status:closed(retroactive-tier-audit-added-to-workspace-26.3.23)
+AUDIT-FLAG[26.3.23]: §2f-hypothesis-matrix-skipped — 6 hypotheses met ≥3 threshold but structured matrix not populated; agents assessed narratively instead |remediation:lead must populate matrix at R1 convergence |status:closed(matrix-compiled-from-agent-findings-added-to-workspace-26.3.23)
+AUDIT-FLAG[26.3.23]: §2g-dialectical-bootstrapping-skipped — zero DB[] entries; agents wrote findings directly without self-challenge |remediation:lead must verify DB[] presence before declaring R1 convergence |status:closed(process-gap-analytically-compensated:DA-R2-forced-equivalent-self-revision—PS-track-switch,CDS-P-revised-10pp,RCA-P-revised-upward;forward-fix-logged-in-patterns)
+AUDIT-FLAG[26.3.23]: §6-contamination-check-missing — no formal CONTAMINATION-CHECK section in workspace; DA-F5 performed prompt audit function but not labeled per §6 |remediation:add explicit section to workspace template |status:closed(formal-contamination-check-section-added-to-workspace-26.3.23)
+AUDIT-VERDICT[26.3.23|kaggle-agi-benchmark]: YELLOW→GREEN |5/5-flags-closed(3-remediated,2-analytically-compensated) |DA-performance-strong(80%-hold,XVERIFY-deployed) |source-provenance-clean(0%-untagged,1%-prompt-claim) |source-quality-strong(10/15-load-bearing=T1,0-T3) |analytical-quality-high |forward-fixes:CB-hard-gate+DB[]-verification-logged-in-team-patterns |by:sigma-audit
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent
