@@ -149,9 +149,35 @@ agents build in parallel per refined plans
     format (gold-plate): "gold-plating: {description} |? required by current phase? cite design doc |→ {if ¬required: revert|defer|lead-approval}"
   → agents complete build after DA mid-build review
 
+### r3.5: Cross-Model Code Review (when ΣVerify available)
+!rule: advisory weight — informs DA review + agent revisions, ¬automatic overwrite
+!rule: skip if workspace ## infrastructure shows ΣVerify unavailable
+!when: after r3 build complete, before r4 DA review
+
+lead runs cross-model code review via sigma-verify:
+  1→ select review targets: key files from each agent's build output (max 8-10 files)
+     priority: files with most cross-agent integration, complex logic, security-sensitive code
+  2→ for each target file, use sigma-verify challenge() or verify_finding():
+     CODE-REVIEW prompt: "Review this code for: correctness (edge cases, error handling),
+       maintainability (naming, complexity), performance (bottlenecks, unnecessary work),
+       security (input validation, injection risks). Cite specific lines."
+     UI-REVIEW prompt (for Streamlit/frontend files): "Review this UI code for: usability
+       (information hierarchy, interaction flow), state management (race conditions, stale state),
+       accessibility, error states (empty data, loading, failure). Cite specific lines."
+  3→ collect external model feedback per file
+  4→ write to workspace ## cross-model-code-review:
+     format: "XREVIEW[{provider}:{model}][{file}]: {assessment} |issues:{count} |severity:{H/M/L per issue}"
+  5→ route relevant feedback to agents (via SendMessage) for consideration:
+     agents respond: "XREVIEW[{file}]: accept|note|reject — {reasoning}"
+     accept → agent fixes before r4 | note → acknowledged, no change with justification | reject → disagree with external model
+  6→ DA reads XREVIEW findings as input to r4 review (advisory, supplements DA's own analysis)
+     !rule: DA may cite XREVIEW findings in challenges but external model ¬overrides DA domain judgment
+     !rule: agent rejection of XREVIEW finding with justification is valid — no penalty
+
 ### r4: Review
 standard adversarial review of completed build:
   → DA serves as adversarial reviewer
+  → DA incorporates r3.5 XREVIEW findings (advisory — supplements, ¬replaces DA analysis)
   → test integrity check (§4d):
     1→ tests verify behavior or just verify code runs?
     2→ tests cover REQUIREMENTS or just IMPLEMENTATION?

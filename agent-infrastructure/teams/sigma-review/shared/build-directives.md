@@ -10,7 +10,7 @@
 
 ### BUILD round structure
 
-rounds: plan(r1) → challenge-plan(r2) → build+checkpoint(r3) → review(r4)
+rounds: plan(r1) → challenge-plan(r2) → build+checkpoint(r3) → cross-model-code-review(r3.5) → review(r4)
 
 r1: lead decomposes task → agents write implementation plans
   → each plan: scope, assumptions, interfaces needed, complexity, risks
