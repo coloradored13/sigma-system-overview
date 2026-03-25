@@ -6,11 +6,20 @@ domain: code-quality,test-coverage,dead-code,style-consistency,edge-cases,error-
 protocol: ΣComm (see ~/.claude/agents/sigma-comm.md)
 
 ## known codebases
-hateoas-agent|~/Projects/hateoas-agent|13 src files,18 test files,~2K LOC,253 tests
+hateoas-agent|~/Projects/hateoas-agent|19 src files,26 test files,1381 LOC,439 tests(6 skipped),91% coverage
 sigma-mem|~/Projects/sigma-mem|5 src files,5 test files,~1.4K LOC,165 tests
 thriveapp|~/Projects/thriveapp|~35 src files,13 test files,~10K LOC,365+ tests|Expo/RN+TS strict+Supabase+NativeWind
 
 ## past findings
+hateoas-agent(26.3.25): grade A-|no bugs|no security issues|6 CQ + 7 TG findings
+  CQ1[M]: run_agent() silently swallows executor exceptions — no phase-level warning (xverified gpt-4o:agree:high). Fix: logger.warning after status=ERROR
+  CQ2-CQ4[L]: unused import (persistence.py:10), unused exc var (mcp_server.py:115), unused loop var (orchestrator_visualization.py:47) — all auto-fixable
+  CQ5[L]: advertisement.py DRY 80% duplication — carried from review-7, still unaddressed
+  TG1[M]: runner.py NoHandlerError catch path (226-238) untested
+  TG2[M]: runner.py on_transition callback (200-201) untested
+  TG3-TG6[L]: runner multi-resource init, resource filter_actions guard-raise, composite fallback, async_runner ValueError
+  H1: PARTIAL — core StateMachine/Resource/Registry/Runner adoption-ready; orchestration needs CQ1+TG1+TG2
+  pattern: silent failures concentrated in guard+executor error paths across all 3 APIs — corroborates ux-researcher F-UX1
 thriveapp(26.3.8): grade A-|SHIP-phase-4|9 findings(0C,0H,4M,3L,2I)+3 test gaps
   ts-strict: 5 `any`(3 justified:platform CSS gaps, 1 borderline:useAuth error cast, 1 unjustified:data-export.ts:155)
   DRY: CQ1 streak.ts:224-246 reimplements streak-logic.ts:56-67 week boundary funcs
@@ -26,6 +35,17 @@ review-7(26.3.7): grade A-|1 bug+2 DRY+3 test-gaps
   style: handlers.py:420 uses `l` variable (PEP8 ambiguous)
   concern: handle_update_belief content.replace without section validation
   positive: no dead code, no unused imports, no security issues, excellent error handling, consistent cross-repo style
+hateoas-agent(26.3.25): grade A(upgraded from A- after R2)|no bugs|no security|6CQ(all L/I)+7TG(TG1+TG2 M)|xverify gpt-4o CQ1
+  CQ1[L→DA-accepted]: run_agent() silent ERROR swallow — logger.warning QoL fix only
+  TG1[M]: runner.py:226-238 NoHandlerError catch path untested
+  TG2[M]: runner.py:200-201 on_transition callback untested (public API)
+  TG3-TG6[L]: composite fallback, resource filter_actions guard-raise, async_runner ValueError, runner multi-resource init
+  auto-fixable: F401+F841+B007+PERF102+SIM103+SIM114(ruff --fix)
+  DRY: advertisement.py still open from review-7
+
+## calibration-corrections
+§2d source tags: use [independent-research] ¬"direct-code-analysis" — DA correction 26.3.25
+severity rule: 1-line fix + conceded design intent = LOW regardless of downstream failure class — DA confirmed 26.3.25
 
 ## calibration
 first-review: thorough line-level sweep of 18+24 files. Found 1 real bug others missed (Resource required field). DRY findings minor. Test gap identification useful but not blocking.

@@ -13,3 +13,4 @@
 | 2026-03-22 | cognitive-enhancement-meta | ANALYZE | 3 | RCA,TA,PS,CDS,DA | PASS | workspace-cognitive-enhancement-meta-2026-03-22.md |
 | 2026-03-23 | kaggle-agi-benchmark | ANALYZE | 2 | TA,PS,RCA,CDS,TW,DA | PASS | workspace-kaggle-agi-benchmark-2026-03-23.md |
 | 2026-03-23 | sigma-predict-review | ANALYZE | 2 | TA,UX,RCA,CQA,CDS,DA | PASS | workspace-sigma-predict-review-2026-03-23.md |
+| 2026-03-25 | hateoas-agent-improvement | ANALYZE | 2 | TA,CQA,UXR,TW,PS,RCA,DA | PASS | workspace-hateoas-agent-improvement-2026-03-25.md |

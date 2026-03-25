@@ -102,7 +102,26 @@ Q[doc-audit-v1: structured review checklist for sigma-mem ecosystem docs |10 ite
 - inter-reviewer overlap on escrow gap confirms it's material
 - [VERIFY] tag count analysis was a novel technique for this review type — useful for any multi-doc consistency check
 
+## review-10(26.3.25): hateoas-agent doc audit v2 (R1 improvement evaluation)
+  - 5 findings: 1H, 2M, 1L, 1I
+  - HIGH: v0.2 orchestration (Orchestrator, AsyncRunner, conditions) absent from README — adoption gap for Q6/H1 | verified gpt-5.1:agree:high
+  - MEDIUM: install extras fail (git-url + separate extras pip = PyPI lookup failure); URL uses coloradored13 not bjgilbert (drift, first flagged review-7)
+  - MEDIUM: RunResult.gateway_calls/dynamic_calls/unique_tools undocumented; gateway_calls has non-obvious first-tool-is-gateway assumption
+  - LOW: _normalize_param_type (registry.py:73) non-obvious parsing, no docstring
+  - INFO: hardcoded model name will drift
+  - STRENGTHS: README A-grade for core library, docstring coverage complete all public APIs, module-level docstrings complete, cross-doc terminology consistent, examples/ matches README listing
+  - H1:PARTIAL, H2:MOSTLY-FALSE, H3:not-complexity-problem-but-discoverability-problem
+  - cross-agent corroboration: tech-architect F1 (AsyncRunner private coupling) + my F1 — both point to orchestration as most isolated subsystem
+
+## calibration
+- loan admin docs require domain-adjacent knowledge I don't have (tax, CLO mechanics, SOFR) — relied on structural/consistency analysis where I have expertise
+- loan-ops-tech-specialist's findings on factual errors (F1 rate cuts, F3 Fedwire, F4 WSO) are outside my detection capability — domain experts catch content errors, I catch structural/consistency issues
+- inter-reviewer overlap on escrow gap confirms it's material
+- [VERIFY] tag count analysis was a novel technique for this review type — useful for any multi-doc consistency check
+- hateoas-agent v2 (review-10): orchestration gap confirmed by cross-agent convergence AND external verification — confident H/M rating appropriate
+
 ## patterns
 - curriculum-vs-reference: 6 docs serve as reference material but curriculum scope demands exercises+assessments+diagrams — structural transformation needed
 - verify-tag-as-quality-signal: uneven [VERIFY] distribution across docs signals inconsistent editorial rigor, not content certainty
 - numbering-scheme-drift: multi-doc projects accumulate formatting inconsistencies when written independently — standardize BEFORE cross-referencing
+- v2-feature-invisibility: README updated for core features but not for major version additions (v0.2 orchestration invisible in README) — pattern for AI-built libraries that add features without updating primary docs

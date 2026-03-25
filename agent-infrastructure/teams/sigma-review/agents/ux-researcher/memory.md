@@ -19,13 +19,16 @@ review-5(hateoas-agent,26.3.7): DX grade A-, 6/6 review-4 blockers resolved, _st
 review-6(hateoas-agent,26.3.7): DX grade A-(holding), 3 resolved(_state-docs,Resource.validate,errors-future-import), error-msgs-hit-fix-it-tier(Google hierarchy), validate-at-init-pattern-complete-across-all-entry-points(Runner+serve), no-regressions, 12-examples-accurate |#7
 review-7(full-system,26.3.7): DX grade A(upgrade from A-), 6 dimensions assessed, first-contact(A)+hateoas-agent(A)+sigma-mem(A-)+ΣComm(A)+agent-infra(A)+error-msgs(A), 3 sigma-mem-README-issues(stats-stale,URL-wrong,pip-install-fails) independently confirmed by product-strategist+technical-writer, systemic-doc-quality(SETUP.md+ARCHITECTURE.md+case-study+setup.sh) lifts system from good-components to coherent-discoverable-system |#10
 review-8(thriveapp,26.3.8): UX grade A-, behav-sci(A)+accessibility(A-)+messaging(A)+ethics(A)+consistency(A-) | 0C/0H/2M/4L/3I | all 10 behavioral-science constraints verified+tested | substance.tsx hardcoded-to-alcohol(!), check-in.ts:45 leaks "domain" | cross-ref: tech-architect S3 notes-encryption ethics-confirmed, technical-writer D5 sort-order UX-confirmed | first non-sigma-system review, first React Native/mobile review | SHIP phase 4 |#9
+review-10(hateoas-agent,26.3.25): DX grade A-(held) | Q3+Q4+Q6+H1+H2 | post-DA: F-UX1(!H upheld-anchor), F-UX2(M upheld), F-UX3(LOW revised-from-M,IDE-plugin-framing-dropped,ergonomic+parity-gap-only), F-UX4(L upheld), F-UX5(INFO downgraded-from-L,Hick's-law-¬applicable-to-docs) | H1:PARTIAL(F-UX1-sole-blocker) | H2:CONFIRMED-observability | DA-revisions:2-concede+1-source-tag+1-uphold | xverify:gpt-5.1=uncertain(upheld) | 3-agent-convergence-F-UX1(CQA+TA+UXR) |#4-post-DA
 
 ## calibration
 C[dual-user tension is accepted tradeoff not a bug|1|26.3]
-C[hateoas-agent overall DX is A at v0.1.0 — upgraded review 7|3|26.3]
+C[hateoas-agent overall DX is A at v0.1.0 — upgraded review 7; held at A- in review-10(v0.2) due to guard observability gap|3|26.3]
 C[action-centric API is the correct default recommendation|1|26.3]
 C[startup validation is the single highest-impact DX improvement — now resolved|2|26.3]
 C[error messages meeting fix-it tier is achievable and worth maintaining|1|26.3]
+C[hateoas-agent guard exceptions: fail-closed(exclude on exc) is correct security default; but exception≠guard-returning-False — distinct failure modes require distinct signals; fix=WARNING log+guard_strict param ¬change fail-closed behavior|1|26.3]
+C[programmatic state-graph introspection (get_state_map) is the key extensibility gap for external tooling authors — mermaid covers human debugging but ¬machine-readable|1|26.3]
 C[delta reviews converge quickly when prior findings are tracked — 3 rounds found diminishing issues|1|26.3]
 C[systemic documentation(setup automation+architecture narrative+case study) is what upgrades DX from A- to A — individual component quality is necessary but not sufficient|1|26.3]
 C[cross-repo URL/stat consistency is the most common DX blocker in multi-repo projects — 3 agents found same issue independently|1|26.3]

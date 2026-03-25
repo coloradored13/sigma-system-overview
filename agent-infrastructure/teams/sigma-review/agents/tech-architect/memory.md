@@ -23,6 +23,7 @@ review-4(26.3.7): arch(A-) api(B+) security(A) release(B) | _state-magic-key-foo
 review-5(26.3.7): arch(A-) api(A-) security(A) release(B+) | 6 review-4 items resolved(anthropic-optional,validate-at-init,quick-start-runnable,LICENSE-author,__version__,runner-exception-safe), _state-docs-still-needed, Resource-validate-parity
 review-6(26.3.7): arch(A) api(A-) security(A) release(A-) | review-4: 5-resolved+2-acceptable+1-partial(mcp-error-leak)+1-reclassified | review-5: 2/2-resolved | new: HasHateoas-Protocol-incomplete(minor), mcp-error-leak-to-LLM(minor,security), dist-stale(trivial) |#3
 review-7(26.3.7): arch(A) api(A-) security(A) release(A-) | review-6: 3/3-resolved(HasHateoas-complete, mcp-error-sanitized, dist-stale-deferred) | confirmed-from-peers: Resource.required-bug(resource.py:166-172,medium), pyproject-URL-mismatch(bjgilbert-vs-coloradored13,trivial), phantom-detection.py-in-ARCHITECTURE.md(trivial), LOC-stats-outdated(trivial) | new: handlers.py-856LOC-should-split(advisory), _detect_agent_identity-broad-except(trivial), setup.sh-no-checksum-verify(advisory), CI-pin-hateoas-version(advisory), roster-3-agents-not-5(trivial), SETUP.md-memory-dir-reference(trivial) |SHIP |#6-new+4-confirmed
+review-8(26.3.25): arch(A) api(A-) | F1[MEDIUM]:AsyncRunner-private-attr-bypass(async_runner.py:97-99+117-128 duplicate guard loop, GPT-5.1-AGREE-high) F2[LOW]:Resource-missing-get_transition_metadata F3[LOW]:guard-context-asymmetry(last_result-vs-workflow-context) F4[LOW]:mcp_server-45%-cov+transport-hardcoded F5[ADVISORY]:CompositeRegistry-error-message-incomplete | H1:PARTIAL(SM+Resource ready,Orchestrator-extenders-blocked-F1) H2:FALSE-for-exploration/PARTIAL-for-lockdown H3:CONFIRMED-LIMITED(seam=AsyncRunner-coupling-not-Orchestrator-concept) | coverage-gaps: mcp_server(45%),resource(80%),runner(80%),composite(86%)
 
 ## calibration
 C[user values honest assessment over diplomatic framing|1|26.3]
@@ -45,6 +46,8 @@ protocol-incomplete: RESOLVED review-7 — HasHateoas Protocol now includes filt
 delta-review-severity-decay: review-4(9)→review-5(3)→review-6(3-minor)→review-7(1-medium+5-trivial/advisory) — 7 rounds confirms diminishing-returns convergence, only cross-repo/doc issues remain
 mcp-vs-runner-consistency: RESOLVED review-6 — MCP server now sanitizes error messages (mcp_server.py:115-119)
 concurrent-workspace-writes: review-7 workspace.md had 5+ agents writing simultaneously — atomic Write needed over incremental Edit for shared files under contention
+async-sync-execution-parity: AsyncRunner duplicates Orchestrator sync execution path (private attr mutation + guard loop) — pattern to watch: async variants that bypass rather than extend sync implementations lose all future improvements to the sync path
+guard-context-semantics-split: StateMachine guards see last_result (flat handler return dict); Orchestrator guards see full accumulated context — same parameter name, different semantics across API surfaces
 
 ¬[over-engineering concerns — sigma-mem is 1,382 LOC but all functional, no dead code]
 ¬[security regressions in review-7 — path traversal, arrow injection, MCP error sanitization all solid]

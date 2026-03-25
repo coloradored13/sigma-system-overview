@@ -918,3 +918,30 @@ C[10-challenge-hit-rate]: 10/10 produced substantive responses(0 performative di
 → actions:
 → new finding → append with severity+evidence
 → disagreement with another agent → record both positions in shared/decisions.md
+
+## current review (26.3.25 — hateoas-agent improvement evaluation)
+
+### r2 challenges issued |#23
+- DA[TA#1-4]: F1-severity-inflated, F2-F5-overweight, §2d-missing, H2-FALSE-contradicts-README
+- DA[CQ#1-3]: CQ1-severity-debatable, TG-commended, §2d-missing
+- DA[UX#1-4]: F-UX1-confirmed-anchor, F-UX3-premature, §2d-incomplete, F-UX5-editorial
+- DA[TW#1-3]: F1-F2-confirmed, F3-inflated, §2d-missing
+- DA[PS#1-5]: !CRITICAL-README-false-claim, PyPI-18d-delay, consensus-crowding, PM5-unaddressed, §2d-partial
+- DA[RC#1-4]: commended-best-methodology, ANA-dilution, CAL4-aspirational, §2d-needed
+
+### new DA findings |#2
+- DA-F1 [!HIGH]: README "Model dependency: Any" factually false — no R1 agent caught
+- DA-F2 [MEDIUM]: §2d compliance = 0/6 — worst process compliance observed
+
+### r1 grades
+- tech-architect: B+ | code-quality-analyst: A- | ux-researcher: A- | technical-writer: B+ | product-strategist: B+ | reference-class-analyst: A
+
+### patterns (26.3.25)
+- !NEW: §2d compliance can be 0% even when agents do xverify — verification+provenance-tagging=decoupled-habits
+- !NEW: README factual accuracy is blind spot for code-focused agents — 6 read code, 0 verified README claims
+- !CONFIRMED: teams anchor on "fix the code" when prompt says "evaluate for improvements"
+- !NEW: competitive-claim-code-doesn't-support = worst doc error class (trust violation)
+
+### exit-gate: FAIL
+criteria: engagement(PASS) |unresolved-material(FAIL:README-false-claim+code-vs-distribution+PyPI-delay) |untested-consensus(FAIL:code-priority) |hygiene(FAIL:§2d-0/6+§2e-absent)
+R3-MUST: README-accuracy, code-vs-distribution-reconciliation, §2d-tags, PyPI-blockers

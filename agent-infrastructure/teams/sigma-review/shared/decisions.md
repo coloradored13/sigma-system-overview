@@ -774,3 +774,32 @@ AUDIT-VERDICT[26.3.23|kaggle-agi-benchmark]: YELLOW→GREEN |5/5-flags-closed(3-
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent
 → revisiting old decision → check if conditions changed, note in ctx
+
+## hateoas-agent improvement review (26.3.25)
+
+forecast:adoption-base-rate-2-5% |by:reference-class-analyst |weight:primary
+  |ctx: RC1(small single-author PyPI packages), RC2(AI agent tooling 2024-2026), RC4(market consolidation). GitHub: 0 stars, 0 forks, 17 days old, not on PyPI
+  |evidence: 5/5 successful analogues (Instructor, Rich, Typer, httpx, Pydantic) required distribution + quality, 0/5 succeeded on quality alone
+  |decision: base rate for >50 stars + >1K monthly downloads within 12mo = 2-5% | code improvements move to 5-8% | code + distribution = 12-30%
+
+forecast:distribution-is-binding-constraint |by:reference-class-analyst |weight:primary
+  |ctx: library already A-/A grade (review-7, reconfirmed this review). Inside-view assumes quality→adoption; outside-view says distribution is the variable that moves probability
+  |evidence: ANA-pattern 5/5, PM1 "nobody came" is 35-40% probability scenario, OV-RECONCILIATION shows inside-view ~30% correct on whether improvements alone drive adoption
+  |decision: code improvements = adoption readiness prerequisites ¬adoption drivers. Binding constraint is distribution (content marketing, ecosystem integration, PyPI publish)
+
+forecast:plugin-strategy-over-framework-strategy |by:reference-class-analyst |weight:primary
+  |ctx: AI agent framework consolidating to 5-7 leaders. LangGraph 24.8K stars, VC-backed. AutoGen maintenance mode. Single-author standalone frameworks: <1% reach top-20
+  |evidence: Instructor pattern (thin composable layer ON existing tools), framework absorption risk 25-35% within 18mo
+  |decision: viable path is niche-excellence or plugin-for-existing-frameworks ¬standalone framework competitor. Plugin strategy 3-5x higher adoption P than standalone
+
+DA:README-accuracy-before-features |by:devils-advocate |weight:primary
+  |ctx: README comparison table claims "Model dependency: Any" — Runner requires anthropic. Install instructions reference nonexistent PyPI. URL uses coloradored13 not bjgilbert. No R1 agent caught specific false competitive claim.
+  |decision: README factual accuracy MUST be corrected before any feature work. False competitive claims erode trust on first contact.
+
+DA:code-vs-distribution-priority |by:devils-advocate(incorporating RCA) |weight:primary
+  |ctx: 5/6 agents code-focused. RCA: code-only=2→5-8% adoption, code+distribution=12-30%. PyPI+README=both code AND distribution.
+  |decision: Priority: (1)PyPI publish+README accuracy, (2)guard observability(F-UX1), (3)distribution activities, (4)remaining code fixes. Code improvements=prerequisites ¬drivers.
+
+DA:exit-gate-FAIL-r2 |by:devils-advocate |weight:gate
+  |ctx: engagement PASS(all B+). Unresolved: README false claims, code-vs-distribution, PyPI delay. Untested: code-priority consensus. Hygiene: §2d 0/6, §2e absent.
+  |decision: R3 required. Must address: README accuracy, code-vs-distribution reconciliation, §2d compliance, PyPI blocker investigation.

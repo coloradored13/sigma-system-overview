@@ -383,6 +383,8 @@ cross-check utility: verify semantic-selection vs keyword-match | auto-routing w
 ## Post-Session Synthesis (native Agent Teams only)
 
 after ALL teammates ✓ via SendMessage:
+!execution-order: steps 1-6 (gather→archive) THEN step 7 (synthesis output) THEN step 8 (shutdown)
+!hard-gate: ¬output synthesis until archive verified (step 6.6) — prevents false "archived" claims
 
 ### 1. Gather
 search_team_memory(team:sigma-review, query:{task-topic})
@@ -479,19 +481,30 @@ if any files synced:
 
 ### 6. Workspace Archive (per directives §8)
 !MANDATORY — archive before shutdown, before workspace is overwritten
+!MANDATORY — archive before synthesis output to user (synthesis may claim "archived" — must be true)
 !purpose: preserve review state for independent process auditing via /sigma-audit
+!correction(26.3.25): lead skipped archiving in hateoas-agent review, output synthesis claiming "workspace archived" without executing Write — false claim. Steps below now enforce order: archive THEN synthesize THEN shutdown.
 
 1→ create archive directory if needed: `~/.claude/teams/sigma-review/shared/archive/`
 2→ generate task-slug from task description (lowercase, hyphens, ≤40 chars)
 3→ copy workspace.md → `archive/{task-slug}-{YYYY-MM-DD}.md`
 4→ prepend archive header per §8b (date, mode, rounds, agents, verdict, directives version)
 5→ update `archive/INDEX.md` per §8c (append row)
-6→ report to user: "Workspace archived: {path}. Run `/sigma-audit {path}` in a fresh context to verify process compliance."
+6→ **verify archive exists**: Read `archive/{task-slug}-{YYYY-MM-DD}.md` — confirm non-empty. Read `INDEX.md` — confirm new row present. If either missing → STOP, retry archive, ¬proceed to synthesis or shutdown.
+7→ report to user: "Workspace archived: {path}. Run `/sigma-audit {path}` in a fresh context to verify process compliance."
 
-### 7. Shutdown
+### 7. Synthesis output
+!rule: only after step 6 verification passes — archive must exist before synthesis claims it does
+!rule: ¬include "workspace archived" or similar claims in synthesis text until step 6.6 confirms archive exists
+!rule: synthesis text references archive path from step 6 (factual, not prospective)
+
+output synthesis to user (plain, include promotion summary + sync summary + audit path + archive path)
+
+### 8. Shutdown
+!gate: steps 6+7 must be complete — ¬send shutdown_request until archive verified AND synthesis delivered
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain, include promotion summary + sync summary + audit path)
+all shutdown → confirm to user: "Team shut down. Archive: {path}"
 
 ## Recovery (BUG-A workaround)
 

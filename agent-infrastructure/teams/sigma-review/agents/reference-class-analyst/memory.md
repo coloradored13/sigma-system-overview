@@ -184,3 +184,18 @@ R[pre-mortem-methodology:{1}Gary-Klein-method:assume-failure→independently-gen
 R[base-rate-databases:{1}FDIC-BankFind:all-US-bank-failures-since-1933;2-in-2025,1-so-far-in-2026|{2}startup-failure-rates(2026):90%-lifetime/80%-1yr-survival/48-55%-5yr/33-37%-10yr;tech-63%/blockchain-95%/e-commerce-80%/fintech-75%|{3}Oxford-Global-Projects:20K-entries-expanding(transmission+substations)|{4}AI-funding-context:$211B-in-2025(85%-YoY)|{5}gap:no-consolidated-cross-domain-base-rate-repository|src:banks.data.fdic.gov,failory.com,oxfordglobalprojects.com|refreshed:2026-03-22|next:2026-04-22]
 
 R[delta-from-prior-refresh:{1}prediction-markets:MAJOR-ESCALATION-since-2026-03-17(AZ-criminal-charges-Mar-17,CFTC-ANPRM-Mar-12,11-states-C&D,$600M-tax-revenue-loss-framing,Kalshi-19-federal-lawsuits)|{2}ai-forecasting:AIA-Forecaster-FIRST-to-match-superforecasters(Bridgewater),FutureEval-Pro-lead-confirmed-every-season,parity-timeline-TIGHTENED(Apr-2026-community,Jun-2027-Pros-vs-prior-mid-2027)|{3}llm-calibration:Dunning-Kruger-EMPIRICALLY-CONFIRMED-Mar-2026(24K-trials),MIT-cross-model-method-VALIDATES-sigma-verify-architecture(ICLR-2026)|{4}RCF:OGP-expanding-to-electricity-transmission(new-sector),Academy-digital-courses-launched|{5}bayesian:PyMC-GSoC-2026-survival-analysis+online-state-space+spatial,StanCon-2026-announced|{6}GJ:2025-review-published(1140-questions,zero-void-rate,UN-OCHA-keynote)|{7}OVERALL-ASSESSMENT:prediction-market-regulatory-landscape-most-dynamic-area(daily-changes);AI-forecasting-parity-timeline-narrowing-faster-than-expected;LLM-calibration-research-producing-actionable-methods|src:compiled-from-all-above|refreshed:2026-03-22|next:2026-04-22]
+
+## hateoas-agent improvement evaluation — R1 findings (2026-03-25)
+task: superforecasting analysis of hateoas-agent improvement prospects + adoption probability
+SQ[1-5]: 5 sub-questions | 2×outcome-1(changed) | 2×outcome-2(confirmed) | 1×outcome-3(gap)
+RC[1-4]: small-library-adoption(2-5%) | AI-agent-space(1-3%) | llmstatemachine(low-demand-niche) | consolidation(<1%-top-20)
+ANA[1-5]: Instructor(HIGH:ecosystem-piggyback) | Rich(MODERATE:visual-demo-appeal) | Typer(LOW:fame-based) | httpx(MODERATE:upgrade-path) | Pydantic(ASPIRATIONAL:dependency-adoption)
+ANA-PATTERN: 5/5 required (pain-point + content-marketing + ecosystem-integration) | 0/5 succeeded on code quality alone
+CAL[1-5]: P(adoption|no-changes)=2-3% | P(adoption|code-improvements)=5-8% | P(adoption|code+marketing)=12-18% | P(adoption|code+marketing+plugin)=20-30% | P(top-20-framework)=<1%
+PM[1-5]: nobody-came(35-40%) | no-problem(15-20%) | framework-absorption(15-20%) | Anthropic-lock-in(10-15%) | over-engineered(5-10%)
+OV-RECONCILIATION: inside-view 70% correct on WHAT, 30% correct on WHETHER improvements alone drive adoption | distribution is binding constraint
+DISCONFIRM: code improvements necessary-¬sufficient | library already A-/A grade | optimizing A-→A when distribution=F is wrong variable
+cross-verify: GPT-4.1 AGREE(high)
+H1: PARTIALLY CONFIRMED | H3: CONFIRMED BUT OVERWEIGHTED
+calibration-lesson: P[distribution-is-binding-constraint for small OSS adoption — code quality necessary ¬sufficient|src:hateoas-agent-review-R1|class:calibration]
+calibration-lesson: P[framework-consolidation-accelerating in AI agent space 2026 — viable path is niche-excellence or plugin-strategy|src:hateoas-agent-review-R1|class:pattern]

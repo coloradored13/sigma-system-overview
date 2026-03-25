@@ -104,6 +104,18 @@ sector-gaps-R3(new): liquid biopsy+multi-omics = TIER-1 (material R1 omission) |
 PATTERN-LEARNED: concession ¬weakness | DA[#1] correct | RCA outside-view = correct synthesis anchor
 calibration: C[R1-confirmed-framing-was-overconfident,DA-challenge-exposed-confirmatory-bias|2|26.3.18]
 
+## review-11: hateoas-agent v0.2 improvement evaluation (26.3.25)
+
+review-11(hateoas-agent,26.3.25): product-strategist R1 complete. 8 findings(F1-F8).
+F2[CRITICAL]:PyPI not published — unresolved after review-5+review-6 mechanical prerequisites. Single largest adoption blocker.
+F3[HIGH]:Orchestrator/v0.2 onboarding gap — 20+ symbols in __init__.py, zero orchestration examples in examples/, README silent on v0.2 entirely.
+F4[HIGH]:model-agnostic Runner absent — flagged review-4 as #1 growth lever, v0.2 did not address. LangGraph/CrewAI/OpenAI SDK all model-agnostic.
+F1[HIGH]:LangGraph dynamic tool calling confirmed 2026 — competitive gap narrowed. Reframe: "deterministic/security" framing contestable (gpt-5.1 PARTIAL verify). Correct frame: "correctness by construction + zero boilerplate" = design fact not behavior claim.
+F6[MEDIUM]:GitHub URL bjgilbert vs coloradored13 still unresolved (review-7 finding, 2 cycles stale).
+H1:PARTIAL(B+ arch, C+ adoption — PyPI blocker holds grade).
+H3:PARTIALLY CONFIRMED — onboarding gap confirmed, architecture clean (Orchestrator IS HasHateoas correctly).
+Cross-agent convergence: tech-architect + technical-writer + product-strategist independently converge on same 2 root gaps: PyPI + v0.2 undiscoverable. Zero dissent. High confidence. |#8
+
 ## review-10 findings — warehouse game (warehouse-lms-analysis, 26.3.18)
 
 R[warehouse-game-gamification-market: Gartner-40%-large-warehouse-adoption-by-2028 | Lucas-Systems-84%-workers-favorable-gamified-workplaces | Gen-Z-90%-favorable,Boomers-80%+ | current-warehouse-gamification=performance-motivation(leaderboards,badges) ¬cognitive-assessment | Pymetrics-model(12-games,91-traits)=closest-analogue-but-white-collar-hiring ¬warehouse | Infios/Korber/Kenco=active-deployments | src:gartner,lucasware.com,stratbeans.com,harver.com|refreshed:26.3.18|next:26.4]

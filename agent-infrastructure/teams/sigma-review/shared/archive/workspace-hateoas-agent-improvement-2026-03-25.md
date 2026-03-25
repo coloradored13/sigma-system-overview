@@ -1,5 +1,15 @@
+<!-- archive header per §8b -->
+<!-- date: 2026-03-25 -->
+<!-- mode: ANALYZE -->
+<!-- tier: TIER-2 -->
+<!-- rounds: 2 (R1 + R2/DA) -->
+<!-- agents: TA, CQA, UXR, TW, PS, RCA, DA -->
+<!-- exit-gate: PASS (revised from FAIL after R2) -->
+<!-- directives: v1.0 -->
+<!-- archived-by: manual recovery (lead skipped §8 archiving before shutdown) -->
+
 # workspace — hateoas-agent improvement evaluation
-## status: active
+## status: archived
 ## mode: ANALYZE
 
 ## infrastructure
