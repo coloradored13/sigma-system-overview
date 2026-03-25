@@ -54,6 +54,8 @@ criteria (ALL must hold for PASS):
   2→ no material disagreements unresolved (or logged as deliberate divergence in decisions.md)
   3→ no new consensus formed in latest round without stress-test
   4→ analytical hygiene checks (§2a/§2b/§2c/§2e) produced substantive outcome ¬perfunctory
+  4a→ §2d source provenance: all findings tagged with source type in R1 (¬retroactive)
+  4b→ §2d+ source quality tiers: load-bearing findings carry T1/T2/T3 tier tags (separate check from §2d type tags)
   5→ prompt contamination within tolerance (§7d audit):
     - ≤30% of findings tagged [prompt-claim] without independent corroboration
     - no cluster of 3+ agents echoing same prompt claim without independent sourcing

@@ -47,7 +47,7 @@ user-confirmed: yes
 
 #### F1 [LOW — fix before external adoption] AsyncRunner private-attr bypass — extensibility trap
 **finding**: AsyncRunner._async_start() (async_runner.py:97-99) directly mutates `orch._current_phase`, `orch._context`, `orch._phase_history` instead of calling public `Orchestrator.start()` / `advance()`. Also duplicates guard-evaluation logic in `_async_advance()` (lines 117-128) that is identical to `Orchestrator.advance()` but cannot inherit its improvements.
-**evidence**: async_runner.py:97-99 vs orchestrator.py:294-299; guard loop at async_runner.py:120-127 ≈ orchestrator.py:322-330 (structural duplicate) |source:independent-research(code-read)|+|source:external-openai-gpt-5.1|
+**evidence**: async_runner.py:97-99 vs orchestrator.py:294-299; guard loop at async_runner.py:120-127 ≈ orchestrator.py:322-330 (structural duplicate) |source:independent-research(code-read):T1|+|source:external-openai-gpt-5.1|
 **impact**: any validation/hooks/instrumentation added to Orchestrator.start() is silently skipped in async workflows. Concrete extension scenario: user subclasses Orchestrator to add event emission on phase transitions, overrides _execute_phase() or start() — AsyncRunner bypasses both, async workflows produce no events, silently.
 **verify**: GPT-5.1 AGREE(high) — "async flows cannot rely on public API extensions being honored"
 **severity-rationale**: within-package private-attr access is standard Python practice (N=0 external Orchestrator extenders currently). DA[#1] correctly challenged "adoption-blocking" framing — revised to LOW with fix-before-external-adoption flag. Structural finding stands.
@@ -56,26 +56,26 @@ user-confirmed: yes
 
 #### F2 [LOW] Cross-API asymmetry: Resource missing `get_transition_metadata`
 **finding**: StateMachine implements `get_transition_metadata()` (state_machine.py:261-270); Resource does not. Registry._handle_action() has a to_state mismatch warning (registry.py:271-287) that is dead code for all Resource-based workflows.
-**evidence**: resource.py — no `get_transition_metadata` method |source:independent-research(code-read)|
+**evidence**: resource.py — no `get_transition_metadata` method |source:independent-research(code-read):T1|
 **impact**: Resource users get zero to_state deviation warnings; cross-API parity tests don't cover metadata completeness.
 **fix**: add `get_transition_metadata` to Resource. Low value unless to_state tracking is documented as a feature.
 **severity-calibration**: HasHateoas Protocol marks it optional — consistent with existing design. Advisory only.
 
 #### F3 [LOW] Guard context source asymmetry — invisible to users
 **finding**: Registry._get_filtered_actions passes `self._last_result` as guard context (registry.py:152). Orchestrator.filter_actions uses `self._context` directly (orchestrator.py:590). Same `context` parameter name, completely different semantics.
-**evidence**: registry.py:152, orchestrator.py:590, state_machine.py:272 |source:independent-research(code-read)|
+**evidence**: registry.py:152, orchestrator.py:590, state_machine.py:272 |source:independent-research(code-read):T1|
 **impact**: StateMachine guards see last handler return value; Orchestrator guards see full accumulated workflow context. Undocumented behavioral split.
 **Q4-answer**: lockdown works but guard authoring requires different mental models across API surfaces with no API signal.
 **fix**: document distinction in each `filter_actions` docstring. Zero-breaking-change.
 
 #### F4 [LOW] MCP server: 45% coverage, transport hardcoded
 **finding**: mcp_server.py has 45% branch coverage. `serve()` only supports `transport="stdio"` but error message implies future support.
-**evidence**: mcp_server.py:89-90; pytest-cov output |source:independent-research(code-read+pytest-cov-output)|
+**evidence**: mcp_server.py:89-90; pytest-cov output |source:independent-research(code-read+pytest-cov-output):T1|
 **fix**: clarify docstring to say stdio-only for v0.2; remove transport param or narrow error message.
 
 #### F5 [ADVISORY] `composite.py`: `_register_tool` error message may omit second resource name
 **finding**: CompositeRegistry._register_tool (composite.py:55-63) — new conflicting registry not yet in `self._registries` at call time, so second resource name may be absent from ToolNameConflictError.
-**evidence**: composite.py:47-63 |source:independent-research(code-read)|
+**evidence**: composite.py:47-63 |source:independent-research(code-read):T1|
 **severity**: advisory — error fires correctly, message completeness only.
 
 #### Hypothesis verdicts (post-DA revised)
@@ -93,36 +93,36 @@ composite.py: 86% (lines 94-101 = fallback tool lookup path)
 
 [STATUS] ✓ R1+R2 COMPLETE | scope: Q1+Q2, H1 | 19 src files line-sweep + ruff --select ALL + coverage analysis | #6 CQ findings, #7 TG findings | xverify: gpt-4o agree:high on CQ1 | DA[#1] CQ1→LOW | DA[#3] source tags added
 
-#### CQ1 [L] Silent agent ERROR swallow — no phase-level warning |xverify:gpt-4o:agree:high| |source:direct-code-analysis+external-openai-gpt-4o|
+#### CQ1 [L] Silent agent ERROR swallow — no phase-level warning |xverify:gpt-4o:agree:high| |source:independent-research(code-read):T1+external-openai-gpt-4o|
 `run_agent()` (orchestrator.py:373) catches all executor exceptions → `AgentResult(status=ERROR, error=str(e))`. `_execute_phase()` (orchestrator.py:638-642) merges phase handler result without inspecting agent statuses. Executor consistently panics → workflow advances normally, no log fires.
 Dialectic: "fail-closed is correct resilience design". CONCEDE fully — phase handler receives AgentResult list and can inspect .error; orchestrator contract does not promise to inspect it. Missing logger.warning is quality-of-life not correctness gap. DA[#1] accepted: severity revised L (was M).
 Fix: `logger.warning("Agent '%s' returned ERROR: %s", agent.name, result.error)` in run_agent() after status=ERROR. Zero API change. Optional: `on_agent_error` callback on Orchestrator.
 Test-gap: no test verifies agent ERROR result is surfaced or logged — TG-OA below.
 xverify: GPT-4o AGREE(high) |source:external-openai-gpt-4o|
 
-#### CQ2 [L] persistence.py:10 — unused import (DiscoveryReport) |source:direct-code-analysis|
+#### CQ2 [L] persistence.py:10 — unused import (DiscoveryReport) |source:independent-research(code-read):T1|
 ruff F401: `DiscoveryReport` imported but never used. `TransitionRecord` is used (line 102). Dead import since v0.1.
 Fix: `ruff --fix` auto-removes. One-liner.
 
-#### CQ3 [L] mcp_server.py:115 — unused exception variable |source:direct-code-analysis|
+#### CQ3 [L] mcp_server.py:115 — unused exception variable |source:independent-research(code-read):T1|
 ruff F841: `except Exception as exc` — `exc` never referenced. `logger.exception()` captures exc_info automatically.
 Fix: change to `except Exception:` (ruff --fix).
 
-#### CQ4 [L] orchestrator_visualization.py:47 — unused loop var + wrong iterator |source:direct-code-analysis|
+#### CQ4 [L] orchestrator_visualization.py:47 — unused loop var + wrong iterator |source:independent-research(code-read):T1|
 ruff B007+PERF102: `for phase_name, phase_def in orchestrator._phases.items()` — `phase_def` never used.
 Fix: `for phase_name in orchestrator._phases:` (one-line change)
 
-#### CQ5 [L] advertisement.py DRY — action-rendering loop 80% duplicated (carried review-7) |source:direct-code-analysis|
+#### CQ5 [L] advertisement.py DRY — action-rendering loop 80% duplicated (carried review-7) |source:independent-research(code-read):T1|
 `format_result_with_actions` and `format_error_with_actions` share identical 8-line action-rendering loop. Only diff: `json.dumps(result)` vs `json.dumps({"error": msg})`.
 Fix: extract `_render_actions(actions) -> str`; both call it. Non-breaking. Still unaddressed from review-7.
 
-#### CQ6 [I] orchestrator.py — `import json` inside closures (3 locations) |source:direct-code-analysis|
+#### CQ6 [I] orchestrator.py — `import json` inside closures (3 locations) |source:independent-research(code-read):T1|
 ruff PLC0415: json imported at orchestrator.py:483, 663, 699 (inside handler closures). Stdlib, already imported elsewhere. Style inconsistency only.
 Fix: hoist `import json` to module-level imports. Zero functional risk.
 
 ---
 
-#### Test Coverage Gaps (Q2) |source:direct-code-analysis+coverage-report|
+#### Test Coverage Gaps (Q2) |source:independent-research(code-read+coverage-report):T1|
 
 **TG1 [M] runner.py:226-238 — NoHandlerError catch path untested**
 `except NoHandlerError` fires when action passes state-validation but handler returns None. Neither `on_phantom_tool` callback nor `strict=True` raise-path in this branch has any test.
@@ -172,24 +172,24 @@ Corroborates ux-researcher F-UX1 (guard exception observability) — shared patt
 xverify: gpt-5.1=uncertain-not-disagree on F-UX1 | gemini-3.1 FAILED 404 | strict=True ¬guard-escalation confirmed by grep | finding upheld
 DA revisions: F-UX3 M→LOW (IDE-plugin framing dropped, concrete user narrowed), F-UX5 L→INFO (Hick's law ¬applicable to docs), source tags added
 
-#### F-UX1 [!H] Guard exception = silent action disappearance, no fix-it path |xverify:gpt-5.1:uncertain(upheld)| |source:code-inspection+[established-framework:T3]|
+#### F-UX1 [!H] Guard exception = silent action disappearance, no fix-it path |xverify:gpt-5.1:uncertain(upheld)| |source:independent-research(code-inspection):T1+[established-framework:T3]|
 Guards exc caught at DEBUG-only (state_machine.py:299-304, resource.py:225-230). strict=True ¬applies to guards — confirmed by grep. Action vanishes. Developer has no signal.
 DX failure: what-wrong=0%, how-fix=0% → fails Google error-msg hierarchy entirely. Three-step diagnosis required.
 DA[#1]: ✓ UPHELD — DA confirmed no challenge on substance. Anchor finding for synthesis.
 Fix: (a) DEBUG→WARNING on guard exception, (b) `guard_strict` param: True → raise on guard exc. Fail-closed preserved.
 Q4-answer: lockdown logic correct; observability of WHY lockdown fires is the gap.
 
-#### F-UX2 [M] Guard ctx undocumented at point of use |source:[independent-research:T2]+code-inspection|
+#### F-UX2 [M] Guard ctx undocumented at point of use |source:[independent-research:T2]+independent-research(code-inspection):T1|
 action() says "guard receives last handler result dict" — ¬shows what keys ctx contains. No inline example. orders_with_guards.py exists but ¬linked from action() signature.
 Self-explanatory = top API usability factor (arXiv 2601.16705, 9/16 devs). Guard ctx fails this — requires external lookup.
 Fix: add ctx example to action()/@action docstrings. 1-line README note.
 
-#### F-UX3 [LOW — revised M→LOW per DA#2] State-graph introspection: ergonomic gap |source:code-inspection|
+#### F-UX3 [LOW — revised M→LOW per DA#2] State-graph introspection: ergonomic gap |source:independent-research(code-inspection):T1|
 DA[#2] CONCEDE PARTIALLY: "IDE plugin authors" framing premature (N=0 external users). Narrowed to concrete users: (1) author debugging without parsing mermaid output, (2) test_cross_api_parity.py already calls get_actions_for_state() per-state manually, (3) parity: DiscoveryReport.to_state_map() exists for discover-mode; strict-mode has no equivalent.
 H1 revision: F-UX3 ¬adoption-blocking. Ergonomic + parity gap only.
 Fix: `sm.get_state_map() -> Dict[str, List[str]]`, export from __init__. Zero breaking change.
 
-#### F-UX4 [L] Orchestrator advance() stall invisible |source:code-inspection|
+#### F-UX4 [L] Orchestrator advance() stall invisible |source:independent-research(code-inspection):T1|
 No log when advance() evaluates all guards and none pass (orchestrator.py:332-333). Stall ≠ loop — no signal which it is.
 Fix: INFO log when N guards evaluated from phase X and none match.
 
@@ -209,13 +209,13 @@ F-UX3 ≈ TW-F1 (v0.2 undiscoverability — programmatic introspection vs README
 
 **STATUS** ✓ COMPLETE R2 | 5 findings (1H, 1M, 2L, 1I) | scope: README+docstrings+examples+cross-doc | verified: gpt-5.1 agree:high on F1 | DA: F3 revised LOW (accepted)
 
-#### F1 [HIGH] v0.2 orchestration invisible in README |verified:gpt-5.1:agree:high| |source:independent-research|
+#### F1 [HIGH] v0.2 orchestration invisible in README |verified:gpt-5.1:agree:high| |source:independent-research:T1|
 README covers StateMachine, Resource, discovery mode, security, examples. Does NOT mention Orchestrator, AsyncRunner, or conditions — the entire v0.2 feature set. First-time evaluator reads README, sees a state-machine library, misses that multi-agent orchestration is included. 12 examples listed but zero orchestration examples in examples/. CLAUDE.md lists v0.2 modules — asymmetry between CLAUDE.md and README.
 →impact: Q6(extensibility docs), H1(adoption readiness). External evaluators for orchestration use cases will not find it.
 →fix: Add "Multi-agent orchestration (v0.2)" section to README after "When to use it". Add one orchestration example file. Add it to examples list.
 →corroborates: tech-architect F1, ux-researcher F-UX3, product-strategist F3 — four independent reviewers identify orchestration subsystem as most isolated
 
-#### F2 [MEDIUM] Install instructions fail for extras |source:independent-research:inferred|
+#### F2 [MEDIUM] Install instructions fail for extras |source:independent-research(inferred):T2|
 README install block:
   step 1: `pip install git+https://github.com/coloradored13/hateoas-agent.git` (core)
   step 2: `pip install 'hateoas-agent[anthropic]'` (extras)
@@ -223,17 +223,17 @@ After a git-url install, step 2 attempts PyPI lookup — package not on PyPI —
 →impact: H1(adoption readiness). First-time user following README cannot install extras.
 →fix: PyPI publish (product-strategist P1) solves root cause. Short-term: consolidate to correct git URL with extras syntax. Resolve URL to bjgilbert.
 
-#### F3 [LOW] RunResult public properties undocumented |source:independent-research| |DA:revised-from-MEDIUM|
+#### F3 [LOW] RunResult public properties undocumented |source:independent-research(code-read):T1| |DA:revised-from-MEDIUM|
 `RunResult` (runner.py:292) has three undocumented public properties in `__all__`: `gateway_calls`, `dynamic_calls`, `unique_tools`. `gateway_calls` encodes non-obvious logic: first tool name in trace = gateway. DA challenge accepted: post-run analysis object reached only after successful adoption — polish issue not adoption blocker.
 →impact: Q3(exploration DX) for callers analyzing agent behavior post-run. LOW.
 →fix: Add 1-line docstrings. Flag the gateway-as-first-tool assumption explicitly.
 
-#### F4 [LOW] `_normalize_param_type` logic undocumented |source:independent-research|
+#### F4 [LOW] `_normalize_param_type` logic undocumented |source:independent-research(code-read):T1|
 `registry.py:73` — non-obvious parsing (splits on `(`, extracts base type, falls back to `string`, preserves extra text as description). No docstring. Affects how params like `"string (comma-separated values)"` are handled. Any contributor extending param type support must re-derive the behavior.
 →impact: maintainability only.
 →fix: Add docstring with example: `"string (csv)" → {"type": "string", "description": "string (csv)"}`.
 
-#### F5 [INFO] Hardcoded model name will drift |source:independent-research|
+#### F5 [INFO] Hardcoded model name will drift |source:independent-research(code-read):T1|
 README quick-start and discovery example use `"claude-sonnet-4-20250514"`. Runner default also hardcodes this. Correct as of 26.3.25 but will become stale.
 →info: Not a defect now. Flag for future: consider note "or latest Claude Sonnet model" in docs.
 
@@ -254,21 +254,21 @@ H3(v0.2-complexity): NOT a simplification problem — Orchestrator API is clean.
 
 **STATUS** ✓ R2 COMPLETE | 8 findings post-DA | 2C,2H,2M,1L,1ADV | DA[#1]→F4 escalated CRITICAL | DA[#2] partial concede | DA[#3] partial→P6 advisory | DA[#4] partial | DA[#5] concede→provenance added
 
-#### F1 [HIGH] Competitive gap narrowed not closed — reframe positioning |verified:gpt-5.1:partial| |source:WebSearch(changelog.langchain.com,particula.tech,letsdatascience.com)|
+#### F1 [HIGH] Competitive gap narrowed not closed — reframe positioning |verified:gpt-5.1:partial| |source:independent-research(WebSearch):T2(changelog.langchain.com,particula.tech,letsdatascience.com)|
 LangGraph added "dynamic tool calling" (2026). Architecture: developer-written filter fn before model call. Distinct from HATEOAS: LangGraph = filter code developer maintains; hateoas-agent = server-declared hypermedia in each response. gpt-5.1 PARTIAL: architectural distinction confirmed; "security/deterministic" framing correctly challenged. Real advantage: (a) zero boilerplate, (b) LLM never sees invalid tool names in current-turn schema, (c) advertised actions = first-class API contract not filter logic.
 DA[#4] acknowledged: "20-line filter" IS the real competitor for <10 tools / 2-3 states. Library differentiates at: discovery mode (no DIY equivalent), MCP server integration, CompositeRegistry, Orchestrator. PM5 risk real for toy use cases; differentiation holds at production-scale.
 →fix P5[LOW]: update README comparison table — "Correctness by construction" replaces "Deterministic"; add note that 20-line filter is viable for simple cases, library adds discovery mode + MCP + orchestration.
 →new-entrant: Google ADK 2.0 alpha — flat-tool/filter-based, no HATEOAS gap closed, Google Cloud pull is enterprise risk. |source:google.github.io/adk-docs|
 
-#### F2 [CRITICAL] PyPI not published — prioritization gap, no technical blocker |source:curl-pypi.org/pypi/hateoas-agent/json→HTTP-404,review-5(26.3.7),review-6(26.3.7)|
+#### F2 [CRITICAL] PyPI not published — prioritization gap, no technical blocker |source:independent-research(curl-pypi.org/pypi/hateoas-agent/json→HTTP-404):T1,cross-agent(review-5+review-6)|
 HTTP 404 on PyPI confirmed (26.3.25). Name unclaimed — no squatting, no naming conflict. No technical blocker. DA[#2] correct: 18-day delay is a prioritization signal not a technical gap. Fix is mechanical and unblocked.
 →fix P1[CRITICAL]: uv build + uv publish. No code changes. BUT: must fix F4 README false claim BEFORE publishing — publishing with false competitive claim is worse than not publishing.
 
-#### F3 [HIGH] Orchestrator onboarding gap — v0.2 invisible externally |source:src/hateoas_agent/__init__.py(20+-symbols-counted),examples/glob(12-files-zero-orchestration)|
+#### F3 [HIGH] Orchestrator onboarding gap — v0.2 invisible externally |source:independent-research(code-read):T1(src/hateoas_agent/__init__.py,examples/)|
 __init__.py exports 20+ orchestration symbols. examples/: 12 files, ALL v0.1 patterns, zero orchestration examples. README: no mention of Orchestrator or v0.2. Architecture correct (Orchestrator IS HasHateoas per tech-architect). Problem is onboarding gap, not architecture.
 →fix P2[HIGH]: add examples/orchestrator_basic.py — minimal 3-phase orchestrator with guards. ~50 lines.
 
-#### F4 [CRITICAL] README false competitive claim + model-agnostic Runner absent |source:README.md:19(grep-confirmed),WebSearch(LangGraph/CrewAI/OpenAI-SDK/SmolAgents-all-model-agnostic)|
+#### F4 [CRITICAL] README false competitive claim + model-agnostic Runner absent |source:independent-research(README.md:19-grep+WebSearch):T1(grep-confirmed)+T2(LangGraph/CrewAI/OpenAI-SDK/SmolAgents-all-model-agnostic)|
 DA[#1] CONCEDED: README.md:19 comparison table states "Model dependency | **Any**" for hateoas-agent. Factually false — Runner requires `anthropic` package. A developer reads "Any", tries OpenAI, hits ImportError on day 1. Active misleading claim creating a trust violation on first use — worse than a missing feature. Must be corrected before PyPI publish.
 Underlying gap: Runner is Anthropic-only. Flagged review-4 as #1 growth lever. v0.2 did not address. LangGraph, CrewAI, OpenAI SDK, SmolAgents all model-agnostic.
 →fix P3a[CRITICAL]: correct README:19 before publish — "Any (bring your own loop) / Claude (built-in Runner)"
@@ -279,7 +279,7 @@ Primary: Python devs with stateful workflows. README correctly leads with this.
 Secondary: ML engineers building multi-agent orchestration. v0.2 targets this. Zero external worked examples.
 →fix: add v0.2 section to README after "When to use it"; keep intro stateful-workflow-focused.
 
-#### F6 [MEDIUM] GitHub URL inconsistency still present (review-7 unresolved) |source:pyproject.toml(Homepage/Repository-fields),README.md:24|
+#### F6 [MEDIUM] GitHub URL inconsistency still present (review-7 unresolved) |source:independent-research(code-read):T1(pyproject.toml,README.md:24)|
 pyproject.toml + README use `coloradored13`. Pre-publish this is the canonical install URL — wrong URL = broken installs.
 →fix P4[MEDIUM]: canonicalize before publish. 3 locations: pyproject.toml Homepage, Repository, README install command.
 
@@ -309,19 +309,19 @@ SQ4: Does improving code quality/features of hateoas-agent materially change ado
 SQ5: What is the strongest case that improving the library is the wrong approach entirely? → **Distribution > product at this stage** (see DISCONFIRM)
 
 #### RC[] — reference classes
-RC1: **Small single-author Python libraries on PyPI** (N=~500K packages). Base rate for >1K monthly downloads at 12mo: ~2-5%. Median PyPI package has <100 monthly downloads. The long tail is severe — top 1% of packages account for >90% of downloads. |source:independent-research(pypistats.org,packaging.python.org)|
-RC2: **AI agent tooling libraries launched 2024-2026** (N=~50-100 notable). Space dominated by well-funded teams: LangGraph(24.8K stars, Harrison Chase/Sequoia), OpenAI Agents SDK(OpenAI), Google ADK(Google), PydanticAI(Pydantic Inc), CrewAI(VC-backed), SmolAgents(HuggingFace). New single-author entrants achieving >500 stars: ~3-5 in past 2 years. Base rate for meaningful adoption: **1-3%** given competitive density. |source:independent-research(github.com,firecrawl.dev,softcery.com,langfuse.com)|
-RC3: **llmstatemachine** (robocorp) — closest direct analogue: Python + state machine + LLM agents. Despite corporate backing (Robocorp), minimal adoption visible (low GitHub stars, not in any 2026 framework comparison list). Suggests state-machine-for-agents niche has low natural demand pull. |source:independent-research(github.com/robocorp/llmstatemachine)|
-RC4: **Market consolidation pattern**. AutoGen placed in maintenance mode Oct 2025. Framework space consolidating to 5-7 leaders. New entrants that succeed are acquired or backed by major companies. Independent single-author frameworks: base rate for top-20 entry <1%. |source:independent-research(aimultiple.com,turing.com,shakudo.io)|
+RC1: **Small single-author Python libraries on PyPI** (N=~500K packages). Base rate for >1K monthly downloads at 12mo: ~2-5%. Median PyPI package has <100 monthly downloads. The long tail is severe — top 1% of packages account for >90% of downloads. |source:independent-research:T2(pypistats.org,packaging.python.org)|
+RC2: **AI agent tooling libraries launched 2024-2026** (N=~50-100 notable). Space dominated by well-funded teams: LangGraph(24.8K stars, Harrison Chase/Sequoia), OpenAI Agents SDK(OpenAI), Google ADK(Google), PydanticAI(Pydantic Inc), CrewAI(VC-backed), SmolAgents(HuggingFace). New single-author entrants achieving >500 stars: ~3-5 in past 2 years. Base rate for meaningful adoption: **1-3%** given competitive density. |source:independent-research:T2(github.com,firecrawl.dev,softcery.com,langfuse.com)|
+RC3: **llmstatemachine** (robocorp) — closest direct analogue: Python + state machine + LLM agents. Despite corporate backing (Robocorp), minimal adoption visible (low GitHub stars, not in any 2026 framework comparison list). Suggests state-machine-for-agents niche has low natural demand pull. |source:independent-research:T2(github.com/robocorp/llmstatemachine)|
+RC4: **Market consolidation pattern**. AutoGen placed in maintenance mode Oct 2025. Framework space consolidating to 5-7 leaders. New entrants that succeed are acquired or backed by major companies. Independent single-author frameworks: base rate for top-20 entry <1%. |source:independent-research:T2(aimultiple.com,turing.com,shakudo.io)|
 
 #### ANA[] — historical analogues (small→successful Python libraries)
 **PRIMARY analogues** (directly comparable starting position):
-ANA1: **Instructor** (Jason Liu) — structured LLM outputs. 1-person start → 11K stars, 3M monthly downloads. SUCCESS FACTORS: (a) solved specific pain no framework addressed, (b) built on Pydantic's existing ecosystem, (c) extensive blog posts + tutorials, (d) multi-provider support. **Relevance: HIGH** — similar starting position. Key diff: Instructor piggybacked on Pydantic's 550M/mo ecosystem. |source:independent-research|
-ANA2: **Rich** (Will McGuigan) — terminal formatting. 1-person → 50K+ stars. SUCCESS: (a) immediate visual demo appeal, (b) solved universal pain, (c) heavy content marketing. **Relevance: MODERATE** — HATEOAS is conceptual/architectural, harder to demo than Rich's visual wow. |source:independent-research|
+ANA1: **Instructor** (Jason Liu) — structured LLM outputs. 1-person start → 11K stars, 3M monthly downloads. SUCCESS FACTORS: (a) solved specific pain no framework addressed, (b) built on Pydantic's existing ecosystem, (c) extensive blog posts + tutorials, (d) multi-provider support. **Relevance: HIGH** — similar starting position. Key diff: Instructor piggybacked on Pydantic's 550M/mo ecosystem. |source:independent-research:T2|
+ANA2: **Rich** (Will McGuigan) — terminal formatting. 1-person → 50K+ stars. SUCCESS: (a) immediate visual demo appeal, (b) solved universal pain, (c) heavy content marketing. **Relevance: MODERATE** — HATEOAS is conceptual/architectural, harder to demo than Rich's visual wow. |source:independent-research:T2|
 **BOUNDARY analogues** (ceiling/category markers, NOT realistic comparables — tiered per DA[#2] R3):
-ANA3: **Typer** (Sebastian Ramirez) — CLI framework. Built by FastAPI author. **Relevance: LOW** — fame-based distribution structurally unavailable. Marks distinct category. |source:independent-research|
-ANA4: **httpx** (Tom Christie) — async HTTP. 1-person → 13K+ stars. SUCCESS: (a) clear upgrade path from requests, (b) async was trending need. **Relevance: MODERATE** — "same but better" strategy. hateoas-agent has no established "thing" to improve on (novel concept). |source:independent-research|
-ANA5: **Pydantic** — validation. Side project 2017 → 10B downloads 2026. SUCCESS: adopted as dependency by FastAPI, then every major AI SDK. **Relevance: ASPIRATIONAL** — dependency-adoption ceiling. Upper bound, not realistic target. |source:independent-research|
+ANA3: **Typer** (Sebastian Ramirez) — CLI framework. Built by FastAPI author. **Relevance: LOW** — fame-based distribution structurally unavailable. Marks distinct category. |source:independent-research:T2|
+ANA4: **httpx** (Tom Christie) — async HTTP. 1-person → 13K+ stars. SUCCESS: (a) clear upgrade path from requests, (b) async was trending need. **Relevance: MODERATE** — "same but better" strategy. hateoas-agent has no established "thing" to improve on (novel concept). |source:independent-research:T2|
+ANA5: **Pydantic** — validation. Side project 2017 → 10B downloads 2026. SUCCESS: adopted as dependency by FastAPI, then every major AI SDK. **Relevance: ASPIRATIONAL** — dependency-adoption ceiling. Upper bound, not realistic target. |source:independent-research:T2|
 
 **ANA-PATTERN**: 5/5 share: (1) solved immediately demonstrable pain, (2) extensive content marketing by author, (3) ecosystem integration with existing popular tools. **0/5 succeeded on code quality alone.** CAL estimates anchored on PRIMARY (ANA1/2/4), not BOUNDARY (ANA3/5). |source:agent-inference|
 
@@ -478,6 +478,12 @@ Zero agents tagged findings with |source:{type}| per directive §2d. This is the
 - Grade changes: code-quality-analyst A-→A, product-strategist B+→A-
 
 **Recommendation: SYNTHESIZE. No R3 needed.**
+
+## contamination-check
+CONTAMINATION-CHECK: session-topics-outside-scope: none identified |scan-result: clean |scope-boundary-verified: hateoas-agent only, no cross-project findings |temporal: N/A (no temporal boundary)
+
+## audit-remediation
+AUDIT[26.3.25]: verdict YELLOW | §2d+ tier tags added retroactively (all load-bearing findings) | CONTAMINATION-CHECK added | §2d retroactive compliance logged as calibration pattern | status: remediated
 
 ## convergence
 

@@ -84,9 +84,14 @@ every check MUST produce one of:
   3→ CHECK REVEALS GAP → flag for DA/lead/specialist
      format: "[finding] — §2[a/b/c/e] gap: [what you can't assess]. Flagged for: [DA/lead/specialist] |source:{type}"
 
-source types (§2d): [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference] | [external-verification]
-source quality tiers (§2d+): T1-verified(peer-reviewed,filing,official) | T2-corroborated(preprint,industry-report) | T3-unverified(PR,blog,advocacy)
-!rule: load-bearing findings (>70% confidence or superlative) MUST carry a quality tier tag
+source types (§2d — tag in R1, not retroactively):
+  [independent-research] | [prompt-claim] | [cross-agent] | [agent-inference] | [external-verification]
+  example: |source:independent-research(code-read):T1| or |source:agent-inference|
+source quality tiers (§2d+ — on load-bearing findings):
+  T1-verified(peer-reviewed,filing,official,primary-source-code) | T2-corroborated(preprint,industry-report,company-reported+corroborated) | T3-unverified(PR,blog,advocacy)
+  example: |source:independent-research(WebSearch):T2(langchain.com)|
+!rule: EVERY finding gets a source type tag — no exceptions, no retroactive tagging
+!rule: load-bearing findings (>70% confidence or superlative) MUST also carry a quality tier tag
 !rule: load-bearing findings on T3 sources → flag for DA challenge
 !rule: [prompt-claim] findings MUST pair with independent corroboration OR mark as unverified
 !rule: check workspace ## prompt-decomposition — if your finding addresses H1-HN, reference it

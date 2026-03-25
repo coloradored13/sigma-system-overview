@@ -245,6 +245,7 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
 
 !applies-to: ALL agent R1 findings (ANALYZE and BUILD)
 !when: BEFORE writing finding to workspace, AFTER completing analysis
+!scoping: REQUIRED for findings with confidence estimates, severity judgments, or probability claims. OPTIONAL for deterministic code observations (unused import, dead code, missing method) where assume-wrong produces no meaningful revision. AUDIT[26.3.25]: code-focused agents (TA, CQA, TW) consistently skip DB on deterministic findings — acceptable when finding is binary (present/absent).
 
 !execution: each agent applies to their top 2-3 highest-conviction findings:
   "DB[{finding}]: (1) initial: {assessment} (2) assume-wrong: {what changes?} (3) strongest-counter: {reason you could be wrong} (4) re-estimate: {revised from opposite perspective} (5) reconciled: {final position integrating both}"

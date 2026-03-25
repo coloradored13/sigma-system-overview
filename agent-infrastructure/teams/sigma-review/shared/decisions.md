@@ -770,10 +770,6 @@ AUDIT-FLAG[26.3.23]: §2g-dialectical-bootstrapping-skipped — zero DB[] entrie
 AUDIT-FLAG[26.3.23]: §6-contamination-check-missing — no formal CONTAMINATION-CHECK section in workspace; DA-F5 performed prompt audit function but not labeled per §6 |remediation:add explicit section to workspace template |status:closed(formal-contamination-check-section-added-to-workspace-26.3.23)
 AUDIT-VERDICT[26.3.23|kaggle-agi-benchmark]: YELLOW→GREEN |5/5-flags-closed(3-remediated,2-analytically-compensated) |DA-performance-strong(80%-hold,XVERIFY-deployed) |source-provenance-clean(0%-untagged,1%-prompt-claim) |source-quality-strong(10/15-load-bearing=T1,0-T3) |analytical-quality-high |forward-fixes:CB-hard-gate+DB[]-verification-logged-in-team-patterns |by:sigma-audit
 
-→ actions:
-→ new team decision → format: topic:decision |by:expert |weight:primary/advisory
-→ disagreement → record both positions with |ctx from each agent
-→ revisiting old decision → check if conditions changed, note in ctx
 
 ## hateoas-agent improvement review (26.3.25)
 
@@ -803,3 +799,12 @@ DA:code-vs-distribution-priority |by:devils-advocate(incorporating RCA) |weight:
 DA:exit-gate-FAIL-r2 |by:devils-advocate |weight:gate
   |ctx: engagement PASS(all B+). Unresolved: README false claims, code-vs-distribution, PyPI delay. Untested: code-priority consensus. Hygiene: §2d 0/6, §2e absent.
   |decision: R3 required. Must address: README accuracy, code-vs-distribution reconciliation, §2d compliance, PyPI blocker investigation.
+AUDIT-FLAG[26.3.25]: §2d+ source quality tiers — zero compliance across 6 agents + DA missed. Load-bearing findings (TA-F1, PS-F2, PS-F4, RCA-CAL1-5) lack tier tags |remediation:retroactive-tier-tagging(15min) |status:open |by:sigma-audit |weight:primary
+  |ctx: hateoas-agent improvement evaluation audit 26.3.25
+AUDIT-REMEDIATED[26.3.25]: hateoas-improvement audit YELLOW→remediated | §2d+ tier tags added to all load-bearing findings | CONTAMINATION-CHECK added to workspace | agent template updated (§2d examples+enforcement) | DA checklist updated (§2d+ as explicit criterion 4a/4b) | §2g scoping clarified (required for probabilistic, optional for deterministic) |status:closed |by:sigma-audit |weight:primary
+  |ctx: remediation of AUDIT-FLAG[26.3.25] after sigma-audit YELLOW verdict
+
+→ actions:
+→ new team decision → format: topic:decision |by:expert |weight:primary/advisory
+→ disagreement → record both positions with |ctx from each agent
+→ revisiting old decision → check if conditions changed, note in ctx
