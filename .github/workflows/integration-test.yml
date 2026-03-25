@@ -33,9 +33,9 @@ jobs:
       - name: Install all packages from submodules
         run: |
           python -m pip install --upgrade pip
-          pip install ./hateoas-agent[dev]
-          pip install ./sigma-mem[dev]
-          pip install ./sigma-verify[dev]
+          pip install './hateoas-agent[dev,anthropic]'
+          pip install './sigma-mem[dev]'
+          pip install './sigma-verify[dev]'
 
       - name: Run hateoas-agent tests
         run: pytest hateoas-agent/tests/ -q --override-ini="addopts="
