@@ -608,19 +608,56 @@ After all agents ✓:
 pre-accept ✓: verify workspace findings ¬empty
 ✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
 
-## Promotion Phase
+## Post-Exit-Gate Phases (MANDATORY — orchestrator-enforced)
 
+!rule: after final review round completes, lead executes these phases IN ORDER via orchestrator advance.
+!rule: each phase MUST complete before advancing. ¬skip, ¬reorder, ¬combine.
+!rule: orchestrator will NOT return is_terminal=true until all phases complete.
+!rule: agents remain alive (WAIT state) until promotion+shutdown — do NOT let them terminate early.
+
+### Phase: synthesis
+!HARD GATE: lead MUST NOT write synthesis. Spawn separate synthesis agent.
+!WHY: lead has conversation context that agents were firewalled from. Lead writing = provenance contamination.
+1→spawn synthesis agent with ONLY workspace path as input
+2→if agent fails: deliver raw findings with explicit gap flag
+after synthesis delivered:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build --context '{"synthesis_delivered": true}'
+```
+
+### Phase: promotion
 1→SendMessage→each teammate: "promotion-round: classify+submit generalizable learnings for global memory"
 2→wait for teammate responses
 3→read workspace ## promotion → candidates
 4→any P-candidate[] class:user-approve → present to user (plain English) → wait approve/reject
 5→store approved: store_agent_memory(tier:global) | store_team_decision | store_team_pattern
+after promotion resolved:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build --context '{"promotion_complete": true}'
+```
 
-## Shutdown
+### Phase: sync
+6→detect drift: compare installed → sigma-system-overview repo
+7→sync new/modified files
+8→report to user → offer commit
+after sync report delivered:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build --context '{"sync_complete": true}'
+```
 
+### Phase: archive
+9→copy workspace to shared/archive/{date}-{task-slug}.md
+10→verify archive exists
+after archive verified:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build --context '{"archive_verified": true}'
+# → returns is_terminal: true
+```
+
+### Shutdown (only after orchestrator returns is_terminal: true)
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain English)
+all shutdown → report to user (plain English)
 
 ## Anti-Contamination Check (MANDATORY before report or document generation)
 

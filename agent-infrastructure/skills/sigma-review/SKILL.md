@@ -94,14 +94,19 @@ Lead: before writing synthesis or documents, re-read this boundary.
   misrepresentation of analytical provenance → downstream trust miscalibration.
   being helpful by absorbing work is WORSE than flagging the gap.
 
-!rule: lead MUST NOT write synthesis content. Synthesis is produced by:
-  1→spawn document-writing agent with ONLY workspace findings as input (preferred)
+!rule: lead MUST NOT write synthesis content. This is mechanically enforced in ## Post-Exit-Gate Phases.
+  synthesis phase requires spawning a separate agent — lead writing synthesis = provenance contamination.
+  !WHY: lead has conversation context that agents were firewalled from. Lead writing synthesis
+    re-injects that context, defeating the prompt-wash design. The output LOOKS agent-produced
+    but carries lead bias. User trusts washed-prompt output as independently analyzed.
+  1→spawn document-writing agent with ONLY workspace path as input (MANDATORY)
   2→if agent spawn fails: report raw agent findings to user with explicit gap flag:
     "SYNTHESIS AGENT FAILED — delivering raw agent findings without synthesized report.
      Findings below are direct agent output, not independently synthesized."
-  3→lead MAY organize/format agent findings for readability (headers, tables)
+  3→lead MAY organize/format raw findings for readability (headers, tables)
      but MUST NOT add analytical conclusions, probability estimates, or judgments
   ¬absorb work that should be delegated — flag the gap instead
+  ¬"just this once" — every bypass trains the pattern
 
 !rule: lead MUST NOT shut down agents until ALL post-round work is complete:
   synthesis delivered → promotion phase → infrastructure sync → THEN shutdown
@@ -179,6 +184,18 @@ scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
 6→CONVERGE (after persist):
   workspace convergence: {name}: ✓ {summary} |{findings} |→ {next}
   SendMessage(type:message, recipient:{lead}): same ΣComm string
+  !WAIT: do NOT terminate. Remain active for promotion-round.
+7→PROMOTION (when lead sends "promotion-round" message):
+  classify findings per agent template ## Promotion (auto-promote vs user-approve)
+  auto-promote: store directly to global memory
+  submit user-approve candidates to workspace ## promotion
+  SendMessage(recipient:{lead}): ◌ promotion: {N} auto-stored, {M} need-approval
+8→SHUTDOWN (when lead sends shutdown_request):
+  respond with shutdown_response → terminate
+!TIMEOUT: if no message received within 5 minutes after CONVERGE:
+  append to workspace convergence: "{name}: auto-shutdown (promotion-round timeout)"
+  SendMessage(recipient:{lead}): "! auto-shutdown: timeout |→ re-spawn if needed"
+  terminate
 ```
 
 ## Round Management
@@ -195,7 +212,26 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 
 Orchestrator automatically evaluates guards and returns next phase + active agents.
-Phases: research → circuit_breaker → challenge ⟲ → synthesis (with debate path for P < 0.6)
+Phases: research → circuit_breaker → challenge ⟲ → synthesis → promotion → sync → archive → complete
+(with debate path for P < 0.6)
+
+### Post-exit-gate advancement (MANDATORY — mechanical enforcement)
+```bash
+# After synthesis delivered to user
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"synthesis_delivered": true}'
+
+# After promotion round complete (all candidates resolved)
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"promotion_complete": true}'
+
+# After infrastructure sync report delivered
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"sync_complete": true}'
+
+# After workspace archived and verified
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"archive_verified": true}'
+# → returns is_terminal: true → proceed to shutdown
+```
+!rule: orchestrator will NOT advance without completion flags. Lead cannot skip phases.
+!rule: is_terminal=true ONLY at "complete" phase — NOT at synthesis.
 
 ### Belief state computation
 1→read workspace convergence section
@@ -236,23 +272,47 @@ results written to workspace as research packages with quality scores
 4→read CB responses → note any revisions or tensions surfaced
 5→proceed to r2 (DA reads CB responses alongside r1 findings)
 
-## Post-Session Synthesis
+## Convergence Guard
 
-After all agents ✓:
+pre-accept ✓: verify workspace findings ¬empty
+✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
+
+## Post-Exit-Gate Phases (MANDATORY — orchestrator-enforced)
+
+!rule: after DA exit-gate PASS, lead executes these phases IN ORDER via orchestrator advance.
+!rule: each phase MUST complete before advancing. ¬skip, ¬reorder, ¬combine.
+!rule: orchestrator will NOT return is_terminal=true until all phases complete.
+!rule: agents remain alive (WAIT state) until promotion+shutdown — do NOT let them terminate early.
+
+### Phase: synthesis
+!HARD GATE: lead MUST NOT write synthesis. Synthesis MUST be produced by a separate agent.
+!WHY: lead has full conversation context. Agents analyzed with washed prompts (context firewall).
+  Lead writing synthesis re-injects the conversation context that the firewall was designed to exclude.
+  This is provenance contamination — the output appears agent-produced but carries lead bias.
+!CONSEQUENCE: if synthesis agent spawn fails, deliver RAW agent findings with explicit gap flag.
+  Raw findings > lead-contaminated synthesis. Always.
 
 1→search_team_memory(team:sigma-review, query:{task-topic})
 2→get_team_decisions(team:sigma-review)
 3→get_team_patterns(team:sigma-review)
 4→cross-agent: multi-agent-same-finding→convergence signal | tensions→record both
 5→new patterns → store_team_pattern(agents:[names])
+6→spawn synthesis agent (MANDATORY — separate subprocess = separate context):
+  provide ONLY: workspace path (agent reads workspace directly)
+  provide: output format requirements from user
+  do NOT provide: conversation context, user remarks, casual discussion, lead's interpretations
+  agent reads workspace → produces synthesis document → returns to lead
+  lead delivers document to user WITHOUT modification (formatting OK, analytical edits NOT OK)
+7→if synthesis agent fails:
+  report to user: "SYNTHESIS AGENT FAILED — delivering raw agent findings without synthesized report."
+  deliver workspace findings organized by section (formatting only, no analytical additions)
+  do NOT silently write synthesis yourself — this is the bypass the gate prevents
+after synthesis delivered:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"synthesis_delivered": true}'
+```
 
-## Convergence Guard
-
-pre-accept ✓: verify workspace findings ¬empty
-✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
-
-## Promotion Phase
-
+### Phase: promotion
 1→SendMessage→each teammate: "promotion-round: classify+submit generalizable learnings for global memory"
 2→wait for teammate responses (each auto-promotes low-risk + submits candidates)
 3→read workspace ## promotion → candidates
@@ -267,9 +327,12 @@ pre-accept ✓: verify workspace findings ¬empty
   per agent-domain → store_agent_memory(tier:global, agent:{name}, team:sigma-review) → P[]
   per team-level → store_team_decision(tier:global) | store_team_pattern(tier:global)
 6→portfolio entry → write {project-name} record to shared/portfolio.md (global tier)
+after promotion resolved (all candidates approved/rejected or no candidates):
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"promotion_complete": true}'
+```
 
-## Infrastructure Sync (installed → repo)
-
+### Phase: sync
 7→detect drift: compare installed (agents, skills, shared, team-runtime) → sigma-system-overview repo
   agents: ~/.claude/agents/*.md vs agent-infrastructure/agents/
   skills: ~/.claude/skills/*/SKILL.md vs agent-infrastructure/skills/
@@ -288,12 +351,24 @@ pre-accept ✓: verify workspace findings ¬empty
 10→offer commit:
   if synced files → "Commit sync changes? I can stage and commit, or you can review first."
   wait user → git add+commit if approved
+after sync report delivered:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"sync_complete": true}'
+```
 
-## Shutdown
+### Phase: archive
+11→copy workspace to shared/archive/{date}-{task-slug}.md with header
+12→verify archive file exists and contains workspace content
+after archive verified:
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"archive_verified": true}'
+# → returns is_terminal: true
+```
 
+### Shutdown (only after orchestrator returns is_terminal: true)
 shutdown_request→each teammate via SendMessage
 wait shutdown_response approvals
-all shutdown → report synthesis to user (plain English, include promotion + sync summary)
+all shutdown → report to user (plain English, include promotion + sync summary)
 
 ## Recovery
 

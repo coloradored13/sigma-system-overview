@@ -77,7 +77,13 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
         parallel=True,
     )
     orch.phase("debate", description="Toulmin structured debate for deep disagreement")
-    orch.phase("synthesis", description="Final synthesis and report", terminal=True)
+    orch.phase("synthesis", description="Final synthesis and report")
+
+    # Post-exit-gate phases (mandatory — mechanical enforcement)
+    orch.phase("promotion", description="Memory promotion: agents classify and submit generalizable learnings")
+    orch.phase("sync", description="Infrastructure sync: detect drift and sync installed files to repo")
+    orch.phase("archive", description="Workspace archive: copy workspace to shared/archive/")
+    orch.phase("complete", description="Review complete", terminal=True)
 
     # Transitions
     orch.transition(
@@ -128,6 +134,35 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
         guard=~round_limit(5, key="round"),  # round >= 5
     )
 
+    # Post-exit-gate transitions (guarded — lead must set completion flags)
+    orch.transition(
+        "synthesis",
+        "promotion",
+        name="synthesis_delivered",
+        guard=context_true("synthesis_delivered"),
+    )
+
+    orch.transition(
+        "promotion",
+        "sync",
+        name="promotion_complete",
+        guard=context_true("promotion_complete"),
+    )
+
+    orch.transition(
+        "sync",
+        "archive",
+        name="sync_complete",
+        guard=context_true("sync_complete"),
+    )
+
+    orch.transition(
+        "archive",
+        "complete",
+        name="archive_verified",
+        guard=context_true("archive_verified"),
+    )
+
     return orch
 
 
@@ -151,7 +186,13 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
     )
     orch.phase("build", description="R3: parallel build with checkpoint", parallel=True)
     orch.phase("review", description="R4: adversarial review of completed build", parallel=True)
-    orch.phase("synthesis", description="Final review report", terminal=True)
+    orch.phase("synthesis", description="Final review report")
+
+    # Post-exit-gate phases (mandatory — mechanical enforcement)
+    orch.phase("promotion", description="Memory promotion: agents classify and submit generalizable learnings")
+    orch.phase("sync", description="Infrastructure sync: detect drift and sync installed files to repo")
+    orch.phase("archive", description="Workspace archive: copy workspace to shared/archive/")
+    orch.phase("complete", description="Build complete", terminal=True)
 
     orch.transition("plan", "challenge_plan", name="plans_ready", guard=context_true("plans_ready"))
     orch.transition(
@@ -169,6 +210,35 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
     orch.transition("build", "review", name="build_complete", guard=context_true("build_complete"))
     orch.transition("review", "synthesis", name="review_done", guard=exit_gate_passed())
     orch.transition("review", "review", name="review_revisions", guard=~exit_gate_passed())
+
+    # Post-exit-gate transitions (guarded — lead must set completion flags)
+    orch.transition(
+        "synthesis",
+        "promotion",
+        name="synthesis_delivered",
+        guard=context_true("synthesis_delivered"),
+    )
+
+    orch.transition(
+        "promotion",
+        "sync",
+        name="promotion_complete",
+        guard=context_true("promotion_complete"),
+    )
+
+    orch.transition(
+        "sync",
+        "archive",
+        name="sync_complete",
+        guard=context_true("sync_complete"),
+    )
+
+    orch.transition(
+        "archive",
+        "complete",
+        name="archive_verified",
+        guard=context_true("archive_verified"),
+    )
 
     return orch
 

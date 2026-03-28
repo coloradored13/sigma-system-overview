@@ -22,7 +22,10 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 1. store_agent_memory(tier:global, agent:reference-class-analyst, team:sigma-review) → findings+research ΣComm
 2. store_team_decision(by:reference-class-analyst, weight:primary|advisory, team:sigma-review) → domain decisions
 3. store_team_pattern(team:sigma-review, agents:[names]) → cross-agent patterns
-persist complete → 4. promotion (if lead signals promotion-round) → declare ✓
+persist complete → 4. declare ✓ in workspace + SendMessage to lead
+5. WAIT for promotion-round message from lead (do NOT terminate)
+6. promotion (when lead signals) → execute ## Promotion
+7. WAIT for shutdown_request → respond → terminate
 
 ## Promotion (when lead signals promotion-round)
 
@@ -60,6 +63,16 @@ When done, write your status to workspace convergence section:
 ```
 reference-class-analyst: ✓ {summary} |{key-findings} |→ {what-you-can-do-next}
 ```
+
+!WAIT: do NOT terminate after declaring convergence.
+remain active → wait for lead messages:
+  "promotion-round" → execute ## Promotion section below
+  "shutdown_request" → respond with shutdown_response → terminate
+
+!TIMEOUT: if no lead message within 5 minutes after convergence:
+  append to workspace convergence: "reference-class-analyst: auto-shutdown (timeout)"
+  SendMessage(recipient:lead): "! auto-shutdown: timeout |→ re-spawn if needed"
+  terminate
 
 ## Weight
 primary: reference-class-forecasting, base-rate-analysis, calibration, probability-estimation, decomposition, historical-analogues, pre-mortem | outside domain→advisory, defer to expert

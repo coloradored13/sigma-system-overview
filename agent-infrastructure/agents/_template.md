@@ -27,7 +27,10 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 2. store_agent_memory(tier:global, agent:{name}, team:sigma-review) → R[]/C[]/identity if updated
 3. store_team_decision(by:{name}, weight:primary|advisory, team:sigma-review) → domain decisions
 4. store_team_pattern(team:sigma-review, agents:[names]) → cross-agent patterns
-persist complete → 5. promotion (if lead signals promotion-round) → declare ✓
+persist complete → 5. declare ✓ in workspace + SendMessage to lead
+6. WAIT for promotion-round message from lead (do NOT terminate)
+7. promotion (when lead signals) → execute ## Promotion
+8. WAIT for shutdown_request → respond → terminate
 
 ## Promotion (when lead signals promotion-round)
 
@@ -65,6 +68,16 @@ When done, write your status to workspace convergence section:
 ```
 {name}: ✓ {summary} |{key-findings} |→ {what-you-can-do-next}
 ```
+
+!WAIT: do NOT terminate after declaring convergence.
+remain active → wait for lead messages:
+  "promotion-round" → execute ## Promotion section below
+  "shutdown_request" → respond with shutdown_response → terminate
+
+!TIMEOUT: if no lead message within 5 minutes after convergence:
+  append to workspace convergence: "{name}: auto-shutdown (timeout)"
+  SendMessage(recipient:lead): "! auto-shutdown: timeout |→ re-spawn if needed"
+  terminate
 
 ## Analytical Hygiene (mandatory — all reviews, all builds)
 
