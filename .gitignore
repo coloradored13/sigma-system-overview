@@ -1,4 +1,2 @@
 .DS_Store
-*.docx
-sigma-review-executive-summary.md
-sigma-review-system-overview.md
+output/
