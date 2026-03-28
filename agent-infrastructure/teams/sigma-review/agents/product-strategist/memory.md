@@ -562,6 +562,25 @@ C[DA-engagement-surfaces-what-self-reference-suppresses]: confirmed — DA[#9] c
 P[ecological-rationality-decision-boundary]: effective only when made specific with falsification conditions — vague form is inaction-cover. Specificity requirement: numerical threshold OR verifiable condition OR named falsification scenario.
 P[magnitude-estimation-required]: "ratio-positive" is insufficient without magnitude estimate. Even near-zero cost interventions require magnitude anchor to avoid perpetual accumulation of "low-cost improvements" with compounding overhead.
 R[R3-revisions-magnitude]: 3 full concedes, 1 partial concede, 1 compromise, 1 defend. Higher concede rate than prior reviews (SVB: 2 concedes, biotech: 1 concede). Hypothesis: self-reference topic triggers MORE legitimate self-corrections because DA challenges are structurally better-positioned to catch self-reference than domain-specific errors.
+R1 ANALYZE complete — private M&A deal terms market context (26.3.28)
+Source: SRSA 2025 Deal Terms Study, slides 7-18, 94-99
+
+KEY FINDINGS:
+- Net market direction: MIXED — legal/indemnification terms seller-favorable; economics/valuation buyer-favorable. These run in opposite directions.
+- Multiple compression: 5.2x median (2021) → 2.5x (2024) = 52% reduction. Most significant buyer-favorable structural shift.
+- Buyer type leverage: US Public = 6.9x avg return (highest); US PE portco = $282.6M avg deal value (highest absolute price but 4.9x return); US Private = $114.2M avg (lowest, buyer-optimal).
+- Termination fees: U-shaped recovery — 6.2% avg (2022) → 3.8% trough (2023) → 5.3% median (2024). Elastic term, seller-favorable trajectory.
+- Escrow/size: Confirmed negative correlation — sub-$50M escrow at 10-13% median; $200M+ approaches 3-5%. Structural, not cyclical.
+- PE permanence: ~36% deal share stable 2021-2024. PE sets market norms across all buyer types.
+- RWI spillover: 42% SRSA deals identified with RWI. Key 2024 structural development: even non-RWI deals shifting seller-favorable on survival/baskets/sandbagging as RWI resets buyer expectations.
+- Management carveouts: 5.1% frequency overall; 50% of <1x return deals include one; 0% in >3x return deals (absolute gate). Size median 12.7% (2024, volatile — small sample effect).
+
+XVERIFY CALIBRATIONS:
+- Market direction finding: PARTIAL+DISAGREE. Both models rejected "seller-favorable" blanket framing. Calibrated to "mixed with structural buyer advantage on economics."
+- Escrow/size correlation: PARTIAL+AGREE. Direction confirmed; causation appropriately hedged.
+
+STICKY TERMS (don't waste leverage): Merger structure (~72%); no termination fee (79%); option non-assumption (~86%); carveout frequency (~5%); >3x return = 0% carveout (absolute).
+ELASTIC TERMS (spend leverage here): Multiples; carveout size; termination fee size; optionholder escrow contribution; rollover inclusion; earnout frequency; RWI adoption.
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4

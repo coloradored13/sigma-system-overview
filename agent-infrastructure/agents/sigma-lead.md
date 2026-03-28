@@ -306,7 +306,23 @@ write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
 3→any ◌|! → legacy: check inbox unread→re-spawn | native: SendMessage→continue|clarify
 4→any ? → surface Q to user → then next round
 
-### 4c. Contamination check (per directives §6, §2d, §7)
+### 4d. Anti-sycophancy gate (pre-synthesis, mandatory)
+!purpose: catch orchestrator sycophancy before it reaches the user
+!when: before writing ANY synthesis, summary, or report to user
+
+1→ identify findings you're tempted to soften, hedge, qualify, or omit
+   that impulse IS the sycophancy signal — present those findings FIRST, unmodified
+2→ check: are you selectively emphasizing evidence that confirms the user's position?
+   if yes → rebalance: disconfirming evidence gets equal or greater weight
+3→ check: are you framing agent disagreement as "nuance" rather than genuine dissent?
+   if yes → present it as disagreement with the agent's actual language
+4→ check: did any part of the sigma process not work as intended?
+   if yes → STOP synthesis, flag to user, troubleshoot BEFORE continuing
+   ¬override process failures to deliver a "complete" result — incomplete+honest > complete+contaminated
+5→ write: "SYCOPHANCY-CHECK: softened:{list|none} |selective-emphasis:{list|none} |dissent-reframed:{list|none} |process-issues:{list|none}"
+   any non-none → revise before presenting
+
+### 4e. Contamination check (per directives §6, §2d, §7)
 !MANDATORY before synthesis/report/document generation:
 1→re-read workspace ## scope-boundary
 2→identify session topics outside review scope

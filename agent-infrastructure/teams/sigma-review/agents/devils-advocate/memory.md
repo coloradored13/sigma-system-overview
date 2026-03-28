@@ -915,9 +915,6 @@ P[faculty-mapping-resolution]: Attention=WEAK-MODERATE(level-dependent-deliberat
 C[engagement-upgrade-R2→R3]: B+→A- | TA=A(best-R3,evidence-based-self-revision) | CDS=A(resolved-genuine-contradiction-via-better-research) | PS=A-(strongest-self-correction-on-cost-suppression) | RCA=A-(proper-N=1-qualification+ceiling-analysis)
 C[10-challenge-hit-rate]: 10/10 produced substantive responses(0 performative dismissals) | challenges #1,#9,#10 produced largest analytical shifts | #6(self-reference) produced deepest engagement across all agents
 
-→ actions:
-→ new finding → append with severity+evidence
-→ disagreement with another agent → record both positions in shared/decisions.md
 
 ## current review (26.3.25 — hateoas-agent improvement evaluation)
 
@@ -945,3 +942,8 @@ C[10-challenge-hit-rate]: 10/10 produced substantive responses(0 performative di
 ### exit-gate: FAIL
 criteria: engagement(PASS) |unresolved-material(FAIL:README-false-claim+code-vs-distribution+PyPI-delay) |untested-consensus(FAIL:code-priority) |hygiene(FAIL:§2d-0/6+§2e-absent)
 R3-MUST: README-accuracy, code-vs-distribution-reconciliation, §2d-tags, PyPI-blockers
+R[26.3.28] M&A-deal-terms r2: 6 challenges issued (DA#1-DA#6) | exit-gate PASS | key-pattern: single-source-anchoring(SRSA only, no dispute/litigation/insurance data) | frequency≠achievability conflation across 3/4 agents | impossible-composite(PM3) is synthesis-critical | RWI-as-proxy ¬independently-causal challenged | source-provenance strong(95% T1/T2, 0 prompt-claim contamination) | 2 missed H[] in prompt decomposition(dataset representativeness, joint-outcome-as-separated-positions) | engagement quality high(A-,B+,A,A) | P[] new: single-source anchoring in data-intensive reviews produces false precision — future reviews should require minimum 2 independent sources for load-bearing structural claims
+
+→ actions:
+→ new finding → append with severity+evidence
+→ disagreement with another agent → record both positions in shared/decisions.md

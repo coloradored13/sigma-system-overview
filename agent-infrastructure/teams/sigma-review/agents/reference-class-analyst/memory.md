@@ -199,3 +199,12 @@ cross-verify: GPT-4.1 AGREE(high)
 H1: PARTIALLY CONFIRMED | H3: CONFIRMED BUT OVERWEIGHTED
 calibration-lesson: P[distribution-is-binding-constraint for small OSS adoption — code quality necessary ¬sufficient|src:hateoas-agent-review-R1|class:calibration]
 calibration-lesson: P[framework-consolidation-accelerating in AI agent space 2026 — viable path is niche-excellence or plugin-strategy|src:hateoas-agent-review-R1|class:pattern]
+## M&A Deal Terms Calibration (26.3.28)
+task: calibrate SRSA 2025 Deal Terms Study (2200+ deals, $505B, 2019-2024) for private-target M&A negotiation positioning
+H-TESTS: H1=partially-confirmed(72%)|H2=partially-confirmed(65%)|H3=partially-confirmed(55%)|H4=partially-confirmed(60%)
+KEY-FINDING-1: RWI bifurcation mandatory for financial terms — caps 10% vs 0.35% (28x gap), escrows similarly bimodal | XVERIFY: GPT-5.4=partial, Gemini=agree
+KEY-FINDING-2: SRSA dataset has moderate selection bias (PE-skew, larger deals, contaminated no-RWI subset) but 10%+ US M&A coverage = directionally valid | XVERIFY: GPT-5.4=partial, Gemini=agree
+KEY-FINDING-3: closed-deal data ≠ negotiation positions — frequencies are outcome rates not achievability rates
+CALIBRATION: "realistic win" ≈ 20-25th pctl of favorable outcomes | survival <12mo is strongest directional shift (13%→37%)
+PRE-MORTEM: 7 failure modes identified — #1 risk: using all-deals numbers for RWI-specific deal
+R[26.3.28] |source:SRSA-2025-DTS+independent-analysis

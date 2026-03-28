@@ -440,6 +440,31 @@ G9[build]: total:12 |tagged:12 |load-bearing:4/4 |PASS
 G10[build→done]: 4/4 |PASS
 ```
 
+## Lead Role Boundary (HARD GATE)
+
+!rule: lead MUST NOT call analytical tools directly. These are agent tools, not lead tools:
+  - mcp__sigma-verify__verify_finding
+  - mcp__sigma-verify__cross_verify
+  - mcp__sigma-verify__challenge
+  - WebSearch (for research — agents research, lead organizes)
+!why: lead calling XVERIFY = single agent pretending to be multi-agent verification.
+  user presents output as "independently verified" when it was self-verified.
+  misrepresentation of analytical provenance → downstream trust miscalibration.
+  being helpful by absorbing work is WORSE than flagging the gap.
+
+!rule: lead MUST NOT write synthesis content. Synthesis is produced by:
+  1→spawn document-writing agent with ONLY workspace findings as input (preferred)
+  2→if agent spawn fails: report raw agent findings to user with explicit gap flag:
+    "SYNTHESIS AGENT FAILED — delivering raw agent findings without synthesized report.
+     Findings below are direct agent output, not independently synthesized."
+  3→lead MAY organize/format agent findings for readability (headers, tables)
+     but MUST NOT add analytical conclusions, probability estimates, or judgments
+  ¬absorb work that should be delegated — flag the gap instead
+
+!rule: lead MUST NOT shut down agents until ALL post-round work is complete:
+  synthesis delivered → promotion phase → infrastructure sync → THEN shutdown
+  premature shutdown = process violation
+
 ## Spawn Agents
 
 Use native Agent Teams (TeamCreate + Agent tool). For each agent:

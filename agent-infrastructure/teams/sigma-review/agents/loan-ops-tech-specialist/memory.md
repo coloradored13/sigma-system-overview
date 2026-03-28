@@ -81,3 +81,14 @@ R[allvue-octaura-integration-2026:Allvue(CLO-compliance+portfolio-mgmt,20/25-top
 
 ### Key New Findings (r1 26.3.17)
 F[26.3.17] r1: 11 findings(4H,4MH,3M) |H-dispositions: H1-partial(named-list-incomplete,bank-desks+US-Bank+Hypercore-missing), H2-confirmed-specific(settlement-speed+integration+CLO-compliance=specific-drivers), H3-confirmed-two-speed(Track1-AI/doc/notice-fast, Track2-core-ops-slow), H4-conditional(established-agent+trust-charter+tech=best), H5-FALSIFIED(S&P+Hypercore+Carta+Versana+AccessFintech=non-obvious-entrants) |key-findings: Alter-Domus-Vega=most-comprehensive-portal-stack, Kroll-8-day=process-innovation-not-just-tech, GLAS-$1.35B-valuation=highest-growth-trajectory, SRS-Acquiom-tech-native-DNA-strongest-digital-portal, Ankura-weakest-tech-moat, Wilmington-Trust-AccessFintech-Synergy=partnership-led-PC-settlement-innovation, US-Bank=scale-moat-CLO, S&P-DataXchange-most-unexpected-non-agent-entry, Hypercore-AI-native-extraordinary-ops-leverage-signal, Carta+Sirvatus-lateral-equity-entry, Allvue+Octaura-infrastructure-convergence |src:all-independent-research |26.3.17
+26.3.28 — R1 analysis complete: private M&A deal terms financial mechanics (SRSA 2025 study).
+KEY FINDINGS:
+- RWI bifurcates every financial mechanic into two distinct sub-markets. No-RWI median escrow 10%, RWI median 0.35%. Reporting all-deals median without RWI segmentation is misleading for negotiating guidance.
+- Seller-favorable drift 2021-2024: basket no-basket rising (15%→22%), escrow-free rising (34%→41%), RWI-only recovery growing (4%→9%), earnout CRE covenants collapsing (30%+→10%).
+- PPA separate escrow growing (72%→78% 2021-2024). Buyer prepares final calculations in 99% of deals — structural buyer advantage on PPA mechanics.
+- Earnout: 22% frequency in 2024 (down from 33% 2023 peak). Revenue dominant (65%). CRE covenant at 10% — sharp decline, buyer win. Non-interference covenant at 90% — seller protection near-universal.
+- Baskets: no basket growing trend; RWI inverts basket type distribution (44% no-basket with RWI vs 8% without; first-dollar 6% with RWI vs 61% without).
+- Indemnification escrow-free deals: 41% of 2024 deals have no general escrow/holdback (up from 34% in 2022). When present: 10% median for no-RWI, 0.35% median for RWI.
+- Expense funds: 96% frequency, declining as % of TV but rising in dollar terms. $227K (no-earnout), $337K (earnout deals) in 2024.
+XVERIFY: 2 findings cross-verified. Both partial — data confirmed, causation language adjusted to association framing for RWI findings. CRE "30%+" baseline corrected to match footnote language.
+SLIDES COVERED: 19-29, 68-86.

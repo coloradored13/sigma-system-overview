@@ -82,6 +82,31 @@ Lead: before writing synthesis or documents, re-read this boundary.
 ## open-questions
 ```
 
+## Lead Role Boundary (HARD GATE)
+
+!rule: lead MUST NOT call analytical tools directly. These are agent tools, not lead tools:
+  - mcp__sigma-verify__verify_finding
+  - mcp__sigma-verify__cross_verify
+  - mcp__sigma-verify__challenge
+  - WebSearch (for research — agents research, lead organizes)
+!why: lead calling XVERIFY = single agent pretending to be multi-agent verification.
+  user presents output as "independently verified" when it was self-verified.
+  misrepresentation of analytical provenance → downstream trust miscalibration.
+  being helpful by absorbing work is WORSE than flagging the gap.
+
+!rule: lead MUST NOT write synthesis content. Synthesis is produced by:
+  1→spawn document-writing agent with ONLY workspace findings as input (preferred)
+  2→if agent spawn fails: report raw agent findings to user with explicit gap flag:
+    "SYNTHESIS AGENT FAILED — delivering raw agent findings without synthesized report.
+     Findings below are direct agent output, not independently synthesized."
+  3→lead MAY organize/format agent findings for readability (headers, tables)
+     but MUST NOT add analytical conclusions, probability estimates, or judgments
+  ¬absorb work that should be delegated — flag the gap instead
+
+!rule: lead MUST NOT shut down agents until ALL post-round work is complete:
+  synthesis delivered → promotion phase → infrastructure sync → THEN shutdown
+  premature shutdown = process violation
+
 ## Spawn Agents
 
 Use native Agent Teams (TeamCreate + Agent tool). For each agent:
@@ -136,14 +161,22 @@ scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
 
 ## Work (exact sequence)
 1→ANALYZE: read code, research, etc.
-2→COMMUNICATE: SendMessage(type:message) peers=ΣComm | workspace open-questions=plain
-3→FINDINGS: write YOUR workspace section (ΣComm)
-4→PERSIST (REQUIRED before ✓):
+2→VERIFY (REQUIRED — when workspace ## infrastructure confirms ΣVerify available):
+  identify your top 1-2 load-bearing findings (highest conviction, most consequential)
+  per finding: call verify_finding or cross_verify to ground-truth against external models
+  for DA: use challenge() to stress-test specific claims from other agents
+  tag result: XVERIFY[provider:model] or XVERIFY-FAIL[provider:model]
+  if ΣVerify unavailable: skip — no penalty, no tag needed
+  !rule: verification happens HERE, inside agent context — lead does NOT run XVERIFY
+  !why: lead running XVERIFY = single agent self-verifying, misrepresents provenance
+3→COMMUNICATE: SendMessage(type:message) peers=ΣComm | workspace open-questions=plain
+4→FINDINGS: write YOUR workspace section (ΣComm) — include XVERIFY results
+5→PERSIST (REQUIRED before ✓):
   store_agent_memory(tier:project, agent:{name}, team:sigma-review) → codebase findings
   store_agent_memory(tier:global, agent:{name}, team:sigma-review) → research/calibration if updated
   store_team_decision(by:{name}, weight:primary|advisory, team:sigma-review) → domain decisions
   store_team_pattern(team:sigma-review) → cross-agent patterns
-5→CONVERGE (after persist):
+6→CONVERGE (after persist):
   workspace convergence: {name}: ✓ {summary} |{findings} |→ {next}
   SendMessage(type:message, recipient:{lead}): same ΣComm string
 ```
