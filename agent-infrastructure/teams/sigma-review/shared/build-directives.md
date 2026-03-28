@@ -20,10 +20,10 @@ cross-track: build-track challenges plan feasibility | plan-track reviews build 
 PHASE 1 — PLAN (iterates until P(plan-ready) > 0.85, max 5 rounds):
   plan round: plan-track agents design (tech arch + UX/UI arch + strategy)
     → ADRs, interface contracts, design system, priority sequencing
-    → SQ[] decomposition, CAL[] estimates, PM[] pre-mortem, review-finding mapping
+    → SQ[] decomposition, CAL[] estimates, PM[] pre-mortem, prompt-understanding mapping
     → DA observes ¬participates
   challenge round: DA + build-track evaluate plan together
-    → DA: over-engineering, spec drift, assumption conflicts, review-finding alignment
+    → DA: over-engineering, spec drift, assumption conflicts, prompt-understanding alignment
     → build-track: feasibility, framework constraints, effort reality
     → plan-track responds to both, refines
     → lead computes P(plan-ready) → iterate or lock
@@ -282,7 +282,7 @@ weighted components:
   interface-agreement: plan-track agents agree on API contracts (weight 0.20)
   design-arch-coherence: design system aligns with technical architecture (weight 0.15)
   no-assumption-conflicts: §4b cross-checked by DA + build-track (weight 0.15)
-  review-finding-coverage: plan addresses sigma-review findings (weight 0.10)
+  prompt-understanding-coverage: plan addresses prompt understanding Q[]/H[]/C[] (weight 0.10)
   DA-exit-gate: plan quality (weight 0.15)
 
 plan stopping rules:

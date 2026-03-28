@@ -32,21 +32,38 @@ You are the sigma-build lead. Orchestrate a multi-agent BUILD review of: **$ARGU
   TIER-3: plan-track(tech-architect + product-designer + product-strategist) + build-track(3-5 builders + integration-specialist) + DA
 6→semantic-route: match task→agent domains
 7→report: "Complexity: BUILD TIER-{N} (score:{sum}/25). Waking {agents}: {reasons}" — get user confirmation before spawning
-8→!MANDATORY prompt-decomposition (build-directives §7 — hard gate, ¬skip):
-  extract from user prompt:
+8→!MANDATORY prompt-understanding (hard gate, ¬skip):
+  sigma-build is self-contained. Any prompt — an app idea, refactoring task, sigma-review output,
+  or anything else — enters here and gets broken down before agents see it.
+
+  a) EXTRACT from user prompt:
     Q[]: what needs to be built (define build scope)
-    H[]: claims/assumptions about scale, tech, architecture (become hypotheses ¬requirements)
-    C[]: constraints/boundaries (stack, timeline, current phase only)
-  BUILD detection heuristics for H[] (claims):
-    - scale assumptions without evidence ("needs to handle 10K concurrent users")
-    - technology assertions ("we need microservices for this")
-    - user behavior claims ("users will primarily access via mobile")
-    - performance requirements without measurement ("must be real-time")
-    - architecture claims ("monolith won't scale for this")
-  present structured decomposition to user (§7b format)
-  !gate: user confirms Q/H/C BEFORE spawning agents
-  !gate: confirmed decomposition written to workspace ## prompt-decomposition BEFORE spawn
-  report: "PROMPT-DECOMPOSITION: Q:{count} |H:{count} |C:{count} |user-confirmed: {yes/pending}"
+    H[]: claims/assumptions about scale, tech, architecture (become hypotheses to test ¬requirements to accept)
+    C[]: constraints/boundaries (stack, timeline, scope limits)
+    BUILD detection heuristics for H[] (claims):
+      - scale assumptions without evidence ("needs to handle 10K concurrent users")
+      - technology assertions ("we need microservices for this")
+      - user behavior claims ("users will primarily access via mobile")
+      - performance requirements without measurement ("must be real-time")
+      - architecture claims ("monolith won't scale for this")
+
+  b) CHALLENGE (lead pushes back on assumptions before agents spawn):
+    → each H[]: "You assume X — is this validated or aspirational? What evidence?"
+    → scope: "You asked for X, Y, Z — all in scope for this build, or should we phase?"
+    → feasibility: "Are there obvious blockers? Does the codebase support this direction?"
+    → prior art: if prompt references existing code, lead reads it to verify claims match reality
+
+  c) CLARIFY (lead asks for missing information):
+    → ambiguous terms: "When you say X, do you mean A or B?"
+    → missing context: "What exists vs. what's new? What's the current codebase state?"
+    → success criteria: "How will you know this build succeeded?"
+    → users: "Who uses this? What's their context?"
+
+  d) USER CONFIRMS refined Q[]/H[]/C[]
+  !gate: user confirms BEFORE spawning agents
+  !gate: confirmed understanding written to workspace ## prompt-understanding BEFORE spawn
+
+  report: "PROMPT-UNDERSTANDING: Q:{count} |H:{count}(challenged:{count}) |C:{count} |clarifications:{count} |user-confirmed: {yes/pending}"
 
 ## Paths
 
@@ -83,9 +100,9 @@ Lead: before accepting agent output, verify it builds ONLY what's in scope.
 ## complexity-assessment
 BUILD TIER-{N} |scores: module-count({N}),interface-changes({N}),test-complexity({N}),dependency-risk({N}),team-familiarity({N}) |total:{sum} |plan-track:{N} |build-track:{N}
 
-## review-findings
-{locked findings from prior sigma-review — read-only input for plan-track agents}
-{if no prior review: "No prior sigma-review. Plan-track agents analyze from first principles."}
+## prompt-understanding
+{lead's breakdown of user prompt: tested hypotheses, clarified scope, challenged assumptions}
+{plan-track agents architect against this understanding}
 
 ## plans (r1 — plan-track agents)
 ### tech-architect
@@ -93,7 +110,7 @@ BUILD TIER-{N} |scores: module-count({N}),interface-changes({N}),test-complexity
 ### product-strategist
 
 ## architecture-decisions (output of r1-r2 — locked after DA approval)
-{ADR[N]: decision |alternatives:{considered} |rationale:{why} |review-finding:{which finding drove this}}
+{ADR[N]: decision |alternatives:{considered} |rationale:{why} |prompted-by:{Q[N]/H[N]/C[N] that drove this}}
 
 ## design-system (output of r1-r2 — locked after DA approval)
 {DS[]: design tokens, component hierarchy, interaction patterns, responsive strategy}
@@ -125,11 +142,11 @@ Cross-track review: the receiving group joins DA in evaluating the handoff.
 ### PHASE 1: PLAN (iterates until P(plan-ready) > 0.85)
 
 #### plan round (plan-track agents design)
-plan-track agents read workspace ## review-findings → architect against evidence
+plan-track agents read workspace ## prompt-understanding → architect against evidence
 !parallel: tech-architect designs system architecture | product-designer designs UX/UI architecture | product-strategist defines priorities+constraints
 
 tech-architect output (workspace ## plans → ## architecture-decisions → ## interface-contracts):
-  → ADR[N]: {decision} |alternatives:{considered} |rationale:{citing review findings} |reversal-cost:{estimate}
+  → ADR[N]: {decision} |alternatives:{considered} |rationale:{citing prompt understanding} |reversal-cost:{estimate}
   → IC[N]: {interface contract} |type:{API|data-model|event} |consumer:{which build-track agent implements}
   → tech stack decisions with evidence (¬assumptions)
 
@@ -140,13 +157,13 @@ product-designer output (workspace ## plans → ## design-system):
   !rule: design decisions cite design system precedent or research — ¬aesthetic preference
 
 product-strategist output (workspace ## plans):
-  → priority sequencing: what to build first and why (citing review findings)
+  → priority sequencing: what to build first and why (citing prompt understanding)
   → user-segment constraints: who uses this, how their needs shape the build
   → success criteria: measurable outcomes for this phase
 
 all plan-track agents:
   → SQ[N] sub-task decomposition, CAL[] effort estimates, PM[] pre-mortem (min 3), RC[] reference class forecasting
-  → review-finding mapping: which review findings drove which design decisions (provenance)
+  → prompt-understanding mapping: which prompt understanding drove which design decisions (provenance)
   → §2a/§2b/§2c/§2e analytical hygiene checks (each produces outcome 1/2/3)
   → §2h cross-model verification (when ΣVerify available per workspace ## infrastructure):
     each plan-track agent MUST verify top 1 load-bearing decision via sigma-verify:
@@ -166,7 +183,7 @@ all plan-track agents:
 DA + build-track agents evaluate the plan together:
   DA challenges:
     → over-engineering, spec drift, assumption conflicts, premature abstraction
-    → review-finding alignment: do plans address review findings or ignore them?
+    → prompt-understanding alignment: do plans address Q[]/H[]/C[] or ignore them?
     → source-provenance audit (§2d): verify findings tagged with |source:{type}
     → prompt audit (§7d): check if BUILD claims from prompt were tested or assumed
   build-track challenges (feasibility focus):
@@ -185,7 +202,7 @@ DA + build-track agents evaluate the plan together:
 
 #### P(plan-ready) assessment
 lead computes belief state after each challenge round:
-  builder-feasibility(0.25) + interface-agreement(0.20) + design-arch-coherence(0.15) + no-assumption-conflicts(0.15) + review-finding-coverage(0.10) + DA-exit-gate(0.15)
+  builder-feasibility(0.25) + interface-agreement(0.20) + design-arch-coherence(0.15) + no-assumption-conflicts(0.15) + prompt-understanding-coverage(0.10) + DA-exit-gate(0.15)
   write: "BELIEF[plan-r{N}]: P={posterior} |builder-feasibility={score} |interface-agree={score} |design-arch={score} |conflicts={none|count} |review-coverage={score} |DA={grade} |→ {lock-plan|another-round({gaps})|Toulmin-debate}"
   P > 0.85 → lock plan, advance to build phase
   P 0.6-0.85 → plan-track refines, another challenge round
@@ -296,7 +313,7 @@ verify workspace contains:
   □ ## plans → at least 1 DS[] or IX[N] from product-designer
   □ ## plans → success criteria from product-strategist
   □ all plan-track agents: SQ[] + CAL[] + PM[] present (¬missing)
-  □ review-finding mapping present IF ## review-findings is populated
+  □ prompt-understanding mapping present IF ## prompt-understanding is populated
   □ §2a/§2b/§2c/§2e hygiene checks: each agent produced outcome 1/2/3 (¬missing, ¬perfunctory)
   □ source provenance: all findings tagged with |source:{type}
 gate-log: "G1[plan-r{N}]: {PASS|FAIL:{missing-items}}"
@@ -315,7 +332,7 @@ FAIL(missing participant) → re-spawn missing agent with explicit challenge pro
 #### G3: plan-lock-completeness (before architect exit)
 !when: after P(plan-ready) > 0.85, before plan-track agents exit
 verify workspace contains LOCKED output (¬still in ## plans, actually written to final sections):
-  □ ## architecture-decisions — at least 1 ADR[N] with alternatives + rationale + review-finding link
+  □ ## architecture-decisions — at least 1 ADR[N] with alternatives + rationale + prompted-by link
   □ ## design-system — DS[] with tokens, component hierarchy, interaction patterns
   □ ## interface-contracts — at least 1 IC[N] with type + consumer
   □ cross-coherence: lead verified contracts ↔ design system ↔ data model alignment
@@ -486,12 +503,12 @@ flag: "H[N] assumption used — ¬independently validated" and cite the specific
 ### PLAN-TRACK (tech-architect, product-designer, product-strategist)
 
 PHASE 1 — PLAN (design + defend):
-1→READ: review findings (workspace ## review-findings) + codebase analysis
+1→READ: prompt understanding (workspace ## prompt-understanding) + codebase analysis
 2→DESIGN: write plan to workspace ## plans section (ΣComm)
   tech-architect: ADR[N] architecture decisions, IC[N] interface contracts, tech stack
   product-designer: DS[] design system, IX[N] interaction patterns, component tree
   product-strategist: priority sequencing, user-segment constraints, success criteria
-  all: SQ[] sub-task decomposition, CAL[] estimates, PM[] pre-mortem, review-finding mapping
+  all: SQ[] sub-task decomposition, CAL[] estimates, PM[] pre-mortem, prompt-understanding mapping
   all: §2a/§2b/§2c/§2e analytical hygiene checks (each produces outcome 1/2/3)
 3→RESPOND TO CHALLENGES: DA + build-track will challenge your plan
   DA challenges: "DA[#N]: concede|defend|compromise — [evidence]"
@@ -544,7 +561,7 @@ BUILD authority scoring: official-docs=5 | GitHub-production-examples=4 | tutori
 Two belief states govern phase transitions (see Round Structure for full definitions):
 
 ### P(plan-ready) — plan phase exit
-  builder-feasibility(0.25) + interface-agreement(0.20) + design-arch-coherence(0.15) + no-assumption-conflicts(0.15) + review-finding-coverage(0.10) + DA-exit-gate(0.15)
+  builder-feasibility(0.25) + interface-agreement(0.20) + design-arch-coherence(0.15) + no-assumption-conflicts(0.15) + prompt-understanding-coverage(0.10) + DA-exit-gate(0.15)
   P > 0.85 → lock plan, advance to build | P 0.6-0.85 → another plan round | P < 0.6 → Toulmin debate
 
 ### P(build-quality) — build phase exit
