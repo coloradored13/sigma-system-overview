@@ -23,7 +23,7 @@ done
 echo "Checking submodule freshness..."
 echo ""
 
-for sub in hateoas-agent sigma-mem; do
+for sub in hateoas-agent sigma-mem sigma-verify; do
   if [ ! -d "$sub" ]; then
     echo "  $sub: NOT FOUND (submodule not initialized)"
     STALE=true
