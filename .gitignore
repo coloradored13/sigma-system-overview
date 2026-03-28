@@ -1,2 +1,14 @@
 .DS_Store
 output/
+
+# Agent runtime artifacts (only memory.md is persistent)
+**/teams/*/agents/*/inbox.md
+**/teams/*/agents/*/findings-*.md
+**/teams/*/agents/*/workspace-*.md
+**/teams/*/agents/*/r*-response.md
+**/teams/*/agents/*/r*-findings.md
+**/teams/*/agents/*/*-findings.md
+**/teams/*/agents/*/*-draft.md
+
+# Inboxes (runtime, not persistent)
+**/teams/*/inboxes/
