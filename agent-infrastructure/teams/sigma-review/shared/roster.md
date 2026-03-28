@@ -5,6 +5,7 @@ implementation-engineer |domain: backend-implementation,test-writing,error-handl
 product-strategist |domain: market,growth,monetization,prioritization,user-segmentation |wake-for: feature decisions,positioning,launch readiness,competitive analysis
 ux-researcher |domain: usability,accessibility,mental-models,information-architecture,learnability |wake-for: user-facing changes,flow design,dual-user questions,onboarding
 code-quality-analyst |domain: code-quality,test-coverage,style-consistency,dead-code,edge-cases |wake-for: code review,test analysis,quality audit,style check
+product-designer |domain: design-systems,interaction-design,visual-strategy,component-architecture,information-architecture,responsive-design,accessibility-design |wake-for: design system,component design,interaction patterns,visual design strategy,UI architecture,responsive design,frontend plan,design best practices,UX/UI architecture
 ui-ux-engineer |domain: visual-design,component-architecture,layout,styling,interaction-design,accessibility-implementation,data-visualization,design-systems,frontend-build |wake-for: UI build,frontend implementation,Streamlit app,design quality,component design,styling,responsive layout,data display
 technical-writer |domain: documentation,narrative,examples,onboarding,cross-doc-consistency |wake-for: documentation review,readme,setup docs,api docs,writing quality
 

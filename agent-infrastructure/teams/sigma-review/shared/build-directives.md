@@ -10,26 +10,34 @@
 
 ### BUILD round structure
 
-rounds: plan(r1) → challenge-plan(r2) → build+checkpoint(r3) → cross-model-code-review(r3.5) → review(r4)
+Two-phase dynamic model with cross-track review. Each phase iterates until Bayesian confidence.
 
-r1: lead decomposes task → agents write implementation plans
-  → each plan: scope, assumptions, interfaces needed, complexity, risks
-  → DA observes ¬participates
+plan-track agents: tech-architect(primary), product-designer(primary), product-strategist(advisory)
+build-track agents: implementation-engineer(primary), ui-ux-engineer(primary), code-quality-analyst(primary)
+DA: spans both phases (challenges in plan phase, reviews in build phase)
+cross-track: build-track challenges plan feasibility | plan-track reviews build fidelity
 
-r2: DA challenges plans BEFORE code written
-  → focus: over-engineering, spec drift, assumption conflicts, premature abstraction
-  → agents refine plans + address challenges
-  → lead confirms cross-agent coherence
+PHASE 1 — PLAN (iterates until P(plan-ready) > 0.85, max 5 rounds):
+  plan round: plan-track agents design (tech arch + UX/UI arch + strategy)
+    → ADRs, interface contracts, design system, priority sequencing
+    → SQ[] decomposition, CAL[] estimates, PM[] pre-mortem, review-finding mapping
+    → DA observes ¬participates
+  challenge round: DA + build-track evaluate plan together
+    → DA: over-engineering, spec drift, assumption conflicts, review-finding alignment
+    → build-track: feasibility, framework constraints, effort reality
+    → plan-track responds to both, refines
+    → lead computes P(plan-ready) → iterate or lock
+  architect exit: plan locked → plan-track exits, re-spawns for build review
 
-r3: agents build in parallel per refined plans
-  → CHECKPOINT at ~50%: status/drift/surprises to workspace
-  → DA scans for scope creep, gold-plating, test gaps, plan divergence
-  → DA delivers mid-build corrections IF drift detected (lightweight, ¬full debate)
-  → agents complete build
-
-r4: standard sigma-review of completed build
-  → DA serves as adversarial reviewer
-  → findings, convergence, decisions per standard protocol
+PHASE 2 — BUILD (iterates until P(build-quality) > 0.85, max 5 rounds):
+  build round: build-track implements against locked plan
+    → CHECKPOINT at ~50%: status/drift/surprises to workspace
+  cross-model review: ΣVerify code review (advisory, when available)
+  review round: DA + plan-track evaluate build together
+    → DA: code quality, test integrity, scope compliance, gold-plating
+    → plan-track: intent fidelity, contract compliance, design system adherence
+    → build-track fixes agreed issues → re-submit → iterate
+    → lead computes P(build-quality) → iterate or done
 
 ### HYBRID mode
 lead declares mode transitions explicitly
@@ -264,23 +272,45 @@ pipeline: see /sigma-evaluate skill for full evaluation pipeline (3 evaluator ag
 
 ## bayesian-consensus-tracking — BUILD variant (26.3.15, extracted 26.3.19)
 
-### §4 BUILD belief state: P(implementation-ready)
+### §4 BUILD belief states (two-phase)
 
-!purpose: P(implementation-ready) instead of P(consensus) for BUILD mode
+!purpose: separate belief states for plan quality and build quality
+
+#### P(plan-ready) — plan phase exit
 weighted components:
-  interface-agreement: all agents agree on API contracts (weight 0.3)
-  no-assumption-conflicts: §4b cross-checked (weight 0.25)
-  test-strategy-defined: accepted by all agents (weight 0.2)
-  effort-calibrated: estimates calibrated against reference class (weight 0.15)
-  DA-exit-gate: plan quality (weight 0.1)
+  builder-feasibility: build-track confirms plan is implementable (weight 0.25)
+  interface-agreement: plan-track agents agree on API contracts (weight 0.20)
+  design-arch-coherence: design system aligns with technical architecture (weight 0.15)
+  no-assumption-conflicts: §4b cross-checked by DA + build-track (weight 0.15)
+  review-finding-coverage: plan addresses sigma-review findings (weight 0.10)
+  DA-exit-gate: plan quality (weight 0.15)
 
-BUILD stopping rules:
-  P > 0.85 → proceed to build (r3)
-  P 0.6-0.85 → another planning round (resolve specific gaps)
-  P < 0.6 → significant disagreement — Toulmin debate on contested architecture decisions
+plan stopping rules:
+  P > 0.85 → lock plan, advance to build phase
+  P 0.6-0.85 → plan-track refines, another challenge round
+  P < 0.6 → Toulmin debate on contested architecture decisions
+  max 5 rounds
 
 workspace format:
-  "BELIEF[r{N}]: P={posterior} |interface-agree={score} |conflicts={none|count} |test-strategy={defined|missing} |effort-cal={yes/no} |DA={grade} |→ {proceed-to-build|planning-gap({detail})|Toulmin-debate}"
+  "BELIEF[plan-r{N}]: P={posterior} |builder-feasibility={score} |interface-agree={score} |design-arch={score} |conflicts={none|count} |review-coverage={score} |DA={grade} |→ {lock-plan|another-round({gaps})|Toulmin-debate}"
+
+#### P(build-quality) — build phase exit
+weighted components:
+  plan-compliance: build matches locked architecture decisions, assessed by plan-track (weight 0.25)
+  test-coverage: behavioral tests, failure cases, integration (weight 0.20)
+  design-fidelity: build matches design system specs, assessed by product-designer (weight 0.15)
+  code-quality: DA assessment of correctness, security, maintainability (weight 0.20)
+  no-scope-creep: built only what was in scope (weight 0.10)
+  DA-exit-gate: build quality (weight 0.10)
+
+build stopping rules:
+  P > 0.85 → done, proceed to synthesis
+  P 0.6-0.85 → build-track fixes agreed issues, another review round
+  P < 0.6 → escalate to user (fundamental plan-build mismatch)
+  max 5 rounds
+
+workspace format:
+  "BELIEF[build-r{N}]: P={posterior} |plan-compliance={score} |test-coverage={score} |design-fidelity={score} |code-quality={score} |scope={clean|creep} |DA={grade} |→ {done|another-round({issues})|escalate}"
 
 ### §4a BUILD retrieval strategies (26.3.15)
 
