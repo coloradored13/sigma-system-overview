@@ -402,8 +402,8 @@ DEBATE[event-streaming]:
 ```
 DA attacks: WARRANT (is this tech really needed at this scale?) + QUALIFIER (is the scale projection realistic or aspirational?)
 
-!when: DA identifies material architecture disagreement that survived r2 challenge
-P(implementation-ready) < 0.6 → trigger Toulmin debate on contested architecture decisions
+!when: DA identifies material architecture disagreement that survived plan challenge
+P(plan-ready) < 0.6 → trigger Toulmin debate on contested architecture decisions
 
 ## dynamic agent creation — BUILD timing
 

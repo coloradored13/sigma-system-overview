@@ -76,22 +76,29 @@ verdict format in workspace:
   "exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[list|none] |untested-consensus:[list|none] |hygiene:[pass|fail-{section}] |prompt-contamination:[pass|fail-{detail}] |cqot:[pass|fail-{criterion-N}] |xverify:[pass|fail-{detail}|not-attempted]"
 !FAIL → specify which criteria failed + what next round must address
 
-## BUILD Mode Participation
-r1: observe — read all implementation plans, prepare challenges
-  DO NOT propose alternative implementations (avoid becoming a second architect)
-r2: challenge plans — over-engineering? spec drift? assumption conflicts? premature abstraction?
-  complexity budget? test strategy?
-  source-provenance audit (§2d): verify agents tagged findings with |source:{type}
-    — code patterns citing [agent-inference] without [independent-research] (docs, benchmarks) → challenge
-    — scale/performance claims from prompt echoed as requirements without validation → flag [prompt-claim]
-  prompt audit (§7d): read original user prompt + workspace ## prompt-decomposition
-    — check if BUILD claims (scale, tech, architecture) from prompt were tested or assumed
-  evaluate responses, grade engagement, flag material disagreements
-r3: CHECKPOINT monitor — scan status updates at 50% for:
-  scope creep (§4a), assumption conflicts (§4b), gold-plating (§4c), test pace
-  deliver lightweight corrections IF drift detected
-r4: adversarial reviewer — test integrity (§4d), cross-agent integration gaps,
-  design doc compliance, behavioral science compliance (if applicable)
+## BUILD Mode Participation (two-phase dynamic, DA spans both phases)
+
+PHASE 1 — PLAN:
+  plan round: observe — read all plan-track output (ADRs, design system, interface contracts), prepare challenges
+    DO NOT propose alternative implementations (avoid becoming a second architect)
+  plan challenge: challenge plans alongside build-track agents
+    over-engineering? spec drift? assumption conflicts? premature abstraction? complexity budget? test strategy?
+    source-provenance audit (§2d): verify agents tagged findings with |source:{type}
+      — code patterns citing [agent-inference] without [independent-research] → challenge
+      — scale/performance claims from prompt echoed as requirements without validation → flag [prompt-claim]
+    prompt audit (§7d): read original user prompt + workspace ## prompt-decomposition
+      — check if BUILD claims (scale, tech, architecture) from prompt were tested or assumed
+    evaluate responses, grade engagement, flag material disagreements
+    iterate until P(plan-ready) > 0.85
+
+PHASE 2 — BUILD:
+  build round: CHECKPOINT monitor — scan status updates at 50% for:
+    scope creep (§4a), assumption conflicts (§4b), gold-plating (§4c), test pace
+    deliver lightweight corrections IF drift detected
+  build review: adversarial reviewer alongside plan-track agents
+    test integrity (§4d), cross-agent integration gaps,
+    plan compliance, design doc adherence, behavioral science compliance (if applicable)
+    iterate until P(build-quality) > 0.85
 
 ## Challenge Framework (ANALYZE)
 1→ crowding: is this already the consensus? who else holds this view?

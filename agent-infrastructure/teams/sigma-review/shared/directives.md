@@ -529,7 +529,7 @@ LS-TRACK[{review}:{agent}:{estimate-id}]: predicted:{point} |range:{80%=[lo,hi]}
 ## bayesian-consensus-tracking v1.1 (26.3.15)
 
 scope: sigma-review ANALYZE operations — replaces fixed round-count heuristic with evidence-based stopping
-modes: ANALYZE → P(consensus) — BUILD → P(implementation-ready) → see build-directives.md §4
+modes: ANALYZE → P(consensus) — BUILD → P(plan-ready)|P(build-quality) (two-phase dynamic) → see build-directives.md §4
 companion: adversarial-layer v2.0, superforecasting protocol
 
 ### §4 belief-state round management
@@ -566,7 +566,7 @@ BELIEF[r{N}]: P={posterior} |prior={X} |agreement={ratio} |revisions={quality} |
   |→ {synthesis-ready|continue(target:{gaps})|deep-disagreement(trigger:{action})}
 ```
 
-> BUILD belief state P(implementation-ready) → see build-directives.md §4
+> BUILD belief states P(plan-ready)|P(build-quality) (two-phase dynamic, 26.3.27) → see build-directives.md §4
 
 #### why this matters (ANALYZE)
 - r1 with 9 tensions and 0.3 prior → P(consensus)≈0.25 → clearly needs r2 (correct)
