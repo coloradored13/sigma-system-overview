@@ -227,7 +227,6 @@ WHEN NOT TO REFACTOR:
 - speculative generality — don't add abstraction for a single current implementation
 - test-induced design damage: mocking heavy enough to drive bad architectural decisions
   (DHH/Fowler/Beck debate 2014, still relevant) — over-isolation for testability can distort design more than help it
-  → sociable tests over purely solitary tests when isolation cost > value
 - urls: https://martinfowler.com/books/refactoring.html | https://xp123.com/articles/speculative-generality/ | https://dhh.dk/2014/test-induced-design-damage.html
 
 ### T11 — Architecture patterns: hexagonal, modular monolith, event-driven (26.3.24)
@@ -485,3 +484,34 @@ PRACTICAL PATTERNS:
 - DDD tactical patterns (repositories, factories) are high ceremony; bounded contexts + ubiquitous language deliver 80% of the value with much lower cost
 - strangler fig is slower than a rewrite but consistently safer; rewrites systematically underestimate cost (second system effect)
 - mutation testing is expensive — run on critical paths only; use after coverage gaps already closed
+
+## patterns (promoted 26.3.28 — sigma-ui review)
+
+P[AsyncRunner-private-attr-coupling|src:sigma-ui|promoted:26.3.28|class:calibration]
+AsyncRunner._async_start()/_async_advance() access Orchestrator private attrs directly (_current_phase, _context, _phase_history at lines 97-99, 117-128 of async_runner.py). Risk ELEVATED in systems where AsyncRunner is used as gate-enforcement trust anchor. Mitigation: asyncio.to_thread(orch.start/advance) using public Orchestrator API. ¬use AsyncRunner for gate-critical paths until private-attr bypass is resolved upstream in hateoas-agent.
+
+P[Agent-SDK-version-check-before-dismissal|src:sigma-ui|promoted:26.3.28|class:calibration]
+Agent SDK dismissed as "0.x premature" based on locally installed version — DA challenge revealed v0.1.48 with hooks+sessions+MCP write-lock had shipped (Mar 2026). Disqualification was provisional, not confirmed. Pattern: always verify current SDK version via pip/PyPI before finalizing SDK ranking in analysis. Code-read of installed version ¬sufficient when SDK evolves rapidly. ¬dismiss as premature without spike test or current API review.
+
+P[convention-only-async=design-defect|src:sigma-ui|promoted:26.3.28|class:calibration]
+Convention-only async enforcement ("use asyncio.to_thread() where needed") = design defect in FastAPI/async servers. Single blocking call (openai.OpenAI(), google.genai.Client(), file I/O) in async context stalls ALL concurrent dispatches — single-threaded event loop, no error raised, stall is silent under load. Fix: thin async adapter class wrapping ALL sync client methods at boundary + ruff ASYNC100/ASYNC101 lint rule + pytest-asyncio timeout integration tests. Framing as "acknowledged risk" is wrong — this requires architectural fix, not risk acceptance.
+S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+
+→ sociable tests over purely solitary tests when isolation cost > value

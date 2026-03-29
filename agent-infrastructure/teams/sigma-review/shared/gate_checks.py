@@ -1351,3 +1351,93 @@ def run_compute_belief(mode: str, workspace_path: str | None = None, round_num: 
         return {"error": f"Unknown mode: {mode}. Available: {list(BELIEF_MODES.keys())}"}
     result = fn(workspace_path, round_num)
     return result.to_dict()
+
+
+# ---------------------------------------------------------------------------
+# TIER-A observable extension (sigma-ui Phase A — ADR[4])
+# Additive only — zero existing logic above modified.
+# ---------------------------------------------------------------------------
+
+def _get_tier_a_module():
+    """Lazily import sigma_ui.tier_a_observables. Returns None if not installed."""
+    try:
+        import sigma_ui.tier_a_observables as _ta  # noqa: PLC0415
+        return _ta
+    except ImportError:
+        return None
+
+
+def check_tier_a_coverage_gate(workspace_path: str | None = None,
+                                phase_history: list[str] | None = None) -> CheckResult:
+    """V-TIER-A: TIER-A observable coverage gate check.
+
+    Delegates to sigma_ui.tier_a_observables.check_tier_a_coverage().
+    Returns a failing CheckResult with explanation if sigma_ui not installed.
+    """
+    content = read_workspace(workspace_path)
+    ta = _get_tier_a_module()
+    if ta is None:
+        return CheckResult(
+            name="tier_a_coverage",
+            passed=False,
+            details={},
+            issues=["sigma_ui not installed — TIER-A observables unavailable"],
+        )
+    result = ta.check_tier_a_coverage(content, phase_history)
+    # result is a CheckResult (or compatible duck-type from the module's stub)
+    if hasattr(result, "to_dict"):
+        # Return as native CheckResult for consistency
+        d = result.to_dict()
+        return CheckResult(
+            name=d["name"],
+            passed=d["passed"],
+            details=d.get("details", {}),
+            issues=d.get("issues", []),
+        )
+    return result  # type: ignore[return-value]
+
+
+def compute_analyze_belief_with_tier_a(
+    workspace_path: str | None = None,
+    round_num: int | None = None,
+    phase_history: list[str] | None = None,
+) -> BeliefComponents:
+    """Extended analyze belief computation incorporating TIER-A observables.
+
+    Falls through to standard compute_analyze_belief() and replaces da_factor
+    with TIER-A-blended value if sigma_ui is installed.
+
+    This function is an ADDITION — compute_analyze_belief() is not modified.
+    Callers that want TIER-A weighting use this function explicitly.
+    """
+    base = compute_analyze_belief(workspace_path, round_num)
+    ta = _get_tier_a_module()
+    if ta is None:
+        return base
+
+    content = read_workspace(workspace_path)
+    tier_a_da_factor = ta.get_tier_a_da_factor(content, phase_history, base.da_factor)
+
+    # Recompute posterior with TIER-A da_factor (formula: prior × agreement × revisions × gaps_penalty × da_factor)
+    new_posterior = base.prior * base.agreement * base.revisions * base.gaps_penalty * tier_a_da_factor
+
+    return BeliefComponents(
+        prior=base.prior,
+        agreement=base.agreement,
+        revisions=base.revisions,
+        gaps_penalty=base.gaps_penalty,
+        da_factor=tier_a_da_factor,
+        posterior=new_posterior,
+        declared=base.declared,
+        divergence=abs(base.declared - new_posterior) if base.declared is not None else None,
+        breakdown={
+            **base.breakdown,
+            "tier_a_da_factor": tier_a_da_factor,
+            "base_da_factor": base.da_factor,
+            "tier_a_weighted": True,
+        },
+    )
+
+
+BUNDLES["tier-a-coverage"] = check_tier_a_coverage_gate  # type: ignore[assignment]
+BELIEF_MODES["analyze-tier-a"] = compute_analyze_belief_with_tier_a

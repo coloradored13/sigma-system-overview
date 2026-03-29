@@ -1,5 +1,27 @@
 # team decisions — expertise-weighted
 
+## sigma-ui architecture (26.3.28)
+
+design:framework=Streamlit-conditional |by:product-designer |weight:primary
+  |ctx: Q2 — Streamlit vs React/Next.js for local-only, clone-and-run, single-developer orchestration UI
+  |evidence: XVERIFY[openai:gpt-5.4] partial — "Streamlit correct for status-dashboard-first MVP; React if tension/viz is central product requirement"
+  |decision: Streamlit viable for sigma-ui IF tension/convergence visualization stays monitoring-grade (badge+bar+thread) ¬interactive-graph. Fragment-per-agent-card is MANDATORY architectural constraint ¬optional.
+  |inversion-condition: if belief-state visualization requires node-edge graph with drag/zoom → React/Next.js
+
+design:gate-ux=3-tier-reversibility-matched |by:product-designer |weight:primary
+  |ctx: Q4 — user gate interaction pattern, modal vs inline vs full-page
+  |evidence: CI/CD gate precedent (GitHub Environments), Smashing Magazine agentic UX patterns (2026), modal UX best practices
+  |decision: TIER-1(irreversible phase transition)=full-page-takeover | TIER-2(round advance)=modal overlay | TIER-3(informational)=inline banner | pre-action: show consequences before confirm button active
+
+design:IA=5-level-hierarchy |by:product-designer |weight:primary
+  |ctx: Q2 sub-question — information architecture for status dashboard
+  |decision: L1:phase-strip(persistent) | L2:agent-grid(20-cards) | L3:agent-detail(click-expand) | L4:findings-feed(append-only,chronological) | L5:tension-panel(drawer,deliberate-friction)
+  |anti-patterns: flat-trace-list, token-metrics-primary, auto-expand-all, live-scroll-while-reading
+
+design:tension-viz=threaded-¬graph |by:product-designer |weight:primary
+  |ctx: tension/convergence visualization scope
+  |decision: DA-challenge + agent-responses as threaded conversation metaphor ¬node-edge graph at MVP | convergence=per-agent-badge+aggregate-bar | belief-state=confidence-pct+trend-arrow
+
 ## biotech-healthcare M&A review (26.3.18)
 
 H1-reconciliation:AI=deal-shaper-¬deal-engine |by:product-strategist(r3-concession)+RCA(r1) |weight:primary

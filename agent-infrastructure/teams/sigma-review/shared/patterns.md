@@ -183,6 +183,52 @@ AI-surface-depth-gap|72%-enterprise-AI-workload/~1%-mature-deployment(26.3.28)|r
 two-speed-S-curve|tool-adoption(weeks/months)≠org-transformation(10-12yr)|confusing timelines=common analytical error|cross-agent-derived RCA+TIA|26.3.28 |agents: reference-class-analyst,tech-industry-analyst
 fabricated-confidence-labeling|base rates constructed from proxies MUST be labeled [agent-inference:low-confidence:constructed-from-proxies]|DA-validated §2 hygiene rule|26.3.28 |agents: reference-class-analyst,devils-advocate
 
+## observed across sigma-ui architecture review (26.3.28)
+
+P[TIER-A/B/C-observable-model|26.3.28]: guard observables have 3 tiers — TIER-A(gaming-resistant,orchestrator-produced:XVERIFY-results,phase-counters) > TIER-B(cost-raising,structural-parse:syntax-regex,section-presence) > TIER-C(gameable,agent-asserted:confidence-%,PASS-strings) | gate enforcement must prioritize TIER-A | agents: tech-architect,devils-advocate
+
+P[framework-choice-is-UI-not-orchestration|26.3.28]: when wrapping existing backend with new frontend, dispatch mechanism independent of UI framework | "Streamlit vs FastAPI" wrong → "Streamlit+SDK vs FastAPI+SDK" right | both need same dispatch layer | agents: reference-class-analyst,devils-advocate
+
+P[reuse-%-misleads|26.3.28]: LOC reuse % masks risk concentration in integration surface | "85% reuse" hides that 15% integration layer concentrates ALL risk | risk-map > reuse-% | agents: implementation-engineer,devils-advocate
+
+P[outer-loop-requires-ANDed-conditions|26.3.28]: outer-loop dispatch alone insufficient for control inversion | must AND with orchestrator-produced observables (TIER-A) for guard evaluation | neither alone sufficient | agents: tech-architect
+
+P[strangler-fig-scope-creep-vector|26.3.28]: N-component migration creates N scope expansion opportunities | each component = discrete scope decision = concrete creep mechanism | mitigation: hard scope freeze, evidence-triggered graduation | agents: reference-class-analyst
+
+P[MCP-auto-injection-lost-API-dispatch|26.3.28]: Claude Code auto-injects MCP tool schemas from settings.json | SDK messages.create() does NOT — only explicit tools=[] | CLI→API = MCP tools silently disappear | requires explicit wiring (P1 orchestrator-mediated or P2 tool-forwarding) | agents: implementation-engineer
+
+P[memory-lifecycle-ordered-dependency|26.3.28]: read-side(pre-spawn context injection) + write-side(post-response store) must ship as atomic unit in orchestrator-mediated MCP | shipping read without write = agents appear to work but lose session learnings silently | no error raised | agents: implementation-engineer
+
+P[80/20-vague-claim-detection|26.3.28|sigma-ui-review]: partial-coverage claims ("80% of goals") without explicit gap enumeration hide load-bearing requirements | force specification of the missing % before accepting | DA technique: gap enumeration produces inversions (missing 20% contained #1 requirement) |agents: devils-advocate
+
+P[convergence-in-constrained-design-space=expected|26.3.28|sigma-ui-review]: when solution space is narrow (Python-only + clone-and-run + single-user → Streamlit obvious), multi-agent convergence is EXPECTED ¬informative | convergence is herding signal ¬confirmation signal in constrained spaces | DA must challenge convergence harder when constraints narrow options |agents: devils-advocate,product-designer
+
+P[orchestration-gate-adaptive-tier|26.3.28|sigma-ui-review]: gates at asymmetric decision points need adaptive tier (PASS=lightweight modal, FAIL=full-page-takeover) ¬fixed weight | gate heaviness should match action reversibility + consequence severity |agents: ux-researcher
+
+P[silence-is-valid+STALE-badge|26.3.28|sigma-ui-review]: in multi-agent dashboards, agent silence during active phase is VALID (computing) | distinguish valid-silence from frozen-silence via STALE badge (amber, >30s no update) + last-event-timestamp | Nielsen N1 failure if user can't distinguish |agents: ux-researcher
+
+P[pre-flight-scope-discipline|26.3.28|sigma-ui-review]: pre-flight/setup checks expand additively without bound | hard boundary rule: explicit IN list (max 5) + explicit OUT list | items not in IN are OUT by default | prevents pre-flight scope creep |agents: ux-researcher
+
+P[chat-to-dashboard-mental-model-shift|26.3.28|sigma-ui-review]: chat(sequential,linear,user-tracks-state) → dashboard(concurrent,spatial,system-tracks-state,user-monitors+intervenes-at-gates) | key shift: silence=valid in dashboard ¬in chat | first-run=pre-flight-confidence-check ¬conceptual-onboarding (user is system creator) |agents: ux-researcher
+
+P[burst-rate-not-average-rate-for-framework-viability|26.3.28|sigma-ui-review]: framework viability assessments using average event rate miss phase-transition bursts | 5 agents converging in 2s = 2.5/sec burst while average = 0.5/min | must analyze PEAK not AVERAGE for concurrency decisions |agents: product-designer
+
+P[Intent-Preview-load-bearing|26.3.28|sigma-ui-review]: in agentic UIs with irreversible gates, Intent Preview (show consequences before confirm active) is load-bearing mechanism ¬advisory | without it, gates become rubber-stamps regardless of modality |agents: product-designer
+
+P[tension-panel-volume-requires-pagination|26.3.28|sigma-ui-review]: multi-agent reviews produce 100+ tension items across rounds | rendering all = unusable | round-scoped display + collapsed-default + show-more at threshold (30 items) |agents: product-designer
+
+P[agent-sdk-hook-abstraction-mismatch|26.3.28|sigma-ui-review]: Agent SDK hooks fire at tool-call level; phase-gated orchestration needs phase-transition level control | conflating produces tool-call-controlled but phase-transition-unguarded system | direct Orchestrator.advance() is correct model for phase-gate orchestration |agents: tech-architect
+
+P[wrap-not-rewrite-base-rate-distinction|26.3.28|sigma-ui-review]: "rewrite" base rate (30% success) ¬applicable to "wrap existing into new UI" | wrapping = ~40-55% success | critical to classify correctly before applying base rate | still below 50-50 — wrapping is hard |agents: reference-class-analyst
+
+P[three-agent-independent-convergence=corroboration|26.3.28|sigma-ui-review]: when 3+ agents reach same conclusion via different methods/domains without coordination = genuine corroboration signal (stronger than 2-agent convergence) | but see also: convergence-in-constrained-design-space caveat above |agents: reference-class-analyst
+
+P[importlib-exec-module-requires-sys-modules-registration|26.3.28|sigma-ui-build]: Python 3.14 requires sys.modules[name]=mod registration BEFORE exec_module when loading modules via importlib.util.spec_from_file_location — dataclass field resolution calls sys.modules.get(cls.__module__) which returns None without registration → AttributeError on __dict__. Fix: register before exec, cleanup in except. Applies to any dynamic importlib load defining dataclasses. |agents: implementation-engineer |signal: empirical (smoke test failure, not in plan)
+
+P[sdk-dispatch-rewrite-not-strip-for-verification-sections|26.3.28|sigma-ui-build]: agent .md §2h (Cross-Model Verification) must be REWRITTEN not STRIPPED when used as SDK system= prompt. Strip removes verification principle entirely — agents produce no XVERIFY signal. Rewrite preserves principle, redirects to declarative gap output (XVERIFY-REQUESTED). Pattern: _REWRITE_SECTIONS dict; header emitted, original body replaced. Generalizes to any agentic prompt pipeline converting tool-call instructions to output-only equivalents. |agents: implementation-engineer,tech-architect,devils-advocate |signal: three-agent convergence on gap
+
+P[stagger-sleep-after-write-not-before|26.3.28|sigma-ui-build]: asyncio write-path stagger (Semaphore(1)+sleep) — sleep must be AFTER write, not before. Sleep-before penalizes first write with no benefit (no predecessor). Sleep-after enforces minimum gap between consecutive writes inside semaphore context. Pattern: `async with lock: do_write(); await sleep(ms/1000)`. Applies to any serialized write path where purpose is inter-write spacing. |agents: implementation-engineer,product-designer |signal: PD-found bug, IE confirmed
+
 → actions:
 → new pattern observed → append with |agents and |signal
 → pattern contradicted → move to ¬ section with explanation

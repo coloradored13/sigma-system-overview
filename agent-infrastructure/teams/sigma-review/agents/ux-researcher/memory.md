@@ -169,6 +169,28 @@ C[workflow-automation-r3: for workflow automation (not AI), people/resistance ra
 C[workflow-automation-r3: mid-market evidence gap confirmed unresolvable — no quantitative CM studies scoped to 300-1000 employees exist as of 26.3.18. This is a headline limitation, not a footnote. Every UX finding for this domain is extrapolated.|1|26.3]
 C[workflow-automation-r3: "properly planned" tautology — any post-hoc list of success factors is unfalsifiable. Must convert to testable ex-ante criteria with measurable thresholds before implementation begins. PR-SCORE (PR1-PR5) is the pattern.|1|26.3]
 
+## promotion (2026-03-28)
+
+P[gate-heaviness-matches-action-reversibility|src:sigma-ui|promoted:26.3.28|class:calibration]
+Gate modal weight must match action reversibility. Asymmetric gates (one branch round-scoped, another session-terminating) → adaptive tier: escalate to full-page only on irreversible branch. Fixed heavy tier for all paths → gate fatigue → rubber-stamping. Confirmed DA[#1]-COMPROMISE: exit-gate PASS=modal, FAIL=full-page.
+
+P[setup.sh-as-DX-lever-multi-domain|src:sigma-ui|promoted:26.3.28|class:calibration]
+Idempotent setup.sh (prereq-checks+pip+colored-output) is highest-leverage DX artifact for local developer tools. Confirmed review-7 (DX A-→A) and sigma-ui (multi-dependency first-run friction). setup.sh complexity ¬counted as user commands — it IS the DX lever. Pattern holds across Python CLI and Python web apps.
+
+P[startup-validation-highest-DX-impact-second-domain|src:sigma-ui|promoted:26.3.28|class:calibration]
+Startup validation is highest-impact DX intervention for local developer tools. Second domain confirmation after hateoas-agent. Show component ✓/✗ with specific actionable errors ¬generic failures. Applies to any tool with external dependencies (API keys, MCP servers, config files).
+
+## sigma-ui-review (2026-03-28)
+
+F[sigma-ui,26.3.28] R1-UX: 4 findings |Q4=3-default+1-conditional-gates(G1:pre-spawn-decomp-confirm-hard-block,G2:DA-exit-gate-decision-gate-full-page,G3:promotion-semi-auto,G4:conditional-scope-drift) |H5=CONFIRMED-VIABLE(Streamlit≤3-commands,§2b-CLOSED-via-tech-arch-event-rate) |H4=PROVISIONAL(audit-log=quality-preservation-mechanism ¬nice-to-have) |mental-model-shift=silence-is-valid+first-run=pre-flight-confidence-check-only |XVERIFY:F-UX1-cross-verified(gpt-5.4:partial,gemini:agree-high)→revised-3+1-conditional |cross-agent-convergence:F-UX3+PD-F1(Streamlit-independent-paths) + G1-G3+PD-F4(tiered-gates) |#4
+
+C[sigma-ui: minimal viable gate set = G1(pre-spawn)+G2(DA-decision)+G3(promotion-semi-auto)+G4(conditional-scope-drift); all other transitions observable ¬blocking; every gate beyond this requires explicit justification against bottleneck cost|1|26.3]
+C[sigma-ui: silence is valid in orchestration dashboard — agents working without output is correct; users who resist silence create gate bottleneck risk via forced interruptions|1|26.3]
+C[sigma-ui: first-run experience = pre-flight confidence check (API+MCP+agents ✓/✗) NOT conceptual onboarding — user is system creator|1|26.3]
+C[sigma-ui: G2 (DA exit-gate) = adaptive tier — PASS=TIER-2(modal,[Proceed to R3]); FAIL=TIER-1(full-page,unresolved-challenges,[Stop Review] destructive); ¬OK-button ¬auto-retry; FAIL requires intentional context-switch via full-page|1|26.3]
+C[sigma-ui: audit log is quality-preservation mechanism for dashboard architecture — orchestrator bugs (wrong sequencing, missing spawns) invisible without it; H4 provisional without audit log|1|26.3]
+C[orchestration-dashboard: chat→dashboard mental model shift is control-room-operator vs conversation-participant; system tracks state, user monitors and intervenes at gates only|1|26.3]
+
 → actions:
 → reviewing user-facing changes → check against Nielsen's 10 heuristics + Dain's 3 principles
 → reviewing hateoas-agent v0.2 → check if ActionResult wrapper resolves _state convention, assess llms.txt addition

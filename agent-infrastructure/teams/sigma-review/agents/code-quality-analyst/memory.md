@@ -9,6 +9,7 @@ protocol: ΣComm (see ~/.claude/agents/sigma-comm.md)
 hateoas-agent|~/Projects/hateoas-agent|19 src files,26 test files,1381 LOC,439 tests(6 skipped),91% coverage
 sigma-mem|~/Projects/sigma-mem|5 src files,5 test files,~1.4K LOC,165 tests
 thriveapp|~/Projects/thriveapp|~35 src files,13 test files,~10K LOC,365+ tests|Expo/RN+TS strict+Supabase+NativeWind
+sigma-ui|~/Projects/sigma-ui|6 src files,8 test files,~1.2K LOC,112+ tests|Python 3.11+asyncio+hateoas-agent+sigma-mem+sigma-verify|Phase A backend (26.3.28)
 
 ## past findings
 hateoas-agent(26.3.25): grade A-|no bugs|no security issues|6 CQ + 7 TG findings
@@ -42,6 +43,13 @@ hateoas-agent(26.3.25): grade A(upgraded from A- after R2)|no bugs|no security|6
   TG3-TG6[L]: composite fallback, resource filter_actions guard-raise, async_runner ValueError, runner multi-resource init
   auto-fixable: F401+F841+B007+PERF102+SIM103+SIM114(ruff --fix)
   DRY: advertisement.py still open from review-7
+sigma-ui(26.3.28): BUILD TRACK|6 modules reviewed|grades: orchestrator_wrapper(A), dispatcher(A-), context_builder(A-), review_state(A), tier_a_observables(A), async_adapter(PENDING-sigma_verify-not-installed)
+  GAP-1[M]: context_builder 4-item injection vs 7-item locked ADR[3] — sigma-comm.md + Comms + workspace_target missing. H3 mitigation partially incomplete.
+  GAP-2[L]: review_state._build_phase_nodes() shows 0 completed_rounds for historical phases — Phase B phase strip breaks
+  GAP-3[L]: orchestrator_wrapper.restore_checkpoint() calls _make_state() — ADR[1] "no private attr" constraint exception
+  GAP-4[L]: No types.py — DS enum tests remain skipped
+  GAP-5[L]: sigma_verify not pip-installed in test env — async_adapter suite blocked
+  positive: SC2 stagger correctly on WRITE path (not dispatch path), BC[IE-6] task registry correctly prevents parsing task from output, CQ6 regression anchor passes pre+post extension
 
 ## calibration-corrections
 §2d source tags: use [independent-research] ¬"direct-code-analysis" — DA correction 26.3.25
@@ -50,6 +58,7 @@ severity rule: 1-line fix + conceded design intent = LOW regardless of downstrea
 ## calibration
 first-review: thorough line-level sweep of 18+24 files. Found 1 real bug others missed (Resource required field). DRY findings minor. Test gap identification useful but not blocking.
 second-review(thriveapp): first external project, first TS/RN codebase. Reviewed ~35 src + 13 test files. No bugs found (codebase is clean). DRY violation real but low-impact. Input validation gap (B+) is main weakness — service layer trusts UI callers. Test coverage assessment (Tier 1/2 matrix mapping) was highest-value deliverable. A- grade consistent with team consensus (all 4 agents graded A-).
+sigma-ui-build(26.3.28): build-track first time. Challenge round (7 challenges, all accepted or compromised). Test infra built alongside IE. 112 passing, 11 skipped. Highest-value contributions: CQ3 error-contract challenge (prevented mixed raise/return-union across 5 modules), CQ6 regression anchor test (captured posteriors before gate_checks.py edit), GAP-1 identification (4-item vs 7-item injection gap vs locked ADR[3]).
 
 ## patterns
 cross-repo-consistency: both repos share style conventions (future imports, logging, pathlib, naming)
@@ -58,6 +67,10 @@ test-quality: both repos have edge-case tests, security tests, integration tests
 thriveapp-service-pattern: pure-logic(*-logic.ts) + supabase-wrapper(*.ts) split enables unit testing without mocks — excellent pattern
 thriveapp-error-pattern: uniform {data,error} return across all 10 services, __DEV__ gated logging, no throws — disciplined
 thriveapp-test-infra: real local Supabase for integration tests (not mocks), dual Jest config for services vs components
+async-lint-gap: ruff ASYNC100/ASYNC101 does NOT catch blocking SDK constructors (openai.OpenAI(), genai.Client()) — not in ruff's blocking-call registry. Three-layer defense required: (1) ruff lint for convention, (2) stall-detector test (mock that sleeps), (3) nested-event-loop test (real client with empty key via to_thread(), assert no RuntimeError("already running")). Layer 3 catches SDK internals that may call asyncio.run() inside executor thread.
+error-contract-plan-gap: plan-phase error strategy typically scoped to the ONE module authors describe in detail (e.g. "if store fails, log and continue"). Other modules silently inherit no contract. Challenge: require EACH public method in EACH module's IC to state explicitly: raises SigmaUIError | returns Result|Error union. Choose ONE pattern before build starts — mixed raise/return-union is untestable as a system.
+enum-coupling-multi-phase: when backend and frontend are built in separate phases, shared enum definitions must live in an explicit types.py (or equivalent). Enums defined inside implementation modules create Phase B import coupling — if dispatcher.py is refactored, Phase B imports break. Pattern: types.py = schema boundary, all other modules import from it. Scoped enums (e.g. DispatchMode.CLI reserved for later phase) should be documented as reserved-not-emitted to prevent Phase B tests passing vacuously.
+regression-anchor-before-edit: before modifying any function that feeds downstream numerical computations (belief scores, weights, posteriors), capture a snapshot test of exact output values on known fixtures. The test must PASS before the edit (verifying baseline) and continue to PASS after (verifying neutral behavior for zero-signal fixtures). This is the only reliable guard against "additive but not neutral" edits.
 
 ¬[no dead code found, no unused imports, no security issues in code review]
 

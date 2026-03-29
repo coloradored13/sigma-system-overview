@@ -249,3 +249,19 @@ P[watchlist-to-conflict-materialization:per-scenario-10-18%/portfolio-75-85%;per
 P[recession-AI-displacement-correlation-has-two-opposing-channels:cost-cutting→deploy-existing(immediate,positive)+capex-cuts→slow-next-gen(lagged,negative);in-18mo-window-channel-a-dominates→net-positive-correlation|src:5yr-PM-strategy-R3|class:pattern]
 P[1970s-analog-provides-DURATION(8-12yr)+SECTOR-SELECTION(>role)+COUNTER-CONSENSUS-TIMING-value;does-NOT-provide-labor-market-mechanics(physical-vs-cognitive-displacement-differ);demoted-to-WEAK-BUT-INFORMATIVE|src:5yr-PM-strategy-R3|class:calibration]
 P[tech-capex-super-cycles-typically-7-12yr-but-dot-com-fell-37%-in-1yr;hyperscaler-FCF-deterioration(Alphabet-90%,Amazon-negative-2026)=leading-indicator;P(sustained)=42%-is-INSIDE-base-rate-range-30-45%|src:5yr-PM-strategy-R1+DC-review|class:pattern]
+## sigma-ui architecture review — R1+R2 findings (26.3.28)
+task: superforecasting analysis of sigma-ui architecture | local agent orchestration UI
+SQ[1-5]: 5 sub-questions | 2×outcome-1(changed) | 2×outcome-2(confirmed) | 1×outcome-3(gap)
+RC[1-4]: orchestration-UI(20-30%,N~8-12) | wrap-not-rewrite(40-55%) | local-dev-tool(55-65%) | agentic-deployment(40%-ceiling)
+ANA[1-5]: AutoGen-Studio(PARTIAL-FAIL,HIGH) | Gradio/Streamlit(SUCCESS,MOD) | LangSmith/Langfuse(SUCCESS-monitoring) | orchestrator-config.py(WORKS,V-HIGH) | hateoas-agent(WORKS,V-HIGH)
+CAL: H3=58%(DB) | H4=52%(DB,57-62%-Streamlit+SDK) | H5=75% | overall=35%(DA-revised)
+PM: scope-creep(35-42%,DA-revised) | dispatch(20-25%) | quality(15-20%) | abandoned(10-15%) | dep-churn(5-10%)
+OV: inside=65-70% | outside=42%(RC-weighted) | reconciled=35%
+DA: 5/5(2-concede,2-compromise,1-concede-critical) | P revised 50%→35%
+key-insight: Streamlit+SDK-vs-FastAPI+SDK(both need dispatch) | monitoring-UI>orchestration-UI
+cross-agent: TA-H3-aligns | 3-way-Streamlit(PD+UXR+RCA) | strangler-stall(TA+IE+RCA)
+P[monitoring-UIs-succeed-higher-rate-than-orchestration-UIs:~35-45%-vs-~20-30%;OBSERVE-agents>CONTROL-agents-via-UI;LangSmith/Langfuse-succeeded-as-monitoring,AutoGen-Studio-struggled-as-orchestration|src:sigma-ui-R1|class:pattern]
+P[explicit-RC-weighting-mandatory-when-multiple-classes-apply:unweighted-avg=false-precision;weight-by-similarity-to-GOAL(35%)+METHOD(30%)+DEPLOYMENT(25%)+ceiling(10%);DA-caught-50%→42%|src:sigma-ui-DA[#1]|class:calibration]
+P[strangler-fig-partial-stall:N-unit-migrations-with-per-unit-go/no-go-stall-at-bridge-~50-60%;P(all-N)=multiplicative;bridge-accumulates-operational-tax(compounding-cost);hard-completion-criterion-required|src:sigma-ui-R2(TA+IE+RCA)|class:pattern]
+P[DISCONFIRM-percentage-claims-must-specify-the-gap:"80%-of-goals"-is-marketing¬analysis;DA-forced-specifying-20%;missing-20%-contained-must-have(control-inversion-fix)|src:sigma-ui-DA[#3]|class:calibration]
+C[CAL-overall-must-be-derived¬judgment:RC-weighted+hypothesis-conditional-bracketing-required;judgment-call-dressed-as-calibration=process-violation;DA[#5]-caught|src:sigma-ui-DA[#5]]

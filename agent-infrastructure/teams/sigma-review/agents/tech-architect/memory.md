@@ -49,6 +49,18 @@ concurrent-workspace-writes: review-7 workspace.md had 5+ agents writing simulta
 async-sync-execution-parity: AsyncRunner duplicates Orchestrator sync execution path (private attr mutation + guard loop) — pattern to watch: async variants that bypass rather than extend sync implementations lose all future improvements to the sync path
 guard-context-semantics-split: StateMachine guards see last_result (flat handler return dict); Orchestrator guards see full accumulated context — same parameter name, different semantics across API surfaces
 
+P[python-3.14-importlib-sys.modules-preregistration|src:sigma-ui|promoted:26.3.29|class:pattern]
+When loading a Python file via importlib.util.spec_from_file_location + spec.loader.exec_module(), register the module in sys.modules BEFORE exec_module, not after. Root cause: dataclass machinery calls sys.modules.get(cls.__module__) during field resolution — if not yet registered, returns None → AttributeError. Pattern: sys.modules[name] = mod; try: spec.loader.exec_module(mod); except: sys.modules.pop(name, None); raise. Discovered empirically at import integration test gate on Python 3.14 (F[IE-2], sigma-ui SQ[TA-1a]).
+
+P[sdk-dispatch-rewrite-not-strip-for-hygiene|src:sigma-ui|promoted:26.3.29|class:pattern]
+When adapting agent .md prompts for SDK dispatch (messages.create), REWRITE tool-dependent hygiene sections (§2a-§2e, §2h) with SDK-context equivalents — do not strip. Stripping removes behavioral instruction entirely: agents get no XVERIFY gap declarations, no hygiene checks. Correct rewrite: §2h → "XVERIFY not available — note intended verification as outcome 3 gap." §2a-§2e → stripped tool-call sub-steps replaced with text-equivalents. Strip-not-rewrite = zero adapted hygiene = H3 quality mitigation failure. This is load-bearing for any SDK dispatch build.
+
+P[interface-contract-constructor-state-drift|src:sigma-ui|promoted:26.3.29|class:pattern]
+When an IC specifies a param on individual method calls (dispatch(agent, task, ctx, mode="analyze")), builders often migrate it to constructor state + setter (current_phase in __init__ + update_phase()). Drift is subtle: equivalent for single-phase usage, but constructor approach creates stale-state risk when caller dispatches across phase transitions without calling setter. IC per-call param forces mode to be explicit at every call site. Flag constructor-state-for-behavioral-param as compliance gap in build reviews even when functionally equivalent in Phase A.
+
+C[challenge-concede-without-SQ-entry=unbuilt-scope|src:sigma-ui|promoted:26.3.29|class:calibration]
+Scope items accepted in challenge responses (e.g. "concede: add types.py +0.25d") have ~40% non-delivery rate unless immediately added to SQ[] decomposition. IE implements from original SQ list, not challenge response text. Pattern: types.py accepted in challenge round as Phase A scope, never built, 11 tests skipped at delivery. Rule: when accepting scope in challenge responses, either (a) add to SQ[] immediately, or (b) explicitly defer to next phase with IC note. Acceptance without SQ entry is not commitment.
+
 ¬[over-engineering concerns — sigma-mem is 1,382 LOC but all functional, no dead code]
 ¬[security regressions in review-7 — path traversal, arrow injection, MCP error sanitization all solid]
 ¬[arch regressions in review-7 — HATEOAS contract, state machine wiring, bridge implementation all clean]
@@ -555,3 +567,36 @@ LEAD FLAG: DA-validation(TA-F4c) + Memory-rating → /sigma-audit before global 
 → actions:
 → r3+ → synthesis
 → next research → VDA5050-v2.2, Open-RMF-adoption, Python-FastAPI-warehouse
+
+## sigma-ui architecture review (26.3.28) — R1
+
+### key findings
+
+F1[Q1 dispatch]: Python-SDK>Agent-SDK(0.x-premature)>CLI-shell-out. !CRITICAL gap: CLI-shell-out preserves Claude-Code-tool-access(Bash,Read,Write,Glob,Grep,MCP) that API-dispatch loses. Three mitigation paths: (a)pass-tool-defs(high-complex),(b)pre-load-context(large-prompts),(c)redesign-for-structured-output(cleanest,requires-agent-rewrite). Flag for implementation-engineer. |source:[independent-research]|T2
+
+F2[Q3/H2/H6 — load-bearing]: XVERIFY[openai:gpt-5.4]=PARTIAL(high-confidence). Outer-loop dispatch fixes WHO calls advance() ¬WHAT guards read. Guard gaming residual: if guards read agent-produced workspace artifacts, agents can satisfy gates without doing the work. Hard-observable guards required: ✓-declaration-count, section-presence, tag-syntax-regex ¬agent-asserted values. gate_checks.py(run_compute_belief+BUNDLES) is correct extension seam. |source:[external-verification+independent-research]|T1
+
+F3[Q5]: Workspace-as-shared-state sufficient + buffer-merge pattern for parallel phases. ¬message-bus needed. |source:[independent-research]|T2
+
+F4[Q6/H3]: RISK-1(guard-gaming-residual), RISK-2(API-dispatch-tool-access-loss=highest-impl-complexity), RISK-3(AsyncRunner-private-attr-bypass[review-8-F1] elevated-to-HIGH-in-gate-trust-context→use-direct-Orchestrator.start()/advance()-instead). H3=CONFIRMED-PARTIAL: all-components-reusable(hateoas-agent,gate_checks,sigma-mem,sigma-verify,agent-md-defs,orchestrator-config.py) ¬AsyncRunner-as-trust-anchor. |source:[independent-research]|T1
+
+H2=PARTIALLY-CONFIRMED: outer-loop-dispatch+hard-observable-guards-together=fix, neither-alone-sufficient
+H3=CONFIRMED-PARTIAL: all-components-reusable with above caveats
+H6=CONFIRMED-with-condition: structural-parsing-required ¬trust-agent-prose
+
+### calibration-updates
+C[AsyncRunner-review-8-F1-severity-escalates-from-MEDIUM→HIGH-when-used-as-gate-enforcement-trust-anchor|1|26.3.28]
+C[outer-loop-dispatch-is-necessary-¬sufficient-for-control-inversion-fix|1|26.3.28]
+C[CLI-shell-out-vs-API-dispatch-tool-access-gap-is-primary-impl-complexity-driver-for-sigma-ui|1|26.3.28]
+
+### calibration-updates (DA R2 revisions, 26.3.28)
+C[H2=WEAKLY-TO-PARTIALLY-CONFIRMED-¬PARTIALLY-CONFIRMED: P(H2-fully-works)≈0.55-0.65, requires-TIER-A-observable-implementation|1|26.3.28]
+C[Agent-SDK-v0.1.48-NOT-premature: hooks+sessions+MCP-write-lock-real; but-hook-abstraction-level-wrong-for-phase-gate-orchestration|1|26.3.28]
+C[structural-parse-observables-cost-raising-¬gaming-resistant: only-orchestrator-produced-observables-are-TIER-A|1|26.3.28]
+C[RISK-2=HIGH-impl-complexity-AND-HIGH-H4-risk-two-separate-dimensions-¬one|1|26.3.28]
+
+### patterns(new)
+orchestrator-outer-loop-trust-boundary: dispatch-control + hard-observable-guards required together; either alone leaves bypass path open
+tool-access-gap-on-api-dispatch: agent tool access must be explicitly reconstructed when moving from CLI shell-out to SDK dispatch; no implicit inheritance
+observable-tier-model: TIER-A(orchestrator-produced,gaming-resistant) > TIER-B(structural-parse,cost-raising) > TIER-C(agent-asserted,gameable). Gate enforcement anchors on TIER-A only.
+agent-sdk-hook-vs-phase-gate: hooks fire at tool-call level; phase-gate orchestration needs phase-transition level control. Different abstractions — don't conflate.
