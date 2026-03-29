@@ -630,7 +630,11 @@ class TestOrchestratorGuards:
         orch.advance(context={"sync_complete": True})
         assert orch._make_state().current_phase == "archive"
 
+        # archive → complete now requires BOTH archive_verified AND session_end_verified
         orch.advance(context={"archive_verified": True})
+        assert orch._make_state().current_phase == "archive", "Should stay without session_end_verified"
+
+        orch.advance(context={"session_end_verified": True})
         state = orch._make_state()
         assert state.current_phase == "complete"
         assert state.is_terminal is True
@@ -666,3 +670,78 @@ class TestOrchestratorGuards:
 
         orch.advance(context={"checkpoint_validated": True})
         assert orch._make_state().current_phase == "review"
+
+    def test_start_requires_team_created(self):
+        """V21: orchestrator start blocks without team_created in context."""
+        import subprocess
+        result = subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "start", "--context", '{"task": "test"}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        assert result.returncode != 0
+        output = json.loads(result.stdout)
+        assert "error" in output
+        assert "team_created" in output["error"]
+
+    def test_start_succeeds_with_team_created(self):
+        """V21: orchestrator start proceeds with team_created."""
+        import subprocess, tempfile
+        cp = tempfile.mktemp(suffix=".json")
+        result = subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--checkpoint", cp,
+             "start", "--context", '{"task": "test", "team_created": true, "team_name": "test-team"}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        assert result.returncode == 0
+        output = json.loads(result.stdout)
+        assert output["phase"] == "research"
+        if os.path.exists(cp):
+            os.unlink(cp)
+
+    def test_archive_requires_session_end_verified(self):
+        """V22: archive → complete blocked without session_end_verified."""
+        # build_analyze_workflow imported at module level via importlib
+        orch = build_analyze_workflow()
+        orch.start("research", context={"team_created": True})
+
+        # Fast-forward to archive
+        orch.advance(context={"r1_converged": True, "r1_validated": True})
+        orch.advance(context={"cb_validated": True})
+        orch.advance(context={
+            "exit_gate": "PASS", "belief_state": 0.9, "round": 1,
+            "pre_synthesis_validated": True,
+        })
+        orch.advance(context={"synthesis_delivered": True})
+        orch.advance(context={"promotion_complete": True})
+        orch.advance(context={"sync_complete": True})
+        assert orch._make_state().current_phase == "archive"
+
+        # archive_verified alone should NOT advance to complete
+        orch.advance(context={"archive_verified": True})
+        assert orch._make_state().current_phase == "archive"
+
+        # Both flags together should advance
+        orch.advance(context={"session_end_verified": True})
+        state = orch._make_state()
+        assert state.current_phase == "complete"
+        assert state.is_terminal is True
+
+
+class TestV22SessionEnd:
+    def test_session_end_checks_git(self):
+        """V22: session-end bundle checks archive + git status."""
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+            f.write(MINIMAL_WORKSPACE)
+            f.flush()
+            result = gate_checks.run_validation("session-end", f.name)
+        os.unlink(f.name)
+
+        assert "checks" in result
+        check = result["checks"][0]
+        assert check["name"] == "V22-session-end-verified"
+        assert "git_clean" in check["details"]
+        assert "unpushed_commits" in check["details"]
+        assert "archive_file_found" in check["details"]

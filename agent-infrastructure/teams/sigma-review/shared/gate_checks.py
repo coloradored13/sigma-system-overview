@@ -3,7 +3,7 @@
 Provides workspace-reading validation functions that enforce protocol compliance.
 Called via orchestrator-config.py validate / compute-belief commands.
 
-Gate taxonomy (V1-V20):
+Gate taxonomy (V1-V22):
   V1  research-freshness        V11 belief-state-written
   V2  workspace-initialized     V12 new-consensus-stress-tested
   V3  agent-output-non-empty    V13 contamination-check
@@ -14,6 +14,7 @@ Gate taxonomy (V1-V20):
   V8  persist-before-converge   V18 build-reads-plan
   V9  circuit-breaker           V19 checkpoint-completion
   V10 cross-track-participation V20 fixes-implemented
+  V21 team-created              V22 session-end-verified
 
 Bundles:
   r1-convergence     V3+V4+V5+V6+V7+V8  (ANALYZE R1 exit)
@@ -23,12 +24,14 @@ Bundles:
   plan-lock          V17                   (BUILD plan→build)
   build-checkpoint   V19                   (BUILD before review)
   challenge-round    V10+V11              (after any challenge/review round)
+  session-end        V22                   (archive→complete, git verified)
 """
 
 from __future__ import annotations
 
 import json
 import re
+import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -1146,6 +1149,92 @@ def compute_build_quality_belief(workspace_path: str | None = None, round_num: i
     )
 
 
+def check_session_end(content: str, repo_path: str | None = None) -> CheckResult:
+    """V22: Archive exists and git repo has no uncommitted changes.
+
+    Verifies that review outputs are committed before the orchestrator declares terminal.
+    Checks the sigma-system-overview repo (where agent infra is tracked).
+    """
+    # Check archive exists
+    sections = parse_sections(content)
+    has_archive_ref = bool(re.search(r"archive", content, re.IGNORECASE))
+
+    # Check archive directory for recent files
+    archive_dir = Path.home() / ".claude/teams/sigma-review/shared/archive"
+    archive_files = sorted(archive_dir.glob("*.md")) if archive_dir.exists() else []
+    has_archive_file = len(archive_files) > 0
+
+    # Check git status in sigma-system-overview repo
+    if repo_path is None:
+        repo_path = str(Path.home() / "Projects/sigma-system-overview")
+
+    git_clean = False
+    uncommitted: list[str] = []
+    unpushed = 0
+    git_error = None
+
+    try:
+        # Check for uncommitted changes
+        result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=repo_path, capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0:
+            changes = [line for line in result.stdout.strip().splitlines() if line.strip()]
+            uncommitted = changes
+            git_clean = len(changes) == 0
+
+        # Check for unpushed commits
+        result = subprocess.run(
+            ["git", "rev-list", "--count", "@{u}..HEAD"],
+            cwd=repo_path, capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0:
+            unpushed = int(result.stdout.strip())
+    except (subprocess.TimeoutExpired, FileNotFoundError, ValueError) as e:
+        git_error = str(e)
+
+    all_clean = git_clean and unpushed == 0
+    issues = []
+    if not has_archive_file:
+        issues.append("No archive files found in shared/archive/")
+    if not git_clean:
+        issues.append(f"Uncommitted changes in repo: {len(uncommitted)} files")
+    if unpushed > 0:
+        issues.append(f"{unpushed} unpushed commit(s) — push before completing review")
+    if git_error:
+        issues.append(f"Git check error: {git_error}")
+
+    return CheckResult(
+        name="V22-session-end-verified",
+        passed=has_archive_file and all_clean,
+        details={
+            "archive_file_found": has_archive_file,
+            "archive_count": len(archive_files),
+            "git_clean": git_clean,
+            "uncommitted_count": len(uncommitted),
+            "uncommitted_files": uncommitted[:10],  # cap for readability
+            "unpushed_commits": unpushed,
+            "git_error": git_error,
+            "repo_path": repo_path,
+        },
+        issues=issues,
+    )
+
+
+def validate_session_end(workspace_path: str | None = None, **kwargs: Any) -> ValidationResult:
+    """Bundle: V22 — session end verification (archive + git clean + pushed)."""
+    content = read_workspace(workspace_path)
+    check = check_session_end(content, repo_path=kwargs.get("repo_path"))
+
+    return ValidationResult(
+        bundle="session-end",
+        passed=check.passed,
+        checks=[check],
+        context_update={"session_end_verified": check.passed},
+    )
+
+
 # ---------------------------------------------------------------------------
 # Convenience: run a named bundle
 # ---------------------------------------------------------------------------
@@ -1158,6 +1247,7 @@ BUNDLES = {
     "plan-lock": validate_plan_lock,
     "build-checkpoint": validate_build_checkpoint,
     "challenge-round": validate_challenge_round,
+    "session-end": validate_session_end,
 }
 
 BELIEF_MODES = {

@@ -166,7 +166,7 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
         "archive",
         "complete",
         name="archive_verified",
-        guard=context_true("archive_verified"),
+        guard=context_true("archive_verified") & context_true("session_end_verified"),
     )
 
     return orch
@@ -258,7 +258,7 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
         "archive",
         "complete",
         name="archive_verified",
-        guard=context_true("archive_verified"),
+        guard=context_true("archive_verified") & context_true("session_end_verified"),
     )
 
     return orch
@@ -328,6 +328,15 @@ def cmd_start(args: argparse.Namespace) -> None:
     mode = args.mode
     ctx = json.loads(args.context) if args.context else {}
     checkpoint_file = args.checkpoint or DEFAULT_CHECKPOINT
+
+    # V21: TeamCreate enforcement — agents MUST be spawned via TeamCreate for shared context
+    if not ctx.get("team_created"):
+        print(json.dumps({
+            "error": "team_created required in context. Use TeamCreate before starting orchestrator.",
+            "hint": "start --context '{\"team_created\": true, \"team_name\": \"...\", ...}'",
+            "why": "Agents spawned without TeamCreate lack shared context (SendMessage, inboxes).",
+        }))
+        sys.exit(1)
 
     orch = build_analyze_workflow() if mode == "analyze" else build_build_workflow()
     initial_phase = "research" if mode == "analyze" else "plan"
