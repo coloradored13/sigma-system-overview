@@ -15,6 +15,7 @@ Gate taxonomy (V1-V22):
   V9  circuit-breaker           V19 checkpoint-completion
   V10 cross-track-participation V20 fixes-implemented
   V21 team-created              V22 session-end-verified
+  V23 synthesis-artifact
 
 Bundles:
   r1-convergence     V3+V4+V5+V6+V7+V8  (ANALYZE R1 exit)
@@ -24,7 +25,7 @@ Bundles:
   plan-lock          V17                   (BUILD plan→build)
   build-checkpoint   V19                   (BUILD before review)
   challenge-round    V10+V11              (after any challenge/review round)
-  session-end        V22                   (archive→complete, git verified)
+  session-end        V22+V23              (archive→complete, git+synthesis verified)
 """
 
 from __future__ import annotations
@@ -1149,6 +1150,77 @@ def compute_build_quality_belief(workspace_path: str | None = None, round_num: i
     )
 
 
+def check_synthesis_artifact(content: str) -> CheckResult:
+    """V23: Persistent synthesis artifact saved to shared/archive/.
+
+    The synthesis document is the durable output of a review — a structured reference
+    that detailed analyses, executive summaries, and build plans can be derived from.
+    Must contain: prompt decomposition, findings by domain, convergence/tensions,
+    calibrated estimates, DA resolutions, and open questions.
+    """
+    archive_dir = Path.home() / ".claude/teams/sigma-review/shared/archive"
+
+    # Look for synthesis files (convention: *-synthesis.md)
+    synthesis_files = sorted(archive_dir.glob("*-synthesis.md")) if archive_dir.exists() else []
+
+    # Also check for synthesis content within workspace archive files
+    # (synthesis may be embedded in the workspace archive rather than separate)
+    workspace_archives = sorted(archive_dir.glob("*.md")) if archive_dir.exists() else []
+    archive_with_synthesis = []
+    for f in workspace_archives:
+        if f.name.endswith("-synthesis.md"):
+            continue  # already counted above
+        try:
+            text = f.read_text(encoding="utf-8")
+            # Check for synthesis markers — structured findings, not just raw workspace
+            has_findings = bool(re.search(r"##\s*(findings|key findings|domain findings)", text, re.IGNORECASE))
+            has_estimates = bool(re.search(r"(P\(|probability|confidence|calibrat)", text, re.IGNORECASE))
+            if has_findings and has_estimates:
+                archive_with_synthesis.append(f.name)
+        except (OSError, UnicodeDecodeError):
+            pass
+
+    has_dedicated = len(synthesis_files) > 0
+    has_embedded = len(archive_with_synthesis) > 0
+
+    # Validate synthesis content quality (if dedicated file exists)
+    required_sections = []
+    if has_dedicated:
+        latest = synthesis_files[-1]
+        try:
+            synth_text = latest.read_text(encoding="utf-8")
+            section_checks = {
+                "prompt-decomposition": bool(re.search(r"(Q\d+:|H\d+:|prompt.decomposition)", synth_text, re.IGNORECASE)),
+                "findings": bool(re.search(r"(F\[|finding|##\s*findings)", synth_text, re.IGNORECASE)),
+                "convergence-or-tensions": bool(re.search(r"(converg|tension|disagree|dissent)", synth_text, re.IGNORECASE)),
+                "estimates": bool(re.search(r"(P\(|probability|%|\d+%|calibrat)", synth_text, re.IGNORECASE)),
+            }
+            required_sections = [k for k, v in section_checks.items() if not v]
+        except (OSError, UnicodeDecodeError):
+            required_sections = ["file-unreadable"]
+
+    passed = has_dedicated or has_embedded
+    issues = []
+    if not passed:
+        issues.append(
+            "No synthesis artifact found in shared/archive/. "
+            "Synthesis agent must save a *-synthesis.md file to the archive directory."
+        )
+    if required_sections:
+        issues.append(f"Synthesis file missing sections: {', '.join(required_sections)}")
+
+    return CheckResult(
+        name="V23-synthesis-artifact",
+        passed=passed,
+        details={
+            "dedicated_synthesis_files": [f.name for f in synthesis_files],
+            "archives_with_synthesis": archive_with_synthesis,
+            "missing_sections": required_sections,
+        },
+        issues=issues,
+    )
+
+
 def check_session_end(content: str, repo_path: str | None = None) -> CheckResult:
     """V22: Archive exists and git repo has no uncommitted changes.
 
@@ -1223,15 +1295,21 @@ def check_session_end(content: str, repo_path: str | None = None) -> CheckResult
 
 
 def validate_session_end(workspace_path: str | None = None, **kwargs: Any) -> ValidationResult:
-    """Bundle: V22 — session end verification (archive + git clean + pushed)."""
+    """Bundle: V22+V23 — session end verification (archive + git + synthesis artifact)."""
     content = read_workspace(workspace_path)
-    check = check_session_end(content, repo_path=kwargs.get("repo_path"))
+
+    checks = [
+        check_session_end(content, repo_path=kwargs.get("repo_path")),
+        check_synthesis_artifact(content),
+    ]
+
+    all_passed = all(c.passed for c in checks)
 
     return ValidationResult(
         bundle="session-end",
-        passed=check.passed,
-        checks=[check],
-        context_update={"session_end_verified": check.passed},
+        passed=all_passed,
+        checks=checks,
+        context_update={"session_end_verified": all_passed},
     )
 
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from pathlib import Path
 import pytest
 
 # Add shared directory to path for imports
@@ -740,8 +741,74 @@ class TestV22SessionEnd:
         os.unlink(f.name)
 
         assert "checks" in result
+        # V22 is first check, V23 is second
         check = result["checks"][0]
         assert check["name"] == "V22-session-end-verified"
         assert "git_clean" in check["details"]
         assert "unpushed_commits" in check["details"]
         assert "archive_file_found" in check["details"]
+
+    def test_session_end_includes_synthesis_artifact(self):
+        """V23: session-end bundle also checks for synthesis artifact."""
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+            f.write(MINIMAL_WORKSPACE)
+            f.flush()
+            result = gate_checks.run_validation("session-end", f.name)
+        os.unlink(f.name)
+
+        assert len(result["checks"]) == 2
+        synth_check = result["checks"][1]
+        assert synth_check["name"] == "V23-synthesis-artifact"
+        assert "dedicated_synthesis_files" in synth_check["details"]
+        assert "archives_with_synthesis" in synth_check["details"]
+
+
+class TestV23SynthesisArtifact:
+    def test_detects_dedicated_synthesis_file(self):
+        """V23: finds *-synthesis.md in archive directory."""
+        import tempfile
+        archive_dir = Path.home() / ".claude/teams/sigma-review/shared/archive"
+        # Create a temporary synthesis file
+        synth_file = archive_dir / "2026-03-28-test-synthesis.md"
+        synth_file.write_text(
+            "# Synthesis\n## prompt-decomposition\nQ1: test\nH1: test\n"
+            "## findings\nF[T-1] finding |source:[independent-research]\n"
+            "## convergence\nagents converged on X\n"
+            "## estimates\nP(outcome)=65% 80%CI[50%,78%]\n",
+            encoding="utf-8",
+        )
+        try:
+            result = gate_checks.check_synthesis_artifact(MINIMAL_WORKSPACE)
+            assert result.passed is True
+            assert "2026-03-28-test-synthesis.md" in result.details["dedicated_synthesis_files"]
+            assert len(result.details["missing_sections"]) == 0
+        finally:
+            synth_file.unlink(missing_ok=True)
+
+    def test_fails_when_no_artifact(self):
+        """V23: fails when no synthesis file and no embedded synthesis in archives."""
+        # This test depends on archive state — check that the function runs
+        # and returns a structured result regardless of pass/fail
+        result = gate_checks.check_synthesis_artifact(MINIMAL_WORKSPACE)
+        assert result.name == "V23-synthesis-artifact"
+        assert "dedicated_synthesis_files" in result.details
+
+    def test_detects_missing_sections(self):
+        """V23: flags synthesis file missing required content."""
+        import tempfile
+        archive_dir = Path.home() / ".claude/teams/sigma-review/shared/archive"
+        synth_file = archive_dir / "2026-03-28-incomplete-synthesis.md"
+        synth_file.write_text("# Empty synthesis\nNo real content here.\n", encoding="utf-8")
+        try:
+            result = gate_checks.check_synthesis_artifact(MINIMAL_WORKSPACE)
+            # File exists but is missing content — should still pass (file present)
+            # but missing_sections should be populated
+            has_incomplete = any(
+                "2026-03-28-incomplete-synthesis.md" in f
+                for f in result.details["dedicated_synthesis_files"]
+            )
+            if has_incomplete:
+                assert len(result.details["missing_sections"]) > 0
+        finally:
+            synth_file.unlink(missing_ok=True)

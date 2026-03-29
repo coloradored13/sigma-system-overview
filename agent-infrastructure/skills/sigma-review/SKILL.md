@@ -307,9 +307,19 @@ after all agents ✓: `validate --check r1-convergence` (V3+V4+V5+V6+V7+V8) — 
   do NOT provide: conversation context, user remarks, casual discussion, lead's interpretations
   agent reads workspace → produces synthesis document → returns to lead
   lead delivers document to user WITHOUT modification (formatting OK, analytical edits NOT OK)
-7→if synthesis agent fails:
+7→save synthesis artifact (V23 — MANDATORY):
+  write synthesis to: shared/archive/{date}-{task-slug}-synthesis.md
+  the synthesis artifact is the durable output — the reference document that executive summaries,
+  build plans, and detailed analyses can be derived from later without re-running the review.
+  required content: prompt decomposition (Q/H/C), findings organized by domain, cross-agent
+  convergence and tensions, calibrated estimates and ranges, DA challenges and resolutions,
+  pre-mortem failure modes, open questions and unresolved gaps.
+  the artifact is NOT editorialized — it is a structured record of what agents found.
+  session-end validation (V23) checks this file exists before the orchestrator reaches terminal.
+8→if synthesis agent fails:
   report to user: "SYNTHESIS AGENT FAILED — delivering raw agent findings without synthesized report."
   deliver workspace findings organized by section (formatting only, no analytical additions)
+  STILL save the raw findings as the synthesis artifact (structured record > no record)
   do NOT silently write synthesis yourself — this is the bypass the gate prevents
 after synthesis delivered:
 ```bash

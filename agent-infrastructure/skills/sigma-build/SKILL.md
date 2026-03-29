@@ -503,7 +503,10 @@ pre-accept ✓: verify workspace findings ¬empty (validated mechanically as V3+
 !HARD GATE: lead MUST NOT write synthesis. Spawn separate synthesis agent.
 !WHY: lead has conversation context that agents were firewalled from. Lead writing = provenance contamination.
 1→spawn synthesis agent with ONLY workspace path as input
-2→if agent fails: deliver raw findings with explicit gap flag
+2→save synthesis artifact (V23): write to shared/archive/{date}-{task-slug}-synthesis.md
+  structured reference document — prompt decomposition, findings by domain, architecture decisions,
+  build outcomes, DA resolutions, open questions. NOT editorialized — derivable outputs come later.
+3→if agent fails: deliver raw findings with explicit gap flag. STILL save raw findings as artifact.
 after synthesis delivered:
 ```bash
 python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build --context '{"synthesis_delivered": true}'
