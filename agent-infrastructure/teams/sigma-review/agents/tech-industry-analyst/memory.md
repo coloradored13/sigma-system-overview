@@ -471,3 +471,60 @@ R[topic:AI-industry-cross-cutting-patterns-2026|key-findings:
 - PATTERN-6 OPEN-SOURCE-FRONTIER-CONVERGENCE: open models (DeepSeek, Llama, Mistral) now competitive with/beating closed frontier on specific benchmarks; MoE architecture enabling; structure prediction (bio) moat already gone via open-source; moat shifting to proprietary data+integration depth
 - PATTERN-7 COMPLIANCE-REGULATORY-ACCELERATION: EU AI Act Aug 2026 high-risk deadline approaching; ISO 42001 cert race; >50% orgs lack AI inventories; GRC investment +50% 2026; compliance becoming genuine entry barrier AND enterprise sales driver
 |refreshed:2026-03-22|next:2026-04-22]
+R[topic:PM-career-AI-disruption-5yr|refreshed:26.3.28|next:26.4.28]
+
+H4-calibration: AI acceleration via mechanism-shift (¬pure scaling) — test-time compute+agentic+open-source convergence sustains capability gains; pre-training scaling plateauing but overall trajectory still advancing; PM-relevant domains (code,analysis,synthesis,docs) on 12-18mo compounding cycle |XVERIFY[openai:gpt-5.4]:partial|
+
+H5-calibration: PM role = TRANSFORMATION ¬REPLACEMENT; context-dependent (large/complex/regulated = stable; AI-native startups = may disappear); entry-level PM hiring -73.4% YoY = severe pipeline compression; evaluation framework design = expanding PM responsibility ¬contracting |XVERIFY[openai:gpt-5.4]:partial|
+
+skill-priority-2026: S1=AI-eval-frameworks (scarcest,most-PM-specific), S2=prompt-engineering-systematic, S3=agentic-architecture-literacy, S4=critical-AI-output-interpretation | Tier2=low-code+MLOps-fundamentals+open-source-selection | anti-invest=pure-coding-proficiency+manual-data-compilation
+
+talent-market-26.3.28: AI-related roles 67% higher avg salary | specialized AI 30-50% premium over generalists | demand exceeds supply 3.2:1 | entry-level PM -73.4% YoY | premium window 2-3yr ¬full 5yr (per economics-analyst calibration)
+
+tool-landscape-2026: Claude Code (46% dev "most loved"), Cursor (best daily driver), Copilot (enterprise compliance) | PM-specific: ChatPRD,Monday.com AI,Notion AI | evaluation tooling = fastest-growing category | differentiator shifting from "uses AI tools" to "designs AI systems" by 2028
+
+open-source-2026: Llama+Mistral+DeepSeek+Qwen competitive on specific tasks | Mistral3 Dec2025 Apache-licensed 256K context | build decision now 3-way: build vs buy vs open-source | open-source eval literacy = required PM skill
+
+P[26.3.28] adaptation-window: AI skill premium ~25% US now; compresses to 5-15% by 2030-2031; front-load Tier1 skill investment 2026-2027 ¬spread evenly
+P[26.3.28] evaluation-framework: fastest-growing PM responsibility + least automated + highest scarcity signal — strongest single career investment for a PM in AI era
+P[26.3.28] C3-risk: "builds internal applications" component = highest near-term displacement risk (CRUD-adjacent = highest AI substitutability); external product work = more defensible
+P[26.3.28] xverify-note: Gemini 3.1 has training-cutoff artifact on specific frontier model version names — flagging as XVERIFY-FAIL on specific benchmark claims ¬underlying trend; GPT-5.4 more reliable for this domain
+## r1 findings — 5yr PM strategy (26.3.28)
+F[26.3.28] r1: 10 findings(TIA-1 to TIA-10)|see workspace|key: H4-confirmed-with-calibration(acceleration real at medium-high, near-AGI-5yr=low-confidence), PM-task-automation(20-30% actual not 50-60% theoretical), durable-human-tasks(trust+ambiguity+ethics), wage-premium-scoped(AI PM who BUILDS not just uses), open-source-democratization-fast(23%→67% enterprise deployment), junior-pipeline-compression(54% leaders reducing junior hiring)
+
+R[AI-capability-trajectory|refreshed:26.3.28|next:26.6.28]
+- METR TH1.1: task time horizon doubling ~131 days post-2023 (vs 7 months 2019-2024)
+- SWE-bench Verified leaders: 80%+ March 2026 BUT contamination caveat (46% on Pro)
+- Expert median: 50% P(AGI) by 2033; near-term AGI = low confidence
+- Acceleration in coding/synthesis = real; senior knowledge work parity = 5yr horizon low confidence
+
+R[PM-automation-state|refreshed:26.3.28|next:26.9.28]
+- Already automated: meeting notes, PRD drafts, feedback clustering, competitor monitoring, roadmap scoring
+- Next (2026-2028): user stories, A/B test design, OKR drafts, retrospective synthesis, persona generation
+- Durable human: trust-building, ambiguity resolution, ethical judgment, embodied empathy, executive alignment
+- Time savings reality: 20-30% (not 50-60% ceiling figure)
+
+R[AI-PM-talent-market|refreshed:26.3.28|next:26.9.28]
+- Depreciating: PRD writing, basic synthesis, manual competitive analysis, junior pipeline shrinking (54% engineering leaders reducing junior hiring)
+- Appreciating: AI evaluation fluency, agent orchestration, data pipeline literacy, systems thinking for AI failures
+- Wage premium: $193K median AI PM (builds AI) vs $140-160K general PM = 20-38% BUT role-specific, not tool-use upgrade
+- Growth projection: +28% through 2030
+- Open-source democratization: 23%→67% enterprise deployment; differentiation shifts to data quality+trust+judgment
+
+C[26.3.28] benchmark-contamination-vigilance: SWE-bench Verified inflates apparent progress vs SWE-bench Pro (81% vs 46% same model) | always check for benchmark contamination when citing AI capability claims
+## patterns (cross-review, promoted 26.3.28)
+
+P[26.3.28] benchmark-contamination-detection: when AI capability claims cite benchmark scores, always check for decontaminated variant | SWE-bench Verified 81% vs SWE-bench Pro 46% same model = 2x inflation | pattern: capability benchmarks with public training data overlap systematically overstate progress | apply to any future AI capability review
+
+P[26.3.28] two-speed-S-curve: technology adoption runs two simultaneous S-curves at different speeds | TOOL curve: individual adoption in weeks/months | ORG curve: org-wide transformation in 10-12yr (internet/cloud reference class) | conflating these produces both false urgency (ORG) and false complacency (TOOL) | the tool curve is always the urgent one for individuals; the org curve is the runway | apply whenever analyzing technology disruption impact on knowledge workers
+
+P[26.3.28] bessen-paradox-conditions: task automation + elastic demand = augmentation + headcount growth (spreadsheets, ATMs) | task automation + inelastic demand = role bifurcation (senior augmented, junior compressed) | do not assume compression by default; first test demand elasticity for the specific role/sector | apply to any labor market disruption analysis
+
+P[26.3.28] benchmark-category-error: coding/structured-task benchmarks (METR, SWE-bench) do not predict capability gains in ambiguity-heavy, relationship-dependent, success-criteria-absent work | PM tasks, management tasks, negotiation, trust-building = different category | always check whether benchmark domain matches the work domain before extrapolating | applies to H4-type AI acceleration claims
+
+P[26.3.28] wage-premium-EV-decomposition: when analyzing skill-upgrade wage premiums, decompose as: P(role accessible) x P(genuine skill acquisition) x premium magnitude x window duration | each factor requires independent evidence | premium + thin market + cognitive-transfer base rate + window duration together determine actual EV | single-factor analysis (just the premium size) systematically overstates EV | apply to any future career-strategy or workforce review
+
+P[26.3.28] portfolio-vs-skill-premium: skill premiums are cyclical (normalize as skill commoditizes) | portfolio of shipped work under novel constraints is durable beyond skill diffusion | early adopter advantage = learning-speed signal + feedback-loop refinement + demonstrated judgment, NOT launch timing alone | distinction matters for career strategy advice: build-to-learn > build-to-earn-premium | first-mover advantage research: critical factor = learning speed not launch speed
+P[26.3.28|5yr-PM-strategy]: 20-30% actual PM time savings from AI tools|single survey(Productboard,379,enterprise-skewed)|¬50-60% theoretical ceiling|org friction=bottleneck
+P[26.3.28|5yr-PM-strategy]: AI PM field +28% growth projection|model-dependent,no primary labor source|use directionally¬as precise forecast
+P[26.3.28|5yr-PM-strategy]: PM durability falsification conditions by 2028|(1)PM-less teams equal stakeholder alignment|(2)30%+ steering decisions without PM at AI-native cos|(3)AI option-sets without PM framing 50%+ cases|agent-constructed thresholds

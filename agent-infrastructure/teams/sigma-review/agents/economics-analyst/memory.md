@@ -243,3 +243,87 @@ R[topic:DeepSeek-disruption-AI-economics|key-findings:DeepSeek-R1(Jan-27-2025):$
 R[topic:AI-investment-bubble-risk-assessment|key-findings:BoE+IMF-warned-overvaluation-risk|OpenAI-valuation:$157B(Oct-2024)\u2192$500B(2025)=3x-in-1yr|S&P500-top-5=30%-of-index(greatest-concentration-in-50yr)|S&P500-at-23x-forward-earnings(most-stretched-since-dotcom)|infra-spend($400B+/yr)-vs-enterprise-monetization-gap|MIT:95%-genAI-pilots-fail-business-value,only-5%-report-significant-EBIT-impact|depreciation-manipulation:Meta-extended-server-life-4.5\u21925.5yr=saved-$2.9B|Burry-warning:$176B-understated-depreciation-2026-2028|selective-correction-expected(\u00acsystemic-collapse):strong-profits+revenue-growth+cash-funded-capex|comparison:dotcom-had-no-revenue\u2192AI-has-real-revenue-but-extreme-concentration|src:Fidelity,ainvest,INSEAD,Yale-Insights,Cresset-Capital,Sify|refreshed:2026-03-22|next:2026-04-22]
 
 R[topic:regulatory-arbitrage-patterns-AI|key-findings:AI-governance-arbitrage-era:navigation-of-regulatory-gaps>technological-breakthroughs|companies-relocating-development-to-lax-jurisdictions-when-audits-burdensome|avoiding-safety-rules=competitive-edge-risk|large-firms-afford-multi-regime-compliance\u2192reinforces-dominance|race-to-bottom-risk:safety-compromised-for-short-term-gains|coordination-failure:no-global-AI-regulatory-coordination-mechanism|divergent-approaches:US(light-touch-federal)+EU(comprehensive-risk-based)+China(state-cybersecurity-integrated)|2026-landscape:jurisdiction-specific-stacks-required|economic-consequence:startups-disadvantaged-by-compliance-complexity\u2192market-concentration|UNU-identified-3-arbitrage-vectors:geographic,temporal(exploit-implementation-gaps),definitional(classify-around-thresholds)|src:DeGruyter,UNU,EY,WilsonSonsini,BakerDonelson,SlaughterMay|refreshed:2026-03-22|next:2026-04-22]
+## senior-PM-macro-strategy research (26.3.28)
+
+R[topic:AI-labor-displacement-knowledge-workers|src:Goldman-Sachs-labor,McKinsey-automation,PwC-2025-AI-Jobs-Barometer,BLS,Revelio-Labs,WEF-Future-of-Jobs|refreshed:26.3.28|next:26.6.28]
+- GS: entry-level knowledge-work postings -35% since Jan 2023 | AI-exposed young workers -16% employment late-2022→mid-2025
+- McKinsey: 57% US work hours theoretically automatable with current tech
+- WEF: net +170M jobs created vs -85M displaced (net positive macro)
+- PM role: compression at execution layer (-20-35% headcount risk) | senior/strategic tier stable-to-growing
+- K-shape bifurcation = operative pattern for PM labor market
+
+R[topic:knowledge-worker-wage-premium-AI|src:PwC-2025-Global-AI-Jobs-Barometer,Goldman-Sachs|refreshed:26.3.28|next:26.9.28]
+- US AI-skill wage premium: ~25% (¬56% — XVERIFY correction; 56% = global outlier ¬US avg)
+- AI-exposed industry wage growth: +16.7% vs +7.9% least-exposed
+- AI-skill job postings +7.5% while total -11.3%
+- skills in AI-exposed roles changing 66% faster than baseline
+- PREMIUM-WINDOW: 2-3yr (compresses as skill diffuses, historical precedent: 1990s computer literacy)
+- XVERIFY: unanimous-partial (both models) — premium real NOW, persistence-to-2031 overstatement
+
+R[topic:economic-outlook-stagflation-2026|src:Apollo-Academy,RSM,Deloitte-Q1-2026,Goldman-Sachs,KPMG|refreshed:26.3.28|next:26.6.28]
+- Fed: stagflation = #1 2026 risk | core PCE 2.6-3.5% mid-2026
+- GS: recession P=30% (down from 40%) | US growth 1.25-1.75% H2 2026 = near-stall-speed
+- real wages: +1.7pp above inflation currently BUT tariff pass-through not fully priced
+- tariffs function as regressive consumption tax — erodes middle-class purchasing power
+- stagflation-lite baseline = real wage growth near-zero to -1% for planning 2026-2027
+
+R[topic:climate-economic-impacts-insurance-RE|src:Consumer-Fed-of-America,Axios/NBER,WEF,Fed-Chair-Powell-Feb-2025,US-Census-2025,NPR-2026|refreshed:26.3.28|next:26.6.28]
+- insurance premiums +45% since 2022 | forecast +50% by 2030
+- $1.47T net property value losses modeled (Axios/NBER)
+- 5.2M internal US climate migrants 2025 | 49% homeowners considering relocation 2026
+- insurance deserts forming: WEF, Fed Chair warning on mortgage unavailability within 10-15yr
+- climate-safe metros (Great Lakes, Indianapolis, Columbus, PNW highlands) = emerging opportunity nodes
+- H3=CONFIRMED: material, NOW, financially quantifiable
+
+R[topic:sector-growth-PM-opportunity|src:Mordor-Intelligence,Deloitte-2026-A&D-Outlook,CompTIA-2026,market-xcel|refreshed:26.3.28|next:26.9.28]
+- Defense+A&D: $463B→$610B 2026-2031 (5.67% CAGR) | Pentagon RDT&E +27% | AI/cyber/autonomy = core
+- Healthcare: profit pools $583B→$819B by 2027 (7% CAGR)
+- Cybersecurity: fastest-growing enterprise+defense sub-sector
+- Consumer tech execution-layer: compressed | early-career software dev -13% employment since 2022
+- Midwest data centers (Indianapolis, Columbus): fastest-growing metros Q4 2025 (2 consecutive quarters)
+
+## findings-summary (26.3.28)
+F[26.3.28] senior-PM-macro: 7-findings | H3=CONFIRMED(climate,T1) | H5=PARTIAL(execution-compression,bifurcation) | XVERIFY:2(F1-PM-bifurcation:none,F2-wage-premium:unanimous-partial,corrections:56%→25%) | key:wage-premium-window=2-3yr | key:internal-tools-PM=highest-displacement-risk | key:defense/healthcare=durable-sectors | key:climate-location=largest-non-AI-wealth-risk
+
+## calibration (26.3.28)
+C[26.3.28] AI-wage-premium-scope: 56% figure = likely global ¬US specific | US avg ~25% | outlier roles approach 50% | compress-timeline ~8yr per historical tech skill premium pattern
+C[26.3.28] PM-compression-mechanism: role-consolidation ¬elimination = different labor market dynamics | senior strategic tier growing WHILE execution tier shrinks | K-shape = operative pattern
+C[26.3.28] climate-risk-as-financial-decision: insurance trajectory compounds over 10yr hold period | family with kids (longer hold) = higher climate exposure | location = financial decision ¬lifestyle choice
+R[topic:5yr-PM-strategy-labor-economics|src:Goldman Sachs,McKinsey,ProductSchool,Simplilearn,6figr,First Street Foundation,Consumer Federation of America,Apollo Academy,Deloitte,RBC,Fidelity|refreshed:2026-03-28|next:2026-06-28]
+
+### AI Displacement Pattern
+- Goldman Sachs: ~6-7% US workforce displaced long-term; 300M jobs globally affected
+- McKinsey: 57% of US work hours theoretically automatable (ceiling not near-term)
+- Near-term: AI suppressing HIRING ¬destroying existing jobs
+- Entry-level AI-exposed workers (22-25yo): 16% employment drop already visible
+- Senior knowledge workers: suppression ¬elimination pattern holds currently
+
+### PM Wage Dynamics
+- Traditional PM base 2026: $101K-$158K (avg $136K)
+- AI PM base 2026: $130K-$200K (avg $193K); total comp $180K-$260K+
+- 10-42% premium XVERIFY[openai:gpt-5.4+google:gemini-3.1-pro-preview]: PARTIAL (unanimous)
+- CRITICAL: premium is CYCLICAL not structural — Mobile PM/Cloud PM analog — normalizes ~2029-2031
+- 66% employers suppressing salary budgets → capital efficiency pressure from AI infra spend
+
+### Economic Regime 2026-2031
+- Stagflation lite: GDP below 2% + core inflation ~3.5% mid-2026
+- Downside: unemployment 6.5% by 2028, GDP -0.4% 2027 / -1% 2028
+- Purchasing power erosion for knowledge workers outside AI-premium tier
+
+### Climate Economic Costs H3
+- Insurance +24-31% nationally 2019-2024; $1.47T property at risk by 2055
+- XVERIFY PARTIAL (unanimous): risk geographically concentrated ¬uniform
+- Sun Belt frontline; inland mostly inflation-driven ¬climate-driven
+- H3 verdict: CONFIRMED for location-exposed; PARTIAL for all US knowledge workers
+
+### Sectors Growing 2026-2031
+GROWING: defense/aerospace, AI/tech infra, renewable energy (36% global electricity #1 IEA), healthcare/biotech
+CONTRACTING: entry-level software dev, customer service, admin, content creation
+
+### Personal Financial Resilience
+- Emergency fund $2K minimum (Vanguard +20% wellbeing); 3-6 months standard
+- Stagflation hedges: TIPS, real assets, commodities, gold, defensive equities
+- Geographic arbitrage: climate-stable metros = lower insurance + lower property tail risk
+P[26.3.28|5yr-PM-strategy]: AI PM wage premium two-tier structure|Tier-1(tool fluency) closes ~2028-2031|Tier-2(eval/behavior-spec) may persist(data-science-fluency analog)|calibrated uncertainty¬fact|actionable for career timing
+P[26.3.28|5yr-PM-strategy]: climate financial risk geographically bimodal|Sun Belt/coastal=near-term repricing|inland=mostly general inflation|corrects uniform-national-drag framing|confidence:moderate
+P[26.3.28|5yr-PM-strategy]: emergency fund 6-12mo for AI-disrupted knowledge workers|comparable-comp re-employment=12-18mo in compressed market|agent-inference¬T1|directional

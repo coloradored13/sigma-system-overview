@@ -581,6 +581,57 @@ XVERIFY CALIBRATIONS:
 
 STICKY TERMS (don't waste leverage): Merger structure (~72%); no termination fee (79%); option non-assumption (~86%); carveout frequency (~5%); >3x return = 0% carveout (absolute).
 ELASTIC TERMS (spend leverage here): Multiples; carveout size; termination fee size; optionholder escrow contribution; rollover inclusion; earnout frequency; RWI adoption.
+## review-12: senior PM 5-year strategy (26.3.28)
+
+R[PM-job-market-early-2026: 7300+-open-PM-roles-globally(Lenny-Rachitsky,3yr-high) |Senior+-growing-fastest-as-%-of-openings |AI-PM-salary=$192K-$437K-US |management-occupations(BLS)-faster-than-avg-growth-2025-2034 |entry+mid-level=compressed |¬elimination |src:lennysnewsletter.com,research.com,bls.gov |refreshed:26.3.28 |next:26.5] #5
+
+R[PM-role-bifurcation-K-shape: two-winning-tiers=AI-specialist-PMs(AI-native-cos)+AI-augmented-senior-generalists(established-cos) |middle-hollowing=execution-heavy-doc-heavy-backlog-mgmt |K-shaped-market-confirmed-by-multiple-sources(AgentsToday,ProductSchool,Reforge) |XVERIFY:PARTIAL-unanimous(direction-confirmed,evidence-base-not-fully-proven) |src:agentstoday.substack.com,productschool.com |refreshed:26.3.28 |next:26.5] #4
+
+R[evolved-PM-skill-stack: STACK-A(judgment/problem-selection/alignment=permanent-moat) |STACK-B(technical-fluency:agentic-tools,code-reading,AI-output-eval) |STACK-C(AI-orchestration:prompt-quality,context-mgmt,agent-direction) |all-three-required-¬any-single-sufficient |src:cacm.acm.org,reforge.com,skiplevel.co |refreshed:26.3.28 |next:26.5] #4
+
+R[PM-to-engineer-ratio-correction: common-narrative="PM-handles-more-engineers-as-AI-augments" |GEMINI-CORRECTION=WRONG |if-PM-is-bottleneck→ratio-DECREASES(fewer-engineers-per-PM)OR-roles-merge-into-product-engineer-hybrid |traditional-ratio-concept-may-become-obsolete |XVERIFY:high-confidence-Gemini |src:external-google-gemini-3.1-pro-preview |refreshed:26.3.28] #3
+
+R[product-engineer-hybrid-convergence: by-2028-2030-most-defensible-PM-position=titled-differently(product-engineer/AI-product-architect/head-product-engineering) |absorbs:PM+technical-depth+AI-orchestration |Anthropic-2026-Agentic-Coding-Trends-Report+TechEmpower-Mar-2026-confirm |src:resources.anthropic.com,techempower.com |refreshed:26.3.28 |next:26.5] #3
+
+R[alternative-PM-pivots-ranked: R1=AI-product-engineer(highest-demand-growth,builds-on-tech-context) |R2=AI-PM-specialist($192K-$437K,adjacent-path) |R3=technical-program-manager/engineering-lead(defensive) |R4=head-AI-strategy/digital-transformation(HBR-Feb-2026-confirmed) |R5=VC-angel(10yr-optionality,not-5yr-primary) |¬pure-people-mgr,¬pure-process-TPM |src:digitaldefynd.com,agentstoday.substack.com,hbr.org |refreshed:26.3.28] #6
+
+R[agentic-coding-2026: vibe-coding→agentic-engineering-as-production-standard(Karpathy-2026) |40%-enterprise-apps-involve-AI-agents-by-end-2026(up-from-<5%-2025) |Stripe-Minions-1000+-merged-PRs/week |PM-role=bottleneck-not-engineering-role-as-AI-augments-devs |src:resources.anthropic.com,thenewstack.io,nxcode.io |refreshed:26.3.28 |next:26.5] #5
+
+### H5-verdict(review-12)
+H5=PARTIALLY-CONFIRMED: PM-in-current-form(execution/docs/backlog-mgmt-heavy)=disrupted |senior-PM-who-adapts=more-valuable-¬-obsolete |at-risk-cohort=mid-level-non-adapters |K-shaped-bifurcation=most-accurate-frame |XVERIFY:PARTIAL-unanimous
+
+### key-corrections(review-12)
+C[PM-ratio-correction: "PM-handles-more-engineers"=common-narrative-but-logically-backwards |if-PM-is-bottleneck→fewer-engineers-per-PM-OR-role-merger |don't-claim-ratio-expansion |1|26.3.28]
+C[K-shape-evidence-quality: direction-confirmed-but-evidence-base-not-fully-proven |senior-PM-comp-was-already-$200K+-pre-2026 |market-may-polarize-by-company-maturity-not-cleanly-by-AI-skill |don't-overstate-certainty |1|26.3.28]
+C[family-constraint-shapes-thriving-definition: C4(kids)→risk-tolerance-lower,time-limited→compound-investment-path(1-2hrs/wk)>intensive-retooling |thriving≠maximal-career-optimization |1|26.3.28]
+## review-12: 5yr PM career strategy (26.3.28)
+
+R[PM-job-market-2026: PM postings 7,300+ global, +75% from 2023 low, +20% YTD 2026 | senior PM demand+salary rising (+13% median new-offer since 2023) | junior PM pipeline contracting (54% eng leaders expect AI to reduce junior hiring) | AI PM salary $192K-$437K range | 75% employers struggle to find qualified AI PMs | traditional generalist postings declining as share of total |src:Lenny's Newsletter,Agents Today,Ravio,ProductSchool |refreshed:26.3.28 |next:26.4]
+
+R[PM-role-evolution-2026: K-shaped polarization confirmed but overstated — domain-expert paths also viable (XVERIFY correction) | evolved role = framing+judgment+governance replaces execution+documentation+coordination | LLM experience + SQL fluency now top-3 PM job requirements | PM/engineering convergence: senior PMs absorbing eng work, not other way around | AI systems fluency = highest-leverage skill investment for senior PM 2026-2031 | scarce skill: eval design, behavior specification, feedback loop architecture | XVERIFY(agree, gpt-5.4) |src:Agents Today,ProductSchool,CACM |refreshed:26.3.28 |next:26.4]
+
+R[PM-automation-tasks: AI automates: PRD writing, user research summaries, data analysis, prioritization frameworks, meeting notes, spec generation | AI cannot automate: problem framing, team alignment, stakeholder trust, reading between lines in user research, organizational influence | "PM who doesn't use AI gets replaced by PM who does" = confirmed pattern | 77% execs willing to give bigger responsibility to AI-supported earlier-career talent = headcount compression signal |src:ProductLogz,Lummi,Lenny's,Agents Today |refreshed:26.3.28 |next:26.4]
+
+R[PM-pivot-map-2026: 1=AI-Product-Lead(highest-salary,75%-demand-gap,minimal-retraining) | 2=Product-Led-Growth-Operator(analytics+monetization) | 3=Agent-Ops/AI-Governance-Lead(emerging,DevOps-analogue) | 4=AI-Consultant(regulated-domain-expertise) | 5=Founder/Builder(asymmetric,AI-lowers-build-cost) | NOT-recommended: pure-technical-pivot(12-24mo-retraining,diminishing-ROI) |src:agent-inference+T2 |refreshed:26.3.28 |next:26.4]
+
+C[H5-partially-confirmed: "current form" disrupted, function not irrelevant | K-shaped polarization media-prominent — availability bias risk applies | XVERIFY corrected binary framing — multiple viable paths |2|26.3.28]
+C[AI-systems-fluency-is-load-bearing: XVERIFY(agree) — eval design + behavior specification = the specific skill gap employers cannot fill | domain depth required as companion |2|26.3.28]
+C[thriving-vs-surviving-structural-not-motivational: thriving=increases-optionality, surviving=preserves-existing-position-which-degrades | consistent with CDS finding F[CDS-1] |1|26.3.28]
+## promoted patterns (26.3.28)
+
+P[salary-aggregator-skill-tier-collapse: wage aggregators (6figr,Simplilearn,ProductSchool,LinkedIn) collapse skill tiers within job titles | "AI Product Manager" ¬distinguishes tool-fluency from systems-design depth | any salary premium analysis for sub-skill claims needs explicit caveat | applies to: any domain where technical depth varies significantly within a job title |promoted:26.3.28]
+
+P[snapshot-vs-prediction-labeling: cross-sectional salary/hiring gaps ¬= longitudinal structural divergence | bifurcation labels require longitudinal evidence to be predictive ¬descriptive | DA[#1] confirmed as recurring vulnerability | applies to: any labor market analysis projecting 5yr structure from current data |promoted:26.3.28]
+
+P[pivot-map-stability-tiers: role pivot analysis should distinguish STABLE (existed 2+ years, demand established) vs EMERGING (new category, unknown 5yr survival base rate) | emerging carries non-survival risk beyond skill requirements | applies to: any career pivot or market entry analysis |promoted:26.3.28]
+
+P[judgment-adjacent-≠-AI-protected: exposure test = "can AI agent with org context replicate core value?" ¬ "does this role require judgment?" | chief-of-staff + product-ops = judgment-adjacent but high automatable surface | general-management + strategy + AI-product-lead = structurally lower exposure | applies to: any pivot analysis recommending "safer" roles |promoted:26.3.28]
+
+P[build-to-learn-framing-robustness: "build to accumulate durable track record" = scenario-independent | "build to capture cyclical wage premium" = scenario-dependent | build-to-learn holds under compression AND expansion | applies to: any skill investment recommendation where underlying premium may be cyclical |promoted:26.3.28]
+
+P[information-gap-vs-execution-gap: most career/strategy advice addresses information layer (what to do) ¬execution layer (why intent doesn't convert) | 40-60% adaptation-theater rate (TIA Productboard 2026) = people who completed neither decision-point debiasing NOR execution-point implementation intention | synthesis closing with execution-layer tools (implementation intentions) more actionable than information-layer tools alone | applies to: any advisory analysis where behavior change is the actual goal |promoted:26.3.28]
+P[26.3.28|5yr-PM-strategy]: PM job market 2026 snapshot|7300+ global postings(3yr high)|senior demand rising|junior pipeline contracting(-54% expect AI to reduce)|AI-PM 20%+ CAGR|time-sensitive:refresh by 26.9
+P[26.3.28|5yr-PM-strategy]: agentic coordination monitoring trigger|IF AI agents complete end-to-end product cycles without PM at AI-native cos by 2028→reassess "function not irrelevant"|maximum team uncertainty area|P(PM-elim)=3% may be low
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4

@@ -400,6 +400,43 @@ R[topic:defense-sector-march2026|global-spending:$2.63T(2025),projected-$2.7T+(2
 R[topic:geopolitical-risk-indicators|WEF-2026:geoeconomic-confrontation=#1-risk(18%-respondents),interstate-conflict=#2,50%-expect-"turbulent/stormy"-2yr-outlook,40%-"unsettled"|BlackRock-BGRI:elevated-across-ME-risks|CFR-conflicts-to-watch:6-ME-conflicts-Tier-I/II(all-Israel-involved),Sudan-escalation=#1-most-likely-scenario|ACLED:Middle-East-special-issue-Mar2026|Eurasia-Group:US-transactional-foreign-policy→geopolitical-fragmentation+Western-alliance-fractures|COMPOSITE-RISK-ASSESSMENT:EXTREME→Iran-war-Day23+Hormuz-closed+Trump-48hr-ultimatum+Russia-Ukraine-paused+China-Taiwan-opportunistic-window+Houthi-activation-risk+defense-spending-record+SPR-historic-release|escalation-indicators:Trump-ultimatum-creates-48hr-binary-risk-event(Mar22-24),Iran-counter-threats-to-energy/water-infra,nuclear-sites-under-attack-both-sides,dual-chokepoint-risk(Hormuz+Red-Sea)|de-escalation-indicators:Houthi-restraint-holding(3wks),PLAAF-activity-decline,Russia-Ukraine-talks-exist(paused¬collapsed),OPEC+-responding,IEA-SPR-historic-release|NET:escalation>de-escalation|probability-revision-needed:48hr-ultimatum-creates-new-scenario-branch→(f)infrastructure-war-targeting-civilian-energy=new-category|src:weforum.org,blackrock.com,cfr.org,acleddata.com,eurasiagroup.net,globalguardian.com|refreshed:2026-03-22|next:2026-03-29]
 
 R[topic:scenario-revision-mar22|PRIOR-5-SCENARIO(from-r3-26.3.13):(a)ceasefire+sanctions-removal-8-12%|(b)ceasefire+sanctions-maintained-10-14%|(c)sustained-conflict-40-45%|(d)escalation+stagflation-22-27%|(e)recession-5-8%|NEW-ASSESSMENT-Mar22:48hr-ultimatum-forces-revision→(d)-ESCALATION-probability-UP-significantly|Trump-ultimatum=credible(pattern:threats-followed-by-action-in-this-conflict)|Iran-counter-threat=credible("completely-closed-indefinitely")|REVISED:(a)5-8%|(b)8-12%|(c)30-35%|(d)35-42%|(e)10-15%|(f-NEW)infrastructure-war-5-10%|ceasefire-combined:13-20%(was-18-26%)|escalation-combined:50-67%(was-30-39%)|KEY-SHIFT:Trump-ultimatum-inverts-sustained↔escalation-probability|48hr-window(Mar22-24)=highest-risk-period-of-conflict|if-power-plants-struck→Hormuz-"completely-closed"→dual-chokepoint-if-Houthis-activate→oil-$130-150+→recession-probability→35-45%|if-ultimatum-lapses-without-action→(c)-sustained-confirmed→oil-$100-115-range|src:own-analysis-integrating-all-R-blocks|refreshed:2026-03-22|next:2026-03-25(48hr-window-resolution)]
+R[26.3.28] **5yr Knowledge Worker Career — Geopolitical Analysis**
+SCOPE: senior PM career strategy 2026-2031, converging macro forces (AI, geopolitical instability, conflict, climate)
+
+H1-VERDICT: CONFIRMED | P(instability higher 2031 than 2026)=55-65% | P(major-power direct war)=12-18% | XVERIFY:PARTIAL(GPT-5.4,decades-high-confirmed,exact-count-methodology-dependent) | RCA cross-validates P=82%+1970s-analog
+H2-VERDICT: PARTIAL-CONFIRMED | geographic breadth spreading(confirmed) | single-convergent-global-war(not-confirmed) | P=68% spreading(RCA cross-validate) | P=8-12% great-power | P=3-5% WWIII
+H3-PARTIAL: geo-layer only | resource-conflict-amplifier-feedback-loop | US-net-migration-negative-2025 | double-tailwind(climate+geo→energy-transition+grid-resilience+water)
+
+KEY CALIBRATIONS:
+- ACLED 2024→2025 raw count DOWN (208K→204K) — plateau not monotonic escalation
+- XVERIFY correction: labor market = bifurcation-by-sector ¬blanket-freeze | digital-nomad-visa-60+-countries | EOR-model-growth
+- Anti-catastrophist framing: chronic friction ¬apocalypse | portfolio-resilience > bunker-mentality
+
+REGIONAL RISK MAP (5yr):
+STABLE: Nordic, Iberian Peninsula, Central Europe, Canada
+ELEVATED: South Korea(N.Korea-Tier-I), UAE/Singapore(Hormuz/SCS), Eastern-EU(Ukraine-proximity)
+HIGH-RISK: MENA, Sub-Saharan Africa, Myanmar/SCS corridor
+
+SECTOR WINNERS: defense-tech, cybersecurity, energy-transition, supply-chain-resilience, reshoring-tech, gov-tech, water/climate-infrastructure
+SECTOR LOSERS: consumer-tech-China-exposure, Hormuz-exposed-supply-chains
+
+CAREER IMPLICATIONS:
+KCI-G1: sector-selection = highest-leverage geopolitical career decision
+KCI-G2: geographic optionality = underrated insurance (C4-family) | Iberian Peninsula = optimal
+KCI-G3: clearance+sensitive-sector = career moat in bifurcated market
+KCI-G4: anti-catastrophist — chronic friction not collapse
+KCI-G5: cross-domain PM (tech+physical-ops) = scarce+valuable under reshoring acceleration
+
+XVERIFY:2-load-bearing | GEO-F1:PARTIAL(conflict-count-calibrated) | GEO-F3:PARTIAL(bifurcation-not-freeze)
+C[26.3.28] 5yr-PM-strategy review R1:
+!H1-calibration: ACLED 2x event counts 2021→2025 but XVERIFY PARTIAL — concentration in 2 theaters (Ukraine+Palestine=40%+) | "structural escalation" framing not supported by single-source event counts | rearmament spending ($2.63T global, all NATO at 2% for first time) is cleaner durable signal
+!H2-calibration: multi-theater risk confirmed (CFR/ICG/ACLED watchlists) but XVERIFY PARTIAL — watchlists = risk scenarios ¬realized spread | Africa/ME historically multi-conflict | correct: "widespread persistent multi-theater risk" ¬"war spreading"
+!career-signal: defense-tech PM demand rising (Pentagon RDT&E +27% YoY) | geopolitical-compliance is PM skill gap+opportunity | geographic mobility real but family-constrained
+!climate-H3: confirmed material — $224B 2025 damages, insurance gap widening, uninsured homes doubled | economic models underestimating |source:T1(Munich Re)
+!hiring: weakest non-recession job creation since 2003 | productivity-led expansion ¬headcount-led
+P[26.3.28|5yr-PM-strategy]: rearmament supercycle 8-15yr duration|late-1970s best analog(9yr)|global defense $2.63T(+6% real)|NATO 2-5% GDP target by 2035|procurement-locked¬event-dependent|refresh-by:26.9
+P[26.3.28|5yr-PM-strategy]: EU AI Act timeline|GPAI obligations Aug 2025|high-risk system obligations Aug 2026|creating real PM demand for compliance fluency|expiry:review when enforcement data available ~27.3
+R[26.3.28|refreshed]: 5yr-PM-strategy review|H1-H5 calibrated|geopolitical+climate+AI+labor-econ+career-strategy|next refresh recommended: 26.9.28
 
 → actions:
 → new finding → append with severity+evidence

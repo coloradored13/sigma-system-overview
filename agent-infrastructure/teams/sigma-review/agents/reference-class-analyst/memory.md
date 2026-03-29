@@ -208,3 +208,44 @@ KEY-FINDING-3: closed-deal data ≠ negotiation positions — frequencies are ou
 CALIBRATION: "realistic win" ≈ 20-25th pctl of favorable outcomes | survival <12mo is strongest directional shift (13%→37%)
 PRE-MORTEM: 7 failure modes identified — #1 risk: using all-deals numbers for RWI-specific deal
 R[26.3.28] |source:SRSA-2025-DTS+independent-analysis
+## 5-Year PM Career Strategy — R1 findings (26.3.28)
+task: calibrate H1-H5 for senior PM 5yr career+life strategy amid AI/geopolitical/climate disruption
+SQ[1-8]: 8 sub-questions | RC[5]+ANA[5]+XVERIFY[2]+PM[7]
+H4(AI-snowballing): CONFIRMED w/temporal-caveat | P(capability-acceleration)=72% | S-curve compressed 20-30% vs prior GPTs ¬80-90% | economic impact lags 3-5yr | enterprise depth 1% mature despite 72-88% surface adoption | fiber analog: capex sustainability P=42%
+H5(PM-role): P(transformed-viable)=72% | P(eliminated)=3% | P(diminished)=25% | financial-analyst analog most relevant (grew despite automation) | travel-agent analog less relevant (14yr trough, more routine) | "PMs who use AI replace PMs who don't" = within-role displacement
+H1(geo-instability): P(elevated-through-2031)=82% | 1970s analog ¬1930s | median duration 12yr | career impact 5-15% earnings decline BUT adapters within 2yr recovered
+H2(war-spreading): P(spreading)=68% | P(WWIII)=3-5% | Cold War analog: diffuse ¬concentrated | indirect career impact
+H3(climate): P(career-impact)=30% | P(personal-finance-impact)=55% | P(career-opportunity)=75% | opportunity > threat in 5yr window
+Q6(thriving-vs-surviving): base rate 20-25% thrive, 40-50% survive, 25-35% decline | timing-of-pivot strongest predictor | skill-stacking > depth | counter-cyclical innovation
+PRE-MORTEM: adaptation-theater(20-25%,#1) + timing-misjudgment(25-30%) + disruption-stacking(15-20%) + family-constraint(15-20%)
+OV-REFRAME: "collapse→survive?" → "shift→early movers capture disproportionate value"
+XVERIFY: F1(AI-S-curve): GPT-5.4=partial,Gemini=agree | F2(role-disruption-base-rates): GPT-5.4=partial,Gemini=agree
+calibration-lesson: P[within-role-displacement-driven-by-adaptation-speed-is-larger-career-risk-than-cross-role-displacement-from-AI;the-person-not-the-role-is-at-risk|src:5yr-PM-strategy-R1|class:calibration]
+calibration-lesson: P[S-curve-compression-for-AI-is-20-30%-not-80-90%;distribution-infrastructure-pre-existed-creating-illusion-of-faster-diffusion;deep-enterprise-transformation-still-10-12yr|src:5yr-PM-strategy-R1|class:pattern]
+## 5-Year PM Career Strategy — R1 findings (26.3.28)
+task: calibrate H1-H5 for senior PM 5yr career+life strategy amid AI/geopolitical/climate disruption
+SQ[1-8]: 8 sub-questions | RC[5]+ANA[5]+XVERIFY[2]+PM[7]
+H4(AI-snowballing): CONFIRMED w/temporal-caveat | P(capability-acceleration)=72% | S-curve compressed 20-30% vs prior GPTs ¬80-90% | economic impact lags 3-5yr | enterprise depth 1% mature despite 72-88% surface adoption | fiber analog: capex sustainability P=42%
+H5(PM-role): P(transformed-viable)=72% | P(eliminated)=3% | P(diminished)=25% | financial-analyst analog most relevant (grew despite automation) | travel-agent analog less relevant (14yr trough, more routine) | "PMs who use AI replace PMs who don't" = within-role displacement
+H1(geo-instability): P(elevated-through-2031)=82% | 1970s analog ¬1930s | median duration 12yr | career impact 5-15% earnings decline BUT adapters within 2yr recovered
+H2(war-spreading): P(spreading)=68% | P(WWIII)=3-5% | Cold War analog: diffuse ¬concentrated | indirect career impact
+H3(climate): P(career-impact)=30% | P(personal-finance-impact)=55% | P(career-opportunity)=75% | opportunity > threat in 5yr window
+Q6(thriving-vs-surviving): base rate 20-25% thrive, 40-50% survive, 25-35% decline | timing-of-pivot strongest predictor | skill-stacking > depth | counter-cyclical innovation
+PRE-MORTEM: adaptation-theater(20-25%,#1) + timing-misjudgment(25-30%) + disruption-stacking(15-20%) + family-constraint(15-20%)
+OV-REFRAME: "collapse→survive?" → "shift→early movers capture disproportionate value"
+XVERIFY: F1(AI-S-curve): GPT-5.4=partial,Gemini=agree | F2(role-disruption-base-rates): GPT-5.4=partial,Gemini=agree
+calibration-lesson: P[within-role-displacement-driven-by-adaptation-speed-is-larger-career-risk-than-cross-role-displacement-from-AI;the-person-not-the-role-is-at-risk|src:5yr-PM-strategy-R1|class:calibration]
+calibration-lesson: P[S-curve-compression-for-AI-is-20-30%-not-80-90%;distribution-infrastructure-pre-existed-creating-illusion-of-faster-diffusion;deep-enterprise-transformation-still-10-12yr|src:5yr-PM-strategy-R1|class:pattern]
+## promotion — generalizable calibration lessons (26.3.28)
+
+### auto-promoted (low-risk, cross-review applicable)
+P[within-role-displacement-driven-by-adaptation-speed-is-larger-career-risk-than-cross-role-displacement-from-technology;the-PERSON-not-the-ROLE-is-at-risk;applies-to-any-judgment-intensive-knowledge-work-role|src:5yr-PM-strategy-R1+R3|class:calibration]
+P[S-curve-compression-for-AI-is-20-30%-not-80-90%;surface-adoption(72%)-masks-depth(~1%-mature);distribution-infrastructure-pre-existed-creating-illusion-of-faster-diffusion;deep-enterprise-transformation-still-10-12yr|src:5yr-PM-strategy-R1|class:pattern]
+P[two-speed-S-curves-operate-simultaneously:tool-adoption(months,urgent)+org-transformation(10-12yr,strategic-runway);conflating-them-misinforms-timing-advice|src:5yr-PM-strategy-R1-cross-TIA|class:pattern]
+P[financial-analyst-reference-class-is-primary-analog-for-judgment-intensive-knowledge-work-roles-during-AI-disruption;BLS-9.5%-growth-despite-automation-waves;aggregate-growth-masks-internal-composition-shift(execution-layer-compresses,judgment-layer-grows)|src:5yr-PM-strategy-R1-cross-CDS|class:calibration]
+P[fabricated-confidence-format-risk:clean-percentages-on-weak-literature=overstates-evidential-basis;must-label-[agent-inference:low-confidence]-when-constructing-from-proxies;DA-#3-caught-this-correctly|src:5yr-PM-strategy-R3|class:calibration]
+P[Q6-thriving-base-rates-~20-25%-converge-from-3-independent-proxy-sources(WEF-displacement,CDS-35%-transfer-rate,FA-analog);order-of-magnitude-plausible-but-precision-NOT-earned|src:5yr-PM-strategy-R1+R3|class:calibration]
+P[watchlist-to-conflict-materialization:per-scenario-10-18%/portfolio-75-85%;persistence-on-watchlist≠spreading;same-15-20-fragile-states-cycle-through-decade-after-decade|src:5yr-PM-strategy-R1-cross-GEO|class:calibration]
+P[recession-AI-displacement-correlation-has-two-opposing-channels:cost-cutting→deploy-existing(immediate,positive)+capex-cuts→slow-next-gen(lagged,negative);in-18mo-window-channel-a-dominates→net-positive-correlation|src:5yr-PM-strategy-R3|class:pattern]
+P[1970s-analog-provides-DURATION(8-12yr)+SECTOR-SELECTION(>role)+COUNTER-CONSENSUS-TIMING-value;does-NOT-provide-labor-market-mechanics(physical-vs-cognitive-displacement-differ);demoted-to-WEAK-BUT-INFORMATIVE|src:5yr-PM-strategy-R3|class:calibration]
+P[tech-capex-super-cycles-typically-7-12yr-but-dot-com-fell-37%-in-1yr;hyperscaler-FCF-deterioration(Alphabet-90%,Amazon-negative-2026)=leading-indicator;P(sustained)=42%-is-INSIDE-base-rate-range-30-45%|src:5yr-PM-strategy-R1+DC-review|class:pattern]
