@@ -286,19 +286,14 @@ DA joins at challenge phase (join_phase="challenge")
 orchestrator tracks: phase history, agent statuses, context, checkpoint persistence
 
 #### 4b. Bayesian belief state computation (per directives §4)
-after each round where all agents ✓, compute:
+after each round where all agents ✓:
+```bash
+python3 orchestrator-config.py compute-belief --belief-mode analyze --round N
 ```
-BELIEF-STATE[r{N}]:
-  prior: task-complexity(simple=0.7, moderate=0.5, complex=0.3, novel=0.2)
-  agreement: {agents-aligned}/{total} (0-1)
-  revisions: none=0.5, minor=0.7, material=0.9
-  gaps: unresolved-count (each × 0.9 penalty)
-  DA-grade: A=1.0, B=0.85, C=0.7, D=0.5
-  posterior: P(consensus) = prior × agreement × revisions × gaps-penalty × DA-factor
-```
-pass computed belief_state to orchestrator advance --context
-
+review components (prior from tier, agreement, revisions, gaps, DA-factor) → adjust if justified
+if |declared - computed| > 0.15 → must justify divergence in workspace
 write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
+pass computed belief_state to orchestrator advance --context
 
 #### 4c. Standard convergence check
 1→read workspace convergence
@@ -323,32 +318,19 @@ write to workspace: "BELIEF[r{N}]: P={posterior} |→ {action}"
    any non-none → revise before presenting
 
 ### 4e. Contamination check (per directives §6, §2d, §7)
-!MANDATORY before synthesis/report/document generation:
+before synthesis/report/document generation:
 1→re-read workspace ## scope-boundary
 2→identify session topics outside review scope
 3→write: "CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})"
 4→after generating any output, grep for contamination terms → revise if found
 5→shareable documents → spawn document agent (isolated context, workspace data ONLY)
+6→validate: `orchestrator-config.py validate --check pre-synthesis` — blocks synthesis until
+  CONTAMINATION-CHECK, SYCOPHANCY-CHECK, source provenance audit, and exit-gate format confirmed
 
-{ALSO per directives §2d — source provenance audit:}
-6→tally source tags across all agent findings in workspace
-7→write: "SOURCE-PROVENANCE[§2d]: independent-research:{N} |prompt-claim:{N} |cross-agent:{N} |agent-inference:{N} |prompt-claim-corroborated:{N}/{total-prompt-claims}"
-8→>30% [prompt-claim] without corroboration → flag structural contamination
-9→re-read workspace ## prompt-decomposition → verify all H[] hypotheses were addressed with [independent-research] sources
-
-{IF temporal-boundary ≠ none, ALSO per directives §6g:}
-6→SOURCE-AUDIT[§6g]: check every cited source publication date against temporal-boundary
-  pre-cutoff → ✓ | post-cutoff citing pre-cutoff data → replace with original source ↻ | post-cutoff only → ✗ reject
-  confidential-at-cutoff released post-cutoff → ✗ reject
-  write: "SOURCE-AUDIT[§6g]: {N} checked |{valid}✓ |{rejected}✗ |{replaced}↻"
-  >25% rejected → re-examine findings relying on rejected sources
-7→TEMPORAL-SCAN[§6g]: grep output for post-cutoff dates, outcome-revealing terms
-  ("collapse","failure","failed","receivership","post-mortem","hindsight","subsequently","ultimately")
-  write: "TEMPORAL-SCAN[§6g]: cutoff={date} |post-cutoff-refs:{list|none} |outcome-terms:{list|none} |result:clean|contaminated"
-  contaminated → revise before presenting
-8→PROVENANCE[§6g]: tally provenance across all findings
-  write: "PROVENANCE[§6g]: filing:{N} |public-data:{N} |pre-cutoff-research:{N} |model-knowledge:{N}"
-  model-knowledge >30% → flag review as potentially contaminated in output
+{IF temporal-boundary ≠ none, ALSO per directives §6g — lead-executed (requires judgment):}
+7→SOURCE-AUDIT[§6g]: check source publication dates against temporal-boundary
+8→TEMPORAL-SCAN[��6g]: grep output for post-cutoff dates, outcome-revealing terms
+9→PROVENANCE[§6g]: tally provenance distribution (model-knowledge >30% → flag)
 
 ### 5. Report to user
 Read workspace findings + convergence. Translate ΣComm to plain language. Present synthesis.

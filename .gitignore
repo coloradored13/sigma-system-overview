@@ -12,3 +12,4 @@ output/
 
 # Inboxes (runtime, not persistent)
 **/teams/*/inboxes/
+__pycache__/

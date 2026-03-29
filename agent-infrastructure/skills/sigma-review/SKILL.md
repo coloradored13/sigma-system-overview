@@ -235,10 +235,14 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 
 ### Belief state computation
 1→read workspace convergence section
-2→all ✓ → compute BELIEF-STATE (per directives §4):
-  prior(task-complexity) × agreement(agent-alignment) × revisions(quality) × gaps(penalty) × DA(grade)
-  pass result to orchestrator advance --context
+2→all ✓ → compute belief state mechanically:
+  ```bash
+  python3 orchestrator-config.py compute-belief --belief-mode analyze --round N
+  ```
+  review components (prior, agreement, revisions, gaps, DA-factor) → adjust if justified
+  if |declared - computed| > 0.15 → must justify divergence
   write: "BELIEF[r{N}]: P={posterior} |→ {action}"
+  pass result to orchestrator advance --context
 3→r1 specifically: check for zero-dissent circuit breaker (see below) → then proceed
 4→any ◌ → SendMessage to agent: continue|clarify
 5→any ! → surface blocker to user
@@ -254,28 +258,28 @@ results written to workspace as research packages with quality scores
 
 ## Zero-Dissent Circuit Breaker (R1 only)
 
-!MANDATORY: lead MUST run this check after r1 convergence. ¬optional, ¬skip
-!fires: after all r1 agents ✓, BEFORE spawning DA for r2
-!hard gate: lead ¬advances to r2 without either (a) logging detected divergence OR (b) completing circuit breaker
-!check: scan workspace findings + convergence for ANY inter-agent tension, disagreement, or counter-estimate
+!purpose: 10+ consecutive reviews produced zero R1 dissent — independent experts with 0 disagreements = herding signal.
+!when: after all R1 agents ✓, BEFORE spawning DA for R2.
+
+1→scan workspace findings + convergence for ANY inter-agent tension, disagreement, or counter-estimate
   tension found → log "R1 divergence detected: {description}" to workspace → proceed to r2
   zero divergence → fire circuit breaker:
-
-1→report to user: "Zero-dissent detected: {N} agents, {M} findings, 0 disagreements. Firing circuit breaker."
-2→send targeted self-challenge to each agent (SendMessage or re-spawn with CB prompt):
+2→report to user: "Zero-dissent detected: {N} agents, {M} findings, 0 disagreements. Firing circuit breaker."
+3→send targeted self-challenge to each agent (SendMessage or re-spawn):
   "zero-dissent circuit breaker: your R1 finding on [{highest-conviction finding}] agrees with all peers.
    (1) Name the strongest argument AGAINST your own position.
    (2) If that argument is correct, would you change your conclusion?
    (3) Identify ONE peer finding you would challenge, quantify differently, or add a caveat to.
    Respond in workspace — append to your findings section. 3 focused responses only."
-3→wait for CB responses (single turn per agent)
-4→read CB responses → note any revisions or tensions surfaced
-5→proceed to r2 (DA reads CB responses alongside r1 findings)
+4→wait for CB responses → note revisions or tensions surfaced
+5→validate: `orchestrator-config.py validate --check cb` — blocks advance until CB/divergence confirmed
+6→proceed to r2 (DA reads CB responses alongside r1 findings)
 
 ## Convergence Guard
 
 pre-accept ✓: verify workspace findings ¬empty
 ✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
+after all agents ✓: `validate --check r1-convergence` (V3+V4+V5+V6+V7+V8) — blocks advance until R1 quality confirmed
 
 ## Post-Exit-Gate Phases (MANDATORY — orchestrator-enforced)
 
@@ -378,31 +382,25 @@ teammate idle|disconnect w/o ✓:
 3→workspace ¬in memory → store_agent_memory(annotate:"recovered by lead")
 4→log recovery → workspace convergence
 
-## Anti-Contamination Check (MANDATORY before report or document generation)
+## Anti-Contamination Check (before report or document generation)
 
-!rule: before writing synthesis, report, or generating any shareable document:
+!purpose: prevent conversation context from leaking into agent-produced output.
+
 1→re-read workspace ## scope-boundary
 2→identify all topics discussed in this conversation OUTSIDE the review scope
-3→list: "session-topics-outside-scope: {list}"
-4→after generating report/document, grep output for terms from those topics
-5→any matches → revise to remove contamination before presenting to user
+3→write: "CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})"
+4→write: "SYCOPHANCY-CHECK: softened:{list|none} |selective-emphasis:{list|none} |dissent-reframed:{list|none} |process-issues:{list|none}"
+5→after generating report/document, grep output for contamination terms → revise if found
 6→shareable documents: spawn document-writing agent (separate subprocess = separate context)
   provide ONLY workspace findings + review data as input
   do NOT provide: user conversation context, casual remarks, career goals, unrelated topics
+7→validate: `orchestrator-config.py validate --check pre-synthesis` — blocks synthesis until checks confirmed
 
 {IF temporal-boundary ≠ none, ALSO per directives §6g:}
-7→SOURCE-AUDIT[§6g]: check every cited source publication date against temporal-boundary
-  pre-cutoff → ✓ | post-cutoff citing pre-cutoff data → replace with original ↻ | post-cutoff only → ✗ reject
-  confidential-at-cutoff released post-cutoff → ✗ reject
-  write: "SOURCE-AUDIT[§6g]: {N} checked |{valid}✓ |{rejected}✗ |{replaced}↻"
-  >25% rejected → re-examine findings relying on rejected sources
-8→TEMPORAL-SCAN[§6g]: grep output for post-cutoff dates, outcome-revealing terms
-  ("collapse","failure","failed","receivership","post-mortem","hindsight","subsequently","ultimately")
-  write: "TEMPORAL-SCAN[§6g]: cutoff={date} |post-cutoff-refs:{list|none} |outcome-terms:{list|none} |result:clean|contaminated"
-  contaminated → revise before presenting
-9→PROVENANCE[§6g]: tally provenance across all findings
-  write: "PROVENANCE[§6g]: filing:{N} |public-data:{N} |pre-cutoff-research:{N} |model-knowledge:{N}"
-  model-knowledge >30% → flag review as potentially contaminated in output
+Temporal boundary checks require judgment — lead-executed per directives.md §6g:
+8→SOURCE-AUDIT[§6g]: check source publication dates against temporal-boundary
+9→TEMPORAL-SCAN[§6g]: grep output for post-cutoff dates, outcome-revealing terms
+10→PROVENANCE[§6g]: tally provenance distribution (model-knowledge >30% → flag)
 
 ## Report
 

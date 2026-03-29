@@ -297,148 +297,33 @@ lead computes belief state after each review round:
     → test integrity catches ≥1 weak test pattern
     → zero agents building organizational infrastructure instead of product
 
-## Hard Gates (mandatory — lead MUST verify before advancing)
+## Hard Gates (orchestrator-enforced)
 
-!purpose: prevent skipping critical flow steps. Each gate is a BLOCKING requirement.
-!rule: lead writes gate status to workspace ## gate-log. Skipped gate = process violation.
-!rule: if a gate fails, lead MUST resolve before advancing. ¬advance-and-fix-later.
+!purpose: prevent skipping critical flow steps. The orchestrator blocks phase transitions
+until `validate` confirms required content exists in workspace.
+!rule: if validation fails, lead MUST resolve before advancing. ¬advance-and-fix-later.
+!rule: FAIL actions below describe what the lead does to resolve — the validate command only checks.
 
-### PHASE 1 gates
+| Transition | Command | What it checks | Old gate | FAIL action |
+|------------|---------|----------------|----------|-------------|
+| plan → challenge | `validate --check plan-convergence` | agent output non-empty, source tags, XVERIFY, DB[], persist | G1,G9,G10,G11 | send agent back to complete missing items |
+| after first challenge | `validate --check cb` | divergence logged OR CB[1]/CB[2]/CB[3] present | G4 | fire circuit breaker (see CB protocol above) |
+| after each challenge/review | `validate --check challenge-round` | DA participated, agent responses present, belief state written | G2,G7,G8 | re-spawn missing agent; compute belief state |
+| challenge → build | `validate --check plan-lock` | ADR[], DS[], IC[] sections populated | G3,G10 | plan-track agents complete missing output |
+| build → review | `validate --check build-checkpoint` | CHECKPOINT[] entries in build-status | G6 | SendMessage: "checkpoint required before continuing" |
+| review → synthesis | `validate --check pre-synthesis` | contamination check, source audit, sycophancy check, exit-gate format | G9 | complete missing checks before synthesis |
 
-#### G1: plan-output-completeness (before first challenge round)
-!when: after plan-track agents converge, before spawning challenge round
-verify workspace contains:
-  □ ## plans — each plan-track agent has written their section (¬empty)
-  □ ## plans → at least 1 ADR[N] from tech-architect
-  □ ## plans → at least 1 DS[] or IX[N] from product-designer
-  □ ## plans → success criteria from product-strategist
-  □ all plan-track agents: SQ[] + CAL[] + PM[] present (¬missing)
-  □ prompt-understanding mapping present IF ## prompt-understanding is populated
-  □ §2a/§2b/§2c/§2e hygiene checks: each agent produced outcome 1/2/3 (¬missing, ¬perfunctory)
-  □ source provenance: all findings tagged with |source:{type}
-gate-log: "G1[plan-r{N}]: {PASS|FAIL:{missing-items}}"
-FAIL → send agent back to complete missing items before challenge proceeds
-
-#### G2: cross-track-challenge-participation (during each challenge round)
-!when: during plan challenge, before computing P(plan-ready)
-verify:
-  □ DA participated — at least 1 DA[#N] challenge issued
-  □ build-track participated — at least 1 BUILD-CHALLENGE[agent] issued per build-track agent
-  □ plan-track responded — every challenge has concede|defend|compromise response
-  □ ¬rubber-stamp: if all challenges result in "accept" with no substantive issue raised → trigger zero-dissent circuit breaker
-gate-log: "G2[plan-r{N}]: DA:{count-challenges} |build-track:{count-challenges} |responses:{count} |{PASS|ZERO-DISSENT→CB}"
-FAIL(missing participant) → re-spawn missing agent with explicit challenge prompt
-
-#### G3: plan-lock-completeness (before architect exit)
-!when: after P(plan-ready) > 0.85, before plan-track agents exit
-verify workspace contains LOCKED output (¬still in ## plans, actually written to final sections):
-  □ ## architecture-decisions — at least 1 ADR[N] with alternatives + rationale + prompted-by link
-  □ ## design-system — DS[] with tokens, component hierarchy, interaction patterns
-  □ ## interface-contracts — at least 1 IC[N] with type + consumer
-  □ cross-coherence: lead verified contracts ↔ design system ↔ data model alignment
-  □ belief state written: "BELIEF[plan-r{N}]: P={value}" in workspace
-gate-log: "G3[plan-lock]: ADR:{count} |DS:{present|missing} |IC:{count} |coherence:{checked|¬checked} |{PASS|FAIL:{missing}}"
-FAIL → plan-track agents complete missing output before exit
-
-#### G4: zero-dissent-circuit-breaker (after first challenge round)
-!when: after first plan challenge completes
-!MANDATORY: lead MUST run this check. ¬optional, ¬skip.
-verify:
-  □ inter-reviewer tension exists (DA vs build-track, or build-track vs plan-track)
-  tension found → log "divergence detected: {description}" → PASS (proceed normally)
-  zero tension → FIRE circuit breaker (see circuit breaker protocol above)
-gate-log: "G4[CB]: {divergence-detected|CB-fired} |tensions:{count}"
-
-### PHASE 2 gates
-
-#### G5: build-reads-plan (before build begins)
-!when: after build-track agents spawned for build, before they write code
-verify:
-  □ each build-track agent's workspace read confirms locked constraints acknowledged
-  □ workspace ## architecture-decisions, ## design-system, ## interface-contracts are populated (¬empty)
-  □ build-track agents reference specific ADR[N], DS[], IC[N] in their build approach
-gate-log: "G5[build-start]: constraints-acknowledged:{agents} |{PASS|FAIL:{agent-missing-reference}}"
-FAIL → re-send constraints to agent with explicit "acknowledge these constraints before building"
-
-#### G6: checkpoint-completion (at ~50% build progress)
-!when: when any build-track agent reaches ~50% of planned work
-verify:
-  □ each build-track agent has written CHECKPOINT[agent] to workspace ## build-status
-  □ checkpoint includes: files-created, functions-done, interfaces-matched, drift, surprises
-  □ drift field is substantive (¬just "none" if files/functions deviate from plan)
-gate-log: "G6[checkpoint]: {agents-reported}/{agents-total} |drift:{none|{descriptions}} |{PASS|FAIL:{missing-agents}}"
-FAIL → SendMessage to agents missing checkpoint: "checkpoint required before continuing"
-
-#### G7: cross-track-review-participation (during each build review round)
-!when: during build review, before computing P(build-quality)
-verify:
-  □ DA participated — at least 1 DA[#N] review finding
-  □ plan-track participated — at least 1 PLAN-REVIEW[agent] per re-spawned plan-track agent
-  □ build-track responded — every review finding has fixed|justified|deferred response
-  □ "fixed" responses have corresponding code changes (¬acknowledge-without-implementing)
-gate-log: "G7[build-r{N}]: DA:{count} |plan-track:{count} |responses:{count} |fixes-implemented:{count}/{fixes-agreed} |{PASS|FAIL:{missing}}"
-FAIL(missing participant) → re-spawn missing agent
-FAIL(fixes not implemented) → send build-track agent back: "agreed fix for {issue} not found in code — implement before re-review"
-
-#### G8: belief-state-written (after every round in both phases)
-!when: after every challenge round (plan phase) and every review round (build phase)
-verify:
-  □ BELIEF[plan-r{N}] or BELIEF[build-r{N}] written to workspace with all component scores
-  □ belief state includes → action (lock-plan / another-round / done / escalate)
-  □ if P < 0.6: Toulmin debate or escalation initiated (¬silently advanced)
-gate-log: "G8[r{N}]: belief-written:{yes|no} |P={value} |action:{taken} |{PASS|FAIL}"
-FAIL → lead computes and writes belief state before any further action
-
-### Cross-cutting gates
-
-#### G9: source-provenance-audit (before each phase exit)
-!when: before plan lock (end of plan phase) AND before synthesis (end of build phase)
-verify:
-  □ every finding in workspace has |source:{type} tag
-  □ load-bearing findings (>70% confidence) also have quality tier tag (T1/T2/T3)
-  □ [prompt-claim] findings paired with independent corroboration OR marked unverified
-  □ source distribution: ¬100% [agent-inference] (minimum 1 [independent-research] per plan-track agent)
-gate-log: "G9[{phase}]: total-findings:{N} |tagged:{N} |load-bearing-with-tier:{N}/{total-load-bearing} |prompt-claims-corroborated:{N}/{total-prompt-claims} |{PASS|FAIL:{violations}}"
-
-#### G10: workspace-section-non-empty (before each phase transition)
-!when: before architect exit (plan→build) AND before synthesis (build→done)
-verify all required workspace sections are populated:
-  plan→build transition: ## architecture-decisions, ## design-system, ## interface-contracts ¬empty
-  build→done transition: ## build-status, ## findings ¬empty
-  both: ## convergence has entries from all active agents
-gate-log: "G10[{transition}]: {sections-populated}/{sections-required} |{PASS|FAIL:{empty-sections}}"
-
-#### G11: cross-model-verification-coverage (before each phase exit, when ΣVerify available)
-!when: before plan lock (plan phase) AND before final build review round (build phase)
-!skip-if: workspace ## infrastructure shows ΣVerify unavailable — neutral, ¬penalized
-verify:
-  plan phase:
-    □ each plan-track agent verified top 1 load-bearing decision
-    □ zero load-bearing ADR/DS decisions without XVERIFY or XVERIFY-FAIL tag
-    □ XVERIFY-FAIL written to workspace as gap (¬silently dropped)
-  build phase:
-    □ cross-model code review completed (XREVIEW entries in workspace)
-    □ plan-track compliance verification: top 1 finding per re-spawned agent has XVERIFY or XVERIFY-FAIL
-    □ build-track responded to all XREVIEW findings (accept|note|reject with reasoning)
-gate-log: "G11[{phase}]: ΣVerify:{available|unavailable} |plan-decisions-verified:{N}/{load-bearing} |code-files-reviewed:{N} |compliance-verified:{N}/{plan-track-agents} |{PASS|SKIP(unavailable)|FAIL:{missing}}"
-FAIL → agents complete missing verification before phase exits
-
-### Gate Log Format
-
-lead maintains workspace ## gate-log section:
+Lead workflow per transition:
+```bash
+# 1. Do the work (round management, CB protocol, etc.)
+# 2. Validate
+python3 orchestrator-config.py validate --check {bundle} --workspace workspace.md
+# 3. Advance (only if validation passed)
+python3 orchestrator-config.py advance --context '{"plan_round_validated": true}'
 ```
-## gate-log
-G1[plan-r1]: PASS |26.3.27
-G2[plan-r1]: DA:3 |build-track:4 |responses:7 |PASS
-G4[CB]: divergence-detected |tensions:2
-G3[plan-lock]: ADR:3 |DS:present |IC:4 |coherence:checked |PASS
-G5[build-start]: constraints-acknowledged:3/3 |PASS
-G6[checkpoint]: 3/3 |drift:none |PASS
-G7[build-r1]: DA:4 |plan-track:3 |responses:7 |fixes-implemented:2/2 |PASS
-G8[r1]: belief-written:yes |P=0.88 |action:done |PASS
-G9[build]: total:12 |tagged:12 |load-bearing:4/4 |PASS
-G10[build→done]: 4/4 |PASS
-```
+
+Gate-log entries are generated by `validate` output. See `gate_checks.py` for check definitions (V1-V20).
+Protocol rules that define WHAT agents must produce: see `directives.md` and `build-directives.md`.
 
 ## Lead Role Boundary (HARD GATE)
 
@@ -583,15 +468,14 @@ BUILD authority scoring: official-docs=5 | GitHub-production-examples=4 | tutori
 
 ## Belief States
 
-Two belief states govern phase transitions (see Round Structure for full definitions):
-
-### P(plan-ready) — plan phase exit
-  builder-feasibility(0.25) + interface-agreement(0.20) + design-arch-coherence(0.15) + no-assumption-conflicts(0.15) + prompt-understanding-coverage(0.10) + DA-exit-gate(0.15)
-  P > 0.85 → lock plan, advance to build | P 0.6-0.85 → another plan round | P < 0.6 → Toulmin debate
-
-### P(build-quality) — build phase exit
-  plan-compliance(0.25) + test-coverage(0.20) + design-fidelity(0.15) + code-quality(0.20) + no-scope-creep(0.10) + DA-exit-gate(0.10)
-  P > 0.85 → done | P 0.6-0.85 → build-track fixes, another round | P < 0.6 → escalate to user
+Two belief states govern phase transitions. Computed mechanically via `compute-belief`:
+```bash
+python3 orchestrator-config.py compute-belief --belief-mode build-plan   # plan phase
+python3 orchestrator-config.py compute-belief --belief-mode build-quality # build phase
+```
+Thresholds (both phases): P > 0.85 → advance | P 0.6-0.85 → another round | P < 0.6 → Toulmin/escalate
+If |declared - computed| > 0.15 → divergence flag — lead must justify difference.
+Component weights and formulas defined in `gate_checks.py`.
 
 ## Post-Session Synthesis
 
@@ -605,7 +489,7 @@ After all agents ✓:
 
 ## Convergence Guard
 
-pre-accept ✓: verify workspace findings ¬empty
+pre-accept ✓: verify workspace findings ¬empty (validated mechanically as V3+V8 in plan-convergence/build-checkpoint bundles)
 ✓+¬persisted(check get_agent_memory) → msg agent: "persist before ✓"
 
 ## Post-Exit-Gate Phases (MANDATORY — orchestrator-enforced)

@@ -24,6 +24,9 @@ import os
 import sys
 import tempfile
 
+# Allow importing gate_checks from same directory
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from hateoas_agent import AgentSlot, Orchestrator
 from hateoas_agent.conditions import (
     all_converged,
@@ -36,6 +39,8 @@ from hateoas_agent.orchestrator_persistence import (
     load_orchestrator_checkpoint,
     save_orchestrator_checkpoint,
 )
+
+import gate_checks
 
 # Default checkpoint location
 DEFAULT_CHECKPOINT = os.path.join(
@@ -90,20 +95,21 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
         "research",
         "circuit_breaker",
         name="r1_complete",
-        guard=context_true("r1_converged"),
+        guard=context_true("r1_converged") & context_true("r1_validated"),
     )
 
     orch.transition(
         "circuit_breaker",
         "challenge",
         name="cb_complete",
-    )  # unguarded — always proceeds
+        guard=context_true("cb_validated"),
+    )
 
     orch.transition(
         "challenge",
         "synthesis",
         name="exit_to_synthesis",
-        guard=exit_gate_passed() & belief_above(0.85),
+        guard=exit_gate_passed() & belief_above(0.85) & context_true("pre_synthesis_validated"),
     )
 
     orch.transition(
@@ -194,12 +200,17 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
     orch.phase("archive", description="Workspace archive: copy workspace to shared/archive/")
     orch.phase("complete", description="Build complete", terminal=True)
 
-    orch.transition("plan", "challenge_plan", name="plans_ready", guard=context_true("plans_ready"))
+    orch.transition(
+        "plan",
+        "challenge_plan",
+        name="plans_ready",
+        guard=context_true("plans_ready") & context_true("plan_round_validated"),
+    )
     orch.transition(
         "challenge_plan",
         "build",
         name="plans_approved",
-        guard=exit_gate_passed() & belief_above(0.85),
+        guard=exit_gate_passed() & belief_above(0.85) & context_true("plan_lock_validated"),
     )
     orch.transition(
         "challenge_plan",
@@ -207,8 +218,18 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
         name="revise_plans",
         guard=~exit_gate_passed(),
     )
-    orch.transition("build", "review", name="build_complete", guard=context_true("build_complete"))
-    orch.transition("review", "synthesis", name="review_done", guard=exit_gate_passed())
+    orch.transition(
+        "build",
+        "review",
+        name="build_complete",
+        guard=context_true("build_complete") & context_true("checkpoint_validated"),
+    )
+    orch.transition(
+        "review",
+        "synthesis",
+        name="review_done",
+        guard=exit_gate_passed() & context_true("pre_synthesis_validated"),
+    )
     orch.transition("review", "review", name="review_revisions", guard=~exit_gate_passed())
 
     # Post-exit-gate transitions (guarded — lead must set completion flags)
@@ -373,6 +394,28 @@ def cmd_restore(args: argparse.Namespace) -> None:
     _output_state(orch)
 
 
+def cmd_validate(args: argparse.Namespace) -> None:
+    """Run a validation bundle against the workspace."""
+    bundle = args.check
+    workspace = args.workspace
+    kwargs = {}
+    if args.round:
+        kwargs["round_num"] = args.round
+
+    result = gate_checks.run_validation(bundle, workspace, **kwargs)
+    print(json.dumps(result, indent=2))
+
+
+def cmd_compute_belief(args: argparse.Namespace) -> None:
+    """Compute belief state mechanically from workspace content."""
+    belief_mode = args.belief_mode
+    workspace = args.workspace
+    round_num = args.round
+
+    result = gate_checks.run_compute_belief(belief_mode, workspace, round_num)
+    print(json.dumps(result, indent=2))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sigma-review orchestrator CLI")
     parser.add_argument("--mode", choices=["analyze", "build"], default="analyze")
@@ -394,6 +437,34 @@ def main() -> None:
     p_restore = sub.add_parser("restore", help="Restore from checkpoint file")
     p_restore.add_argument("--file", required=True, help="Source file path")
 
+    p_validate = sub.add_parser("validate", help="Run validation bundle against workspace")
+    p_validate.add_argument(
+        "--check",
+        required=True,
+        choices=list(gate_checks.BUNDLES.keys()),
+        help="Validation bundle to run",
+    )
+    p_validate.add_argument(
+        "--workspace",
+        default=None,
+        help=f"Workspace path (default: {gate_checks.DEFAULT_WORKSPACE})",
+    )
+    p_validate.add_argument("--round", type=int, default=None, help="Round number (for round-specific checks)")
+
+    p_belief = sub.add_parser("compute-belief", help="Compute belief state from workspace")
+    p_belief.add_argument(
+        "--belief-mode",
+        required=True,
+        choices=list(gate_checks.BELIEF_MODES.keys()),
+        help="Belief computation mode",
+    )
+    p_belief.add_argument(
+        "--workspace",
+        default=None,
+        help=f"Workspace path (default: {gate_checks.DEFAULT_WORKSPACE})",
+    )
+    p_belief.add_argument("--round", type=int, default=None, help="Round number")
+
     args = parser.parse_args()
 
     commands = {
@@ -402,6 +473,8 @@ def main() -> None:
         "status": cmd_status,
         "checkpoint": cmd_checkpoint,
         "restore": cmd_restore,
+        "validate": cmd_validate,
+        "compute-belief": cmd_compute_belief,
     }
     commands[args.command](args)
 

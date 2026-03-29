@@ -1,0 +1,1185 @@
+"""Gate validation checks for sigma-review orchestrator.
+
+Provides workspace-reading validation functions that enforce protocol compliance.
+Called via orchestrator-config.py validate / compute-belief commands.
+
+Gate taxonomy (V1-V20):
+  V1  research-freshness        V11 belief-state-written
+  V2  workspace-initialized     V12 new-consensus-stress-tested
+  V3  agent-output-non-empty    V13 contamination-check
+  V4  source-provenance         V14 source-provenance-audit
+  V5  xverify-coverage          V15 anti-sycophancy-check
+  V6  dialectical-bootstrapping V16 exit-gate-format
+  V7  hypothesis-matrix         V17 plan-lock-completeness
+  V8  persist-before-converge   V18 build-reads-plan
+  V9  circuit-breaker           V19 checkpoint-completion
+  V10 cross-track-participation V20 fixes-implemented
+
+Bundles:
+  r1-convergence     V3+V4+V5+V6+V7+V8  (ANALYZE R1 exit)
+  cb                 V9                    (circuit breaker)
+  pre-synthesis      V13+V14+V15+V16      (before synthesis)
+  plan-convergence   V3+V4+V5+V6+V8       (BUILD plan round exit)
+  plan-lock          V17                   (BUILD plan→build)
+  build-checkpoint   V19                   (BUILD before review)
+  challenge-round    V10+V11              (after any challenge/review round)
+"""
+
+from __future__ import annotations
+
+import json
+import re
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+
+# ---------------------------------------------------------------------------
+# Data classes
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class CheckResult:
+    """Result of a single validation check."""
+
+    name: str
+    passed: bool
+    details: dict[str, Any] = field(default_factory=dict)
+    issues: list[str] = field(default_factory=list)
+
+    def to_dict(self) -> dict:
+        return {
+            "name": self.name,
+            "passed": self.passed,
+            "details": self.details,
+            "issues": self.issues,
+        }
+
+
+@dataclass
+class ValidationResult:
+    """Result of a validation bundle (multiple checks)."""
+
+    bundle: str
+    passed: bool
+    checks: list[CheckResult] = field(default_factory=list)
+    context_update: dict[str, Any] = field(default_factory=dict)
+
+    def to_dict(self) -> dict:
+        return {
+            "bundle": self.bundle,
+            "passed": self.passed,
+            "checks": [c.to_dict() for c in self.checks],
+            "context_update": self.context_update,
+        }
+
+
+@dataclass
+class BeliefComponents:
+    """Mechanically derived belief state components."""
+
+    prior: float
+    agreement: float
+    revisions: float
+    gaps_penalty: float
+    da_factor: float
+    posterior: float
+    breakdown: dict[str, Any] = field(default_factory=dict)
+    declared: float | None = None
+    divergence: float | None = None
+
+    def to_dict(self) -> dict:
+        d: dict[str, Any] = {
+            "prior": round(self.prior, 3),
+            "agreement": round(self.agreement, 3),
+            "revisions": round(self.revisions, 3),
+            "gaps_penalty": round(self.gaps_penalty, 3),
+            "da_factor": round(self.da_factor, 3),
+            "posterior": round(self.posterior, 3),
+            "breakdown": self.breakdown,
+        }
+        if self.declared is not None:
+            d["declared"] = round(self.declared, 3)
+            d["divergence"] = round(self.divergence or 0.0, 3)
+            d["divergence_flag"] = (self.divergence or 0.0) > 0.15
+        return d
+
+
+# ---------------------------------------------------------------------------
+# Workspace parsing
+# ---------------------------------------------------------------------------
+
+DEFAULT_WORKSPACE = Path.home() / ".claude/teams/sigma-review/shared/workspace.md"
+
+
+def read_workspace(path: str | Path | None = None) -> str:
+    """Read workspace file contents."""
+    p = Path(path) if path else DEFAULT_WORKSPACE
+    if not p.exists():
+        raise FileNotFoundError(f"Workspace not found: {p}")
+    return p.read_text(encoding="utf-8")
+
+
+def parse_sections(content: str) -> dict[str, str]:
+    """Split workspace into ## sections. Returns {header_name: body}."""
+    sections: dict[str, str] = {}
+    current_header = "_preamble"
+    lines: list[str] = []
+
+    for line in content.splitlines():
+        if line.startswith("## ") and not line.startswith("### "):
+            if lines:
+                sections[current_header] = "\n".join(lines)
+            current_header = line[3:].strip().lower()
+            lines = []
+        else:
+            lines.append(line)
+
+    if lines:
+        sections[current_header] = "\n".join(lines)
+    return sections
+
+
+def parse_agent_subsections(findings_text: str) -> dict[str, str]:
+    """Split ## findings into ### agent subsections."""
+    agents: dict[str, str] = {}
+    current_agent = ""
+    lines: list[str] = []
+
+    for line in findings_text.splitlines():
+        if line.startswith("### "):
+            if current_agent and lines:
+                agents[current_agent] = "\n".join(lines)
+            current_agent = line[4:].strip().lower()
+            lines = []
+        else:
+            lines.append(line)
+
+    if current_agent and lines:
+        agents[current_agent] = "\n".join(lines)
+    return agents
+
+
+def extract_agents_from_workspace(content: str) -> list[str]:
+    """Extract agent names from workspace ### subsections.
+
+    Scans the full workspace for ### headers between ## findings and ## convergence
+    because workspaces may have interleaved ## sections (e.g. ## DA R2 RESPONSES)
+    that break the ## findings boundary.
+    """
+    # Find the region between ## findings and ## convergence/## promotion
+    findings_start = re.search(r"^## findings", content, re.MULTILINE | re.IGNORECASE)
+    convergence_start = re.search(r"^## (?:convergence|promotion|open-questions)", content, re.MULTILINE | re.IGNORECASE)
+
+    if findings_start:
+        start = findings_start.start()
+        end = convergence_start.start() if convergence_start else len(content)
+        region = content[start:end]
+    else:
+        region = content
+
+    # Extract all ### headers in that region
+    agent_headers = re.findall(r"^### ([\w-]+)", region, re.MULTILINE)
+
+    # Known non-agent headers to exclude
+    exclude = {"questions", "constraints", "claims", "auto-promoted", "user-approve", "synthesis-agent"}
+    agents = []
+    seen = set()
+    for name in agent_headers:
+        key = name.lower()
+        if key not in exclude and key != "devils-advocate" and key not in seen:
+            agents.append(key)
+            seen.add(key)
+
+    return agents
+
+
+def is_sigverify_available(content: str) -> bool:
+    """Check if ΣVerify is available from ## infrastructure."""
+    sections = parse_sections(content)
+    infra = sections.get("infrastructure", "")
+    if not infra:
+        return False
+    lower = infra.lower()
+    if "unavailable" in lower and "σverify" in lower:
+        return False
+    if "σverify" in lower or "sigverify" in lower or "ΣVerify" in infra:
+        return "available" in lower or "openai" in lower or "google" in lower
+    return False
+
+
+def count_hypotheses(content: str) -> int:
+    """Count H[] hypotheses in prompt-decomposition."""
+    sections = parse_sections(content)
+    pd = sections.get("prompt-decomposition", "")
+    return len(re.findall(r"^H\d+:", pd, re.MULTILINE))
+
+
+def get_complexity_tier(content: str) -> int:
+    """Extract complexity tier (1-3) from workspace."""
+    m = re.search(r"TIER-(\d)", content)
+    return int(m.group(1)) if m else 2  # default moderate
+
+
+def get_mode(content: str) -> str:
+    """Extract mode (ANALYZE or BUILD) from workspace."""
+    m = re.search(r"^## mode:\s*(\w+)", content, re.MULTILINE)
+    if m:
+        return m.group(1).upper()
+    if "mode: BUILD" in content or "mode: build" in content:
+        return "BUILD"
+    return "ANALYZE"
+
+
+# ---------------------------------------------------------------------------
+# Individual check functions (V1–V20)
+# ---------------------------------------------------------------------------
+
+
+def _get_findings_region(content: str) -> str:
+    """Extract the full findings region (## findings through ## convergence).
+
+    Handles workspaces with interleaved ## sections (e.g. ## DA R2 RESPONSES)
+    by using the broader region, not just the first ## findings section.
+    """
+    findings_start = re.search(r"^## findings", content, re.MULTILINE | re.IGNORECASE)
+    convergence_start = re.search(r"^## (?:convergence|promotion|open-questions)", content, re.MULTILINE | re.IGNORECASE)
+
+    if findings_start:
+        start = findings_start.start()
+        end = convergence_start.start() if convergence_start else len(content)
+        return content[start:end]
+    return content
+
+
+def _get_agent_section(content: str, agent: str) -> str:
+    """Extract a single agent's section from the findings region."""
+    region = _get_findings_region(content)
+    # Find ### {agent} and capture until next ### or ## boundary
+    pattern = rf"^### {re.escape(agent)}\b.*?\n(.*?)(?=^### |\Z|^## )"
+    m = re.search(pattern, region, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+    return m.group(1) if m else ""
+
+
+def check_agent_output_non_empty(content: str, agents: list[str] | None = None) -> CheckResult:
+    """V3: Each agent has non-empty workspace findings section."""
+    if agents is None:
+        agents = extract_agents_from_workspace(content)
+
+    empty_agents = []
+    for agent in agents:
+        section = _get_agent_section(content, agent)
+        stripped = re.sub(r"^status:.*$", "", section, flags=re.MULTILINE).strip()
+        if len(stripped) < 50:
+            empty_agents.append(agent)
+
+    return CheckResult(
+        name="V3-agent-output-non-empty",
+        passed=len(empty_agents) == 0,
+        details={"agents_checked": len(agents), "empty": empty_agents},
+        issues=[f"Agent '{a}' has empty/minimal findings section" for a in empty_agents],
+    )
+
+
+def check_source_provenance(content: str) -> CheckResult:
+    """V4: All findings carry |source:{type} tag; load-bearing carry tier."""
+    findings = _get_findings_region(content)
+
+    # Find primary finding declarations — lines that START with F[...] (not DA response references)
+    # This avoids counting "DA[#1] response to F[PS-1]" as a finding
+    finding_lines = re.findall(r"^(F\[[\w-]+\].+)", findings, re.MULTILINE)
+
+    # Deduplicate by finding ID — first occurrence is the declaration
+    seen_ids: set[str] = set()
+    unique_findings: list[str] = []
+    for line in finding_lines:
+        fid_match = re.match(r"(F\[[\w-]+\])", line)
+        if fid_match:
+            fid = fid_match.group(1)
+            if fid not in seen_ids:
+                seen_ids.add(fid)
+                unique_findings.append(line)
+
+    total = len(unique_findings)
+    tagged = 0
+    untagged = []
+    load_bearing_without_tier = []
+
+    for line in unique_findings:
+        has_source = bool(re.search(r"\|source:", line, re.IGNORECASE))
+        has_src = bool(re.search(r"\|src:", line, re.IGNORECASE))
+        if has_source or has_src:
+            tagged += 1
+        else:
+            fid = re.match(r"(F\[[\w-]+\])", line)
+            untagged.append(fid.group(1) if fid else "unknown")
+
+        # Check load-bearing for tier
+        is_load_bearing = bool(re.search(
+            r"(LOAD.BEARING|>70%|highest.conviction|superlative|primary)", line, re.IGNORECASE
+        ))
+        has_tier = bool(re.search(r"T[123]", line))
+        if is_load_bearing and not has_tier:
+            fid = re.match(r"(F\[[\w-]+\])", line)
+            load_bearing_without_tier.append(fid.group(1) if fid else "unknown")
+
+    issues = []
+    if untagged:
+        issues.append(f"Untagged findings: {', '.join(untagged)}")
+    if load_bearing_without_tier:
+        issues.append(f"Load-bearing without tier: {', '.join(load_bearing_without_tier)}")
+
+    return CheckResult(
+        name="V4-source-provenance",
+        passed=len(untagged) == 0,
+        details={
+            "total_findings": total,
+            "tagged": tagged,
+            "untagged": untagged,
+            "load_bearing_without_tier": load_bearing_without_tier,
+        },
+        issues=issues,
+    )
+
+
+def check_xverify_coverage(content: str) -> CheckResult:
+    """V5: When ΣVerify available, each agent has XVERIFY on load-bearing finding."""
+    available = is_sigverify_available(content)
+    if not available:
+        return CheckResult(
+            name="V5-xverify-coverage",
+            passed=True,
+            details={"sigverify_available": False, "skip_reason": "ΣVerify unavailable"},
+        )
+
+    agents = extract_agents_from_workspace(content)
+
+    missing = []
+    for agent in agents:
+        section = _get_agent_section(content, agent)
+        # Match XVERIFY[, XVERIFY(, XVERIFY:, XVERIFY= — various workspace formats
+        has_xverify = bool(re.search(r"XVERIFY[\[\(:=]", section))
+        has_xverify_fail = bool(re.search(r"XVERIFY-FAIL", section))
+        if not has_xverify and not has_xverify_fail:
+            missing.append(agent)
+
+    return CheckResult(
+        name="V5-xverify-coverage",
+        passed=len(missing) == 0,
+        details={
+            "sigverify_available": True,
+            "agents_checked": len(agents),
+            "agents_missing_xverify": missing,
+        },
+        issues=[f"Agent '{a}' has no XVERIFY/XVERIFY-FAIL on any finding" for a in missing],
+    )
+
+
+def check_dialectical_bootstrapping(content: str, agents: list[str] | None = None) -> CheckResult:
+    """V6: DB[] entries present per agent."""
+    if agents is None:
+        agents = extract_agents_from_workspace(content)
+
+    missing = []
+    for agent in agents:
+        section = _get_agent_section(content, agent)
+        has_db = bool(re.search(r"DB\[", section))
+        if not has_db:
+            missing.append(agent)
+
+    return CheckResult(
+        name="V6-dialectical-bootstrapping",
+        passed=len(missing) == 0,
+        details={"agents_checked": len(agents), "agents_missing_db": missing},
+        issues=[f"Agent '{a}' has no DB[] dialectical bootstrapping entries" for a in missing],
+    )
+
+
+def check_hypothesis_matrix(content: str) -> CheckResult:
+    """V7: If H[] count >= 3, hypothesis-matrix section must exist."""
+    h_count = count_hypotheses(content)
+    if h_count < 3:
+        return CheckResult(
+            name="V7-hypothesis-matrix",
+            passed=True,
+            details={"hypothesis_count": h_count, "required": False},
+        )
+
+    sections = parse_sections(content)
+    has_matrix = "hypothesis-matrix" in sections
+    # Also check within prompt-decomposition or findings
+    if not has_matrix:
+        full_lower = content.lower()
+        has_matrix = "## hypothesis-matrix" in full_lower or "hypothesis-matrix" in sections
+
+    return CheckResult(
+        name="V7-hypothesis-matrix",
+        passed=has_matrix,
+        details={"hypothesis_count": h_count, "required": True, "matrix_found": has_matrix},
+        issues=[] if has_matrix else [
+            f"§2f: {h_count} hypotheses require a hypothesis-matrix section but none found"
+        ],
+    )
+
+
+def check_persist_before_convergence(content: str) -> CheckResult:
+    """V8: Each agent has persisted (heuristic — check for persist markers in convergence)."""
+    sections = parse_sections(content)
+    convergence = sections.get("convergence", "")
+
+    agents = extract_agents_from_workspace(content)
+    converged = []
+    for agent in agents:
+        # Check if agent declared ✓ in convergence
+        if re.search(rf"{re.escape(agent)}.*✓", convergence, re.IGNORECASE):
+            converged.append(agent)
+
+    not_converged = [a for a in agents if a not in converged]
+
+    return CheckResult(
+        name="V8-persist-before-convergence",
+        passed=len(not_converged) == 0,
+        details={
+            "agents": len(agents),
+            "converged": converged,
+            "not_converged": not_converged,
+        },
+        issues=[f"Agent '{a}' has not declared ✓ in convergence" for a in not_converged],
+    )
+
+
+def check_circuit_breaker(content: str) -> CheckResult:
+    """V9: Either divergence logged OR CB[1]/CB[2]/CB[3] entries present."""
+    # Check for explicit divergence logging
+    has_divergence_log = bool(re.search(
+        r"(divergence.detected|divergence.found|R1.divergence|divergence.logged)",
+        content, re.IGNORECASE,
+    ))
+
+    # Check for CB responses
+    cb_entries = re.findall(r"CB\[\d\]", content)
+    has_cb = len(cb_entries) >= 2  # At least 2 CB entries from at least 1 agent
+
+    # Check for zero-dissent section or note
+    has_cb_section = bool(re.search(
+        r"(circuit.breaker|zero.dissent.*fired|CB.*fired)", content, re.IGNORECASE,
+    ))
+
+    passed = has_divergence_log or has_cb or has_cb_section
+
+    details: dict[str, Any] = {
+        "divergence_logged": has_divergence_log,
+        "cb_entries_found": len(cb_entries),
+        "cb_section_found": has_cb_section,
+    }
+
+    issues = []
+    if not passed:
+        issues.append(
+            "Neither divergence logged nor circuit breaker fired — "
+            "hard gate requires one before advancing to challenge round"
+        )
+
+    return CheckResult(name="V9-circuit-breaker", passed=passed, details=details, issues=issues)
+
+
+def check_cross_track_participation(content: str) -> CheckResult:
+    """V10: DA issued challenges; all challenges have agent responses."""
+    # Find DA section
+    da_section = _get_agent_section(content, "devils-advocate")
+
+    # Count DA challenges — multiple formats used in workspaces:
+    # DA[#N] individual challenges, CH[N] challenge themes, or narrative "N challenges"
+    da_individual = re.findall(r"DA\[#?\d+\]", da_section) if da_section else []
+    da_themes = re.findall(r"CH\[\d+\]", da_section) if da_section else []
+    # Narrative count: "26 challenges across 6 agents"
+    narrative_match = re.search(r"(\d+)\s+challenges?\s+(?:across|delivered|issued)", da_section, re.IGNORECASE) if da_section else None
+    narrative_count = int(narrative_match.group(1)) if narrative_match else 0
+    da_challenge_count = max(len(da_individual), len(da_themes), narrative_count)
+
+    # Count agent DA responses across all agent sections
+    agents = extract_agents_from_workspace(content)
+    da_responses = 0
+    for agent in agents:
+        section = _get_agent_section(content, agent)
+        da_responses += len(re.findall(r"DA\[#?\d+\].*(?:concede|defend|compromise)", section, re.IGNORECASE))
+
+    issues = []
+    if da_challenge_count == 0:
+        issues.append("DA issued 0 challenges")
+    if da_challenge_count > 0 and da_responses == 0:
+        issues.append("No agent DA responses found (concede/defend/compromise)")
+
+    return CheckResult(
+        name="V10-cross-track-participation",
+        passed=da_challenge_count > 0 and da_responses > 0,
+        details={
+            "da_challenges_issued": da_challenge_count,
+            "da_individual": len(da_individual),
+            "da_themes": len(da_themes),
+            "da_narrative_count": narrative_count,
+            "agent_da_responses": da_responses,
+        },
+        issues=issues,
+    )
+
+
+def check_belief_state_written(content: str, round_num: int | None = None) -> CheckResult:
+    """V11: BELIEF[rN] present in workspace with component scores."""
+    if round_num:
+        pattern = rf"BELIEF\[r{round_num}\]"
+    else:
+        pattern = r"BELIEF\[r\d+\]"
+
+    beliefs = re.findall(pattern, content)
+    has_belief = len(beliefs) > 0
+
+    # Check for P= value
+    has_p_value = bool(re.search(r"BELIEF\[r\d+\].*P=[\d.]+", content))
+
+    # Check for action
+    has_action = bool(re.search(r"BELIEF\[r\d+\].*→", content))
+
+    issues = []
+    if not has_belief:
+        issues.append(f"No BELIEF[r{round_num or 'N'}] entry found in workspace")
+    elif not has_p_value:
+        issues.append("BELIEF entry found but missing P= value")
+
+    return CheckResult(
+        name="V11-belief-state-written",
+        passed=has_belief and has_p_value,
+        details={
+            "belief_entries": len(beliefs),
+            "has_p_value": has_p_value,
+            "has_action": has_action,
+        },
+        issues=issues,
+    )
+
+
+def check_contamination(content: str) -> CheckResult:
+    """V13: CONTAMINATION-CHECK present in prescribed format."""
+    has_check = bool(re.search(r"CONTAMINATION-CHECK:", content))
+    has_scope = "scope-boundary" in parse_sections(content)
+
+    # Also accept variations
+    has_session_topics = bool(re.search(r"session-topics-outside-scope:", content))
+
+    passed = has_check or has_session_topics
+
+    issues = []
+    if not passed:
+        issues.append("CONTAMINATION-CHECK not found in workspace — required before synthesis")
+    if not has_scope:
+        issues.append("## scope-boundary section missing")
+
+    return CheckResult(
+        name="V13-contamination-check",
+        passed=passed,
+        details={
+            "contamination_check_present": has_check,
+            "session_topics_present": has_session_topics,
+            "scope_boundary_present": has_scope,
+        },
+        issues=issues,
+    )
+
+
+def check_source_provenance_audit(content: str) -> CheckResult:
+    """V14: SOURCE-PROVENANCE tally present; prompt-claim within tolerance."""
+    has_audit = bool(re.search(r"SOURCE-PROVENANCE\[", content))
+
+    # Also check DA's source provenance audit
+    has_da_audit = bool(re.search(
+        r"(source.provenance.audit|§2d.*PASS|source.distribution)", content, re.IGNORECASE,
+    ))
+
+    # Check prompt-claim percentage
+    prompt_claim_pct = 0.0
+    m = re.search(r"prompt.claim.*?(\d+)%", content, re.IGNORECASE)
+    if m:
+        prompt_claim_pct = float(m.group(1))
+
+    passed = has_audit or has_da_audit
+    issues = []
+    if not passed:
+        issues.append("No source provenance audit (SOURCE-PROVENANCE or DA §2d audit) found")
+    if prompt_claim_pct > 30:
+        issues.append(f"Prompt-claim at {prompt_claim_pct}% — exceeds 30% tolerance")
+        passed = False
+
+    return CheckResult(
+        name="V14-source-provenance-audit",
+        passed=passed,
+        details={
+            "formal_audit_present": has_audit,
+            "da_audit_present": has_da_audit,
+            "prompt_claim_pct": prompt_claim_pct,
+        },
+        issues=issues,
+    )
+
+
+def check_anti_sycophancy(content: str) -> CheckResult:
+    """V15: SYCOPHANCY-CHECK present in workspace."""
+    has_check = bool(re.search(r"SYCOPHANCY-CHECK:", content))
+
+    return CheckResult(
+        name="V15-anti-sycophancy-check",
+        passed=has_check,
+        details={"sycophancy_check_present": has_check},
+        issues=[] if has_check else ["SYCOPHANCY-CHECK not found — required before synthesis"],
+    )
+
+
+def check_exit_gate_format(content: str) -> CheckResult:
+    """V16: DA exit-gate covers required criteria with explicit verdicts."""
+    has_exit_gate = bool(re.search(r"exit.gate:.*PASS|exit.gate:.*FAIL", content, re.IGNORECASE))
+
+    # Check for individual criteria
+    criteria_keywords = ["engagement", "unresolved", "untested.consensus", "hygiene"]
+    criteria_found = []
+    for kw in criteria_keywords:
+        if re.search(kw, content, re.IGNORECASE):
+            criteria_found.append(kw.replace(".", " "))
+
+    passed = has_exit_gate and len(criteria_found) >= 3
+
+    issues = []
+    if not has_exit_gate:
+        issues.append("No DA exit-gate verdict (PASS/FAIL) found")
+    missing = [kw.replace(".", " ") for kw in criteria_keywords if kw.replace(".", " ") not in criteria_found]
+    if missing:
+        issues.append(f"Exit-gate missing criteria: {', '.join(missing)}")
+
+    return CheckResult(
+        name="V16-exit-gate-format",
+        passed=passed,
+        details={
+            "exit_gate_present": has_exit_gate,
+            "criteria_found": criteria_found,
+            "criteria_expected": len(criteria_keywords),
+        },
+        issues=issues,
+    )
+
+
+def check_plan_lock(content: str) -> CheckResult:
+    """V17: BUILD plan-lock completeness — ADR, DS, IC sections populated."""
+    sections = parse_sections(content)
+
+    has_adrs = bool(re.search(r"ADR\[\d+\]", sections.get("architecture-decisions", "")))
+    has_ds = bool(re.search(r"DS\[", sections.get("design-system", "")))
+    has_ic = bool(re.search(r"IC\[\d+\]", sections.get("interface-contracts", "")))
+
+    # Check for belief state confirming plan ready
+    has_belief = bool(re.search(r"BELIEF\[plan.*P=0\.\d{2}", content))
+
+    missing = []
+    if not has_adrs:
+        missing.append("## architecture-decisions (no ADR[] entries)")
+    if not has_ds:
+        missing.append("## design-system (no DS[] entries)")
+    if not has_ic:
+        missing.append("## interface-contracts (no IC[] entries)")
+
+    return CheckResult(
+        name="V17-plan-lock-completeness",
+        passed=len(missing) == 0,
+        details={
+            "adrs_present": has_adrs,
+            "design_system_present": has_ds,
+            "interface_contracts_present": has_ic,
+            "belief_state_present": has_belief,
+        },
+        issues=[f"Plan lock incomplete: {m}" for m in missing],
+    )
+
+
+def check_build_reads_plan(content: str) -> CheckResult:
+    """V18: Build-track agents reference ADR/IC/DS in their findings."""
+    sections = parse_sections(content)
+    findings = sections.get("findings", "")
+    agent_sections = parse_agent_subsections(findings)
+
+    # Build-track agents typically: implementation-engineer, ui-ux-engineer, code-quality-analyst
+    build_track = ["implementation-engineer", "ui-ux-engineer", "code-quality-analyst"]
+    missing = []
+    for agent in build_track:
+        section = agent_sections.get(agent, "")
+        if not section:
+            continue  # Agent not in this review
+        refs = re.findall(r"(ADR\[\d+\]|IC\[\d+\]|DS\[)", section)
+        if not refs:
+            missing.append(agent)
+
+    return CheckResult(
+        name="V18-build-reads-plan",
+        passed=len(missing) == 0,
+        details={"build_agents_missing_plan_refs": missing},
+        issues=[f"Build agent '{a}' does not reference ADR/IC/DS from plan" for a in missing],
+    )
+
+
+def check_checkpoint(content: str) -> CheckResult:
+    """V19: Build-track agents have CHECKPOINT entries."""
+    checkpoints = re.findall(r"CHECKPOINT\[([\w-]+)\]", content)
+    agents_with_cp = list(set(checkpoints))
+
+    # Check build-status section
+    sections = parse_sections(content)
+    has_build_status = bool(sections.get("build-status", "").strip())
+
+    passed = len(agents_with_cp) > 0 or has_build_status
+
+    return CheckResult(
+        name="V19-checkpoint-completion",
+        passed=passed,
+        details={
+            "checkpoint_agents": agents_with_cp,
+            "build_status_section": has_build_status,
+        },
+        issues=[] if passed else ["No CHECKPOINT entries found — required before build review"],
+    )
+
+
+def check_fixes_implemented(content: str) -> CheckResult:
+    """V20: 'fixed' responses have corresponding evidence of changes."""
+    fixes_agreed = re.findall(r"(?:DA|PR)\[#?\d+\].*fixed", content, re.IGNORECASE)
+    # This is a heuristic — check that fix count > 0 if fixes were agreed
+    return CheckResult(
+        name="V20-fixes-implemented",
+        passed=True,  # Hard to verify mechanically — advisory check
+        details={"fixes_agreed": len(fixes_agreed)},
+        issues=[],
+    )
+
+
+# ---------------------------------------------------------------------------
+# Bundle validation functions
+# ---------------------------------------------------------------------------
+
+
+def validate_r1_convergence(workspace_path: str | None = None) -> ValidationResult:
+    """Bundle: V3+V4+V5+V6+V7+V8 — ANALYZE R1 exit."""
+    content = read_workspace(workspace_path)
+    agents = extract_agents_from_workspace(content)
+
+    checks = [
+        check_agent_output_non_empty(content, agents),
+        check_source_provenance(content),
+        check_xverify_coverage(content),
+        check_dialectical_bootstrapping(content, agents),
+        check_hypothesis_matrix(content),
+        check_persist_before_convergence(content),
+    ]
+
+    all_passed = all(c.passed for c in checks)
+
+    return ValidationResult(
+        bundle="r1-convergence",
+        passed=all_passed,
+        checks=checks,
+        context_update={"r1_validated": all_passed},
+    )
+
+
+def validate_cb(workspace_path: str | None = None) -> ValidationResult:
+    """Bundle: V9 — circuit breaker."""
+    content = read_workspace(workspace_path)
+    check = check_circuit_breaker(content)
+
+    return ValidationResult(
+        bundle="cb",
+        passed=check.passed,
+        checks=[check],
+        context_update={"cb_validated": check.passed},
+    )
+
+
+def validate_pre_synthesis(workspace_path: str | None = None) -> ValidationResult:
+    """Bundle: V13+V14+V15+V16 — before synthesis."""
+    content = read_workspace(workspace_path)
+
+    checks = [
+        check_contamination(content),
+        check_source_provenance_audit(content),
+        check_anti_sycophancy(content),
+        check_exit_gate_format(content),
+    ]
+
+    all_passed = all(c.passed for c in checks)
+
+    return ValidationResult(
+        bundle="pre-synthesis",
+        passed=all_passed,
+        checks=checks,
+        context_update={"pre_synthesis_validated": all_passed},
+    )
+
+
+def validate_plan_convergence(workspace_path: str | None = None) -> ValidationResult:
+    """Bundle: V3+V4+V5+V6+V8 — BUILD plan round exit."""
+    content = read_workspace(workspace_path)
+    agents = extract_agents_from_workspace(content)
+
+    checks = [
+        check_agent_output_non_empty(content, agents),
+        check_source_provenance(content),
+        check_xverify_coverage(content),
+        check_dialectical_bootstrapping(content, agents),
+        check_persist_before_convergence(content),
+    ]
+
+    all_passed = all(c.passed for c in checks)
+
+    return ValidationResult(
+        bundle="plan-convergence",
+        passed=all_passed,
+        checks=checks,
+        context_update={"plan_round_validated": all_passed},
+    )
+
+
+def validate_plan_lock(workspace_path: str | None = None) -> ValidationResult:
+    """Bundle: V17 — BUILD plan→build transition."""
+    content = read_workspace(workspace_path)
+    check = check_plan_lock(content)
+
+    return ValidationResult(
+        bundle="plan-lock",
+        passed=check.passed,
+        checks=[check],
+        context_update={"plan_lock_validated": check.passed},
+    )
+
+
+def validate_build_checkpoint(workspace_path: str | None = None) -> ValidationResult:
+    """Bundle: V19 — BUILD before review."""
+    content = read_workspace(workspace_path)
+    check = check_checkpoint(content)
+
+    return ValidationResult(
+        bundle="build-checkpoint",
+        passed=check.passed,
+        checks=[check],
+        context_update={"checkpoint_validated": check.passed},
+    )
+
+
+def validate_challenge_round(
+    workspace_path: str | None = None, round_num: int | None = None,
+) -> ValidationResult:
+    """Bundle: V10+V11 — after any challenge/review round."""
+    content = read_workspace(workspace_path)
+
+    checks = [
+        check_cross_track_participation(content),
+        check_belief_state_written(content, round_num),
+    ]
+
+    all_passed = all(c.passed for c in checks)
+
+    return ValidationResult(
+        bundle="challenge-round",
+        passed=all_passed,
+        checks=checks,
+        context_update={"challenge_round_validated": all_passed},
+    )
+
+
+# ---------------------------------------------------------------------------
+# Belief state computation
+# ---------------------------------------------------------------------------
+
+_TIER_PRIORS = {1: 0.7, 2: 0.5, 3: 0.3}
+_DA_GRADES = {"a+": 1.0, "a": 1.0, "a-": 0.95, "b+": 0.9, "b": 0.85, "b-": 0.8, "c+": 0.75, "c": 0.7, "d": 0.5}
+
+
+def _count_pattern(text: str, pattern: str) -> int:
+    return len(re.findall(pattern, text, re.IGNORECASE))
+
+
+def compute_analyze_belief(workspace_path: str | None = None, round_num: int | None = None) -> BeliefComponents:
+    """Mechanically derive ANALYZE belief state from workspace.
+
+    Formula: posterior = prior × agreement × revisions × gaps_penalty × da_factor
+    """
+    content = read_workspace(workspace_path)
+    sections = parse_sections(content)
+    findings = sections.get("findings", "")
+    convergence = sections.get("convergence", "")
+
+    # Prior from complexity tier
+    tier = get_complexity_tier(content)
+    prior = _TIER_PRIORS.get(tier, 0.5)
+
+    # Agreement: ratio of converged agents
+    agents = extract_agents_from_workspace(content)
+    agent_count = len(agents)
+    converged = sum(1 for a in agents if re.search(rf"{re.escape(a)}.*✓", convergence, re.IGNORECASE))
+    agreement = converged / max(agent_count, 1)
+
+    # Revisions: count outcome-1 markers
+    outcome_1 = _count_pattern(findings, r"outcome.?1|outcome:1|revised.from|finding.revised|changed")
+    outcome_1_all = _count_pattern(findings, r"outcome.?[123]|outcome:[123]")
+    if outcome_1 >= 5:
+        revisions = 0.9  # material
+    elif outcome_1 >= 2:
+        revisions = 0.7  # minor
+    else:
+        revisions = 0.5  # none
+
+    # Gaps: count outcome-3 markers
+    gaps = _count_pattern(findings, r"outcome.?3|outcome:3|gap:|flagged.for|verification.gap")
+    gaps_penalty = 0.9 ** gaps  # Each gap is a 0.9 multiplier
+
+    # DA factor: parse engagement grade from DA section or exit-gate
+    da_factor = 0.85  # default to B
+    da_section = _get_agent_section(content, "devils-advocate")
+    grade_match = re.search(r"engagement[:\s]*([A-D][+-]?)", da_section, re.IGNORECASE)
+    if not grade_match:
+        # Also search in exit-gate sections across full content
+        grade_match = re.search(r"engagement[:\s]*([A-D][+-]?)", content, re.IGNORECASE)
+    if grade_match:
+        grade = grade_match.group(1).lower()
+        da_factor = _DA_GRADES.get(grade, 0.85)
+
+    # Also check exit-gate
+    exit_match = re.search(r"exit.gate:.*?(PASS|FAIL)", content, re.IGNORECASE)
+
+    posterior = prior * agreement * revisions * gaps_penalty * da_factor
+
+    # Check for declared belief state
+    declared = None
+    divergence = None
+    if round_num:
+        m = re.search(rf"BELIEF\[r{round_num}\].*?P=([\d.]+)", content)
+        if m:
+            declared = float(m.group(1))
+            divergence = abs(declared - posterior)
+    else:
+        # Find latest belief
+        all_beliefs = re.findall(r"BELIEF\[r\d+\].*?P=([\d.]+)", content)
+        if all_beliefs:
+            declared = float(all_beliefs[-1])
+            divergence = abs(declared - posterior)
+
+    return BeliefComponents(
+        prior=prior,
+        agreement=agreement,
+        revisions=revisions,
+        gaps_penalty=gaps_penalty,
+        da_factor=da_factor,
+        posterior=posterior,
+        declared=declared,
+        divergence=divergence,
+        breakdown={
+            "tier": tier,
+            "agent_count": agent_count,
+            "agents_converged": converged,
+            "outcome_1_count": outcome_1,
+            "outcome_total": outcome_1_all,
+            "gap_count": gaps,
+            "da_grade": grade_match.group(1) if grade_match else "B (default)",
+            "exit_gate": exit_match.group(1) if exit_match else "not found",
+        },
+    )
+
+
+def compute_build_plan_belief(workspace_path: str | None = None, round_num: int | None = None) -> BeliefComponents:
+    """Mechanically derive BUILD plan-phase belief state.
+
+    Weighted sum: builder-feasibility(0.25) + interface-agreement(0.20) +
+    design-arch-coherence(0.15) + no-assumption-conflicts(0.15) +
+    prompt-understanding-coverage(0.10) + DA-exit-gate(0.15)
+    """
+    content = read_workspace(workspace_path)
+    sections = parse_sections(content)
+    findings = sections.get("findings", "")
+
+    # Builder feasibility: count BUILD-CHALLENGE feasibility ratings
+    high_feas = _count_pattern(findings, r"BUILD-CHALLENGE.*feasibility:H")
+    med_feas = _count_pattern(findings, r"BUILD-CHALLENGE.*feasibility:M")
+    low_feas = _count_pattern(findings, r"BUILD-CHALLENGE.*feasibility:L")
+    total_feas = high_feas + med_feas + low_feas
+    builder_feasibility = (high_feas * 1.0 + med_feas * 0.6 + low_feas * 0.2) / max(total_feas, 1)
+
+    # Interface agreement: check IC[] in both plan and build sections
+    has_ic = bool(re.search(r"IC\[\d+\]", sections.get("interface-contracts", "")))
+    interface_agreement = 0.8 if has_ic else 0.3
+
+    # Design-arch coherence: check cross-references
+    has_adrs = bool(re.search(r"ADR\[\d+\]", sections.get("architecture-decisions", "")))
+    has_ds = bool(re.search(r"DS\[", sections.get("design-system", "")))
+    coherence_score = sum([has_adrs, has_ds, has_ic]) / 3.0
+
+    # Assumption conflicts: count conflicts
+    conflicts = _count_pattern(findings, r"conflict|contradiction|incompatible|assumption.conflict")
+    no_conflicts = max(0.0, 1.0 - conflicts * 0.15)
+
+    # Prompt-understanding coverage: check Q[]/H[] addressed
+    pd = sections.get("prompt-understanding", sections.get("prompt-decomposition", ""))
+    q_count = len(re.findall(r"Q\d+:", pd))
+    addressed = _count_pattern(findings, r"Q\d+|H\d+")
+    coverage = min(1.0, addressed / max(q_count * 2, 1))
+
+    # DA exit-gate
+    da_factor = 0.85
+    grade_match = re.search(r"engagement[:\s]*([A-D][+-]?)", findings, re.IGNORECASE)
+    if grade_match:
+        da_factor = _DA_GRADES.get(grade_match.group(1).lower(), 0.85)
+
+    # Weighted sum
+    posterior = (
+        builder_feasibility * 0.25
+        + interface_agreement * 0.20
+        + coherence_score * 0.15
+        + no_conflicts * 0.15
+        + coverage * 0.10
+        + da_factor * 0.15
+    )
+
+    # Declared
+    declared = None
+    divergence = None
+    beliefs = re.findall(r"BELIEF\[plan-r\d+\].*?P=([\d.]+)", content)
+    if beliefs:
+        declared = float(beliefs[-1])
+        divergence = abs(declared - posterior)
+
+    return BeliefComponents(
+        prior=builder_feasibility,  # dominant component
+        agreement=interface_agreement,
+        revisions=coherence_score,
+        gaps_penalty=no_conflicts,
+        da_factor=da_factor,
+        posterior=posterior,
+        declared=declared,
+        divergence=divergence,
+        breakdown={
+            "builder_feasibility": round(builder_feasibility, 3),
+            "interface_agreement": round(interface_agreement, 3),
+            "design_arch_coherence": round(coherence_score, 3),
+            "no_assumption_conflicts": round(no_conflicts, 3),
+            "prompt_coverage": round(coverage, 3),
+            "da_factor": round(da_factor, 3),
+            "weights": "0.25+0.20+0.15+0.15+0.10+0.15",
+        },
+    )
+
+
+def compute_build_quality_belief(workspace_path: str | None = None, round_num: int | None = None) -> BeliefComponents:
+    """Mechanically derive BUILD quality-phase belief state.
+
+    Weighted sum: plan-compliance(0.25) + test-coverage(0.20) +
+    design-fidelity(0.15) + code-quality(0.20) + no-scope-creep(0.10) + DA-exit-gate(0.10)
+    """
+    content = read_workspace(workspace_path)
+    sections = parse_sections(content)
+    findings = sections.get("findings", "")
+
+    # Plan compliance: count PLAN-REVIEW compliance ratings
+    full_comply = _count_pattern(findings, r"PLAN-REVIEW.*compliance:full")
+    partial_comply = _count_pattern(findings, r"PLAN-REVIEW.*compliance:partial")
+    drift_comply = _count_pattern(findings, r"PLAN-REVIEW.*compliance:drift")
+    total_comply = full_comply + partial_comply + drift_comply
+    plan_compliance = (full_comply * 1.0 + partial_comply * 0.5 + drift_comply * 0.1) / max(total_comply, 1)
+
+    # Test coverage: heuristic from findings
+    test_mentions = _count_pattern(findings, r"test.coverage|tests?.pass|test.integr")
+    test_coverage = min(1.0, 0.5 + test_mentions * 0.1)
+
+    # Design fidelity: check DS/IX references in build output
+    design_refs = _count_pattern(findings, r"DS\[|IX\[\d+\]|design.system|design.token")
+    design_fidelity = min(1.0, 0.3 + design_refs * 0.1)
+
+    # Code quality: DA code review signals
+    quality_signals = _count_pattern(findings, r"code.quality|maintainab|security|correct")
+    code_quality = min(1.0, 0.5 + quality_signals * 0.05)
+
+    # Scope creep
+    scope_creep = _count_pattern(findings, r"scope.creep|out.of.scope|gold.plat")
+    no_scope_creep = max(0.0, 1.0 - scope_creep * 0.2)
+
+    # DA exit-gate
+    da_factor = 0.85
+    grade_match = re.search(r"engagement[:\s]*([A-D][+-]?)", findings, re.IGNORECASE)
+    if grade_match:
+        da_factor = _DA_GRADES.get(grade_match.group(1).lower(), 0.85)
+
+    posterior = (
+        plan_compliance * 0.25
+        + test_coverage * 0.20
+        + design_fidelity * 0.15
+        + code_quality * 0.20
+        + no_scope_creep * 0.10
+        + da_factor * 0.10
+    )
+
+    declared = None
+    divergence = None
+    beliefs = re.findall(r"BELIEF\[build-r\d+\].*?P=([\d.]+)", content)
+    if beliefs:
+        declared = float(beliefs[-1])
+        divergence = abs(declared - posterior)
+
+    return BeliefComponents(
+        prior=plan_compliance,
+        agreement=test_coverage,
+        revisions=design_fidelity,
+        gaps_penalty=no_scope_creep,
+        da_factor=da_factor,
+        posterior=posterior,
+        declared=declared,
+        divergence=divergence,
+        breakdown={
+            "plan_compliance": round(plan_compliance, 3),
+            "test_coverage": round(test_coverage, 3),
+            "design_fidelity": round(design_fidelity, 3),
+            "code_quality": round(code_quality, 3),
+            "no_scope_creep": round(no_scope_creep, 3),
+            "da_factor": round(da_factor, 3),
+            "weights": "0.25+0.20+0.15+0.20+0.10+0.10",
+        },
+    )
+
+
+# ---------------------------------------------------------------------------
+# Convenience: run a named bundle
+# ---------------------------------------------------------------------------
+
+BUNDLES = {
+    "r1-convergence": validate_r1_convergence,
+    "cb": validate_cb,
+    "pre-synthesis": validate_pre_synthesis,
+    "plan-convergence": validate_plan_convergence,
+    "plan-lock": validate_plan_lock,
+    "build-checkpoint": validate_build_checkpoint,
+    "challenge-round": validate_challenge_round,
+}
+
+BELIEF_MODES = {
+    "analyze": compute_analyze_belief,
+    "build-plan": compute_build_plan_belief,
+    "build-quality": compute_build_quality_belief,
+}
+
+
+def run_validation(bundle_name: str, workspace_path: str | None = None, **kwargs: Any) -> dict:
+    """Run a named validation bundle and return JSON-serializable result."""
+    fn = BUNDLES.get(bundle_name)
+    if fn is None:
+        return {"error": f"Unknown bundle: {bundle_name}. Available: {list(BUNDLES.keys())}"}
+    result = fn(workspace_path, **kwargs)
+    return result.to_dict()
+
+
+def run_compute_belief(mode: str, workspace_path: str | None = None, round_num: int | None = None) -> dict:
+    """Run belief state computation and return JSON-serializable result."""
+    fn = BELIEF_MODES.get(mode)
+    if fn is None:
+        return {"error": f"Unknown mode: {mode}. Available: {list(BELIEF_MODES.keys())}"}
+    result = fn(workspace_path, round_num)
+    return result.to_dict()
