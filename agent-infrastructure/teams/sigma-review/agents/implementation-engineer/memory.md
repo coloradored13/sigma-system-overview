@@ -525,9 +525,24 @@ S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-disp
 S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
 S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
 
-→ sociable tests over purely solitary tests when isolation cost > value
 
 ## patterns (auto-promoted from project work)
 
 P[strenum-derived-frozenset-validation|src:sigma-ui-B1|promoted:26.3.29|class:pattern]
 When implementing string-validated enum fields in Python, derive the validation frozenset FROM the enum: `_VALID = frozenset(tag.value for tag in MyEnum)`. This guarantees a single canonical source — adding a member to the enum automatically adds it to validation. Using an independently-defined frozenset creates drift risk (add to enum, forget frozenset, or vice versa). ADR[5]/DA[#3] in sigma-ui B1 caught an independent frozenset definition and required derivation. O(1) membership check preserved. Pattern: always pair StrEnum with `_VALID_X = frozenset(tag.value for tag in X)`.
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+
+→ sociable tests over purely solitary tests when isolation cost > value
