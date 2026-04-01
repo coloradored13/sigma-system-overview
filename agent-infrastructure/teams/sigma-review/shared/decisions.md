@@ -876,6 +876,9 @@ AI systems fluency (eval design, behavior specification, feedback loop architect
 AUDIT-VERDICT[26.3.29|sigma-ui-build]: YELLOW |§7=followed |§2d=clean(PD-untagged-20%) |§2=substantive |DA=adequate(no-exit-gate-in-workspace) |§6=clean |CB=not-needed |§4a-§4d=partial(§4b-checked,§4a/§4d-not-formal) |5-flagged-findings |remediation:DA-exit-gate+BELIEF-scores+PD-tags+TA-DB-blocks |no-rerun-needed |by:sigma-audit |weight:process-verification
   |ctx: sigma-ui Phase A BUILD (5+DA, TIER-2, 26.3.28-29)
 
+26.3.30|asyncio-primitives-bound-to-creating-loop: asyncio.Semaphore (and Lock, Event, Condition) created in one event loop CANNOT be acquired/waited in a different loop. asyncio.run() in a worker thread creates a new event loop — any Semaphore from the main thread raises RuntimeError. Fix: create asyncio primitives INSIDE the coroutine that uses them, or use threading.Semaphore for cross-thread caps. For ThreadPoolExecutor + asyncio.run() pattern: create fresh object (including any containing class) inside the thread. |evidence: DA[#7] + IE independent discovery in B3 |Python 3.10+ behavior |by:implementation-engineer,devils-advocate |weight:primary
+  |ctx: sigma-ui B3 build, threading + asyncio integration. Source: [independent-research] T1.
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent

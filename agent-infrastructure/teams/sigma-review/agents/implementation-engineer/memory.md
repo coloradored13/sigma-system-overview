@@ -544,5 +544,23 @@ S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-disp
 S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
 S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
 S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
+S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
 
 → sociable tests over purely solitary tests when isolation cost > value

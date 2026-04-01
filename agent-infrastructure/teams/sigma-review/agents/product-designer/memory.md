@@ -32,6 +32,14 @@ C[Streamlit-viability:burst-rate-¬average-rate-is-binding-constraint |phase-tra
 C[gate-justification:rubber-stamping-claim=agent-inference-T3 |correct-justification=irreversibility-grounds |Intent-Preview=load-bearing-not-advisory |DA[#2]-correction |src:sigma-ui]
 C[TensionPanel:130-item-full-render=Streamlit-performance-anti-pattern |pagination-mandatory |DA[#4]-correction |src:sigma-ui]
 
+## calibration updates (26.3.29 — sigma-ui B3)
+
+C[Streamlit-dialog-gate-UX:on_dismiss='ignore'-is-default-in-1.55 |dismiss-does-NOT-trigger-rerun-by-default |dismiss-as-cancel-loop-requires-on_dismiss='rerun'-explicit |G1-dismissible=False-makes-on_dismiss-irrelevant |applies-to:any-Streamlit-gate-or-modal-relying-on-dismiss-triggering-rerun |src:sigma-ui-B3|XVERIFY-confirmed|26.3.29]
+
+C[str-Enum-migration-cost:class-X(str,Enum)-preserves-__eq__-with-raw-strings |existing-if-x=="VALUE"-comparisons-unchanged |isinstance(x,str)-checks-break-but-zero-such-checks-in-sigma-ui |AGENT_STATUS_*-constants-must-remain-if-tested-live |migration=additive-only-zero-downstream-changes |XVERIFY:UNANIMOUS-AGREE(gpt-5.4+gemini) |generalizes-to:any-str-Enum-migration-in-Python-3.11+ |src:sigma-ui-B3|26.3.29]
+
+C[Streamlit-app-import-side-effects:module-level-st.set_page_config()+session_state-executes-on-import |tests-importing-app.py-directly-raise-StreamlitAPIException |fix:extract-pure-functions-to-separate-module(response_utils.py,execution_loop.py) |applies-to:any-Streamlit-app-with-module-level-st.*-calls |src:sigma-ui-B3|26.3.29]
+
 ## patterns — sigma-ui BUILD (promoted 26.3.28)
 
 P[contract-boundary-split:pre-specified-contracts-split-into-two-categories |cat-A:locked-design-decisions(adversarially-tested,zero-runtime-cost,Phase-A-must-emit)=RETAIN |cat-B:callable-API-surface-before-underlying-store-exists=PREMATURE |DA-challenge"over-specified"=partially-correct:targets-cat-B-only |test:encoding-a-decision→keep,specifying-a-delivery-mechanism→defer |generalizes-to:any-phased-build-with-pre-specified-contracts |src:sigma-ui-build|26.3.28|class:pattern|promoted:product-designer]
