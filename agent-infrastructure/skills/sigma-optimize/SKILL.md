@@ -36,12 +36,14 @@ RESULTS=$E/results
 ## §2 — Pre-flight
 
 1→recall: mcp__sigma-mem__recall(context:"sigma-optimize experiment prompt optimization") → load prior experiment memory
-2→read $D — internalize integrity directives (§1-§5)
-3→read $R — load agent roster
-4→verify harness: check $E/experiment.py exists, check $E/ablation.py exists
-5→verify API: check ANTHROPIC_API_KEY is set (source from sigma-ui .env if needed)
-6→sigma-verify pre-flight: attempt sigma-verify init → write availability to workspace ## infrastructure
-7→read prior results: if $RESULTS/*.json exist, summarize what experiments have already been run (¬read raw data in detail, just filenames + experiment type)
+2→validate_system(team:sigma-optimize) → confirm agent defs exist (5 files in ~/.claude/agents/), team shared/ intact (workspace,directives,roster,decisions,patterns,orchestrator), inboxes exist (6 files). If ANY missing → STOP, report to user, ¬proceed with broken infrastructure.
+3→read $D — internalize integrity directives (§1-§5)
+4→read $R — load agent roster, verify 5 agents listed with phase assignments
+5→verify harness: check $E/experiment.py exists, check $E/ablation.py exists
+6→verify API: check ANTHROPIC_API_KEY is set (source from sigma-ui .env if needed)
+7→sigma-verify pre-flight: attempt sigma-verify init → write availability to workspace ## infrastructure
+8→read prior results: if $RESULTS/*.json exist, summarize what experiments have already been run (¬read raw data in detail, just filenames + experiment type)
+9→compatibility: this experiment is auditable by /sigma-audit (workspace+directives+exit-gate pattern), evaluable by /sigma-evaluate (synthesis artifact), and calibratable by /sigma-feedback (promotion phase)
 
 ## §3 — Experiment Configuration
 
@@ -134,43 +136,87 @@ source: top-K from conservative + aggressive |matrix: {description}
 {empty}
 ```
 
+## §4b — Agent Spawn Template
+
+!ALL agent spawns use this template. Lead MUST NOT improvise agent instructions.
+
+```
+TeamCreate(team:sigma-optimize) → Agent(name:{agent-name}):
+
+ROLE: {from agent def Role section}
+EXPERTISE: {from agent def Expertise section}
+
+ΣComm PROTOCOL:
+  Read ~/.claude/agents/sigma-comm.md at boot.
+  peers→ΣComm via inbox | user→plain in open-questions | workspace→YOUR section, ΣComm
+
+PATHS:
+  team: ~/.claude/teams/sigma-optimize
+  workspace: ~/.claude/teams/sigma-optimize/shared/workspace.md
+  directives: ~/.claude/teams/sigma-optimize/shared/directives.md
+  your-memory: ~/.claude/teams/sigma-optimize/agents/{agent-name}/memory.md
+  your-inbox: ~/.claude/teams/sigma-optimize/inboxes/{agent-name}.md
+  experiment-harness: ~/Projects/sigma-optimize/
+
+BOOT: read your agent definition at ~/.claude/agents/{agent-name}.md → follow Boot sequence
+
+TASK: {phase-specific task description}
+
+SCOPE: {from workspace ## scope-boundary}
+
+CONTEXT FIREWALL:
+  You are running experiment: {experiment description from workspace}.
+  You have NO knowledge of: the user's other projects, conversation history,
+  prior session context, the user's expectations about results, or what
+  other agents have found (unless explicitly in workspace when you read it).
+  Your job is to run your experiment and report what the data shows.
+  If you encounter information outside experiment scope, ignore it.
+
+INDEPENDENCE (search agents only):
+  Write your findings to workspace BEFORE reading any peer agent's section.
+  Do NOT read other search agents' findings until you have written your own.
+```
+
 ## §5 — Phase 1: PARALLEL-SEARCH
 
 1→spawn search-conservative + search-aggressive SIMULTANEOUSLY via TeamCreate
-  - both agents get: workspace path, experiment config, their specific search parameters
-  - !independence-instruction: "Write your findings to workspace BEFORE reading any peer agent's section. Do NOT read other search agents' findings until you have written your own."
-  - !context-firewall: agents receive workspace but NOT raw result files from prior experiments
+  - use §4b template for BOTH agents
+  - task: "Run evolutionary search with {conservative/aggressive} mutation strategy per workspace ## search-parameters. Report top candidates, patterns, convergence curve."
+  - include INDEPENDENCE instruction for both
 
-2→monitor workspace ## convergence for both agents to declare ✓
-3→DO NOT read ## findings sections (§1 lead-cannot-see-raw-data)
-4→log to ## experiment-log: "Phase 1 started: {timestamp} | agents: search-conservative, search-aggressive"
+2→start orchestrator: python3 $T/shared/optimize-orchestrator.py start --context '{"task": "{experiment-description}"}'
+3→monitor workspace ## convergence for both agents to declare ✓
+4→DO NOT read ## findings sections (§1 lead-cannot-see-raw-data)
+5→log to ## experiment-log: "Phase 1 started: {timestamp} | agents: search-conservative, search-aggressive"
 
 !phase-1-complete: BOTH agents show ✓ in workspace ## convergence
   log: "Phase 1 complete: {timestamp}"
-  advance to Phase 2
+  advance orchestrator: python3 $T/shared/optimize-orchestrator.py advance --context '{"search_conservative_converged": true, "search_aggressive_converged": true}'
+  verify orchestrator now in "combinatorial" phase
 
 ## §6 — Phase 2: COMBINATORIAL
 
-1→verify Phase 1 complete (both search agents converged)
-2→spawn search-combinatorial via TeamCreate
-  - agent reads peer findings from workspace to design combination matrix
-  - agent runs systematic tests on all token combinations
+1→verify orchestrator phase = combinatorial
+2→spawn search-combinatorial via TeamCreate using §4b template
+  - task: "Read peer findings from workspace ## findings. Extract winning tokens. Test all combinations systematically per workspace ## search-parameters."
 3→monitor workspace ## convergence for search-combinatorial ✓
 4→log to ## experiment-log
 
 !phase-2-complete: search-combinatorial shows ✓
-  advance to Phase 3
+  advance orchestrator: python3 $T/shared/optimize-orchestrator.py advance --context '{"combinatorial_converged": true}'
+  verify orchestrator now in "validation" phase
 
 ## §7 — Phase 3: VALIDATION (Exit Gate)
 
-1→verify Phase 2 complete
-2→spawn statistical-analyst via TeamCreate
+1→verify orchestrator phase = validation
+2→spawn statistical-analyst via TeamCreate using §4b template
+  - task: "Read ALL agent findings from workspace. Re-test top candidates at N=20. Compute p-values, effect sizes, check for rubric gaming. Issue exit-gate verdict."
   - agent has FULL workspace read access (all findings from all agents)
-  - agent runs re-tests, computes statistics, checks for gaming
-  - agent issues exit-gate verdict
 3→monitor workspace ## validation → exit-gate
 
-!exit-gate-PASS: advance to Phase 4
+!exit-gate-PASS:
+  advance orchestrator: python3 $T/shared/optimize-orchestrator.py advance --context '{"exit_gate": "PASS"}'
+  verify orchestrator now in "cross_model" phase
 !exit-gate-FAIL:
   - read the FAIL reason (what's needed: more runs? different parameters?)
   - present FAIL reason to user VERBATIM — ¬paraphrase, ¬soften
@@ -185,15 +231,14 @@ source: top-K from conservative + aggressive |matrix: {description}
 
 ## §8 — Phase 4: CROSS-MODEL
 
-1→verify Phase 3 exit-gate PASS
-2→spawn cross-model-validator via TeamCreate
-  - agent reads validated candidates from workspace ## validation
-  - agent runs them against GPT + Gemini via sigma-verify
-  - agent reports transfer rates
+1→verify orchestrator phase = cross_model
+2→spawn cross-model-validator via TeamCreate using §4b template
+  - task: "Read statistically validated candidates from workspace ## validation. Run them against GPT + Gemini via sigma-verify MCP. Report transfer rates using same mechanical scoring rubric."
 3→monitor workspace ## cross-model for convergence
 
 !phase-4-complete: cross-model-validator shows ✓
-  advance to Phase 5
+  advance orchestrator: python3 $T/shared/optimize-orchestrator.py advance --context '{"cross_model_converged": true}'
+  verify orchestrator now in "synthesis" phase
 
 ## §9 — Phase 5: Synthesis
 
@@ -208,15 +253,24 @@ source: top-K from conservative + aggressive |matrix: {description}
   - present statistical-analyst's exit-gate verdict FIRST
   - present synthesis SECOND
   - ¬add lead commentary on what results "mean" or "suggest"
+3→advance orchestrator: python3 $T/shared/optimize-orchestrator.py advance --context '{"synthesis_delivered": true}'
 
 ## §10 — Phase 6: Promotion + Archive
 
-1→signal promotion-round to all agents
-2→collect promotion candidates from workspace ## promotion
-3→auto-promote: pattern-confirms-existing, calibration-self-update → agent memory
-4→user-approve: present candidates to user, await approval
-5→archive workspace to $T/shared/archive/{date}-{experiment-slug}.md
-6→update sigma-mem with experiment outcomes (validated findings only, ¬speculative)
+1→signal promotion-round to all agents via SendMessage
+2→WAIT for agents to complete promotion (check workspace ## promotion for submissions)
+3→collect promotion candidates from workspace ## promotion
+4→auto-promote: pattern-confirms-existing, calibration-self-update → agent memory via store_agent_memory
+5→user-approve: present candidates to user, await approval
+6→archive workspace to $T/shared/archive/{date}-{experiment-slug}.md
+7→!archive-verification: confirm archive file exists and is non-empty. If missing → STOP, re-archive.
+8→update sigma-mem with experiment outcomes (validated findings only, ¬speculative):
+  - store_team_decision(by:statistical-analyst, weight:primary, team:sigma-optimize) → exit-gate verdict + validated findings
+  - store_team_pattern(team:sigma-optimize, agents:[list]) → cross-experiment patterns
+9→signal shutdown_request to all agents → wait for responses → agents terminate
+10→advance orchestrator: python3 optimize-orchestrator.py advance --context '{"promotion_complete": true}'
+11→advance orchestrator: python3 optimize-orchestrator.py advance --context '{"archive_written": true}'
+12→verify orchestrator terminal: python3 optimize-orchestrator.py status → confirm phase=complete, is_terminal=true
 
 ## §11 — Lead Self-Check Protocol
 

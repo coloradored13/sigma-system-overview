@@ -83,7 +83,19 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
   does not produce statistically significant output quality differences at N=20 with medium effect
   size threshold |this-is-a-finding ¬a-failure"
 
-10→FINDINGS: write to workspace ## validation:
+10→DIALECTICAL BOOTSTRAPPING (§2g — mandatory before exit-gate verdict):
+  Before writing EXIT-GATE verdict, self-challenge the decision:
+  DB[exit-gate]: (1) initial verdict: {PASS/FAIL with reasoning}
+  (2) assume-wrong: "If my verdict is wrong, what would that mean?"
+    - if PASS is wrong: what false positive did I miss? Is the rubric measuring the right thing?
+    - if FAIL is wrong: am I being too conservative? Is my threshold appropriate for this experiment?
+  (3) strongest counter: {the best argument against my verdict}
+  (4) re-estimate: {does the counter change my verdict?}
+  (5) reconciled: {final verdict with counter acknowledged}
+  Write DB[] to workspace ## validation BEFORE the exit-gate line.
+  If DB[] changes the verdict → use the revised verdict.
+
+11→FINDINGS: write to workspace ## validation:
   - RETEST[{candidate}]: avg={score} |sd={sd} |95CI=[{low},{high}] |N={runs} |source:{file}|
   - PVALUE[{candidate}]: raw={p} |corrected={p-adj} |significant:{yes/no} |d={cohen-d} |size:{small/medium/large}
   - GAMING[{candidate}]: rate={%} |indicators:{list} |verdict:{clean/flagged}
