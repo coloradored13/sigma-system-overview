@@ -1,0 +1,33 @@
+{
+  "name": "sigma-optimize",
+  "description": "Multi-agent prompt optimization experiment: investigating whether token choice measurably affects model output quality",
+  "createdAt": 1775054589386,
+  "leadAgentId": "team-lead@sigma-optimize",
+  "leadSessionId": "948d6e05-a96e-4eb5-86e1-8b35d07721ea",
+  "members": [
+    {
+      "agentId": "team-lead@sigma-optimize",
+      "name": "team-lead",
+      "agentType": "team-lead",
+      "model": "claude-opus-4-6[1m]",
+      "joinedAt": 1775054589386,
+      "tmuxPaneId": "",
+      "cwd": "/Users/bjgilbert",
+      "subscriptions": []
+    },
+    {
+      "agentId": "cli-api-research@sigma-optimize",
+      "name": "cli-api-research",
+      "agentType": "Explore",
+      "model": "haiku",
+      "prompt": "I need to understand whether the Claude CLI (`claude` command) can be used as a robust replacement for Anthropic Python SDK API calls in an experiment harness. The harness runs ~800+ calls per experiment against claude-haiku-4-5-20251001, needs deterministic prompt delivery, and scores responses mechanically.\n\nResearch these questions thoroughly:\n\n1. **Claude CLI capabilities**: What flags does `claude` support for non-interactive use? Specifically look for:\n   - `--print` or `-p` flag (single-shot, no conversation)\n   - Model selection (`-m haiku` or similar)\n   - Stdin piping for prompts\n   - Output format control (just the response text, no metadata)\n   - Max tokens control\n   - Any rate limiting or throttling on CLI usage\n\n2. **Check the claude CLI help**: Run `claude --help` to see all available flags. Also check `claude -h` if different.\n\n3. **Test a basic call**: Try running `claude -p -m haiku \"hello\"` or similar minimal invocation to see if it works and what the output format looks like.\n\n4. **Compare robustness to SDK**:\n   - SDK: `client.messages.create()` returns structured response with content, usage, stop_reason\n   - CLI: what does it return? Just text? Any error codes?\n   - Can you detect failures programmatically?\n   - What happens on rate limits?\n\n5. **Performance**: How fast is CLI invocation vs SDK? The SDK makes a direct HTTPS call. The CLI has startup overhead (loading the binary, authenticating). For 800 calls this matters.\n\n6. **Check if there's a `--output json` or structured output mode** that would make parsing reliable.\n\n7. **Look at the existing experiment harness** at ~/Projects/sigma-optimize/experiment.py to understand exactly what the SDK call looks like (model, max_tokens, messages format) so we can map it to CLI equivalents.\n\nReport your findings with a clear recommendation on whether CLI replacement is robust enough, or if the SDK remains the better path. Be honest about tradeoffs — the user explicitly said if API calls give best results, that's fine.",
+      "color": "cyan",
+      "planModeRequired": false,
+      "joinedAt": 1775084022263,
+      "tmuxPaneId": "in-process",
+      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview/agent-infrastructure/teams/sigma-optimize/shared",
+      "subscriptions": [],
+      "backendType": "in-process"
+    }
+  ]
+}

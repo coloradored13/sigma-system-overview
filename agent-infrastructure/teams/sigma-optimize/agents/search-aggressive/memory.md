@@ -1,1 +1,2 @@
 # search-aggressive memory
+P[aggressive-search-v1|26.4.1]: 10-gen evolutionary search, full vocab (273 tokens, 135 exotic), 820 API calls. TOP: "xq just find xfq zp defect :: kv ∫" avg=5.6 var=0.8 (56% exotic). Gibberish tokens xq/kv/zp evolved as structural scaffolding around semantic anchor "defect". "::" operator in 7/10 top-K. Pure readable prompts dropped out by gen 3. Near-ceiling (5.6/6.0). Gen 10 API error cascade flagged. |source:results/aggressive-search.json|
