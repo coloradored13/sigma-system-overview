@@ -1,2 +1,8 @@
 # search-aggressive memory
 P[aggressive-search-v1|26.4.1]: 10-gen evolutionary search, full vocab (273 tokens, 135 exotic), 820 API calls. TOP: "xq just find xfq zp defect :: kv ∫" avg=5.6 var=0.8 (56% exotic). Gibberish tokens xq/kv/zp evolved as structural scaffolding around semantic anchor "defect". "::" operator in 7/10 top-K. Pure readable prompts dropped out by gen 3. Near-ceiling (5.6/6.0). Gen 10 API error cascade flagged. |source:results/aggressive-search.json|
+
+P[exp2-aggressive-gen1|26.4.2]: 1-gen search (of 10 planned), full vocab (209 tokens), 800 API calls, N=10/task, 4 cognitive domains. TOP: "flaw ? bias evidence" avg=4.95 var=0.60 (0% exotic). ZERO gibberish tokens in top-10 — Exp 1 mechanism (gibberish scaffolding) does NOT generalize cross-domain. ΣComm operators in top-2-4 but TOP[1] is pure readable keywords. keyword-fragment > grammatical-sentences (confirms Exp 1). Exp 1 winner "just find vulnerability :: code" = +4.53 (= best NL baseline, ¬superior on non-code tasks). divergent_problem hardest task (avg 3.9 vs 5.1 for simpsons_paradox). API budget exhausted at gen 1 candidate 20. |source:results/multi-aggressive.json|
+
+C[checkpoint-bug|26.4.2]: experiment_multi.py checkpoint saved population BEFORE evolution → --resume loaded all-scored candidates → 0 new evals per gen. Fixed: checkpoint saves AFTER evolution so children have empty scores on resume. Edit: lines 1059-1100.
+
+C[rate-limit-coordination|26.4.2]: multiple simultaneous experiment processes cause thundering herd on 50 RPM API limit. First batch (4 processes) ran 66 min with 0.94s CPU and zero output — effectively deadlocked. Sequential execution or rate limit increase needed for future experiments.

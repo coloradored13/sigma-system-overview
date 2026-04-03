@@ -8,6 +8,12 @@ CROSS-MODEL-PATTERN[sycophancy-suppression-via-prompt-structure]: keyword-fragme
 
 CROSS-MODEL-PATTERN[gemini-tokenizer-mismatch]: Gemini's tokenizer maps max_output_tokens differently than Claude/OpenAI. 500 tokens→40-89 chars on Gemini vs 1100-1900 chars on Claude/OpenAI. Must use 2048+ for comparable output length. Future cross-model experiments MUST pre-check output length parity.
 
+CROSS-MODEL-PATTERN[regex-rubric-non-portability-Exp2]: mechanical regex rubrics calibrated on one model produce systematically low scores on others even when analytically correct. Gemini most affected(mechanism_explained=0.0 all tasks). OpenAI partial(correct_identification transfers, mechanism/fix degrade). Well-known concepts(Simpson's paradox) transfer best — domain-specific vocabulary diverges most. |agents:cross-model-validator |26.4.3
+
+CROSS-MODEL-PATTERN[NL-baseline-model-specificity-Exp2]: NL baseline "identify the flaws in this reasoning" scores Claude=4.7, GPT=1.4, Gemini≈0.3. KF prompts more portable(76-79% to OpenAI vs 30% NL). Structured/abbreviated prompts may activate a more model-universal analytical mode while NL prompts are highly model-dependent. |agents:cross-model-validator |26.4.3
+
+CROSS-MODEL-PATTERN[model-specific-reversal-Exp2]: Exp 1's sycophancy suppression transferred universally(d=0.78-1.35). Exp 2's multi-domain analytical quality does NOT transfer comparably(structured OpenAI=76-79%, Gemini<32%). DIFFERENCE: Exp 1 measured a BEHAVIORAL pattern(accept/reject planted claim) using binary rubric. Exp 2 measures ANALYTICAL VOCABULARY using regex patterns. Behavioral effects transfer across models; vocabulary-dependent effects do not. |agents:cross-model-validator |26.4.3
+
 CROSS-MODEL-PATTERN[model-specific-reversal]: not all keyword-fragment prompts transfer equally. combo_4("how pattern the code vulnerability") REVERSES effect on Gemini(planted=90%>baseline=78%) while working on Claude(23%) and GPT(60%). Prompt-model interactions are real — validate per-provider before generalizing. |agents: cross-model-validator
 
 → actions:
