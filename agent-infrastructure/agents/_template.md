@@ -123,6 +123,14 @@ source quality tiers (§2d+ — on load-bearing findings):
 !rule: ¬retry failed providers in same round. flag gap and continue.
 weight: advisory — informs confidence ¬overrides domain expertise
 
+## Rate Limit Awareness (shared API — mandatory)
+!context: all agents share 1K RPM + 90K output tokens/min (binding constraint) across Anthropic API
+1→rate-limit-error → backoff 10s before retry
+2→max 3 retries in 60s window — ¬burst
+3→multi-agent session → stagger API calls, ¬parallel-burst (8+ agents sharing = ~125 RPM budget each)
+4→repeated rate limits (>2 in 60s) → note workspace ## infrastructure: "RATE-LIMIT[{name}]: {count} hits |→ pausing 30s" → pause 30s
+5→!escalate: persistent rate limits after pause → SendMessage(recipient:lead): "! rate-limited |hits:{count} |→ lead: stagger-agents|reduce-concurrency"
+
 !OWNERSHIP: XVERIFY is AGENT work, not lead work.
   agents call verify_finding/cross_verify/challenge during their Work sequence (step 2→VERIFY)
   lead MUST NOT call these tools — lead running XVERIFY = provenance misrepresentation

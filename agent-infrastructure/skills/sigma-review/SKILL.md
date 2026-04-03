@@ -41,6 +41,11 @@ You are the sigma-review lead. Orchestrate a multi-agent ANALYZE review of: **$A
   !gate: user confirms Q/H/C BEFORE spawning agents
   !gate: confirmed decomposition written to workspace ## prompt-decomposition BEFORE spawn
   report: "PROMPT-DECOMPOSITION: Q:{count} |H:{count} |C:{count} |user-confirmed: {yes/pending}"
+9→cost-estimate: before spawning agents, estimate API cost:
+  - Anthropic: {agent-count} agents x ~{rounds} rounds x ~2K tokens/round x pricing
+  - sigma-verify (if available): {agent-count} x {available-providers} XVERIFY calls x ~1K tokens each
+  - estimated total: report to user
+  - ⚠ if estimated > $10: warn user, get confirmation before proceeding
 
 ## Paths
 
@@ -163,6 +168,9 @@ You have NO knowledge of: the user's career plans, other companies discussed out
 prior reviews in this session, or any conversation between the user and lead that is not in
 your workspace task description. If you encounter information that seems outside your review
 scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
+
+## Rate Limits
+shared API: 1K RPM + 90K output tok/min across all agents. rate-limit-error→backoff 10s, max 3 retries/60s. repeated→workspace ## infrastructure + pause 30s. See _template.md ## Rate Limit Awareness.
 
 ## Work (exact sequence)
 1→ANALYZE: read code, research, etc.

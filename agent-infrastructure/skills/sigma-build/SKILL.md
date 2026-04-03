@@ -64,6 +64,11 @@ You are the sigma-build lead. Orchestrate a multi-agent BUILD review of: **$ARGU
   !gate: confirmed understanding written to workspace ## prompt-understanding BEFORE spawn
 
   report: "PROMPT-UNDERSTANDING: Q:{count} |H:{count}(challenged:{count}) |C:{count} |clarifications:{count} |user-confirmed: {yes/pending}"
+9→cost-estimate: before spawning agents, estimate API cost:
+  - Anthropic: {agent-count} agents x ~{rounds} rounds x ~2K tokens/round x pricing
+  - sigma-verify (if available): {agent-count} x {available-providers} XVERIFY calls x ~1K tokens each
+  - estimated total: report to user
+  - ⚠ if estimated > $10: warn user, get confirmation before proceeding
 
 ## Paths
 
@@ -406,6 +411,9 @@ scope, ignore it and note: "out-of-scope signal ignored: {brief description}"
 Claims H1-HN are user hypotheses extracted from the prompt. Test these — find evidence FOR and AGAINST.
 Do ¬assume they are true. If a claim (e.g. scale, tech choice) drives architectural decisions,
 flag: "H[N] assumption used — ¬independently validated" and cite the specific choice it affects.
+
+## Rate Limits
+shared API: 1K RPM + 90K output tok/min across all agents. rate-limit-error→backoff 10s, max 3 retries/60s. repeated→workspace ## infrastructure + pause 30s. See _template.md ## Rate Limit Awareness.
 
 ## Work
 {select track based on agent role — lead includes only the relevant section}

@@ -21,8 +21,10 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 import tempfile
+import time
 
 # Allow importing gate_checks from same directory
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -324,6 +326,27 @@ def _output_state(orch: Orchestrator) -> None:
     print(json.dumps(output, indent=2))
 
 
+def _save_round_snapshot(orch: Orchestrator, workspace_path: str) -> None:
+    """Save workspace snapshot after each round transition for crash recovery."""
+    from pathlib import Path
+    import shutil
+
+    ws = Path(workspace_path)
+    snapshot_dir = ws.parent / "snapshots"
+    snapshot_dir.mkdir(exist_ok=True)
+    phase = orch._current_phase
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    snapshot_path = snapshot_dir / f"{timestamp}-{phase}.md"
+    if ws.exists():
+        shutil.copy2(ws, snapshot_path)
+
+
+# Default workspace path for snapshots and watch
+DEFAULT_WORKSPACE = os.path.join(
+    os.path.expanduser("~"), ".claude", "teams", "sigma-review", "shared", "workspace.md"
+)
+
+
 def cmd_start(args: argparse.Namespace) -> None:
     mode = args.mode
     ctx = json.loads(args.context) if args.context else {}
@@ -357,6 +380,8 @@ def cmd_advance(args: argparse.Namespace) -> None:
 
     orch.advance(context=ctx)
     _save(orch, checkpoint_file)
+    workspace_path = getattr(args, "workspace", None) or DEFAULT_WORKSPACE
+    _save_round_snapshot(orch, workspace_path)
     _output_state(orch)
 
 
@@ -425,6 +450,124 @@ def cmd_compute_belief(args: argparse.Namespace) -> None:
     print(json.dumps(result, indent=2))
 
 
+def cmd_watch(args: argparse.Namespace) -> None:
+    """B7: Watch workspace ## convergence for agent checkmarks and auto-advance.
+
+    Polls workspace.md every N seconds, detects convergence signals,
+    and auto-advances the orchestrator when all required agents for
+    the current phase have converged.
+    """
+    from pathlib import Path
+
+    mode = args.mode
+    checkpoint_file = args.checkpoint or DEFAULT_CHECKPOINT
+    workspace_path = Path(args.workspace)
+    interval = int(args.interval)
+
+    orch = _load_or_create(mode, checkpoint_file)
+    if orch._current_phase is None:
+        print(json.dumps({"error": "Orchestrator not started. Run 'start' first."}))
+        sys.exit(1)
+
+    # Phase → set of agent names whose ✓ in ## convergence triggers auto-advance.
+    # Phases not listed here (circuit_breaker, debate, synthesis, promotion, sync,
+    # archive, complete) require lead-driven manual advance because their guards
+    # involve validation checks, exit-gates, or belief thresholds.
+    PHASE_AGENTS_ANALYZE = {
+        "research": {"tech-architect", "product-strategist", "reference-class-analyst"},
+        "challenge": {"tech-architect", "product-strategist", "reference-class-analyst", "devils-advocate"},
+    }
+    PHASE_AGENTS_BUILD = {
+        "plan": {"tech-architect", "code-quality-analyst", "reference-class-analyst"},
+        "challenge_plan": {"tech-architect", "code-quality-analyst", "reference-class-analyst", "devils-advocate"},
+        "build": {"tech-architect", "code-quality-analyst", "reference-class-analyst"},
+        "review": {"tech-architect", "code-quality-analyst", "reference-class-analyst", "devils-advocate"},
+    }
+    phase_agents = PHASE_AGENTS_ANALYZE if mode == "analyze" else PHASE_AGENTS_BUILD
+
+    # Context keys to set when convergence is detected.
+    # Only the simple convergence flags — guards with exit_gate_passed / belief_above
+    # still require manual advance with the right context after validation.
+    PHASE_CONTEXT_ANALYZE = {
+        "research": {"r1_converged": True},
+    }
+    PHASE_CONTEXT_BUILD = {
+        "plan": {"plans_ready": True},
+        "build": {"build_complete": True},
+    }
+    phase_context = PHASE_CONTEXT_ANALYZE if mode == "analyze" else PHASE_CONTEXT_BUILD
+
+    print(f"[watch] mode={mode}  workspace={workspace_path}  interval={interval}s", flush=True)
+    print(f"[watch] current phase: {orch._current_phase}", flush=True)
+    print(f"[watch] auto-advance phases: {sorted(phase_agents.keys())}", flush=True)
+
+    while True:
+        if not workspace_path.exists():
+            time.sleep(interval)
+            continue
+
+        content = workspace_path.read_text()
+
+        # Extract ## convergence section
+        conv_match = re.search(
+            r"## convergence\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL
+        )
+        if not conv_match:
+            time.sleep(interval)
+            continue
+
+        conv_section = conv_match.group(1)
+        current_phase = orch._current_phase
+
+        if current_phase is None or current_phase == "complete":
+            print("[watch] Terminal phase reached. Exiting.", flush=True)
+            break
+
+        required = phase_agents.get(current_phase, set())
+        if not required:
+            # Phase not eligible for auto-advance (needs manual validation)
+            time.sleep(interval)
+            continue
+
+        # Detect ✓ declarations: "agent-name: ✓" or "agent-name ✓"
+        converged = set()
+        for agent in required:
+            if re.search(rf"{re.escape(agent)}\s*:?\s*✓", conv_section):
+                converged.add(agent)
+
+        pending = required - converged
+        if converged and pending:
+            print(
+                f"[watch] {current_phase}: {len(converged)}/{len(required)} converged, waiting on: {sorted(pending)}",
+                flush=True,
+            )
+
+        if converged == required:
+            print(f"\n[watch] All agents converged for {current_phase}: {sorted(converged)}", flush=True)
+            ctx = phase_context.get(current_phase)
+            if ctx:
+                try:
+                    orch.advance(context=ctx)
+                    _save(orch, checkpoint_file)
+                    _save_round_snapshot(orch, str(workspace_path))
+                    print(f"[watch] Auto-advanced to: {orch._current_phase}", flush=True)
+                    _output_state(orch)
+                except Exception as e:
+                    print(f"[watch] Auto-advance failed: {e}", flush=True)
+                    print("[watch] Guard conditions not met — manual advance required.", flush=True)
+            else:
+                print(
+                    f"[watch] No auto-context mapping for {current_phase} — manual advance required.",
+                    flush=True,
+                )
+                print(
+                    f"[watch] Convergence detected but phase guards require validation/belief checks.",
+                    flush=True,
+                )
+
+        time.sleep(interval)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sigma-review orchestrator CLI")
     parser.add_argument("--mode", choices=["analyze", "build"], default="analyze")
@@ -474,6 +617,18 @@ def main() -> None:
     )
     p_belief.add_argument("--round", type=int, default=None, help="Round number")
 
+    p_watch = sub.add_parser("watch", help="Watch workspace for convergence and auto-advance (B7)")
+    p_watch.add_argument(
+        "--workspace",
+        default=DEFAULT_WORKSPACE,
+        help=f"Path to workspace.md (default: {DEFAULT_WORKSPACE})",
+    )
+    p_watch.add_argument(
+        "--interval",
+        default="10",
+        help="Poll interval in seconds (default: 10)",
+    )
+
     args = parser.parse_args()
 
     commands = {
@@ -484,6 +639,7 @@ def main() -> None:
         "restore": cmd_restore,
         "validate": cmd_validate,
         "compute-belief": cmd_compute_belief,
+        "watch": cmd_watch,
     }
     commands[args.command](args)
 
