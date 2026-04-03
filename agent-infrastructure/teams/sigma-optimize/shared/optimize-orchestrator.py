@@ -192,6 +192,85 @@ def _load(orch: Orchestrator):
         sys.exit(1)
 
 
+def cmd_watch(args):
+    """C3: Watch workspace ## convergence for agent ✓ declarations and auto-advance.
+    Polls workspace file every N seconds, detects convergence signals,
+    and auto-advances the orchestrator when all required agents have converged.
+    """
+    import re
+    import time
+
+    orch = build_optimize_workflow()
+    _load(orch)
+    workspace_path = Path(args.workspace)
+    interval = int(args.interval)
+
+    # Map phases to their required convergence agents
+    PHASE_AGENTS = {
+        "parallel_search": {"search-conservative", "search-aggressive"},
+        "combinatorial": {"search-combinatorial"},
+        "validation": {"statistical-analyst"},
+        "cross_model": {"cross-model-validator"},
+    }
+
+    # Map phases to their advance context keys
+    PHASE_CONTEXT = {
+        "parallel_search": {"search_conservative_converged": True, "search_aggressive_converged": True},
+        "combinatorial": {"combinatorial_converged": True},
+        "cross_model": {"cross_model_converged": True},
+    }
+
+    print(f"Watching {workspace_path} every {interval}s for convergence signals...", flush=True)
+    print(f"Current phase: {orch._current_phase}", flush=True)
+
+    while True:
+        if not workspace_path.exists():
+            time.sleep(interval)
+            continue
+
+        content = workspace_path.read_text()
+
+        # Extract convergence section
+        conv_match = re.search(r"## convergence\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL)
+        if not conv_match:
+            time.sleep(interval)
+            continue
+
+        conv_section = conv_match.group(1)
+        current_phase = orch._current_phase
+
+        # Check if current phase has auto-advance requirements
+        required = PHASE_AGENTS.get(current_phase, set())
+        if not required:
+            time.sleep(interval)
+            continue
+
+        # Check for ✓ declarations from required agents
+        converged = set()
+        for agent in required:
+            # Match patterns like "search-conservative: ✓" or "search-conservative ✓"
+            if re.search(rf"{re.escape(agent)}\s*:?\s*✓", conv_section):
+                converged.add(agent)
+
+        if converged == required:
+            print(f"\nAll agents converged for {current_phase}: {converged}", flush=True)
+            ctx = PHASE_CONTEXT.get(current_phase, {})
+            if ctx:
+                state = orch.advance(context=ctx)
+                _save(orch)
+                print(f"Auto-advanced to: {orch._current_phase}", flush=True)
+                _output(state, orch)
+
+                # Check if terminal
+                if hasattr(orch, '_current_phase') and orch._current_phase == "complete":
+                    print("Experiment complete. Exiting watch.", flush=True)
+                    break
+            else:
+                print(f"No auto-context for phase {current_phase} — manual advance required.", flush=True)
+
+        time.sleep(interval)
+
+
 def _output(state, orch: Orchestrator):
     out = {
         "phase": orch._current_phase,
@@ -218,6 +297,11 @@ def main():
     p_rs = sub.add_parser("restore")
     p_rs.add_argument("--file", default=None)
 
+    p_watch = sub.add_parser("watch", help="Watch workspace for convergence and auto-advance (C3)")
+    p_watch.add_argument("--workspace", default=str(Path(__file__).parent / "workspace.md"),
+                         help="Path to workspace.md")
+    p_watch.add_argument("--interval", default="10", help="Poll interval in seconds (default: 10)")
+
     args = parser.parse_args()
 
     commands = {
@@ -226,6 +310,7 @@ def main():
         "status": cmd_status,
         "checkpoint": cmd_checkpoint,
         "restore": cmd_restore,
+        "watch": cmd_watch,
     }
 
     if args.command in commands:

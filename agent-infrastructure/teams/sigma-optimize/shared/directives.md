@@ -10,6 +10,11 @@
 
 !lead-cannot-override-exit-gate: if statistical-analyst issues FAIL, lead MUST NOT advance to cross-model phase. Lead can request more runs (loop back) but cannot reinterpret FAIL as conditional-PASS. The exit gate is mechanical.
 
+!lead-as-execution-layer (B3 — Exp 2 audit): when agents cannot execute directly (API constraints, tool limitations), lead MAY act as transparent execution proxy:
+  - lead CAN: run harness scripts (python3 experiment_multi.py ...), launch nohup processes, poll logs for completion status, check if a process is still running
+  - lead CANNOT: read result JSON content, interpret score patterns, comment on preliminary findings, suggest parameter adjustments based on partial data
+  - this is a NARROW exception, not a general override of §1. Lead passes commands through without inspecting output.
+
 !lead-framing-restrictions: when presenting results to user, lead MUST use statistical-analyst's exact language. ¬"exciting discovery" ¬"breakthrough" ¬"significant improvement" (unless SA used that phrase). Permitted: "statistically significant effect of size X" | "no significant effect detected" | "inconclusive, needs more data". Lead adds zero interpretive color.
 
 !lead-null-result-protocol: null results (no significant effect) are VALID FINDINGS. Lead MUST report them without hedging, reframing, or suggesting "further research might show..." Lead presents the null finding as-is. The user explicitly values null results equally.

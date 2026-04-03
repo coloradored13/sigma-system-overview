@@ -179,9 +179,22 @@ INDEPENDENCE (search agents only):
 
 ## §5 — Phase 1: PARALLEL-SEARCH
 
+!execution-constraints (B1):
+  - Each generation MUST complete within 10 minutes (Bash tool timeout limit).
+  - Agents MUST use concurrent evaluation (evaluate_batch) — serial evaluate() will timeout on multi-task experiments.
+  - Agent instructions MUST include: `--gen-limit 1 --resume` pattern for reliable execution.
+  - Multi-generation runs: agents run `python3 experiment_multi.py --search-type {type} --gen-limit 1 --resume` in a loop.
+
+!lead-as-execution-layer (B3):
+  - When agents cannot execute directly (API constraints, tool limitations), lead MAY:
+    - Run harness scripts (python3 experiment_multi.py ...), launch nohup processes, poll logs for completion status
+  - Lead MUST NOT:
+    - Read result JSON content, interpret score patterns, comment on preliminary findings, suggest adjustments based on partial data
+  - This is a narrow exception to §1, not a general override. Lead is a transparent execution proxy.
+
 1→spawn search-conservative + search-aggressive SIMULTANEOUSLY via TeamCreate
   - use §4b template for BOTH agents
-  - task: "Run evolutionary search with {conservative/aggressive} mutation strategy per workspace ## search-parameters. Report top candidates, patterns, convergence curve."
+  - task: "Run evolutionary search with {conservative/aggressive} mutation strategy per workspace ## search-parameters. Report top candidates, patterns, convergence curve. Use --gen-limit 1 --resume pattern. Use evaluate_batch (concurrent) not evaluate (serial)."
   - include INDEPENDENCE instruction for both
 
 2→start orchestrator: python3 $T/shared/optimize-orchestrator.py start --context '{"task": "{experiment-description}"}'
@@ -205,6 +218,18 @@ INDEPENDENCE (search agents only):
 !phase-2-complete: search-combinatorial shows ✓
   advance orchestrator: python3 $T/shared/optimize-orchestrator.py advance --context '{"combinatorial_converged": true}'
   verify orchestrator now in "validation" phase
+
+## §6b — Optional: ANALYST PRE-REVIEW (C2)
+
+!purpose: statistical-analyst can challenge combinatorial's combination matrix BEFORE running expensive validation.
+!when: enable when combinatorial matrix has >20 candidates (expensive to validate at N=20 each).
+
+1→spawn statistical-analyst with READ-ONLY access to workspace ## findings (combinatorial section)
+2→task: "Review the combination matrix. Flag candidates that are trivial variants of each other (token reordering, duplicate semantics). Recommend which candidates to drop before N=20 validation to reduce API cost."
+3→statistical-analyst writes ## pre-validation-triage to workspace
+4→search-combinatorial reads triage → responds: accept/defend for each flagged candidate
+5→lead updates validation candidate list based on consensus
+6→if no analyst pre-review needed (matrix <= 20 candidates): skip to §7
 
 ## §7 — Phase 3: VALIDATION (Exit Gate)
 
