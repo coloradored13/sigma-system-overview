@@ -27,3 +27,28 @@ FINDING[5]: planted-resistance-universal — all 3 models reject planted hypothe
 
 C[1]: future cross-model → LLM-based scoring ¬ regex rubric
 C[2]: Exp 1 sycophancy rubric had different vocabulary sensitivity — Exp 2 multi-domain rubric is more vocabulary-specific → lower transfer rates
+R[26.4.3]: A2-follow cross-model validation |providers:openai(gpt-5.4),llama(llama-4-maverick) |google:quota-exhausted(N=2-3,unusable) |83 valid calls |source:a2-follow-cross-model.json
+
+FINDING[1]: sycophancy-suppression-sensitivity is MODEL-SPECIFIC — Claude(d=2.076,range:2.5-97.5%) >> OpenAI(directional,range:30-80%) >> Llama(no-effect,range:20-40%) |planted acceptance is the PRIMARY metric and shows clear model hierarchy
+FINDING[2]: direction-preserved-magnitude-compressed on OpenAI — COMBO_BEST(30%) < EXP1_WIN(60%) < NO_DOMAIN(80%) ordering matches Claude direction |but BASELINE(40%) is LOWER than EXP1_WIN(60%): REVERSED from Claude |GPT has higher native planted resistance
+FINDING[3]: Llama shows UNIFORM moderate planted acceptance (20-40%) regardless of prompt — no sycophancy suppression transfer detected |Llama native resistance ~30% ≈ Claude's COMBO_BEST level
+FINDING[4]: analytical-quality-UNIVERSAL — bug identification, mechanism explanation, fix suggestion transfer across all 3 model families. The CODE ANALYSIS effect transfers. The SYCOPHANCY SUPPRESSION effect is what varies.
+FINDING[5]: behavioral-patterns-overcount — broader planted acceptance patterns (sleep.*issue, etc.) have SEVERE false positive rate due to negation-blindness. Original Exp 1 regex patterns are the ONLY valid measure for this task.
+FINDING[6]: Llama hedges more (avg 1.2-1.5) vs Claude/OpenAI (~0) — structural model behavior ¬prompt-driven
+FINDING[7]: OpenAI BASELINE has data quality issue — 6/10 empty responses (valid-only: 4/4=100% planted)
+FINDING[8]: all Fisher exact tests p>0.05 — underpowered at N=10 (need N≈44 for h=0.6 at 80% power)
+
+C[1]: future cross-model planted acceptance detection MUST use original task-specific regex ¬broader behavioral patterns
+C[2]: Exp 2 finding confirmed and refined — rubric IS Claude-calibrated for multi-domain, but MORE universal for single-task code analysis (bug vocabulary similar across models)
+C[3]: planted acceptance sensitivity forms model hierarchy: Claude(most susceptible at baseline, most responsive to mitigation) > OpenAI(moderate) > Llama(resistant at baseline, unresponsive to mitigation)
+C[4]: Gemini daily quota (250 req/day) consumed by Phases 1-3 — cross-model testing must be planned as a separate day or use a different Gemini model
+R[26.4.3]: A2-follow Nemotron cross-model validation |provider:nemotron(nvidia/nemotron-3-super-120b via OpenRouter) |N=10/candidate |40 valid calls |source:a2-follow-cross-model-nemotron.json
+
+FINDING[9]: Nemotron EXP1_WIN achieves 0/10 planted acceptance — ONLY model×candidate with zero planted at N=10. "vulnerability" token activates strong critical evaluation on Nemotron.
+FINDING[10]: COMBO_BEST(30%) WORSE than EXP1_WIN(0%) on Nemotron — REVERSED from Claude(2.5% < 27.5%). Nemotron responds to security/adversarial frame ("vulnerability") ¬neutral defect frame ("defect").
+FINDING[11]: domain factor direction preserved: NO_DOMAIN(20%) > EXP1_WIN(0%), same as Claude |¬significant(p=0.474)|
+FINDING[12]: Nemotron high score variance (SD=2.42-3.43) — inconsistent response quality. Bimodal: some runs score +6, others -3/-4.
+
+C[5]: Claude's H[1] revision (defect-finding ≈ adversarial) is CLAUDE-SPECIFIC. Original H[1] (adversarial frame specifically) MORE correct for Nemotron.
+C[6]: for cross-model robustness, EXP1_WIN("just find vulnerability :: code") is MORE universal than COMBO_BEST("only find defect :: logic") — security vocabulary transfers better across model families
+C[7]: updated model hierarchy: Claude>>OpenAI>>Nemotron(token-specific)≈Llama(insensitive)

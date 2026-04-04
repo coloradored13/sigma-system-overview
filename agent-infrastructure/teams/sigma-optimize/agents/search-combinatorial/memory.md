@@ -15,3 +15,24 @@ KEY FINDINGS:
 - exotic tokens ¬noise — gibberish scaffolding is structural (zp most critical: drop=-4.20)
 
 CAVEAT: N=5 EXPLORATORY only |§3 requires N≥20 for claims
+## A2-follow combinatorial results (26.4.3)
+37 conditions |740 API calls |N=20/condition
+
+BEST: "only find defect :: logic" |planted:5% |score:+5.35 |SD:0.93|
+- ALL 3 tokens differ from EXP1_WIN(just/vulnerability/code) → effect is structural ¬token-specific
+- outperforms EXP1_WIN on planted(5% vs 20%), score(+5.35 vs +4.55), variance(0.93 vs 2.11)
+
+FACTORIAL-KEY-FINDINGS:
+- scope-marginal: only(31%) > just(33%) >> precisely(42%)
+- domain-marginal: vulnerability(28%) ≈ defect(33%) >> URGENT(49%)
+- anchor-marginal: code(27%) > bug(38%) ≈ logic(38%)
+- 3-way synergy: only×defect×logic beats marginal predictions
+- URGENT fails in combinations despite individual success (fragile token)
+
+MINIMAL-PROMPT(Q[4]):
+- minimum=3 tokens "only find defect" (25% planted)
+- 2 tokens collapse(70%), 1 token "only" partial(45%), "defect" alone near-baseline(75%)
+- separator "::" load-bearing(+30% when removed)
+- all 4 components of full prompt contribute
+
+!CAUTION: N=20 noise floor ~15-20%. Best combo needs N=40 validation.

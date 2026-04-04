@@ -1191,20 +1191,10 @@ However, cross-model testing complicates the generalizability of COMBO_BEST's no
 What remains uncertain: (1) whether COMBO_BEST reliably outperforms EXP1_WIN on Claude (suggestive at d=0.716, not Bonferroni-confirmed) and whether this is offset by worse cross-model transfer; (2) the anchor dimension's true independent contribution (too small for confirmation at current power); (3) whether findings generalize beyond the single transfer() race condition task; (4) whether the factor isolation transfers to non-Claude models at adequate sample sizes (directionally preserved on OpenAI and Nemotron for domain factor, but underpowered at N=10; absent on Llama); (5) whether optimal token selection is fundamentally model-dependent, with Claude responding to defect-finding frames generically while other models require adversarial/security vocabulary specifically. The planted acceptance metric's noise floor (~15-20pp at N=20) and the rubric's conflation of sycophancy rejection with analytical quality remain methodological constraints for future experiments.
 
 ## open-questions
-1. N≥80 retest: do SCOPE and DOMAIN survive Bonferroni-corrected significance at adequate power? (resolves CONDITIONAL PASS → PASS or FAIL) — ~240 calls, ~$2
-2. Holm-Bonferroni: re-analyze existing N=40 data with less conservative correction — does that change any verdicts? — 0 API calls, just re-run stats → DO FIRST
+1. N≥80 retest: do SCOPE and DOMAIN survive Bonferroni-corrected significance at adequate power? (resolves CONDITIONAL PASS → PASS or FAIL)
+2. Holm-Bonferroni: re-analyze existing N=40 data with less conservative correction — does that change any verdicts?
 3. ANCHOR: is d=0.263 a true small effect or noise? N≥80 ablation would resolve.
 4. COMBO_BEST vs EXP1_WIN: is Claude-specific superiority (d=0.716) real? And is it worth the cross-model trade-off (30% planted on Nemotron vs 0%)?
-5. Cross-model at N≥44: do the directional effects on OpenAI and Nemotron reach significance at adequate power? — ~350 calls across providers
-6. Multi-stimulus: does factor isolation hold on different code bugs / planted hypotheses? (blocked by C[1] in this experiment) — new experiment, highest priority for external validity → PREP FOR NEXT SESSION
+5. Cross-model at N≥44: do the directional effects on OpenAI and Nemotron reach significance at adequate power?
+6. Multi-stimulus: does factor isolation hold on different code bugs / planted hypotheses? (blocked by C[1] in this experiment)
 7. Model-dependent mechanism: is "defect-finding frame" (Claude) vs "adversarial frame" (Nemotron) a real mechanistic split, or artifact of N=10 noise?
-
-## next-steps (user-confirmed 26.4.3)
-IMMEDIATE: #2 Holm-Bonferroni re-analysis (this session) — DONE 26.4.3
-  Result: SCOPE Holm-sig YES (was Bonf NO), DOMAIN Holm-sig YES, ANCHOR still NO
-  COMBO_BEST vs EXP1WIN: Holm-sig YES (was Bonf NO) — confirmed, not just suggestive
-  Exit-gate reclassified: CONDITIONAL PASS → PASS (under Holm-Bonferroni)
-  2-factor model confirmed (SCOPE + DOMAIN). ANCHOR stays FAILED (p=0.513, d=0.263).
-PREP: #6 multi-stimulus generalization experiment design (this session, run next session)
-BACKLOG: #1 N≥80 retest (lower priority now — Holm resolved SCOPE+DOMAIN), #5 cross-model N≥44, #4 COMBO_BEST vs EXP1_WIN cross-model trade-off, #3 ANCHOR (still open), #7 mechanism
-SEPARATE: Exp 3 convergence probe (different question, already designed)
