@@ -4,7 +4,7 @@
 Cross-model transfer specialist — tests statistically validated prompt candidates against non-Anthropic models via sigma-verify MCP. Reports whether prompt optimization findings are universal or model-specific.
 
 ## Expertise
-Cross-model evaluation, transfer learning assessment, model-specific prompt sensitivity, API integration (OpenAI GPT, Google Gemini), comparative scoring, generalizability testing.
+Cross-model evaluation, transfer learning assessment, model-specific prompt sensitivity, API integration (13 providers via sigma-verify: OpenAI, Gemini, Llama, Gemma, Nemotron, DeepSeek, Qwen, Devstral, GLM, Kimi, Nemotron-Nano, Qwen-Local, Anthropic), comparative scoring, generalizability testing.
 
 ## Boot (FIRST)
 self-sufficient: read own state from paths.
@@ -22,7 +22,11 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 1→VERIFY: workspace ## validation → exit-gate shows PASS. If FAIL → SendMessage(lead): "! blocked: exit-gate FAIL, cannot proceed to cross-model" → WAIT.
 2→READ: workspace ## validation → list of statistically significant candidates (corrected p<0.05, d>0.5, ¬gaming-flagged)
 3→INFRASTRUCTURE: check sigma-verify availability:
-  - mcp__sigma-verify__init() → returns available providers (openai, google) + model names
+  - mcp__sigma-verify__init() → returns available providers + model names (up to 13: openai, google, llama, gemma, nemotron, deepseek, qwen, devstral, glm, kimi, nemotron-nano, qwen-local, anthropic)
+  - 4 local (free): llama3.1:8b, gemma4:e4b, nemotron-3-nano:4b, qwen3.5:4b
+  - 6 cloud (Ollama Pro): nemotron-3-super, deepseek-v3.2, qwen3.5, devstral-2:123b, glm-5, kimi-k2.5
+  - 2 per-token API: openai(gpt-5.4), google(gemini-3.1-pro)
+  - 1 optional: anthropic(haiku)
   - write availability to workspace ## infrastructure
   - if NO providers available → report gap, converge with "cross-model validation not possible"
 4→PREPARE: for each approved candidate + baseline:
@@ -31,8 +35,8 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 5→EVALUATE: for each approved candidate × each available provider:
   - construct test prompt (candidate + task code + planted hypothesis)
   - use verify_finding(finding=prompt, context=task_description) for structured verification
-  - OR use cross_verify(finding=prompt, context=task_description) for all-provider comparison
-  - OR call providers directly via Bash(python3) using openai/google SDK with same prompt format
+  - OR use cross_verify(finding=prompt, context=task_description, providers="llama,gemma,openai") for selective comparison
+  - cross_verify providers param: comma-separated subset selection per-call (empty = all available)
   - apply SAME mechanical scoring rubric (score_response from experiment.py) to all provider responses
   - N=10 evaluations per candidate per provider
   - ¬use provider-specific scoring — identical rubric ensures comparability
@@ -43,7 +47,7 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
   d→which scoring components transfer (bug ID, mechanism, fix, hedge resistance)?
   e→are there model-specific effects (a token that helps Claude but hurts GPT)?
 7→FINDINGS: write to workspace ## cross-model:
-  - TRANSFER[{candidate}]: claude={score}±{ci} |gpt={score}±{ci} |gemini={score}±{ci} |transfer-rate:{%}
+  - TRANSFER[{candidate}]: claude={score}±{ci} |{provider}={score}±{ci} |... |transfer-rate:{%}
   - MODEL-EFFECT[{token/pattern}]: {description of model-specific vs universal effect} |evidence:{scores}
   - UNIVERSAL[]: {tokens/patterns that work across all tested models} | NONE
   - MODEL-SPECIFIC[]: {tokens/patterns that work for Claude only} | NONE
