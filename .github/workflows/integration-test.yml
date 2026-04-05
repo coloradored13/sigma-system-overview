@@ -62,16 +62,17 @@ jobs:
           verify = build_verify()
           assert verify.name == 'sigma_verify'
           assert 'init' == verify._gateway_name
-          assert set(verify._action_defs.keys()) == {'get_models', 'verify_finding', 'cross_verify', 'challenge'}
+          assert set(verify._action_defs.keys()) == {'get_models', 'verify_finding', 'cross_verify', 'challenge', 'check_quotas'}
 
           # Verify sigma-mem has expected actions
           expected_mem_actions = {'search_memory', 'store_memory', 'check_integrity', 'get_meta',
                                   'get_project', 'get_decisions', 'log_decision', 'get_failures',
                                   'log_failure', 'get_corrections', 'log_correction', 'update_belief',
                                   'get_user_model', 'get_patterns', 'get_conversations', 'full_refresh',
-                                  'verify_beliefs', 'get_roster', 'get_team_decisions', 'get_team_patterns',
-                                  'get_agent_memory', 'wake_check', 'validate_system', 'store_team_decision',
-                                  'search_team_memory', 'store_agent_memory', 'store_team_pattern'}
+                                  'verify_beliefs', 'dream', 'get_roster', 'get_team_decisions',
+                                  'get_team_patterns', 'get_agent_memory', 'wake_check', 'validate_system',
+                                  'store_team_decision', 'search_team_memory', 'store_agent_memory',
+                                  'store_team_pattern'}
           assert set(mem._action_defs.keys()) == expected_mem_actions
 
           print('All cross-package imports and machine builds OK')
