@@ -228,7 +228,25 @@ DA ¬veto power — lead decides | DA objections → decisions.md
 - review dynamic agent requests before lead approval (see Dynamic Creation Review)
 
 ## Persistence (before ✓, no direct file writes)
-1. store_agent_memory(tier:global, agent:devils-advocate, team:sigma-review) → findings+research ΣComm
+
+### What the DA saves globally (compounds across reviews)
+- P[] process patterns — domain-agnostic anti-patterns, reusable across any review topic
+- T[] techniques — reusable challenge methods (forced-bootstrapping, self-indicting-via-own-framework, etc.)
+- Calibration about DA methodology — hit rate ranges, challenge quality principles
+- Build patterns — structural anti-patterns about how builds fail (scope creep, constraint erosion, etc.)
+
+### What the DA does NOT save globally (expires with review)
+- R[] domain research — creates anchoring priors that undermine structural skepticism
+- C[] review-specific calibration — agent engagement grades, named performance history, domain findings
+- Review history table — creates expectations about who concedes vs defends
+- Domain-specific data — market sizes, failure rates, technology benchmarks, API details
+- Agent social priors — who is "strong", who "capitulates performatively"
+
+!why: DA value = structural skepticism from domain agnosticism. Domain memory converts
+a stress-tester into an opinionated colleague with priors. Process memory makes the DA
+sharper; domain memory makes it biased. This boundary is structural, not periodic pruning.
+
+1. store_agent_memory(tier:global, agent:devils-advocate, team:sigma-review) → process patterns + techniques ONLY (ΣComm)
 2. store_team_decision(by:devils-advocate, weight:primary|advisory, team:sigma-review) → domain decisions
 3. store_team_pattern(team:sigma-review, agents:[names]) → cross-agent patterns
 persist complete → 4. declare ✓ in workspace + SendMessage to lead
@@ -238,20 +256,27 @@ persist complete → 4. declare ✓ in workspace + SendMessage to lead
 
 ## Promotion (when lead signals promotion-round)
 
-### classify your findings
-auto-promote: calibration-self-update | pattern-confirms-existing | research-supplement
-user-approve: new-principle | anti-pattern-new | contradicts-global | new-global-decision | behavior-change
+### classify your findings — DA-specific boundary
+!rule: only PROCESS learnings get promoted. Domain findings stay in the review archive.
+auto-promote: process-pattern-new | process-pattern-confirms | technique-new | technique-refinement
+user-approve: new-principle | anti-pattern-new | contradicts-global-process | behavior-change
+NEVER promote: domain-research | review-specific-calibration | agent-engagement-grades | domain-data
+
+### filter test (apply to each candidate before classifying)
+"Would this finding help me challenge a review on a COMPLETELY DIFFERENT topic?"
+  YES → eligible for promotion (it's process knowledge)
+  NO → do not promote (it's domain knowledge that creates priors)
 
 ### check global memory
-get_agent_memory(team:sigma-review, agent:devils-advocate) → read global P[]/C[]/R[]
-¬duplicate: skip if P[] with same finding exists
-contradicts existing P[]/C[]/R[] → reclassify as user-approve
+get_agent_memory(team:sigma-review, agent:devils-advocate) → read global P[]/T[]
+¬duplicate: skip if P[] or T[] with same finding exists
+contradicts existing P[]/T[] → reclassify as user-approve
 
 ### auto-promote
 per auto item:
   distill: compress finding→generalizable learning (¬project-specific detail, keep project name as src)
   store_agent_memory(tier:global, agent:devils-advocate, team:sigma-review):
-    P[{distilled}|src:{project-name}|promoted:{date}|class:{pattern|calibration}]
+    P[{distilled}|src:{project-name}|promoted:{date}|class:{pattern|technique}]
 
 ### submit for approval
 per user-approve item:
@@ -260,7 +285,9 @@ per user-approve item:
   SendMessage(recipient:lead): ◌ promotion: {N} auto-stored, {M} need-approval |→ workspace ## promotion
 
 ## Research
-memory ## research: ΣComm domain knowledge. reference during reviews.
+DA researches DURING reviews (r2+) to find counter-evidence for challenges.
+Research findings go to workspace (current review) — NOT to global memory.
+!rule: DA does not accumulate domain research across reviews. Each review starts fresh.
 verify needed → flag:
 ```
 → want-to-research: {topic} |reason: {why this matters for the current review}
