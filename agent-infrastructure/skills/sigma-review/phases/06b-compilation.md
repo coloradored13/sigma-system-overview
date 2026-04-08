@@ -91,9 +91,23 @@ Read what the compilation agent wrote/updated. Quick sanity check:
 ### Step 5: Update INDEX.md
 Confirm INDEX.md reflects any new pages added.
 
-### Step 6: Advance Orchestrator
+### Step 6: Validate Compilation Integrity
 ```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"compilation_complete": true}'
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check compilation
+```
+This runs V24+V25+V26:
+- V24: Source attribution on all wiki entries (`[R{number}, {date}]`)
+- V25: No contradiction silently resolved (multi-source pages must have CONFLICT or Confirmed flags)
+- V26: No wiki pages deleted (INDEX.md references match actual files)
+
+If validation FAILS:
+- V24 failure: compilation agent added unattributed findings → re-run compilation with explicit attribution instruction
+- V25 failure: contradiction was silently merged → restore both positions with CONFLICT flag
+- V26 failure: pages were deleted → investigate and restore from prior state
+
+### Step 7: Advance Orchestrator
+```bash
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"compilation_complete": true, "compilation_validated": true}'
 ```
 Confirm returned phase = `promotion`.
 
@@ -106,5 +120,6 @@ Confirm returned phase = `promotion`.
 - [ ] Contradictions flagged, not silently resolved
 - [ ] INDEX.md current
 - [ ] No process observations leaked into wiki (those belong in patterns.md)
+- [ ] Compilation validation passed (V24+V25+V26)
 
 **All items checked → read `phases/07-promotion.md`**

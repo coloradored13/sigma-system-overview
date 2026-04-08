@@ -16,6 +16,8 @@ Gate taxonomy (V1-V22):
   V10 cross-track-participation V20 fixes-implemented
   V21 team-created              V22 session-end-verified
   V23 synthesis-artifact
+  V24 wiki-source-attribution  V25 wiki-contradiction-preserved
+  V26 wiki-page-count
 
 Bundles:
   r1-convergence     V3+V4+V5+V6+V7+V8  (ANALYZE R1 exit)
@@ -25,6 +27,7 @@ Bundles:
   plan-lock          V17                   (BUILD plan→build)
   build-checkpoint   V19                   (BUILD before review)
   challenge-round    V10+V11              (after any challenge/review round)
+  compilation        V24+V25+V26          (wiki integrity after compilation)
   session-end        V22+V23              (archive→complete, git+synthesis verified)
 """
 
@@ -1314,6 +1317,211 @@ def validate_session_end(workspace_path: str | None = None, **kwargs: Any) -> Va
 
 
 # ---------------------------------------------------------------------------
+# Compilation wiki integrity checks (V24-V26)
+# ---------------------------------------------------------------------------
+
+WIKI_DIR = Path.home() / ".claude/teams/sigma-review/shared/wiki"
+
+
+def check_wiki_source_attribution(wiki_dir: Path | None = None) -> CheckResult:
+    """V24: Every new finding in wiki pages carries source attribution [R{N}, {date}].
+
+    Compilation must not add unattributed claims to the knowledge base.
+    Checks all wiki pages (excluding INDEX.md) for findings without [R...] tags.
+    """
+    wd = wiki_dir or WIKI_DIR
+    if not wd.exists():
+        return CheckResult(
+            name="V24-wiki-source-attribution",
+            passed=False,
+            issues=["Wiki directory does not exist"],
+        )
+
+    pages = [f for f in wd.glob("*.md") if f.name.upper() != "INDEX.MD"]
+    if not pages:
+        # No pages yet — compilation may not have created any (valid if synthesis had nothing to compile)
+        return CheckResult(
+            name="V24-wiki-source-attribution",
+            passed=True,
+            details={"page_count": 0, "note": "no wiki pages exist — valid if first review or nothing to compile"},
+        )
+
+    unattributed_pages = []
+    for page in pages:
+        try:
+            text = page.read_text(encoding="utf-8")
+            # Page should have at least one [R source attribution
+            has_attribution = bool(re.search(r"\[R\d+", text))
+            if not has_attribution and len(text.strip()) > 100:  # non-trivial content without attribution
+                unattributed_pages.append(page.name)
+        except (OSError, UnicodeDecodeError):
+            unattributed_pages.append(f"{page.name} (unreadable)")
+
+    passed = len(unattributed_pages) == 0
+    issues = []
+    if not passed:
+        issues.append(
+            f"Wiki pages without source attribution: {', '.join(unattributed_pages)}. "
+            "Every finding must carry [R{{number}}, {{date}}] provenance."
+        )
+
+    return CheckResult(
+        name="V24-wiki-source-attribution",
+        passed=passed,
+        details={"pages_checked": len(pages), "unattributed": unattributed_pages},
+        issues=issues,
+    )
+
+
+def check_wiki_contradiction_preserved(wiki_dir: Path | None = None) -> CheckResult:
+    """V25: No contradiction silently resolved — CONFLICT flags must not be removed.
+
+    If a wiki page previously had a CONFLICT flag and it's now gone without a
+    corresponding CONFIRMED flag, that's silent resolution (corruption).
+    Checks current state: any page with findings from multiple reviews should
+    either show agreement (Confirmed) or disagreement (CONFLICT).
+    """
+    wd = wiki_dir or WIKI_DIR
+    if not wd.exists():
+        return CheckResult(
+            name="V25-wiki-contradiction-preserved",
+            passed=True,
+            details={"note": "wiki directory does not exist — nothing to check"},
+        )
+
+    pages = [f for f in wd.glob("*.md") if f.name.upper() != "INDEX.MD"]
+    if not pages:
+        return CheckResult(
+            name="V25-wiki-contradiction-preserved",
+            passed=True,
+            details={"page_count": 0},
+        )
+
+    multi_source_no_signal = []
+    for page in pages:
+        try:
+            text = page.read_text(encoding="utf-8")
+            # Count distinct review sources
+            sources = set(re.findall(r"\[R(\d+)", text))
+            if len(sources) >= 2:
+                # Multiple reviews contributed — should have either CONFLICT or Confirmed markers
+                has_conflict = bool(re.search(r"(CONFLICT|⚠\s*CONFLICT)", text, re.IGNORECASE))
+                has_confirmed = bool(re.search(r"(✓\s*Confirmed|CONFIRMED)", text, re.IGNORECASE))
+                if not has_conflict and not has_confirmed:
+                    multi_source_no_signal.append(
+                        f"{page.name} (sources: R{', R'.join(sorted(sources))})"
+                    )
+        except (OSError, UnicodeDecodeError):
+            pass
+
+    passed = len(multi_source_no_signal) == 0
+    issues = []
+    if not passed:
+        issues.append(
+            f"Wiki pages with multiple review sources but no CONFLICT/Confirmed signal: "
+            f"{', '.join(multi_source_no_signal)}. "
+            "Multi-source pages must explicitly flag agreement or disagreement."
+        )
+
+    return CheckResult(
+        name="V25-wiki-contradiction-preserved",
+        passed=passed,
+        details={"pages_checked": len(pages), "missing_signal": multi_source_no_signal},
+        issues=issues,
+    )
+
+
+def check_wiki_page_count(content: str, wiki_dir: Path | None = None) -> CheckResult:
+    """V26: Compilation does not delete wiki pages.
+
+    Compares page count in INDEX.md against actual files. If INDEX.md lists
+    pages that no longer exist, compilation may have deleted content.
+    Also flags if wiki dir has pages not listed in INDEX.md (index drift).
+    """
+    wd = wiki_dir or WIKI_DIR
+    index_path = wd / "INDEX.md"
+
+    if not wd.exists():
+        return CheckResult(
+            name="V26-wiki-page-count",
+            passed=False,
+            issues=["Wiki directory does not exist"],
+        )
+
+    if not index_path.exists():
+        return CheckResult(
+            name="V26-wiki-page-count",
+            passed=False,
+            issues=["Wiki INDEX.md does not exist"],
+        )
+
+    # Parse INDEX.md for referenced page filenames
+    try:
+        index_text = index_path.read_text(encoding="utf-8")
+    except (OSError, UnicodeDecodeError):
+        return CheckResult(
+            name="V26-wiki-page-count",
+            passed=False,
+            issues=["Wiki INDEX.md unreadable"],
+        )
+
+    # Extract filenames from markdown links: [title](filename.md)
+    indexed_pages = set(re.findall(r"\]\(([^)]+\.md)\)", index_text))
+    # Actual pages on disk
+    actual_pages = {f.name for f in wd.glob("*.md") if f.name.upper() != "INDEX.MD"}
+
+    missing_from_disk = indexed_pages - actual_pages
+    missing_from_index = actual_pages - indexed_pages
+
+    passed = len(missing_from_disk) == 0
+    issues = []
+    if missing_from_disk:
+        issues.append(
+            f"INDEX.md references pages that don't exist on disk: {', '.join(sorted(missing_from_disk))}. "
+            "Compilation must not delete wiki pages."
+        )
+    if missing_from_index:
+        # Warning, not failure — index drift is less severe than deletion
+        issues.append(
+            f"Wiki pages not listed in INDEX.md (index drift): {', '.join(sorted(missing_from_index))}. "
+            "INDEX.md should be updated to reflect all pages."
+        )
+
+    return CheckResult(
+        name="V26-wiki-page-count",
+        passed=passed,
+        details={
+            "indexed_pages": sorted(indexed_pages),
+            "actual_pages": sorted(actual_pages),
+            "missing_from_disk": sorted(missing_from_disk),
+            "missing_from_index": sorted(missing_from_index),
+        },
+        issues=issues,
+    )
+
+
+def validate_compilation(workspace_path: str | None = None, **kwargs: Any) -> ValidationResult:
+    """Bundle: V24+V25+V26 — wiki compilation integrity."""
+    content = read_workspace(workspace_path)
+    wiki_dir = Path(kwargs.get("wiki_dir", "")) if kwargs.get("wiki_dir") else WIKI_DIR
+
+    checks = [
+        check_wiki_source_attribution(wiki_dir),
+        check_wiki_contradiction_preserved(wiki_dir),
+        check_wiki_page_count(content, wiki_dir),
+    ]
+
+    all_passed = all(c.passed for c in checks)
+
+    return ValidationResult(
+        bundle="compilation",
+        passed=all_passed,
+        checks=checks,
+        context_update={"compilation_validated": all_passed},
+    )
+
+
+# ---------------------------------------------------------------------------
 # Convenience: run a named bundle
 # ---------------------------------------------------------------------------
 
@@ -1325,6 +1533,7 @@ BUNDLES = {
     "plan-lock": validate_plan_lock,
     "build-checkpoint": validate_build_checkpoint,
     "challenge-round": validate_challenge_round,
+    "compilation": validate_compilation,
     "session-end": validate_session_end,
 }
 
