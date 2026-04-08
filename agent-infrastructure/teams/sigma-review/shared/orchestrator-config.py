@@ -87,6 +87,7 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
     orch.phase("synthesis", description="Final synthesis and report")
 
     # Post-exit-gate phases (mandatory — mechanical enforcement)
+    orch.phase("compilation", description="Integrate findings into persistent knowledge wiki")
     orch.phase("promotion", description="Memory promotion: agents classify and submit generalizable learnings")
     orch.phase("sync", description="Infrastructure sync: detect drift and sync installed files to repo")
     orch.phase("archive", description="Workspace archive: copy workspace to shared/archive/")
@@ -145,9 +146,16 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
     # Post-exit-gate transitions (guarded — lead must set completion flags)
     orch.transition(
         "synthesis",
-        "promotion",
+        "compilation",
         name="synthesis_delivered",
         guard=context_true("synthesis_delivered"),
+    )
+
+    orch.transition(
+        "compilation",
+        "promotion",
+        name="compilation_complete",
+        guard=context_true("compilation_complete"),
     )
 
     orch.transition(
@@ -197,6 +205,7 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
     orch.phase("synthesis", description="Final review report")
 
     # Post-exit-gate phases (mandatory — mechanical enforcement)
+    orch.phase("compilation", description="Integrate findings into persistent knowledge wiki")
     orch.phase("promotion", description="Memory promotion: agents classify and submit generalizable learnings")
     orch.phase("sync", description="Infrastructure sync: detect drift and sync installed files to repo")
     orch.phase("archive", description="Workspace archive: copy workspace to shared/archive/")
@@ -237,9 +246,16 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
     # Post-exit-gate transitions (guarded — lead must set completion flags)
     orch.transition(
         "synthesis",
-        "promotion",
+        "compilation",
         name="synthesis_delivered",
         guard=context_true("synthesis_delivered"),
+    )
+
+    orch.transition(
+        "compilation",
+        "promotion",
+        name="compilation_complete",
+        guard=context_true("compilation_complete"),
     )
 
     orch.transition(
