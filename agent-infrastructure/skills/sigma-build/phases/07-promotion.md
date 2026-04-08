@@ -7,23 +7,31 @@ Agents classify and submit generalizable learnings for persistent memory. This i
 
 ## Steps
 
-### Step 1: Trigger Promotion Round
+### Step 1: MCP Health Check
+Before promotion (which writes to sigma-mem), verify MCP is still connected:
+```
+recall: "health check before promotion"
+```
+If this fails (MCP server disconnected): ask user to restart (`! claude mcp restart sigma-mem`).
+Do NOT proceed with promotion until sigma-mem is responsive — promotion writes silently fail without it.
+
+### Step 2: Trigger Promotion Round
 SendMessage to each teammate:
 ```
 promotion-round: classify+submit generalizable learnings for global memory
 ```
 
-### Step 2: Wait for Responses
+### Step 3: Wait for Responses
 Each agent will:
 - Auto-promote low-risk learnings directly to global memory
 - Submit user-approve candidates to workspace ## promotion
 
 Wait for all agents to respond with their promotion status.
 
-### Step 3: Read Candidates
+### Step 4: Read Candidates
 Read workspace `## promotion` section. Look for P-candidate[] entries with class:user-approve.
 
-### Step 4: Present to User (if any user-approve candidates)
+### Step 5: Present to User (if any user-approve candidates)
 Present candidates in plain English:
 ```
 ## Promotion Candidates (require approval)
@@ -36,15 +44,15 @@ Also auto-promoted (informational):
 
 **WAIT for user to approve/reject each candidate.**
 
-### Step 5: Store Approved
+### Step 6: Store Approved
 For each approved candidate:
 - Agent-domain → `store_agent_memory(tier:global, agent:{name}, team:sigma-review)`
 - Team-level → `store_team_decision(tier:global)` or `store_team_pattern(tier:global)`
 
-### Step 6: Portfolio Entry
+### Step 7: Portfolio Entry
 Write {project-name} record to `shared/portfolio.md` (global tier).
 
-### Step 7: Advance Orchestrator
+### Step 8: Advance Orchestrator
 ```bash
 python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"promotion_complete": true}'
 ```
