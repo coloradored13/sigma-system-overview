@@ -13,7 +13,6 @@ CAL: P(adverse,12mo)=45-55% | P(failure,12mo)=15-25% | P(run>20%/30d)=20-30%/Q |
 PM[1-4]: capital raise spiral(25-30%) | slow bleed(20-25%) | info cascade run(15-20%) | rate rescue(10-15%)
 OV-RECONCILIATION: market implied <2-3% failure | reference-class 15-25% | 5-10x divergence
 key-insight: all risk info was PUBLIC pre-cutoff — market failure = normalcy bias + accounting mask + correlated-withdrawal underestimation
-cross-agent: aligns w/ macro-rates F3 (HTM losses), portfolio-analyst F4 (capital adequacy), product-strategist F3-F4 (deposits+correlation)
 DA challenges flagged: multiplicative adjustment methodology | survivorship bias | S&L analogy validity | RC[2] N=1
 ## SVB R3 response (2026-03-17)
 DA[#3] P(failure): REVISED 15-25%→5-12% (point ~8%) | methodology: multiplicative→additive Bayesian | conceded: multiplicative unsound, short interest ¬existential, no examples >10% CET1+IG failing w/o sudden trigger | disputed: well-capitalized framing (FDIC Hoenig: 98% failed banks were well-capitalized pre-GFC) + trigger-as-exogenous framing
@@ -47,7 +46,6 @@ ANA[1-5]: fund-admin(HIGH:consolidation-via-M&A) | transfer-agency(HIGH:incumben
 CAL[1-6]: P(tech-primary-diff,3yr)=20% | P(dominant-via-tech,5yr)=15% | P(unexpected>10%share,5yr)=8% | P(DLT-disrupts,5yr)=12% | P(private-credit-forces-adoption)=62% | P(consolidation<5-players,10yr)=48%
 PM[1a-d,2a-d]: 8 scenarios | top-failure:FIS-syndrome(25-30%) | top-disruption:infrastructure-becomes-service(20-25%)
 OV-RECONCILIATION: "tech wins" narrative PARTIALLY CORRECT but OVERSTATED in timeframe(3-5yr→10-20yr) and mechanism(organic→M&A) | tech=necessary-to-survive ¬sufficient-to-win | consolidation is highest-confidence pattern
-cross-agent: validates tech-architect F1(assembled=debt)+F4(S&P-DataXchange)+F10(tech-debt)+F11(unexpected-plays)
 market-data: loan-agency-TAM $1.45B(2024)→$2.19B(2032) | private-credit $3T→$5T(2029) | BSL $1.3T | tech-spend-ceiling ~$115-220M/yr
 key-players-verified: Alter Domus, Kroll, GLAS, SRS Acquiom, Ankura Trust, Wilmington Trust + infrastructure: Versana, Finastra, AccessFintech, S&P Global(DataXchange/AmendX Mar 2026)
 ## VDR Competitive Market Analysis — r1 findings (2026-03-18)
@@ -59,8 +57,6 @@ CAL[1-6]: CAGR=12-16%realized(¬18-22%forecast) | P(top-3>60%,5yr)=30% | P(AI-di
 PM[1-5]: M&A-downturn(15-20%) | AI-commoditizes(20-25%) | Datasite-integration-fail(20-30%) | regulatory-fragmentation(10-15%) | market-overestimation(35-45%)
 OV-RECONCILIATION: CONSOLIDATION-THROUGH-ACQUISITION(ERP pattern)¬DISRUPTION-BY-INNOVATION(Salesforce pattern) | inside-view overestimates growth 20-30% | Datasite/CapVest executing PE-rollup explicitly
 key-market-data: VDR $2.4-3.4B(2024-2025) | Datasite 8+ acq since 2020 | SS&C Intralinks $420M rev | DFIN Venue $142M FY2025 | Ansarada acquired by Datasite Aug2024(AUD$212-263M) | iDeals fastest organic growth(2M+ users) | VDR AI adoption only 8% vs 77% VDR use
-divergences: CAGR lower than PS(18-22%) aligned w/ EA(13-18%) | concentration timeline more conservative than EA(65-70% by 2028) | AI-commoditization risk weighted higher than PS+TA
-cross-agent: aligns w/ PS(consolidation+Ansarada), TA(AI-table-stakes+Datasite-flywheel), EA(CAGR-calibration+demand-floor)
 H1:partially-falsified | H2:partially-confirmed | H3:confirmed(via M&A ¬organic)
 
 ## Warehouse Game Design R3 responses (2026-03-18)
@@ -87,13 +83,12 @@ CAL[H1-H4]: P(AI-accelerates-M&A,2031)=72% | P(>$5B-AI-acq-by-2028)=55% | P(medt
 PM[1-5]: clinical-fail(20-25%) | Watson-2.0(15-20%) | regulatory-geopolitical(15-20%) | recession(10-15%) | embedded-tool(15-20%) | joint-P(≥1)=55-65%
 OV-RECONCILIATION: inside-OVERSTATES-AI-causal-role | M&A-volume=HIGH-CONF(88%)-driven-by-NON-AI(cliff,rates,firepower) | AI-SPECIFIC=MOD-CONF(72%) | AI=15-25%-of-total-M&A-by-2031(vs~8-10%-now)
 key-insight: patent-cliff($236-400B)+macro=primary-M&A-driver|AI=additive-new-target-category ¬ primary-cause|inside-view-narrative-conflates-AI-contribution-with-structural-macro-forces
-cross-agent: aligns PS(non-AI-triple),PA(cliff-primary,premium-bifurcated),RA(regulatory-bifurcated),EA(CAGR-calibration,Eroom's)|diverges PS(AI-as-primary-vs-additive)
 H1:partially-confirmed | H2:partially-confirmed | H3:confirmed+caveat(peak-may-extend-2033-35) | H4:split(62/38)
 calibration-lesson: P[M&A-driven-by-EXPECTED(narrative)-value-independent-of-REALIZED(evidence)-value — hype-itself-drives-deals-before-clinical-validation|src:AI-biotech-review-R1|class:calibration]
 calibration-lesson: P[patent-cliff-is-stronger-M&A-predictor-than-technology-narrative — $236-400B-at-risk-creates-structural-buying-urgency-regardless-of-AI|src:AI-biotech-review-R1|class:pattern]
 ## AI Biotech Healthcare M&A — R3 DA responses (2026-03-18)
 task: R3 DA challenge responses | DA[#1]+DA[#3]+DA[#5]+DA[#8]
-DA[#1] H1-reconciliation: proposed 3-category framework (AI-irrelevant 55-65%|AI-additive 20-30%|AI-primary 8-15%→20-25% by 2031) | PS-RCA CONVERGENCE achieved — PS R3 adopted "deal-shaper ¬deal-engine" = aligned
+DA[#1] H1-reconciliation: proposed 3-category framework (AI-irrelevant 55-65%|AI-additive 20-30%|AI-primary 8-15%→20-25% by 2031)
 DA[#5] 173-decomposition: ~40 Phase1|~26-31 Phase2|2-3 Phase3|0 NDA | M&A-relevant(P2+)=28-34=16-20% of 173 | expected 4-8 FDA AI drugs by 2031(optimistic) / 2-5(base rate) | base rates: P1→P2=47%, P2→P3=28%, P3→NDA=55%, overall LOA=6.7% | AI P1 claimed 80-90% but vendor-forward → blended 63%
 DA[#3] Eroom's: ~50% compositional(oncology/rare-disease accelerated approval lower bar: 85% AA drugs=oncology, 57% failed confirmatory, Phase III required 26% AA vs 75% regular) + ~50% real(ROI 1.2→5.9%, biomarker stratification) | reversal UNDEMONSTRATED | STRENGTHENS R1 position | AI R&D productivity claims ~50% overstated
 DA[#8] failure-catalogue: Watson+Olive($4B)+Babylon($4.2B)+Pear($6.1M auction)+BenevolentAI(delisted Mar 2025)+Recursion(REC-994)+Cano+Mindstrong+HealthIQ = N≥5, $14B+ destroyed | systematic pattern ¬ outlier | ANA[5] ELEVATED | PM[2] revised 15-20%→20-25%
@@ -222,20 +217,6 @@ OV-REFRAME: "collapse→survive?" → "shift→early movers capture disproportio
 XVERIFY: F1(AI-S-curve): GPT-5.4=partial,Gemini=agree | F2(role-disruption-base-rates): GPT-5.4=partial,Gemini=agree
 calibration-lesson: P[within-role-displacement-driven-by-adaptation-speed-is-larger-career-risk-than-cross-role-displacement-from-AI;the-person-not-the-role-is-at-risk|src:5yr-PM-strategy-R1|class:calibration]
 calibration-lesson: P[S-curve-compression-for-AI-is-20-30%-not-80-90%;distribution-infrastructure-pre-existed-creating-illusion-of-faster-diffusion;deep-enterprise-transformation-still-10-12yr|src:5yr-PM-strategy-R1|class:pattern]
-## 5-Year PM Career Strategy — R1 findings (26.3.28)
-task: calibrate H1-H5 for senior PM 5yr career+life strategy amid AI/geopolitical/climate disruption
-SQ[1-8]: 8 sub-questions | RC[5]+ANA[5]+XVERIFY[2]+PM[7]
-H4(AI-snowballing): CONFIRMED w/temporal-caveat | P(capability-acceleration)=72% | S-curve compressed 20-30% vs prior GPTs ¬80-90% | economic impact lags 3-5yr | enterprise depth 1% mature despite 72-88% surface adoption | fiber analog: capex sustainability P=42%
-H5(PM-role): P(transformed-viable)=72% | P(eliminated)=3% | P(diminished)=25% | financial-analyst analog most relevant (grew despite automation) | travel-agent analog less relevant (14yr trough, more routine) | "PMs who use AI replace PMs who don't" = within-role displacement
-H1(geo-instability): P(elevated-through-2031)=82% | 1970s analog ¬1930s | median duration 12yr | career impact 5-15% earnings decline BUT adapters within 2yr recovered
-H2(war-spreading): P(spreading)=68% | P(WWIII)=3-5% | Cold War analog: diffuse ¬concentrated | indirect career impact
-H3(climate): P(career-impact)=30% | P(personal-finance-impact)=55% | P(career-opportunity)=75% | opportunity > threat in 5yr window
-Q6(thriving-vs-surviving): base rate 20-25% thrive, 40-50% survive, 25-35% decline | timing-of-pivot strongest predictor | skill-stacking > depth | counter-cyclical innovation
-PRE-MORTEM: adaptation-theater(20-25%,#1) + timing-misjudgment(25-30%) + disruption-stacking(15-20%) + family-constraint(15-20%)
-OV-REFRAME: "collapse→survive?" → "shift→early movers capture disproportionate value"
-XVERIFY: F1(AI-S-curve): GPT-5.4=partial,Gemini=agree | F2(role-disruption-base-rates): GPT-5.4=partial,Gemini=agree
-calibration-lesson: P[within-role-displacement-driven-by-adaptation-speed-is-larger-career-risk-than-cross-role-displacement-from-AI;the-person-not-the-role-is-at-risk|src:5yr-PM-strategy-R1|class:calibration]
-calibration-lesson: P[S-curve-compression-for-AI-is-20-30%-not-80-90%;distribution-infrastructure-pre-existed-creating-illusion-of-faster-diffusion;deep-enterprise-transformation-still-10-12yr|src:5yr-PM-strategy-R1|class:pattern]
 ## promotion — generalizable calibration lessons (26.3.28)
 
 ### auto-promoted (low-risk, cross-review applicable)
@@ -259,7 +240,6 @@ PM: scope-creep(35-42%,DA-revised) | dispatch(20-25%) | quality(15-20%) | abando
 OV: inside=65-70% | outside=42%(RC-weighted) | reconciled=35%
 DA: 5/5(2-concede,2-compromise,1-concede-critical) | P revised 50%→35%
 key-insight: Streamlit+SDK-vs-FastAPI+SDK(both need dispatch) | monitoring-UI>orchestration-UI
-cross-agent: TA-H3-aligns | 3-way-Streamlit(PD+UXR+RCA) | strangler-stall(TA+IE+RCA)
 P[monitoring-UIs-succeed-higher-rate-than-orchestration-UIs:~35-45%-vs-~20-30%;OBSERVE-agents>CONTROL-agents-via-UI;LangSmith/Langfuse-succeeded-as-monitoring,AutoGen-Studio-struggled-as-orchestration|src:sigma-ui-R1|class:pattern]
 P[explicit-RC-weighting-mandatory-when-multiple-classes-apply:unweighted-avg=false-precision;weight-by-similarity-to-GOAL(35%)+METHOD(30%)+DEPLOYMENT(25%)+ceiling(10%);DA-caught-50%→42%|src:sigma-ui-DA[#1]|class:calibration]
 P[strangler-fig-partial-stall:N-unit-migrations-with-per-unit-go/no-go-stall-at-bridge-~50-60%;P(all-N)=multiplicative;bridge-accumulates-operational-tax(compounding-cost);hard-completion-criterion-required|src:sigma-ui-R2(TA+IE+RCA)|class:pattern]

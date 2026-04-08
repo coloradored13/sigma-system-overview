@@ -23,8 +23,28 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 2→{area}: {what to check}
 
 ## Persistence (before ✓, no direct file writes)
-1. store_agent_memory(tier:project, agent:{name}, team:sigma-review) → codebase findings ΣComm
-2. store_agent_memory(tier:global, agent:{name}, team:sigma-review) → R[]/C[]/identity if updated
+
+### What belongs in global memory
+- Domain expertise that generalizes across reviews (reusable patterns, methodology)
+- R[] research with explicit freshness tracking (refreshed: + next: + stale-after:)
+- C[] calibration about YOUR methodology (how to do your job better)
+- P[] patterns observed across multiple reviews (¬single-review observations)
+
+### What does NOT belong in global memory
+- Opinions about other agents (engagement grades, who concedes, who's strong)
+- Review-specific narratives ("in the loan-admin review, we found X") — stays in archive
+- Cross-agent convergence observations ("agent X and I agreed on Y") — goes to decisions.md
+- Personal/career context from user conversations — never persisted
+- Single-review findings promoted as universal patterns (need ≥2 reviews to confirm)
+
+### Temporal data rule
+R[] entries with market data, prices, statistics, or any time-sensitive facts MUST include:
+  refreshed:{date} | next:{date} | stale-after:{date}
+!rule: stale-after date = hard expiry. Do not cite R[] past its stale-after date as current fact.
+!rule: perennial knowledge (methodologies, frameworks, technical specs) → stale-after:none
+
+1. store_agent_memory(tier:project, agent:{name}, team:sigma-review) → review-specific findings ΣComm
+2. store_agent_memory(tier:global, agent:{name}, team:sigma-review) → domain patterns + research (filtered per rules above)
 3. store_team_decision(by:{name}, weight:primary|advisory, team:sigma-review) → domain decisions
 4. store_team_pattern(team:sigma-review, agents:[names]) → cross-agent patterns
 persist complete → 5. declare ✓ in workspace + SendMessage to lead
@@ -35,8 +55,15 @@ persist complete → 5. declare ✓ in workspace + SendMessage to lead
 ## Promotion (when lead signals promotion-round)
 
 ### classify your findings
-auto-promote: calibration-self-update | pattern-confirms-existing | research-supplement
+auto-promote: methodology-improvement | pattern-confirms-existing(≥2 reviews) | research-refresh(with stale-after)
 user-approve: new-principle | anti-pattern-new | contradicts-global | new-global-decision | behavior-change
+NEVER promote: review-specific-narrative | agent-about-agent-opinion | cross-agent-convergence | personal-context
+
+### filter tests (apply to each candidate)
+1. "Is this about MY domain, or about another agent?" → other agent = reject
+2. "Would this be useful in a review on a completely different topic?" → no = review-specific, reject
+3. "Is this a single observation or a pattern across reviews?" → single = defer until confirmed
+4. "Does this contain time-sensitive data?" → yes = must have stale-after date or reject
 
 ### check global memory
 get_agent_memory(team:sigma-review, agent:{name}) → read global P[]/C[]/R[]
@@ -48,6 +75,8 @@ per auto item:
   distill: compress finding→generalizable learning (¬project-specific detail, keep project name as src)
   store_agent_memory(tier:global, agent:{name}, team:sigma-review):
     P[{distilled}|src:{project-name}|promoted:{date}|class:{pattern|calibration}]
+  R[] with temporal data:
+    R[{topic}|{data}|src:{sources}|refreshed:{date}|next:{date}|stale-after:{date}]
 
 ### submit for approval
 per user-approve item:

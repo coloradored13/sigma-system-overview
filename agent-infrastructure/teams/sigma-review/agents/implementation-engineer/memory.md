@@ -7,7 +7,7 @@ Expertise: Python implementation, API integration, test writing, error handling,
 ## research
 
 ### T1 — Python async patterns (26.3.24)
-R[asyncio/concurrent.futures best practices | 26.3.24 | source:independent-research]
+R[asyncio/concurrent.futures best practices | 26.3.24 | source:independent-research | stale-after:26.9.24]
 - asyncio: I/O-bound concurrency only. async def must not wrap blocking ops — blocks entire event loop
 - blocking ops: use loop.run_in_executor(ThreadPoolExecutor) to offload without blocking event loop
 - cross-thread: run_coroutine_threadsafe() returns concurrent.futures.Future
@@ -19,7 +19,7 @@ R[asyncio/concurrent.futures best practices | 26.3.24 | source:independent-resea
 - urls: https://docs.python.org/3/library/asyncio-dev.html | https://www.newline.co/@zaoyang/python-asyncio-for-llm-concurrency-best-practices--bc079176
 
 ### T2 — Pydantic v2 patterns (26.3.24)
-R[Pydantic v2 validators/composition/serialization | 26.3.24 | source:independent-research]
+R[Pydantic v2 validators/composition/serialization | 26.3.24 | source:independent-research | stale-after:26.9.24]
 - validators: @field_validator with before/after modes — precise lifecycle control, early rejection
 - model_config: use ConfigDict(from_attributes=True, populate_by_name=True, extra='forbid', str_strip_whitespace=True) as sane base
 - serialization: model_dump() / model_dump_json() — nested models serialize predictably; only annotated fields included (security benefit)
@@ -32,7 +32,7 @@ R[Pydantic v2 validators/composition/serialization | 26.3.24 | source:independen
 - urls: https://docs.pydantic.dev/latest/concepts/models/ | https://medium.com/@ThinkingLoop/12-pydantic-v2-model-patterns-youll-reuse-forever-543426b3c003
 
 ### T3 — Error handling: Result vs exceptions (26.3.24)
-R[Python Result types vs exceptions | 26.3.24 | source:independent-research]
+R[Python Result types vs exceptions | 26.3.24 | source:independent-research | stale-after:27.3.24]
 - Result type: explicit return for known failure modes (not exceptional, expected outcomes)
 - exceptions: best when failure propagation is deep and caller does not need to check every op
 - `returns` library: provides Result monad, pipeline composition for functions returning Result
@@ -42,7 +42,7 @@ R[Python Result types vs exceptions | 26.3.24 | source:independent-research]
 - urls: https://www.inngest.com/blog/python-errors-as-values | https://aaronluna.dev/blog/error-handling-python-result-class/
 
 ### T4 — pydantic-settings / configuration management (26.3.24)
-R[Python config management patterns | 26.3.24 | source:independent-research]
+R[Python config management patterns | 26.3.24 | source:independent-research | stale-after:26.9.24]
 - pydantic-settings: BaseSettings reads from env vars, .env files, with priority layering
 - environment layering: defaults < .env file < env vars < CLI args
 - type coercion automatic from string env vars (bool, int, list parsing)
@@ -51,7 +51,7 @@ R[Python config management patterns | 26.3.24 | source:independent-research]
 - urls: https://docs.pydantic.dev/latest/concepts/pydantic_settings/
 
 ### T5 — Testing best practices (26.3.24)
-R[Python testing pyramid/strategy 2025 | 26.3.24 | source:independent-research]
+R[Python testing pyramid/strategy 2025 | 26.3.24 | source:independent-research | stale-after:26.9.24]
 MOCK STRATEGY:
 - mock only what you don't control (external APIs, 3rd-party services, hardware)
 - use real implementations wherever feasible — over-mocking couples tests to impl details
@@ -76,7 +76,7 @@ FIXTURE PATTERNS:
 - urls: https://semaphore.io/blog/property-based-testing-python-hypothesis-pytest | https://danielsarney.com/blog/python-testing-best-practices-2025-building-reliable-applications/
 
 ### T6 — Code organization: clean arch + DI (26.3.24)
-R[Python clean architecture / ports-adapters / DI 2025 | 26.3.24 | source:independent-research]
+R[Python clean architecture / ports-adapters / DI 2025 | 26.3.24 | source:independent-research | stale-after:27.3.24]
 LAYERS (dependencies point inward):
 1. Entities/Domain — pure business objects, zero external deps
 2. Use Cases/Application — orchestrate entities, depend on port interfaces (ABCs)
@@ -106,7 +106,7 @@ WHEN ABSTRACTION HURTS:
 - urls: https://www.glukhov.org/post/2025/11/python-design-patterns-for-clean-architecture/ | https://johal.in/hexagonal-architecture-design-python-ports-and-adapters-for-modularity-2026/
 
 ### T7 — Pipeline/workflow implementation (26.3.24)
-R[Python data pipeline patterns 2025 | 26.3.24 | source:independent-research]
+R[Python data pipeline patterns 2025 | 26.3.24 | source:independent-research | stale-after:26.9.24]
 ORCHESTRATION TOOLS:
 - Dagster: declarative, asset-centric model, strong for data products
 - Airflow: DAG-based, widest operator library, mature ecosystem
@@ -137,7 +137,7 @@ QUEUE-BASED:
 - urls: https://github.com/jd/tenacity | https://www.abstractalgorithms.dev/data-pipeline-orchestration-pattern-dag-retries-and-recovery
 
 ### T8 — Performance and optimization (26.3.24)
-R[Python profiling + performance 2025-2026 | 26.3.24 | source:independent-research]
+R[Python profiling + performance 2025-2026 | 26.3.24 | source:independent-research | stale-after:26.9.24]
 PROFILING TOOLS:
 - cProfile: deterministic, stdlib, measures every call — high overhead, use for dev/staging only
 - py-spy: sampling profiler, written in Rust, zero code changes, safe on production processes
@@ -167,7 +167,7 @@ MEMORY (long-running processes):
 - urls: https://github.com/benfred/py-spy | https://jcristharif.com/msgspec/benchmarks.html | https://morethanmonkeys.medium.com/comparing-json-and-orjson-in-python-which-json-library-should-you-use-in-2025-850cd39ecb7d
 
 ### T9 — Migration and backward compatibility (26.3.24)
-R[Python schema migration / backward compat 2025 | 26.3.24 | source:independent-research]
+R[Python schema migration / backward compat 2025 | 26.3.24 | source:independent-research | stale-after:27.3.24]
 PYDANTIC MODEL VERSIONING:
 - use inheritance for version chains: ModelV2(ModelV1) extends/overrides fields
 - pydantic.v1 namespace for gradual v1-to-v2 migration (no breaking change)
@@ -199,7 +199,7 @@ API VERSIONING STRATEGIES:
 - urls: https://docs.pydantic.dev/latest/migration/ | https://docs.getunleash.io/guides/gradual-rollout | https://www.builder.io/blog/feature-flags-api-versions
 
 ### T10 — Clean code principles: refactoring + code smells (26.3.24)
-R[Fowler refactoring catalog / Beck four rules / code smell taxonomy | 26.3.24 | source:independent-research]
+R[Fowler refactoring catalog / Beck four rules / code smell taxonomy | 26.3.24 | source:independent-research | stale-after:27.3.24]
 KENT BECK FOUR RULES OF SIMPLE DESIGN (priority order):
 1. Tests pass — code must work
 2. Reveals intention — naming and structure communicate purpose
@@ -230,7 +230,7 @@ WHEN NOT TO REFACTOR:
 - urls: https://martinfowler.com/books/refactoring.html | https://xp123.com/articles/speculative-generality/ | https://dhh.dk/2014/test-induced-design-damage.html
 
 ### T11 — Architecture patterns: hexagonal, modular monolith, event-driven (26.3.24)
-R[Hexagonal / modular monolith / CQRS / event sourcing when-warranted | 26.3.24 | source:independent-research]
+R[Hexagonal / modular monolith / CQRS / event sourcing when-warranted | 26.3.24 | source:independent-research | stale-after:27.3.24]
 HEXAGONAL (PORTS AND ADAPTERS):
 - operates at component level — orthogonal to mono vs. micro decision
 - input ports: ABCs for driving adapters (HTTP, CLI, tests)
@@ -270,7 +270,7 @@ DDD LIGHTWEIGHT (bounded contexts + ubiquitous language, without full tactical c
 - urls: https://medium.com/@the_atomic_architect/architecture-patterns-that-actually-scale-in-2025-the-only-three-you-need-89d1488c60a7 | https://martinfowler.com/bliki/BoundedContext.html | https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs
 
 ### T12 — Testing philosophy: Test Desiderata, pyramid vs diamond, mutation testing (26.3.24)
-R[Kent Beck Test Desiderata / pyramid-diamond / sociable-solitary / mutation testing | 26.3.24 | source:independent-research]
+R[Kent Beck Test Desiderata / pyramid-diamond / sociable-solitary / mutation testing | 26.3.24 | source:independent-research | stale-after:27.3.24]
 KENT BECK TEST DESIDERATA (12 properties — tradeoffs, not checklist):
 1. Isolated — result independent of other tests
 2. Composable — test dimensions separately, combine results
@@ -311,7 +311,7 @@ MUTATION TESTING (test quality assessment):
 - urls: https://medium.com/@kentbeck_7670/test-desiderata-94150638a4b3 | https://github.com/codeintegrity-ai/mutahunter | https://engineering.fb.com/2025/09/30/security/llms-are-the-key-to-mutation-testing-and-better-compliance/
 
 ### T13 — Error handling across paradigms (26.3.24)
-R[Railway-oriented programming / error categorization / circuit breaker / bulkhead | 26.3.24 | source:independent-research]
+R[Railway-oriented programming / error categorization / circuit breaker / bulkhead | 26.3.24 | source:independent-research | stale-after:27.3.24]
 RAILWAY-ORIENTED PROGRAMMING (ROP):
 - every function returns Success or Failure track; composition routes failures around subsequent steps
 - implemented via Result/Either monad — errors as values, explicit in type signature
@@ -346,7 +346,7 @@ BULKHEAD PATTERN:
 - urls: https://fsharpforfunandprofit.com/rop/ | https://dzone.com/articles/circuit-breaker-pattern-resilient-systems | https://www.codecentric.de/en/knowledge-hub/blog/resilience-design-patterns-retry-fallback-timeout-circuit-breaker
 
 ### T14 — API design principles (26.3.24)
-R[Richardson maturity / API versioning / idempotency / pagination / rate limiting | 26.3.24 | source:independent-research]
+R[Richardson maturity / API versioning / idempotency / pagination / rate limiting | 26.3.24 | source:independent-research | stale-after:27.3.24]
 RICHARDSON MATURITY MODEL (4 levels):
 - L0: single endpoint, single verb (RPC over HTTP) — not REST
 - L1: multiple resources (separate URIs per resource) — basic REST
@@ -380,7 +380,7 @@ RATE LIMITING AND BACKPRESSURE:
 - urls: https://martinfowler.com/articles/richardsonMaturityModel.html | https://embedded.gusto.com/blog/api-pagination/ | https://slack.engineering/evolving-api-pagination-at-slack/
 
 ### T15 — Technical debt management (26.3.24)
-R[Cunningham debt metaphor / debt quadrant / strangler fig / refactor vs rewrite | 26.3.24 | source:independent-research]
+R[Cunningham debt metaphor / debt quadrant / strangler fig / refactor vs rewrite | 26.3.24 | source:independent-research | stale-after:27.3.24]
 WARD CUNNINGHAM'S ORIGINAL METAPHOR (1992):
 - "shipping first time code is like going into debt — a little debt speeds development so long as it is paid back promptly with a rewrite"
 - interest = time lost on future changes due to not-quite-right code
@@ -415,7 +415,7 @@ STRANGLER FIG PATTERN (Fowler):
 - urls: https://martinfowler.com/bliki/TechnicalDebtQuadrant.html | https://martinfowler.com/bliki/StranglerFigApplication.html | https://shopify.engineering/refactoring-legacy-code-strangler-fig-pattern
 
 ### T16 — Observability and debugging (26.3.24)
-R[Three pillars / structured logging / correlation IDs / production debugging | 26.3.24 | source:independent-research]
+R[Three pillars / structured logging / correlation IDs / production debugging | 26.3.24 | source:independent-research | stale-after:27.3.24]
 THREE PILLARS OF OBSERVABILITY:
 - logs: discrete events; archival record; structured preferred over plain text
 - metrics: numerical measurements over time (latency, error rate, CPU); alerting backbone
@@ -484,6 +484,7 @@ PRACTICAL PATTERNS:
 - DDD tactical patterns (repositories, factories) are high ceremony; bounded contexts + ubiquitous language deliver 80% of the value with much lower cost
 - strangler fig is slower than a rewrite but consistently safer; rewrites systematically underestimate cost (second system effect)
 - mutation testing is expensive — run on critical paths only; use after coverage gaps already closed
+- sociable tests over purely solitary tests when isolation cost > value
 
 ## patterns (promoted 26.3.28 — sigma-ui review)
 
@@ -495,72 +496,9 @@ Agent SDK dismissed as "0.x premature" based on locally installed version — DA
 
 P[convention-only-async=design-defect|src:sigma-ui|promoted:26.3.28|class:calibration]
 Convention-only async enforcement ("use asyncio.to_thread() where needed") = design defect in FastAPI/async servers. Single blocking call (openai.OpenAI(), google.genai.Client(), file I/O) in async context stalls ALL concurrent dispatches — single-threaded event loop, no error raised, stall is silent under load. Fix: thin async adapter class wrapping ALL sync client methods at boundary + ruff ASYNC100/ASYNC101 lint rule + pytest-asyncio timeout integration tests. Framing as "acknowledged risk" is wrong — this requires architectural fix, not risk acceptance.
-S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.28|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
 
 
 ## patterns (auto-promoted from project work)
 
 P[strenum-derived-frozenset-validation|src:sigma-ui-B1|promoted:26.3.29|class:pattern]
 When implementing string-validated enum fields in Python, derive the validation frozenset FROM the enum: `_VALID = frozenset(tag.value for tag in MyEnum)`. This guarantees a single canonical source — adding a member to the enum automatically adds it to validation. Using an independently-defined frozenset creates drift risk (add to enum, forget frozenset, or vice versa). ADR[5]/DA[#3] in sigma-ui B1 caught an independent frozenset definition and required derivation. O(1) membership check preserved. Pattern: always pair StrEnum with `_VALID_X = frozenset(tag.value for tag in X)`.
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.29|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-S[26.3.30|agent:implementation-engineer|sdk-dispatch|fallback]: S[test] sdk-dispatch test entry — safe to ignore
-
-→ sociable tests over purely solitary tests when isolation cost > value

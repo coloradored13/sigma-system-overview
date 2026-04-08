@@ -12,17 +12,9 @@ sigma-comm[standalone spec SIGMA-COMM-SPEC.md, 210 lines, shareable|26.3.7]
 sigma-system-overview[meta-repo, submodules, setup.sh, ARCHITECTURE.md, case study|26.3.7]
 
 ## past findings
-review-1(sigma-mem,26.3.7): strong differentiation(HATEOAS unique), audience-of-one risk, no docs/README |#4
-review-2(sigma-mem,26.3.7): alpha quality reached, shipping blockers(README,LICENSE,git,hateoas-agent-publish) |#3
-review-3(sigma-mem,26.3.7): persistent-teams=category-change, three-product-portfolio |#4
-review-4(hateoas-agent,26.3.7): SHIP-READY, README best-in-class, positioning genuine(deterministic-vs-probabilistic), name keep-for-v0.1, LICENSE needs author, anthropic-only limits audience, api-surface large-for-alpha |#6
-review-5(hateoas-agent,26.3.7): SHIP-GO, all substantive blockers resolved, 3 mechanical prereqs remain(git-init,rebuild-dist,update-examples-in-README) |#3
-review-6(hateoas-agent,26.3.7): delta confirms 3/5 review-5 items resolved(_state-docs,Resource.validate,examples-list), 2 mechanical blockers remain(git-init,rebuild-dist), grade:A-, market position unchanged+strong |#6
-review-7(full-system,26.3.7): SHIP-GO, 16-issue audit resolved, portfolio A-, launch readiness A-, competitive position A. Found: GitHub URL inconsistency(bjgilbert vs coloradored13, medium), pip-install-commands-assume-PyPI(medium), sigma-mem LICENSE no author(low), sigma-mem README stats stale(550→1382 LOC). sigma-system-overview is strong entry point — README+ARCHITECTURE+SETUP+case-study. CI on both repos. setup.sh idempotent. No new competitive threat. |#5
-review-8(thriveapp,26.3.8): first external project. RN/Expo health behavior change, 10-domain arch, Prompt 4/10. compliance(A),flags(B-),boundary(A),behav-sci(A+),safety(B),overall(A-). SHIP-phase-4-GO, SHIP-phase-1-NO. Blockers: crisis-absent(CRIT),AUDIT-C-absent(HIGH),notif-stub(HIGH),12/13-flags-decorative(HIGH),flag-cache(MED). 81KB design doc exceptional. Behav-sci compliance exemplary. |#8
+(review-specific findings archived — retained patterns+calibration below)
 
 ## calibration
-C[user builds side projects at night, ships when ready not when told|1|26.3]
 C[sigma-mem evolved toward persistent team memory — confirmed|2|26.3]
 C[hateoas-agent more polished than expected for side project alpha|1|26.3]
 C[hateoas-agent README is ship-ready, exceptional quality|1|26.3]
@@ -74,66 +66,26 @@ R[loan-admin-dynamics: bank-disintermediation(Basel-III+conflict)=structural |PC
 
 R[disruption-base-rate-financial-admin: loan-admin≈fund-admin(relationship+trust+regulatory) ¬payments |SS&C+Citco+AD=survived-fintech |15-25%-new-entrant-share-over-10yr ¬winner-take-all |consensus-positioning(5+-co-movers:Hypercore,Juniper-Square,Allvue,timveroOS,Atominvest) |refreshed:26.3.11 |next:26.4] #4
 
-## review-9 findings
-review-9(loan-admin-agent,26.3.11): r1 research complete. 8 findings(F1-F8). Market timing favorable(4 tailwinds). Entry via mid-market private credit. Hypercore=closest startup competitor($13.5M,AI-native,tiny-$20B). Consensus positioning(5+ co-movers)→execution>novelty. Base rate:15-25% new-entrant share over 10yr. Entry cost:$15-30M to PMF. Strong alignment with tech-architect on AI-doc-parsing+API-first+configurable-waterfall as top differentiators.
-
-## review-10: biotech-healthcare M&A r3 DA responses (26.3.18)
-
-H1-REVISED: PARTIALLY CONFIRMED |conceded-R1-CONFIRMED→PARTIALLY-CONFIRMED |DA[#1] correct |AI=deal-shaper ¬deal-engine
-- patent cliff(75-80%)+rates+firepower = primary M&A volume engine |source:[independent-research]
-- AI = ~20-25% of total M&A value by 2031, rising from ~10% 2025 |source:[agent-inference]
-- AI creates new target categories + reshapes premium stratification ¬creates M&A demand wave
-- reconciled with RCA: AI=ADDITIVE-¬PRIMARY | both now PARTIALLY-CONFIRMED
-
-173-programs-decomposition: ~120 Phase I (~69%) | ~45 Phase II (~26%) | ~8 Phase III/pivotal (~5%)
-- DA[#5]/[#8] correct: quantity ¬quality | M&A-relevant near-term = 15-20 pivotal
-- AI-molecule M&A peak revised: 2028-2030 | platform M&A (buy engine) = 2026-2027 window
-
-sector-gaps-R3(new): liquid biopsy+multi-omics = TIER-1 (material R1 omission) | lab automation AI = TIER-2 (new)
-- dental AI = adjacent/modest-scale | vet AI + agri-biotech = out-of-scope (different acquirer universe)
-- Abbott/Exact Sciences Q2-2026-close | Samsung/GRAIL $110M | Natera/Foresight = liquid biopsy M&A active NOW
-
-§2e-complete:
-- Sub-A(new target categories)=VIABLE-CONFIRMED for Tier-1 platforms
-- Sub-B(AI premium)=PARTIALLY-VIABLE (conditional on clinical validation)
-- Sub-C(accelerates M&A pace)=NOT-CONFIRMED (cliff-driven ¬AI-driven)
-- falsify-test-1: ≤3 AI-native acq >$1B 2026-2028 + Phase III failures → premise falsified
-- falsify-test-2: AI-biotech correction >40% + M&A continues at sector-average multiples → premium falsified
-- strongest-alternative: AI=durable-marketing-label-on-cliff-driven-wave | P=25-30%
-
-PATTERN-LEARNED: concession ¬weakness | DA[#1] correct | RCA outside-view = correct synthesis anchor
-calibration: C[R1-confirmed-framing-was-overconfident,DA-challenge-exposed-confirmatory-bias|2|26.3.18]
+(biotech-healthcare M&A review findings archived — key pattern: AI=deal-shaper¬deal-engine, patent-cliff=primary-M&A-driver)
+C[R1-confirmed-framing-was-overconfident,DA-challenge-exposed-confirmatory-bias|2|26.3.18]
 
 ## review-11: hateoas-agent v0.2 improvement evaluation (26.3.25)
+(review-specific findings archived — key domain insight: PyPI-publication+onboarding-gap=persistent-blockers-across-3-review-cycles)
 
-review-11(hateoas-agent,26.3.25): product-strategist R1 complete. 8 findings(F1-F8).
-F2[CRITICAL]:PyPI not published — unresolved after review-5+review-6 mechanical prerequisites. Single largest adoption blocker.
-F3[HIGH]:Orchestrator/v0.2 onboarding gap — 20+ symbols in __init__.py, zero orchestration examples in examples/, README silent on v0.2 entirely.
-F4[HIGH]:model-agnostic Runner absent — flagged review-4 as #1 growth lever, v0.2 did not address. LangGraph/CrewAI/OpenAI SDK all model-agnostic.
-F1[HIGH]:LangGraph dynamic tool calling confirmed 2026 — competitive gap narrowed. Reframe: "deterministic/security" framing contestable (gpt-5.1 PARTIAL verify). Correct frame: "correctness by construction + zero boilerplate" = design fact not behavior claim.
-F6[MEDIUM]:GitHub URL bjgilbert vs coloradored13 still unresolved (review-7 finding, 2 cycles stale).
-H1:PARTIAL(B+ arch, C+ adoption — PyPI blocker holds grade).
-H3:PARTIALLY CONFIRMED — onboarding gap confirmed, architecture clean (Orchestrator IS HasHateoas correctly).
-Cross-agent convergence: tech-architect + technical-writer + product-strategist independently converge on same 2 root gaps: PyPI + v0.2 undiscoverable. Zero dissent. High confidence. |#8
-
-## review-10 findings — warehouse game (warehouse-lms-analysis, 26.3.18)
+## warehouse game research (26.3.18)
 
 R[warehouse-game-gamification-market: Gartner-40%-large-warehouse-adoption-by-2028 | Lucas-Systems-84%-workers-favorable-gamified-workplaces | Gen-Z-90%-favorable,Boomers-80%+ | current-warehouse-gamification=performance-motivation(leaderboards,badges) ¬cognitive-assessment | Pymetrics-model(12-games,91-traits)=closest-analogue-but-white-collar-hiring ¬warehouse | Infios/Korber/Kenco=active-deployments | src:gartner,lucasware.com,stratbeans.com,harver.com|refreshed:26.3.18|next:26.4]
 
-R[warehouse-game-authenticity-risk: arxiv-2508.09438=warehouse-workers-explicitly-game-algorithmic-management | assessment-context-suppresses-authentic-behavior | warehouse-game=domain-familiar-workers=obvious-right-answers=lower-signal-quality | H3-partially-challenged | src:arxiv,lucasware.com|26.3.18]
+R[warehouse-game-authenticity-risk: arxiv-2508.09438=warehouse-workers-explicitly-game-algorithmic-management | assessment-context-suppresses-authentic-behavior | warehouse-game=domain-familiar-workers=obvious-right-answers=lower-signal-quality | H3-partially-challenged | src:arxiv,lucasware.com|refreshed:26.3.18|next:26.9]
 
-R[warehouse-game-product-theses: Thesis-A=hiring-assessment(Pymetrics-model,EEOC-risk) | Thesis-B=training-gap-diagnostic | Thesis-C=operational-insight-workers-as-domain-experts | Thesis-C=most-defensible+least-legally-fraught+best-H3-mitigation | combine-with-movement-data=stated-vs-revealed-preference-analysis | src:agent-inference|26.3.18]
+R[warehouse-game-product-theses: Thesis-A=hiring-assessment(Pymetrics-model,EEOC-risk) | Thesis-B=training-gap-diagnostic | Thesis-C=operational-insight-workers-as-domain-experts | Thesis-C=most-defensible+least-legally-fraught+best-H3-mitigation | combine-with-movement-data=stated-vs-revealed-preference-analysis | src:agent-inference|refreshed:26.3.18|next:26.9]
 
-R[warehouse-game-data-fusion: H4(game+movement=insight)=most-unvalidated-claim | requires:(a)identity-matching(b)temporal-alignment(c)construct-mapping | no-warehouse-specific-behavioral-correlation-precedent | treat-as-hypothesis-not-assumption | src:agent-inference|26.3.18]
-
-review-10(warehouse-game,26.3.18): ✓ 7-findings. 3-hygiene-checks(all-outcome-2). KEY: (1)game-justified-for-C1-accessibility ¬measurement-superiority (2)Thesis-C=recommended (3)H4=most-unvalidated (4)prompt-laundering=H2+H3+H4-as-assumptions (5)under-5min-sessions=prerequisite (6)alternatives:SJT+Alt-C-embedded-LMS-logging
+R[warehouse-game-data-fusion: H4(game+movement=insight)=most-unvalidated-claim | requires:(a)identity-matching(b)temporal-alignment(c)construct-mapping | no-warehouse-specific-behavioral-correlation-precedent | treat-as-hypothesis-not-assumption | src:agent-inference|refreshed:26.3.18|next:26.9]
 
 C[loan-admin=relationship-market: law-firms+PE-sponsors=primary-channels ¬direct-marketing |SRS:88%-PE=distribution-moat |1|26.3]
 C[consensus-positioning-risk: 5+-co-movers on AI-admin-thesis |execution-speed>thesis-novelty |Hypercore-12-18mo-head-start |1|26.3]
 C[mid-market-PC=best-entry: less-competitive,higher-pain,fastest-growing(BDC-explosion) ¬mega-BSL(AD-entrenched) |1|26.3]
 C[first-non-sigma-domain-analysis: loan-admin/private-credit market is deep, complex, relationship-driven — different dynamics than OSS/dev-tools |1|26.3]
-
-review-9-r2(loan-admin-agent,26.3.11): DA-responses-complete(5-challenges). KEY-CHANGES: (1)AI-parsing→table-stakes(DA[#1]-compromise) (2)incumbent-narrative-revised:"integration-debt" ¬"aging-tech"+Dynamo-2026-evidence(DA[#2]-compromise) (3)unit-economics-modeled:$5M-ARR@140-330-facilities,$5-10.7M/yr-burn,breakeven-month-30-42(DA[#4]-compromise) (4)3-disagreements-w/-tech-architect:build-sequence,Loan-IQ-timing,AI-readiness(DA[#5]-defend) (5)moat-rebuilt:charter+independence+relationships+speed ¬data-flywheel(DA[#6]-concede) |reg-specialist-integrated:NH-charter-Phase-1,Hypercore=SaaS-ceiling,$13-27M-validated |positioning:independent+chartered+tech-enabled+AI-integrated
 
 C[DA-challenges-improve-analysis: conceding-flywheel+revising-narrative=stronger-deliverable |honest-concessions>defensive-posturing |2|26.3]
 C[unit-economics-modeling-should-be-r1: DA-forced-explicit-model |next-time-model-economics-in-research-round |1|26.3]
@@ -150,35 +102,16 @@ R[survey-data-loan-admin: CSC(82%-GP-use-agents,88%-expect-increase,40%-LP-rejec
 C[market-window-compressed: 24-36mo(prior)→18-24mo(current) |3-well-funded-Q1-2026-moves(S&P,GLAS-Oakley,Hypercore) |urgency-increased |2|26.3]
 C[82%-usage=displacement-play: market-is-served ¬underserved |must-be-materially-better ¬just-present |40%-LP-rejection=quality-gap-is-the-opening |1|26.3]
 C[distribution>technology-for-moat: law-firms-select-agent-60%+-of-PC-deals |SRS-88%-PE=channel-proof |relationships-take-2-3yr ¬tech-features |1|26.3]
-review-10-r2(loan-admin-agent,26.3.11): DA-responses-complete(6-challenges:DA[#1-#6]). KEY-CHANGES: (1)AI-features=table-stakes,closed-loop-integration=differentiator(DA[#1]-compromise) (2)incumbent-narrative-revised:"integration-debt" ¬"aging-tech"(DA[#2]-compromise,no-client-defection-evidence) (3)integrated-cost-model:$14.5-22M-total,$20M-Series-A-viable(DA[#3]-compromise) (4)displacement-path:40%-greenfield+30%-successor+30%-sponsor-mandate(DA[#4]-compromise) (5)data-flywheel-REMOVED-from-moat(DA[#6]-full-concede) (6)alternatives-analyzed:BUILD-primary,acquire-Hypercore-defer,white-label-reject,null-EV-positive-high-variance (7)margin-path:46%→56-61%(24-36mo),70%-aspirational(48-60mo) (8)compliance-native=18-24mo-temp-advantage→relationship-lock-in(permanent) |1-new-divergence:build-sequence(PS:charter-first vs TA:waterfall-first)
-
 C[incumbent-tech-narrative: ¬"aging-tech"→"integration-debt-from-M&A" |AD-Bain-$30B=proof-clients-tolerate |Drawdown-2026:"consolidation-concerns-around-service-levels"=indirect-evidence ¬direct |2|26.3]
 C[displacement-vs-greenfield: 82%-served-market=displacement-play BUT mix=40%-greenfield(new-BDC-launches)+30%-successor(inbound)+30%-displacement |not-pure-displacement |1|26.3]
 C[alternatives-modeling-essential-r1: DA[#5]-correctly-identified-no-agent-tested-null-hypothesis |should-include-alternatives-in-r1-research-round |1|26.3]
 
-## promotion-log
-promotion-round(loan-admin,26.3.11): 6-auto-promoted(3-calibration-updates,1-pattern-confirm,2-research-supplements) + 5-user-approve-candidates(3-new-principle,1-anti-pattern,1-behavior-change) |written-to-workspace
-
-### auto-promoted
-C[26.3.11] market-window: 18-24mo-gross,6-12mo-net-of-regulatory |confidence:HIGH-UPDATED |src:loan-admin
-C[26.3.11] TAM-narrowing: always-subset-to-addressable ¬headline |3-step(total→segment→addressable) |confidence:HIGH |src:loan-admin
-C[26.3.11] market-entry-pipeline: greenfield-first(40%)+successor(30%)+mandate(30%) ¬pure-displacement |confidence:HIGH |src:loan-admin
-P[herding-at-3-agents-confirmed |src:loan-admin |promoted:26.3.11 |class:pattern-confirm]
-R[26.3.11] Q1-2026-competitive-moves: 5-major-events-compressing-window |src:loan-admin
-R[26.3.11] alternatives-analysis-framework: build/acquire/license/null |src:loan-admin
-
-### user-approve-submitted
-UA-1: distribution>technology-for-finserv-moat |new-principle
-UA-2: alternatives-analysis-essential-from-r1 |new-principle
-UA-3: data-flywheel-moat-claims-at-zero-AUA |anti-pattern
-UA-4: incumbent-narrative-framing-discipline |new-principle
-UA-5: margin-path-milestones-as-standard-§2c |behavior-change
+(promotion-log archived — promoted P[] entries retained below)
 P[distribution>technology-for-finserv-moat: in-financial-services,relationships+distribution-channels(law-firm-referrals,PE-sponsors)=more-durable-moats-than-technology. Tech-advantages-convert-to-relationship-lock-in-over-facility-lifecycles(3-7yr). SRS-88%-PE=channel-proof |src:loan-admin |promoted:26.3.12 |class:new-principle]
 P[alternatives-analysis-essential-from-r1: teams-should-model-build/buy/partner/don't-build-from-round-1 ¬only-after-DA-forces-it. Prevents-herding-on-"build-it"-thesis. DA[#5]-forced-this-correction-in-loan-admin-review |src:loan-admin |promoted:26.3.12 |class:new-principle]
 P[data-flywheel-moat-claims-at-zero-scale=anti-pattern: claiming-data-network-effects-when-incumbents-have-1000x-more-data=not-credible. Data-flywheel-meaningful-only-above-threshold($50B+-AUA,3-5yr-for-loan-admin). Don't-claim-data-moats-pre-scale. DA[#6]-full-concession |src:loan-admin |promoted:26.3.12 |class:anti-pattern]
 P[incumbent-narrative-framing-discipline: use-observable-facts("M&A-assembled,6-acquisitions,integration-debt") ¬pejoratives("aging-tech-stacks"). Incumbents-shipping-AI+winning-clients-disproves-"slow"-framing. Always-check-latest-incumbent-capabilities-before-claiming-weakness |src:loan-admin |promoted:26.3.12 |class:new-principle]
 P[margin-path-milestones-as-standard-§2c: when-agents-model-margin-improvement,require-explicit-milestones-with-confidence-levels+base-rate-risk. "46%→70%-in-3-5yr"=vague. "46%→56-61%-in-24-36mo(high-confidence)+70%-aspirational-at-48-60mo(low-confidence)"=specific. Complementary-to-DA-burn-multiple-check |src:loan-admin |promoted:26.3.12 |class:behavior-change]
-## review-9-v2 findings (loan-admin-agent, 26.3.12)
 R[PC-AUM-2026-update: $2T+(2026)→$4T(2030)→$5T(2029-MS) |BDC-nontraded=$200B(from-zero-2021)→$1T(2030) |AIMA:$3.5T-already |src:morganstanley,aima,cleary,ares,moodys |refreshed:26.3.12 |next:26.4] #5
 
 R[competitive-moves-Q1-2026-update: S&P-DataXchange+AmendX(Mar-3-2026,AI-doc-cat,no-fee-lender) |GLAS-Oakley+LaCaisse(Jan-2026,$1.35B,$750B-AUA,40%-organic) |Hypercore-$13.5M-Series-A(Feb-2026,Insight,$20B-AUM,10K-loans,3.5x-CARR) |Versana($3.5T-notional,6000-facilities,bank-backed,BSL-only) |AD+Vistra=15-20%-combined-share |=rapid-acceleration-3-moves-in-90-days |src:spglobal,oakley,prnewswire,versana |refreshed:26.3.12 |next:26.4] #8
@@ -187,21 +120,9 @@ R[GP-selection-criteria-2026: timely-accurate-reporting(72%)+responsive-service(
 
 R[AD-technology-2026: Agency360=proprietary(calculations,notices,payments,tax) |CorPro=client-portal |domusAI=AI-features-in-production |$5.3B-EV(Bain) |$2.5T-AUA |6-acquisitions-assembled |integration-debt(¬aging-tech) |src:alterdomus,businesswire |refreshed:26.3.12 |next:26.4] #5
 
-review-9-v2(loan-admin-agent,26.3.12): r1 research complete(v2-specialist-team). 10 findings(F1-F10). Key changes from prior review: PC-AUM-forecasts-upgraded($3.5T-AIMA-already-vs-prior-$3T-target), competitive-acceleration(3-Q1-moves-in-90-days), distribution>technology-confirmed-as-primary-moat(GP-criteria:service-72%+relationships-69%>tech-21%), alternatives-analysis-included-from-r1(per-promoted-pattern). BUILD-recommended-primary. Window=18-24mo-gross. Mid-market-PC=entry-segment.
-
 C[GP-selection-weights-confirm-distribution-thesis: technology=21%-of-selection-criteria vs service=72%+relationships=69% |distribution-investment>tech-investment for moat-building |1|26.3]
 C[PC-AUM-forecasts-upgrading-rapidly: AIMA-says-$3.5T-already vs Morgan-Stanley-$5T-by-2029 |prior-estimates-conservative |1|26.3]
 C[3-competitive-moves-in-90-days-Q1-2026: pace-unprecedented(S&P+GLAS-Oakley+Hypercore-in-Jan-Mar-2026) |confirms-market-window-compression |2|26.3]
-## review-9-v2-deepened findings (loan-admin-agent, 26.3.12, v2-specialist-team)
-review-9-v2-DEEP(loan-admin-agent,26.3.12): r1-v2 complete. 7 NEW findings(F1v2-F7v2) covering all 7 v2 scope items. ¬repeating v1. Key NEW analysis:
-(1)COMPETITIVE-MOAT-EVOLUTION:5-moves-in-90-days=consolidation-phase,tech-window-shrinking-12-18mo→6-12mo,Allvue-Agentic-AI+Versana-infrastructure=adjacent-threats,capital-req-REVISED-$20-35M(from-$15-30M)
-(2)GO-TO-MARKET-SEQUENCING:3-phase(sub-$500M-greenfield→$500M-$2B-successor→$2B+-BSL),cross-referenced-loan-ops-tech-F1/F3/F4
-(3)PRICING:3-models(flat=$15-75K,AUA-bps=1-5,hybrid=platform+service),strategy=flat-entry→hybrid-at-scale,shadow-book-premium=$50-100K/yr-savings,fee-compression-risk(10-15bps→8-12bps)
-(4)CHANNEL-PLAYBOOK:5-step(hire-ex-law-BD→target-3-firms→prove-1st→CRM→expand),GLAS-uses-Insightly=systematic,TOP-3=Latham+Kirkland+Paul-Weiss,$1-2M/yr-1-channel-cost
-(5)PLG-VS-RELATIONSHIP:RELATIONSHIP-LED-wins(0-PLG-examples-in-finserv),tech-enables-velocity-¬replaces-relationships
-(6)PLATFORM-VS-POINT:deep-vertical-platform-wins(¬monolith-AD,¬point-solution),5-layer-arch(core→agent→reporting→API→AI),Versana-BSL-integration=¬optional
-(7)AI-POSITIONING:parsing=table-stakes(6+-shipping),TRUE-differentiators=(1)closed-loop-integration(2)real-time-portfolio(3)predictive-covenant(4)intelligent-amendment,positioning="zero-latency-loan-agency"
-
 C[competitive-landscape-entering-consolidation: 5-moves-in-90-days(Jan-Mar-2026)=market-phase-shift from nascent→consolidation |PE-capital-flowing(GLAS-$1.35B,Hypercore-$13.5M) |adjacent-threats-materializing(Allvue-Agentic-AI,Versana-infrastructure) |1|26.3]
 C[tech-differentiation-window-shorter-than-v1: 12-18mo→6-12mo |everyone-investing-AI-simultaneously(6+-shipping-doc-parsing) |integration-depth=only-durable-tech-advantage |2|26.3]
 C[pricing-model-creates-lock-in-not-revenue: flat-vs-hybrid-vs-AUA-bps=same-revenue-at-140-facilities |hybrid-creates-switching-cost |flat=entry-appropriate |1|26.3]
@@ -218,21 +139,9 @@ R[loan-admin-pricing-models-2026: flat-annual=$15-75K/facility(BSL-$15-35K,PC-$2
 R[PLG-vs-relationship-institutional-finserv: 0-PLG-examples-in-loan-agency/fund-admin |ALL-growth-relationship-driven(GLAS-referral,Kroll-acquisitions,SRS-88%-PE,Hypercore-Insight-network) |B2B-fintech-2026-trend:institutional-shift(QED,BDO) |tech-enables-relationship-velocity(faster-onboarding,real-time-reporting)¬replaces-relationships |src:QED,BDO,company-analysis |refreshed:26.3.12 |next:26.4] #4
 
 R[AI-table-stakes-vs-differentiators-2026: table-stakes:doc-parsing(6+-shipping:S&P-DataXchange,AD-domusAI,Allvue-Andi,Hypercore,timveroOS,Kroll-DecisionIntel)+basic-automation+MBA:"AI=table-stakes-2026" |differentiators:(1)closed-loop-integration(end-to-end-lifecycle,incumbents=AI-in-silos),(2)real-time-portfolio-intel(¬monthly-snapshots,Hypercore-positions),(3)predictive-covenant(30-60d-early,timveroOS-claims),(4)intelligent-amendment(S&P-AmendX=standalone,integrated=deeper) |half-life:6-12mo(competitors-copy) |durable=integration-depth(purpose-built-core-required) |src:MBA,S&P,Allvue,Hypercore,timveroOS |refreshed:26.3.12 |next:26.4] #7
-review-9-v2-r2(loan-admin-agent,26.3.12): DA-responses-complete(6-challenges:DA[#2,3,4,5,7,8]). KEY-CHANGES: (1)incumbent-AI-window-compressed-12-18mo-MAX(DA[#2]-compromise) (2)credit-stress-bear-case-ADDED:TAM-$120-240M,breakeven-mo-36-54,capital-$30-50M(DA[#3]-compromise,OWNED-confirmation-bias) (3)Hypercore-UPGRADED-Tier-4.5+charter-scenarios-modeled:acquire-trust-co=PLAUSIBLE,$5-15M(DA[#4]-compromise) (4)build-sequence-DISAGREEMENT-with-LOT:distribution-first-vs-waterfall-first(DA[#5]-defend) (5)integrated-3yr-cost-model:$23-37M-base,$28-47M-bear(DA[#7]-compromise) (6)S&P=infrastructure-enabler-commoditizing-non-fiduciary-workflows,charter-gated-functions-safe(DA[#8]-defend) |ACQUIRE-Hypercore-DEFER→EVALUATE-ACTIVELY
-
 C[confirmation-bias-in-TAM-calibration: selected-ONLY-upward-sources(AIMA,MS,Ares)=zero-downside. Must-include-bear-case-sources(ZCG,WITHIntelligence) |DA-correct |2|26.3]
 C[Hypercore-capability-overlap>AUM-share: anchoring-on-$20B/$2.5T=irrelevant-for-threat-assessment. Capability-overlap-analysis=correct-metric |DA-correct |1|26.3]
 C[integrated-cost-modeling-must-be-r1: same-gap-as-v1(DA[#3]-then,DA[#7]-now)=specialist-detail-but-¬integrated. Must-produce-integrated-model-in-research-round |2|26.3]
-## review-9-v2-r2 DA responses (loan-admin-agent, 26.3.12)
-review-9-v2-r2(loan-admin-agent,26.3.12): DA-responses-complete-RESEARCH-ENHANCED(7-challenges:DA[#2-#5,#7,#8,#10]). KEY-CHANGES:
-(1)incumbent-AI-TIERED:doc=closed,analytics=6-12mo,admin-ops=18-24mo,"good-enough"=end-2027(DA[#2]-compromise)
-(2)credit-stress-RESEARCH-BACKED:RA-Stanger-40%-BDC-decline-2026,Blackstone-$3.7B-withdrawals,Pimco-"full-blown-default-cycle",UBS-15%-worst-case. Bear-case:TAM=$100-200M,breakeven-mo-36-54,raise=$30-50M,narrative→"countercyclical-infrastructure"(DA[#3]-compromise)
-(3)Hypercore-charter-scenarios:3-paths-modeled(acquire-trust-co=PLAUSIBLE-¬evidence,partnership=fastest,de-novo=hardest). Ripple+Circle-Dec-2025=tech-co-charter-precedent. Charter-race=decisive-variable(DA[#4]-compromise)
-(4)build-sequence-disagreement-with-LOT:distribution-first+minimum-viable-waterfall vs LOT-waterfall-first. Changes-$3-5M-capital-allocation(DA[#5]-defend)
-(5)integrated-cost-model:base=$23-37M/3yr+stress=$27-44M/3yr. Revenue-base=$4-7.75M,stress=$2-4.6M. Breakeven-mo-30-42(base)/36-54(stress)(DA[#7]-compromise)
-(6)S&P=infrastructure-for-agents:press-release-confirms. 6-charter-gated-functions-enumerated. INTEGRATE¬compete(DA[#8]-defend)
-(7)grade-B-acknowledged:r2-analytical-work-stronger-but-v2-framework-unchanged(DA[#10]-acknowledged)
-
 C[DA-challenges-force-research-specificity: r1-claims-without-evidence→r2-research-backed-with-sources=materially-stronger-deliverable |always-back-claims-with-current-data |2|26.3]
 C[BDC-market-stress-confirmed-by-multiple-sources: RA-Stanger-40%-decline+Blackstone-withdrawals+Pimco-"full-blown-default-cycle"=convergent-signals ¬single-source |stress-scenario-should-be-STANDARD-not-optional |1|26.3]
 C[charter-race-framing-more-useful-than-moat-framing: temporal-barriers-fall→who-charters-FIRST-matters-more-than-charter-AS-moat |Ripple+Circle-Dec-2025=tech-cos-DO-pursue-charters |1|26.3]
@@ -243,29 +152,12 @@ R[Hypercore-charter-assessment-Mar-2026: ¬evidence-pursuing-charter(press-empha
 
 R[S&P-DataXchange-AmendX-confirmed-Mar-2026: "centralized-platform-for-AGENTS-to-deliver-notices-to-lenders"=serves-agents¬replaces. AmendX="concierge-level-service"+integrates-Debtdomain. "No-fee-for-lenders"=aggressive-distribution. AI-categorization=auto-tag-unstructured-docs. CANNOT:waterfall-calc,settlement,BBC,collateral,fiduciary. Strategy=INTEGRATE ¬compete |src:prnewswire,press.spglobal,stocktitan |refreshed:26.3.12 |next:26.4] #6
 
-## promotion-log-r2-v2 (loan-admin, 26.3.12)
-promotion-round(loan-admin-r2-v2,26.3.12): 4-auto-promoted(2-calibration-update,1-research-supplement,1-calibration-new) + 2-user-approve-candidates(1-new-principle,1-behavior-change) |written-to-workspace
-
-### auto-promoted
-C[26.3.12] incumbent-AI-response-TIERED: doc-processing=CLOSED(6+-shipping),analytics=6-12mo,core-admin-ops=18-24mo,"good-enough"=end-2027. Prior-monolithic-"12-18mo-window"→tiered-model |confidence:HIGH-UPDATED |src:loan-admin-r2-DA[#2]
-C[26.3.12] market-window-REVISED-DOWN: gross=12-18mo(from-18-24mo). Net-of-regulatory=0-6mo(from-2-8mo). Tightest-yet. AD-Bain-$30B+GLAS-Oakley-AI+Allvue-shipping=concurrent-moves |confidence:HIGH-UPDATED(revises-prior-C[market-window-compressed]) |src:loan-admin-r2-DA[#2]
-R[26.3.12] GLAS-Oakley-AI-status: Oakley-investment-"technology-and-AI-capabilities"=STRATEGY-ANNOUNCED ¬product-shipped(search-confirmed-Mar-2026). No-client-facing-AI-product-in-press. Contrast:AD-domusAI+Allvue-Andi=in-production |src:glas.agency,oakley,lacaisse |supplements-existing-R[competitive-moves]
-C[26.3.12] countercyclical-narrative=harder-fundraise: bear-case-shifts-pitch-from-"ride-growth-wave"(growth-VC)→"countercyclical-infrastructure"(PE/infrastructure-investors). GLAS-Oakley-$1.35B-in-Q1-2026-stress=validates-PE-appetite. Growth-VCs-will-balk-at-40%-BDC-decline+Pimco-"full-blown-default-cycle" |confidence:MEDIUM(untested-pitch) |src:loan-admin-r2-DA[#3]
-
-### user-approve-submitted
-UA-6: incumbent-AI-tiered-assessment-mandatory |new-principle
-UA-7: stress-scenario-research-backed=standard |behavior-change
+(promotion-log-r2-v2 archived — promoted P[] entries retained below)
 P[incumbent-AI-tiered-assessment-mandatory: tier-competitive-response-by-capability-layer ¬monolithic-timeline. Doc-processing=closed(12mo). Analytics=6-12mo. Core-admin-ops=18-24mo(legacy-integration=binding-constraint). "Good-enough"=end-2027. Never-say-"incumbents-are-X-months-behind"→specify-WHICH-capability |src:loan-admin-v2 |promoted:26.3.12 |class:new-principle]
 P[stress-scenario-research-backed=standard: bear-case-must-cite-data-sources ¬hypothetical. Fitch-9.2%+Deutsche-Bank-4.8-5.5%+BDC-49%-decline+Pimco-"full-blown-default-cycle". Extends-credit-cycle-blind-spot-pattern-with-HOW. PS-F1-§2b-had-ZERO-downside-sources=textbook-confirmation-bias |src:loan-admin-v2 |promoted:26.3.12 |class:behavior-change]
-P[sigma-predict-review|F1(!C):architecture-market-mismatch—competitive-winners-use-5-7-step-pipeline+multi-model-aggregation¬structured-teams|F2(!C):N=20-statistically-meaningless(need-200-400)|F3(H):3-5x-cost-premium-unproven|F4(H):Metaculus-forecasting-tools-framework-exists(GitHub)|F5(H):Spring-2026-tournament-live-now($50K,closes-May-6)|F7(M):FAST-mode≈competitive-architecture|F9(L):human-review=+1041pts|grade:B-|src:sigma-predict-review|26.3.12]
 ## research\nR[topic:wu-market-analysis-pt1-wu-digital+fintech-competitors|refreshed:2026-03-13|next:2026-04-13]\n\n### WU Digital Transformation\nFY2025: rev $4.1B (-4% reported, -2% adj ex-Iraq). Q4 rev $1.0B (-5%). Branded Digital GAAP rev +7% FY, txns +13% Q4. Digital txns >55% of CMT volume. Adj EPS $1.75, GAAP EPS $1.52. Margins 20.1% via $150M cost cuts. Consumer Services +30% (travel+bill pay). Evolve 2025 concluded, Beyond 2028 launched: $5B rev, $1.5B digital remittance rev, 50% digital share by 2028. USDPT stablecoin on Solana (Anchorage Digital Bank, 1:1 USD), launch H1 2026. Digital Asset Network bridges blockchain to 360K+ cash points in 200+ countries. Intermex acq $500M all-cash, close mid-2026, >$0.10 EPS accretive Y1, ~$30M synergies/24mo. App downloads 27th percentile vs peers (underperforming). src:businesswire,ir.westernunion.com,nasdaq.com\n\n### Fintech Competitors\nWise: 13.4M active, GBP84.9B vol (+24% YoY), H1 FY25 rev GBP591.9M (+19%), PBT GBP147.1M (+57%), 15-20% growth guide FY25-26, LSE to US listing Q2 2026, Raiffeisen+UniCredit partnerships. Remitly: FY25 rev $1.6B (+29%), first GAAP profit, Q4 $442M (+26%), FY26 guide $1.96B, share ~23% (from 14% pre-IPO), MFS Africa acq $280M (320M wallets, 35 countries), stock -64% from IPO highs. Xoom: ~160 countries, Tenpay Global (Apr 2025), PYUSD settlement, neglected by PayPal (no mentions since 2020). Revolut: 60M users, $210B+ vol (+40%), 42% rev cross-border, 20% EU cross-border share, Ant/Alipay China corridor, 14 new corridors, fees 0.15%. Nium: $25B+ vol, 190+ countries, IPO pushed end 2026, Visa stablecoin pilot. src:wise.com,ir.remitly.com,coinlaw.io,nium.com"
 R[topic:wu-market-analysis-pt2-stablecoins+positioning|refreshed:2026-03-13|next:2026-04-13]\n\n### Stablecoin Remittance\nSupply >$300B (+135% from 2024). USDT+USDC=84%. GENIUS Act passed Jul 2025 (US regulatory framework). Global avg remittance fee 6.49%, sub-Saharan Africa 8.78%, stablecoins pennies/dollar. MoneyGram: rebuilt app on USDC/Stellar/Crossmint backbone, Colombia first market (6K+ locations), Fireblocks for treasury, ~500K agent locations, 20K corridors, stablecoins=core strategy. WU USDPT: Solana/Anchorage, H1 2026, Digital Asset Network 360K+ cash points. PayPal: PYUSD enabled for Xoom settlement, Cebuana Lhuillier+Yellow Card first partners. Ripple/XRP: ODL >$15B (2024), $1.3T quarterly Q2 2025, 300+ institutions 45+ countries, 40%+ using XRP for ODL, APAC strongest (93 institutions), SEC reclassified XRP as commodity Aug 2025. Circle: USDC powering MoneyGram+WU. Stellar: MoneyGram settlement rails. KEY: \"First wave of stablecoin innovation and scaling will really happen in 2026\" - industry consensus. src:americanbanker.com,fxcintel.com,coindesk.com,ripple.com\n\n### Market Positioning Dynamics\nPrice: global avg 6.49%, fintechs cut to <2%, stablecoins pennies, Revolut 0.15%, WU/MG retail higher but cash-out convenience. Speed: stablecoins near-instant, fintechs minutes-hours, WU retail same/next day. Reach: WU 200+ countries 360K+ locations + Intermex, MG ~500K locations 20K corridors, Wise 13.4M users, Remitly growing via MFS Africa, Revolut 60M users 14 new corridors. Trust: incumbents hold older demographics + cash-dependent markets, fintechs winning Gen Z/Millennial via transparency, GENIUS Act reducing crypto trust gap, WU stablecoin bridges trust divide. KEY DYNAMIC: incumbents building crypto rails (WU USDPT, MG USDC) while fintechs expand physical reach (Remitly MFS Africa) -- convergence pattern. src:synthesized-multiple"
 R[topic:wu-market-analysis-pt3-consumer+blackswan+synthesis|refreshed:2026-03-13|next:2026-04-13]\n\n### Consumer Behavior Shifts\n69% US prefer digital apps for sending remittances, 61% receiving (Visa 2025). 65% Canada prefer digital both ways. 67% global senders use digital platforms. 97% US millennials use mobile banking (vs 89% avg). Gen Z: mobile payments integral to daily life. Digital methods CAGR 15.41%, projected >40% share by 2031. LatAm: +10.9% flow growth Q1 2025 (Guatemala, Honduras), Brazil PIX cross-border pilots, Mexico gig workers favor FX apps. India: $129B inflows (#1 globally), digital +15%, WhatsApp Pay approved all users. Africa: mobile money dominant, highest fees, crypto disrupting. Bangladesh: blockchain corridor pilot -30% costs. Digital remittance market: $29.12B (2025) to $103.26B by 2034 (CAGR 15.1%). Global remittance: $744.78B (2025), expected >$850B (World Bank 2026). src:corporate.visa.com,thedialogue.org,coinlaw.io\n\n### Black Swan Entrants\nGCUL: Google Cloud L1 blockchain for financial services (Aug 2025), claims 70% cost reduction, single API multi-currency, KYC-permissioned, CME Group pilot, commercial rollout early 2026, Phase 2 India+Brazil late 2026. Apple Pay: NOT direct remittance (funding mechanism for Wise/Remitly), China cross-border expansion Jan 2026, India entry Nov 2025, LOW direct threat. Meta/WhatsApp: stablecoin payments experiment 2025-2026, WhatsApp Pay approved ALL Indian users (500M+), India=#1 corridor, HIGH threat if stablecoin integration succeeds. AI startups: $16.8B AI-fintech investment 2025, fintechs >40% digital transfers, notable Newmoney AI/Airwallex/BOSS Money, AI routing selects optimal corridor/rail/FX real-time. src:invezz.com,thedefiant.io,paymentsdive.com,finextra.com\n\n### COUNTER-NARRATIVE FLAGS\n1. WU app downloads 27th percentile despite digital strategy = execution gap?\n2. Xoom neglected by PayPal despite market growth = acquihire target?\n3. MoneyGram ALL-IN stablecoins (not hedging) = bold or reckless?\n4. Ripple $1.3T quarterly volume = may include non-remittance institutional flows\n5. GCUL commercial rollout \"early 2026\" from private testnet = aggressive timeline\n6. WhatsApp Pay 500M India users but cross-border conversion unknown\n\n### SYNTHESIS\nWU rev declining (-4%) while digital-pure-plays grow 20-30%+ = innovator's dilemma. Physical network (360K+ locations) = moat in cash-dependent corridors but depreciating asset. USDPT + Intermex = dual bet crypto rails + retail consolidation. Wise margins expanding while WU under pressure. Remitly 23% share + 29% growth = most dangerous pure-play. GENIUS Act removes barriers, accelerates disintermediation. GCUL = potential infrastructure black swan commoditizing rails. WhatsApp Pay India = channel black swan in #1 corridor. Consumer preference (69% digital) approaching tipping point for legacy retail. KEY QUESTION: Can WU transform fast enough (Beyond 2028) before digital-native competitors achieve scale + trust?"
-
-## review-wu-market-analysis (western-union, 26.3.13)
-review-wu-r1(western-union,26.3.13): r1 complete. 8 findings(3-CRITICAL:F1-digital-gap+F4-Beyond-2028+F7-black-swan, 4-HIGH:F2-USDPT+F3-Intermex+F5-convergence+F8-bifurcation, 1-MEDIUM:F6-segmentation). 14-hygiene-checks(4×outcome-1,7×outcome-2,3×outcome-3-GAP).
-
-KEY-POSITIONS: (1)digital-gap=structural(+7%vs+15%CAGR+20-30%fintechs) (2)USDPT=contrarian→dual-track (3)Intermex=defensive,immigration-amplified (4)Beyond-2028 ¬credible-without-$1.1B-digital-FY27 (5)"survive-diminished"=base-case (6)black-swans-THIS-TIME-DIFFERENT (7)bifurcation:last-mile=moat (8)reframe:"last-mile-primary,digital-as-enabler"
 
 C[WU-digital-gap=structural: +7%-vs-15%-CAGR-vs-20-30%-fintechs. 27th-pctl-app=execution-evidence |1|26.3]
 C[USDPT-own-stablecoin=contrarian: consensus=USDC. MG-live-Colombia. Dual-track-rec |1|26.3]
@@ -275,8 +167,6 @@ C[industry-bifurcation: telecom-precedent. 360K=cell-tower. Last-mile>digital-ra
 C[black-swan-upgraded: GENIUS+WhatsApp-approved+GCUL-piloted+$300B-infra=barriers-removed |1|26.3]
 C[convergence-pattern=banking-precedent: incumbents-survived-lost-30-40%-profitable-segments(2010-2020) |1|26.3]
 C[segment-pricing-required: uniform-pricing-across-digital-native+cash-dependent=suboptimal |1|26.3]
-
-review-wu-r3(western-union,26.3.13): DA-responses-complete(4-challenges:DA[#2,#7,#9,#12]). Hit-rate:4/4=100%. KEY-CHANGES: (1)WU-analog-from-implicit-"Kodak"→"telecom-carrier"(survive-diminished)(DA[#2]-compromise) (2)3-scenario-model:A-pivot(30%,$4.8-5.3B)+B-diminished(50%,$4.3-4.6B)+C-decline(20%,$3.6-3.9B)(DA[#2]-compromise) (3)Beyond-2028-from-"credibility-gap"→"execution-dependent-with-evidence"(DA[#7]-compromise) (4)competitor-framework-tiered:Wise=Tier-1(structural)+Remitly=Tier-2(conditional)+rest=Tier-3(noise)(DA[#9]-compromise) (5)CN5-elevated→F9-CRITICAL:value-trap-vs-turnaround=THE-strategic-question(DA[#12]-concede) (6)CN6-elevated→F10-HIGH:immigration=primary-near-term-risk(DA[#12]-concede)
 
 C[DA-challenges-100%-hit-on-PS: r1-was-systematically-bearish-without-acknowledging-bull-evidence. All-4-challenges-produced-genuine-improvement |2|26.3]
 C[WU≠Kodak-important: payment-infra-with-regulatory-moats-has-NEVER-been-fully-disrupted. Visa/MC+SWIFT=survived. WU=between(telecom-carrier-analog) |1|26.3]
@@ -295,16 +185,13 @@ R[human-robot-workforce-gap:CRITICAL→no vendor has unified human+robot LMS wit
 R[warehouse-lms-gtm:channels: (1)direct enterprise(Manhattan,BY,Honeywell—long cycles,big ACV), (2)WMS partner/integration(Takt→Datex,Deposco,Extensiv,Korber; Rebus→SAP; Legion→Rebus), (3)3PL-focused SaaS(Takt,Rebus target multi-client billing pain), (4)robotics-bundled(Locus,Honeywell)|3PL channel: labor=50-70% budget, onboarding speed=competitive advantage|33.7% 3PLs implementing AI(2026, 2x from 2023)|standalone LMS advantage: WMS-agnostic overlay, faster time-to-value|src:takt.io,rebus.io,deposco.com,legion.co|refreshed:2026-03-14|next:2026-04-14]
 
 ## review-warehouse-lms (warehouse-lms, 26.3.14)
-R[warehouse-LMS-competitive-update: TIER-1(WMS-embedded,~60%):Manhattan+BY+SAP+Oracle+Infios |TIER-2(standalone,~25%):Easy-Metrics(600+,TZA-acquired)+Rebus+Takt(4wk-onboard)+Honeywell+Lucas |TIER-3(WFM):Legion($50M)+UKG |TIER-4(robotics):Locus(LocusONE+Array+patent-AI)+6RS+GreyOrange($436M) |GAP:zero-unified-human+robot-LMS |refreshed:26.3.14] #12
+R[warehouse-LMS-competitive-update: TIER-1(WMS-embedded,~60%):Manhattan+BY+SAP+Oracle+Infios |TIER-2(standalone,~25%):Easy-Metrics(600+,TZA-acquired)+Rebus+Takt(4wk-onboard)+Honeywell+Lucas |TIER-3(WFM):Legion($50M)+UKG |TIER-4(robotics):Locus(LocusONE+Array+patent-AI)+6RS+GreyOrange($436M) |GAP:zero-unified-human+robot-LMS |refreshed:26.3.14 |next:26.5] #12
 
-R[warehouse-LMS-market-size-validated: LMS=$719M(2025)→$3.72B(2033)-23.3%-CAGR(headline) |conservative=15-18%-CAGR=$1.5B(2033) |addressable-mid-market=$180-360M |robotics=$10.96B(2026)→$24.55B(2031) |79%-plan-robotics-by-2026 |refreshed:26.3.14] #8
+R[warehouse-LMS-market-size-validated: LMS=$719M(2025)→$3.72B(2033)-23.3%-CAGR(headline) |conservative=15-18%-CAGR=$1.5B(2033) |addressable-mid-market=$180-360M |robotics=$10.96B(2026)→$24.55B(2031) |79%-plan-robotics-by-2026 |refreshed:26.3.14 |next:26.5] #8
 
-R[warehouse-M&A-2025-2026: Easy-Metrics-acquired-TZA(Sep-2024,unified-May-2025,600+facilities) |IFS-acquiring-Softeon(Q1-2026) |WorkStep-acquired-WorkHound |GreyOrange-$436M |Mytra-$198M |Legion-$50M |Locus-Array-shipped |refreshed:26.3.14] #7
+R[warehouse-M&A-2025-2026: Easy-Metrics-acquired-TZA(Sep-2024,unified-May-2025,600+facilities) |IFS-acquiring-Softeon(Q1-2026) |WorkStep-acquired-WorkHound |GreyOrange-$436M |Mytra-$198M |Legion-$50M |Locus-Array-shipped |refreshed:26.3.14 |next:26.5] #7
 
-R[warehouse-LMS-human-robot-integration-2026: Locus-LocusONE(patent-pending-AI-human+robot,Array-R2G-shipped,1000+-robot-sites) |human-cobot-teams=85%-more-productive-than-either-alone |orchestration-platforms-emerging-but-treat-human+robot-as-separate |digital-twins-integrating-live-data-predicted-vs-actual |refreshed:26.3.14] #5
-
-review-warehouse-lms-r1(warehouse-lms,26.3.14): r1 complete. 8 findings(3!C:F1+F3+F6,3H:F2+F4+F5+F7,1M:F8). 8-hygiene-checks(2×outcome-1,5×outcome-2).
-KEY-POSITIONS: (1)unified-human+robot-LMS=genuinely-unoccupied (2)3PL-mid-market-greenfield-robotics=beachhead (3)positioning="unified-workforce-intelligence"(robots-as-labor¬capital) (4)BUILD-primary,$8-13M-to-revenue (5)differentiation-window=6-12mo (6)PLG-viable(¬relationship-led) (7)Easy-Metrics-acquisition=evaluate-actively
+R[warehouse-LMS-human-robot-integration-2026: Locus-LocusONE(patent-pending-AI-human+robot,Array-R2G-shipped,1000+-robot-sites) |human-cobot-teams=85%-more-productive-than-either-alone |orchestration-platforms-emerging-but-treat-human+robot-as-separate |digital-twins-integrating-live-data-predicted-vs-actual |refreshed:26.3.14 |next:26.5] #5
 
 C[unified-human+robot-LMS=genuinely-unoccupied: zero-vendors-blended-cost-per-unit. Locus=closest-but-robot-only |1|26.3]
 C[3PL-entry=consensus-BUT-proposition-differentiated: 3-vendors-target-3PL(Takt,Rebus,EM)-BUT-none-unified-human+robot |1|26.3]
@@ -312,168 +199,18 @@ C[differentiation-window=6-12mo: Locus-patent-pending+Array-shipped=trajectory-t
 C[PLG-viable-for-warehouse-LMS: Takt-4wk-onboard+EM-600-facilities=product-led-evidence ¬finserv-relationship-led |1|26.3]
 C[conservative-TAM-critical: headline-$3.72B=aggressive(23.3%-CAGR). Conservative=$1.5B(15-18%). Addressable=$180-360M. Always-use-addressable |1|26.3]
 
-review-warehouse-lms-r2(warehouse-lms,26.3.14): DA-responses-complete(8-challenges:DA[#1,#2,#5,#7,#9,#10,#11,#14]). 3-CONCEDE+4-COMPROMISE+0-DEFEND.
-KEY-CHANGES: (1)"UNOCCUPIED"→"CONTESTED"(BY-Robotics-Hub=research-failure-in-r1)(DA[#1]-concede) (2)window=3-6mo-features/12-18mo-positioning(DA[#2]-compromise) (3)capital+50%:$6-10M-pre-revenue,24-30mo(DA[#5]-compromise) (4)Easy-Metrics=$180-500M-¬startup-viable(DA[#10]-concede) (5)beachhead-narrowed+Tier-2-robotics-embed-alternative(DA[#9]-compromise) (6)4-new-risks(customer-conc,founder-fit,channel-revised,adoption-gap-H)(DA[#14]-compromise)
-THESIS: VIABLE-but-NARROWER. Gap=cost-economics+mid-market+WMS-agnostic. Closing
-
 C[BY-Robotics-Hub=missed-in-r1: vendor-agnostic-robot+human-orchestration-already-shipping. §2a-failure. Must-always-check-enterprise-WMS-vendors'-robotics-modules-before-claiming-category-gap |2|26.3]
 C[UNOCCUPIED→CONTESTED: 3-incumbents-converging(BY-from-WMS,Locus-from-robotics,Manhattan-from-platform). Remaining-gap=narrow(cost-economics+pricing+WMS-independence) |2|26.3]
 C[capital-timeline-realism: MVP-to-first-revenue=24-30mo-from-founding ¬12-18mo. Burn=$6-10M-pre-revenue. Always-model-from-founding ¬from-launch |1|26.3]
 C[robotics-adoption-gap-is-real: AMR/AGV-usage-declining-18%→10%(MMH-2025)-despite-planning-interest-rising. Mixed-workforce-demand=imminent-large-3PLs,3-5yr-mid-market |1|26.3]
 C[DA-100%-hit-rate-on-PS-r2: 0-defenses=analysis-was-systematically-optimistic. All-revisions-improved-accuracy. r1-had-confirmation-bias-toward-"build-it" |2|26.3]
 
-## promotion-log (warehouse-lms, 26.3.14)
-promotion-round(warehouse-lms,26.3.14): 4-auto-promoted(3-calibration,1-pattern) + 5-user-approve(2-principle,1-behavior,2-anti-pattern) |written-to-workspace
-auto: C[CONTESTED],C[window-tiered],C[capital-from-founding],P[herding-confirmed]
-UA: enterprise-module-check,differentiation-dual-axis,acquisition-by-multiple,zero-defense-signal,planning-intent-discount
-## SVB risk analysis r1 findings — 2026-03-17 (temporal boundary: 2023-01-31)
+(SVB review findings archived — key pattern: niche-moat=correlated-fragility, 94%-uninsured+sector-concentration+active-outflow=novel-combination-missed-by-consensus)
+(loan-admin landscape review findings archived 26.3.17 — competitive intelligence captured in R[] entries above)
 
-task: SVB Financial Group business model + deposit concentration + client fragility analysis
+(VDR market, warehouse-lms-game, data center review findings archived — R[] entries above contain domain data)
 
-### key data points sourced (all pre-cutoff public)
-uninsured deposits year-end 2022: ~$152B = 87.5-94% of total deposits (highest among peers) | FDIC call report Dec 31 2022
-sector concentration: VC/PE = 52% deposits; tech+life science = 60% deposits
-deposit peak Q1 2022: ~$198B | Q4 2022: $173.1B = -13% | industry avg -3.5% same period
-Q4 2022 guided 2023: avg deposits mid-single-digit decline YoY | NII down high-teens % | NIM 1.75-1.85% (vs 2.16%)
-VC funding 2022: US $198B (-37% YoY) | Q4 2022 global $65.9B (-64% YoY)
-revenue: NII=$4.5B FY2022 (~78% of revenue) | fee income=$1.2B | warrant portfolio=$199M fair value
-analyst consensus Jan 2023: 12 Buy, 11 Hold, 1 Sell — cyclical not structural framing
-
-### findings summary
-F1: niche-moat-vulnerability(VC ecosystem integration = strength + correlated fragility) | outcome-2
-F2: deposit concentration(94% uninsured, highest peer, 60% tech sector, no retail floor) | outcome-2
-F3: trajectory(active outflow, -13% from peak, NII guided lower, VC winter continues) | outcome-1(CHANGES analysis — strengthens vulnerability)
-F4: correlation risk(VC fund as transmission vector, sophisticated depositors, synchronized burn) | outcome-3(GAP: no pre-cutoff quantitative model of this mechanism found)
-F5: competitive position(moat real but relationship-based = confidence-brittle, no competitor replication) | outcome-2
-
-### forward flags for DA
-DA challenge: F4 gap — was correlated withdrawal risk in pre-cutoff discourse?
-DA challenge: F3 counterweight — management "mid-single-digit decline" guidance = stabilization or floor?
-historical pattern: SVB survived dot-com+2008+2015 downturns; novel combo in 2022-23: rate rise + 94% uninsured + active outflow simultaneously
-## loan-admin-agent landscape review (26.3.17)
-
-### key research findings — competitive positioning
-- Alter Domus: SCALE LEADER. $1.4T AUA, €4.9B EV (Cinven), Agency360+Solvas+Vega. Bundling flywheel = strongest economic lock-in. Weakness: assembled architecture = technical debt (6+ acquired platforms).
-- Kroll (formerly Lucid): CHALLENGER. #3 Bloomberg Q1 2025. 8-day settlement (vs 47-day market avg) = best quantifiable tech claim. Business Connect = cloud-native. Largest independent EMEA.
-- GLAS: PURE-PLAY SPECIALIST. $750B+ AUM, $1.35B valuation (Oakley Capital Jan 2026). 40% organic revenue CAGR. Purpose-built architecture (low tech debt). Tech+AI+M&A mandate from Oakley.
-- SRS Acquiom: TECH-FORWARD NICHE. Digital-native DNA (M&A heritage). Loan Agency Dashboard = best portal UX. EU May 2025, UK Sept 2025. 100% top law firm coverage.
-- Ankura Trust: DISTRESSED SPECIALIST. Successor agent + restructuring. No distinct tech platform. Expertise-led. Low profile in performing loan market.
-- Wilmington Trust: CLO/TRUST ANCHOR. #1/#2 US trustee. AccessFintech Synergy partnership (Feb 2025) = real-time shared workflow, API-first, cloud-native.
-
-### additional players confirmed
-Ocorian (OPTICs dashboard), Apex Group (single-source bundle, Alt Credit Awards finalist), IQ-EQ (Alt Credit Awards finalist), CSC (Alt Credit Awards finalist), Vistra, Computershare (Wells Fargo CTS heritage, high tech debt), Oxane (hybrid service+software, $850B+ AUM, 13/top 25 banks).
-
-### unexpected players (Q7 — CRITICAL findings)
-1. S&P Global DataXchange+AmendX (Mar 3, 2026): inserting as routing/infrastructure layer between agents and lenders. No-fee for lenders. AI-powered data categorization. Bloomberg-style pipe strategy. Most unexpected strategic move in market.
-2. Versana: bank consortium ($5T notional, 14 institutions: JPM/BofA/Citi/DB/MS/WF/Barclays/Mizuho). BSL real-time data standard. Cashless roll Oct 2025. Table stakes for BSL by 2027.
-3. Hypercore AI: $13.5M Series A (Insight Partners, Feb 2026). AI-assisted SaaS for private credit admin. $20B+ AUM, 10K+ loans, CARR 3.5x YoY. First AI-native competitor targeting admin agent ops layer.
-4. Finley+Concord merger: API-first SaaS + 35yr trust company = fastest path to compete with incumbents. Valley Bank live Feb 2025.
-5. AccessFintech Synergy: 250+ member shared-workspace network. If becomes standard, agents lose "data hub" positioning.
-
-### H-dispositions
-H1: PARTIAL — named firms all correct, but missing significant players (see above)
-H2: NUANCED — tech is floor not ceiling; necessary to survive, insufficient to win mandates (relationships+regulation still dominate mandate selection)
-H3: CONFIRMED — S&P+Hypercore+GLAS+Wilmington+Kroll all invested/launched within 13 months
-H4: CONDITIONAL — win condition: compliance-native + Versana/DataXchange integration + relationship moat maintained
-H5: FALSIFIED — landscape not well-defined; real race is for data/infrastructure layer
-
-### buyer segmentation
-1. PE sponsors (private credit primary): trust-sensitive > price-sensitive, law firm-influenced
-2. CLO managers: tech integration fit (Allvue/Solvas) + compliance automation = primary criteria
-3. BDC managers: fastest-growing buyer segment (+33% YoY AUM to $554B Q2 2025)
-4. Banks as arrangers: settlement speed + Versana integration key
-5. Law firms: informal king-makers for independent agents (GLAS, Kroll, SRS Acquiom)
-
-### growth loops
-1. Data network effect (Versana/S&P DataXchange) — Versana at $5T = past tipping point for BSL
-2. Bundling flywheel (Alter Domus) — strongest economic lock-in
-3. Law firm recommendation loop (GLAS, Kroll, SRS Acquiom)
-4. Successor agent pipeline (Ankura, SRS Acquiom, Kroll) — growing with 2025 defaults
-5. Tech onboarding stickiness (SRS Acquiom, Alter Domus Vega)
-6. Regulatory trust compounding (Wilmington Trust, Ankura)
-
-### switching costs
-Relationship lock-in > tech lock-in. Tech FAILURE (errors, slow settlement, poor portal) = #1 trigger for switching-cost override. Tech is floor not ceiling.
-
-### consolidation trends
-3 PE-backed deals in 24 months (Cinven/AD, Oakley/GLAS, Levine Leichtman/GLAS prior). Convergence: fund admin + loan admin + agency bundling. Market will consolidate to <5 major players over 10-15 years (reference-class-analyst P=48%).
-
-### opportunities for established agent (Tier 1)
-1. Real-time lender portal with API access
-2. Amendment workflow automation (before S&P AmendX captures the workflow)
-3. AI-assisted notice processing + reconciliation (Hypercore-like capability)
-4. Versana + DataXchange early adoption (first-mover BSL credential)
-5. CLO compliance dashboard (OC/IC near-real-time monitoring)
-
-### pricing note
-Agency fees: flat annual + transaction fees. Tech does NOT enable direct premium pricing — indirect only (lower cost-per-facility). Bundling (Alter Domus) enables blended pricing power.
-
-### private credit growth implication
-$3T→$5T by 2029-2030. Automation = survival, not differentiation. BDC growth forcing 1940 Act compliance tooling. Amendment frequency increasing. BSL/private credit convergence requires dual-market capability.
-## VDR market analysis r1 findings | 2026-03-18
-
-review: VDR competitive market analysis | r1-ANALYZE | 13 searches
-
-### market-sizing
-size-2025: ~$3.4B (range $3.0–3.61B) | size-2026: ~$4.1–4.37B | CAGR: 18–22% | target-2032: $7.6–11.37B
-NA-dominant: 39.7% share ($1.35B 2025) | use-case: M&A ~45%, rest=compliance+RE+LS+PE
-
-### competitive-tiers
-tier-1: Datasite(market-leader G2#1), SS&C Intralinks(enterprise-pioneer, 99% Fortune1000, SS&C parent $6B+)
-tier-2: iDeals(175K clients, $45M rev, UX-first, flat-fee), DFIN Venue(rebuilt Sept2025, SEC-filing integration), Ansarada(now Datasite subsidiary Aug2024 AUD$240M)
-tier-3-niche: CapLinked($399/mo, mid-market), Midaxo(M&A lifecycle ¬pure VDR, IDC Leader AI-Deal-Mgmt 2025), SRS Acquiom(advisory+VDR bundle, 88% global PE)
-
-### H-results
-H1-falsified-partial: missing from named-8 = Drooms(EU leader), Box(enterprise), ShareVault(FDIC win from DFIN), DealRoom, FirmRoom, Thomson Reuters
-H2-confirmed: Peony(free AI-native), Papermark(open-source), S&P Global Prism, Kiteworks entering
-H3-confirmed-nuanced: tier-1 stable | mid-tier consolidating | SME-tier disrupting
-
-### key-events-2024-2025
-Datasite acq Ansarada Aug2024 (AUD$240M) | iDeals acq EthosData Oct2024 (India) | DFIN lost FDIC contract to ShareVault May2025 | DFIN Venue rebuilt Sept2025 | Midaxo IDC Leader 2025
-
-### pricing-landscape
-per-page(legacy): $0.35–0.85/page — incumbent trap | per-user: $15–250/mo | flat-rate: $180–$5K/mo | free: Peony, Papermark
-per-page = incumbent structural weakness | SRS Acquiom data: real costs 2–10x quoted price across 3,800+ deals
-
-### risks-top3
-R1: M&A cycle dependence (H1'25: volume -17.7% YoY) | R3: Big Tech encroachment (MSFT+Google) | R6: mid-tier consolidation squeeze
-
-### strategic-moats (incumbents)
-Datasite M&A Index + deal pipeline data | Intralinks Deal Flow Predictor | SRS Acquiom deal terms studies | = data products = marketing + switching cost tools
-
-### open-questions
-[PS-1] Datasite/Ansarada brand strategy post-acq
-[PS-2] DFIN Venue rebuild — market reception?
-[PS-3] Peony revenue model sustainability?
-[PS-4] DORA impact on EU VDR compliance requirements?
-
-### warehouse-lms-game review (26.3.18)
-R1-verdicts: game-justified-as-deployment-strategy(not-measurement-superiority) | Thesis-C(operational-insight)=most-defensible | F4(H4-unverified) | F5(3-product-theses) | F6(commercial-path-complex)
-R3-DA-verdicts:
-  DA#1: CONCEDE — anchoring confirmed; Alt-C wins on ecological validity if C1 not hard constraint
-  DA#2: CONCEDE(Pymetrics) + DEFEND — Alt-C+Alt-D stronger validation for population+construct; Pymetrics=directionally-suggestive-only
-  DA#3: PARTIAL-CONCEDE — cost comparison valid only post Thesis-C+scale commitment
-  DA#4: CONCEDE — discretion audit=GATE; Thesis-C fails full-scope in directed-WMS; exception-scenario scope viable
-  DA#5: CONCEDE — EU AI Act high-risk likely applies; commercial path viability reduced; legal review=GATE
-  DA#8: CONCEDE — governance must be structural (aggregate-only+auto-delete at architecture layer), not policy
-
-## review-11: US data center market — infrastructure constraints (26.3.19)
-
-### r3 DA responses (26.3.19)
-
-DA[#1]-CONCEDE: pipeline=$1T→$500-600B-deliverable(40-50%-realization-haircut) |political-opposition=NEW-constraint-¬in-historical-analogs |2030-capacity=35-45GW(from-45GW-RCA) |competitive-moat=operators-with-power-already-delivered
-DA[#2]-CONCEDE: labor=material-omission |439K-worker-shortage(ITIF-Jan-2026) |349K-net-new-needed-2026(CNBC-Mar-2026) |electricians=45-70%-DC-construction-cost |Oracle-2027→2028-slip |new-PS-findings:labor-as-incumbent-moat+6-18mo-timeline-premium+30-40%-PE-cost-overrun-risk
-DA[#3]-COMPROMISE: $/MW-standard=$11-17M(tariff-adj,was-$10-15M) |AI-liquid-cooled=$22-24M+/MW |tariff-escalation=14%-less-capacity-per-dollar |hyperscaler-absorption-defended(guidance-post-tariff) |colo-developers-more-exposed |PE-IRR-1-2pp-compression |OQ-PS-1-RESOLVED
-DA[#4]-CONCEDE: $315B=2025-actuals(¬stale,relabeled) |2026-guidance=$660-750B(top-5) |100x-revenue-gap=primary-H2-risk-flag(Bain:$2T-needed/$20B-current) |H2-bifurcation-strengthened |RCA-capex-sustained-42%=appropriate-or-slightly-generous |90%-OCF+$100B-new-debt
-DA[#5]-COMPROMISE: chip-supply=co-binding-demand-ceiling(70%-global-HBM→DCs,36-52wk-GPU-lead) |power=supply-ceiling |both-simultaneous ¬substitutable |new-M&A-dimension:chip-access-premium |Google-lease-preference-partially-explained |utilization-rate-matters-for-revenue/MW
-DA[#9]-CONCEDE+RECONCILE: taxonomy-maintained |Tier-A-colo-$20-25B-2030 |Tier-B-35-45GW-2030 |Tier-D-$660-750B-2026 |pipeline-$500-600B-deliverable |$/MW-resolved |revenue/MW-resolved |canonical-statement-written
-DA[#10]-2-gaps: PE-obsolescence-risk(IRR-3-5%-bust-scenario,2021-cohort-mid-exposed,bespoke-most-exposed,Equinix-least) |insurance(0.5-1.5%/yr-asset-value,1-2%-cap-rate-headwind,Aon-DCLP-new,Descartes-parametric)
-
-§2a-hygiene-OUTCOME-1: simultaneous-$660B=coordination-failure |30-50%-multi-constraint-haircut-applies-to-all-announced-pipeline |market-strained-¬just-large |individually-rational→collectively-self-defeating
-
-demand-scenario-modeled: AI-monetization-failure(P=20-25%) →capex-$330-375B-2028 →wholesale-vacancy-8-12% →PE-IRR-3-5% →M&A-12-15x-wholesale/16-20x-retail →Equinix-resilient →STACK/Vantage/Aligned-most-exposed →counter-cyclical-Blackstone-buys-at-40-50%-of-peak
-
-### calibration updates (26.3.19)
+### calibration updates (data center, 26.3.19)
 C[$315B-capex-was-2025-actuals-¬stale-error;2026-guidance-$660-750B=acceleration-not-revision|1|26.3.19]
 C[simultaneous-hyperscaler-crowding=coordination-failure;30-50%-multi-constraint-haircut-applies-to-announced-pipeline|1|26.3.19]
 C[labor=co-binding-constraint-missed-in-R1;must-be-in-EVERY-infrastructure-market-analysis-from-R1|2|26.3.19]
@@ -481,107 +218,29 @@ C[chip-access-premium=underpriced-in-DC-M&A-underwriting;NVIDIA/AMD-supply-agree
 C[insurance-cost-escalation=systematic-headwind;0.5-1.5%-asset-value/yr-vs-0.2-0.4%-pre-2022;belongs-in-every-PE-DC-underwriting-model|1|26.3.19]
 C[PE-vintage-2021-2022-obsolescence-risk=real;exit-window-2027-2029-at-AI-density-upgrade-inflection;Equinix-10K+-tenants=most-insulated|1|26.3.19]
 C[100x-revenue-gap=most-important-risk-signal-in-DC-market;Bain-$2T-needed/$20B-current;4yr-window-unprecedented|1|26.3.19]
-## review-11 findings (cognitive-enhancement-meta-analysis, 26.3.21)
+## cognitive-enhancement research (26.3.21)
+R[cognitive-framework-ranking: (1)calibration-as-protocol=BEST(prompt-level,¬arch-change,closes-single-instance-gap) (2)CQoT-exit-gate-hardening=HIGH(27-78%-procedurally-corrupt-successes-in-research,adds-criteria-to-existing-DA-gate) (3)metacognitive-self-challenge-r1=HIGH(formalizes-zero-dissent-CB,low-effort) (4)ACH=MED-selective(implement-when-≥3-competing-hypotheses) (5)Brier-DEFER(retrospective,30-40%-resolvable-estimates,cross-session-upgrade) (6)TEC-AVOID(conceptual-absorbed-by-ACH,high-effort) |§2c-CHANGED-ANALYSIS:ACH-demoted,CQoT-promoted vs-initial-intuition |src:independent-research+agent-inference |refreshed:26.3.21 |next:26.9]
 
-### framework cost/benefit ranking (impact/effort ratio, C4-lens)
-R[cognitive-framework-ranking: (1)calibration-as-protocol=BEST(prompt-level,¬arch-change,closes-single-instance-gap) (2)CQoT-exit-gate-hardening=HIGH(27-78%-procedurally-corrupt-successes-in-research,adds-criteria-to-existing-DA-gate) (3)metacognitive-self-challenge-r1=HIGH(formalizes-zero-dissent-CB,low-effort) (4)ACH=MED-selective(implement-when-≥3-competing-hypotheses) (5)Brier-DEFER(retrospective,30-40%-resolvable-estimates,cross-session-upgrade) (6)TEC-AVOID(conceptual-absorbed-by-ACH,high-effort) |§2c-CHANGED-ANALYSIS:ACH-demoted,CQoT-promoted vs-initial-intuition |src:independent-research+agent-inference |26.3.21]
+R[cognitive-frameworks-compress-quality-gap: frameworks-benefit-single-instance-MORE-than-multi-agent → enhanced-single-instance≈87%@4-5%-cost(was-80%@3%) → gap-narrows-from-4pts-to-1-2pts → sigma-review-value-rests-on-2-irreducible-items(DA-context-firewall+cross-session-calibration-accumulation)¬cognitive-frameworks |src:independent-research |refreshed:26.3.21 |next:26.9]
 
-### 80%-at-3%-cost question
-R[cognitive-frameworks-compress-quality-gap: frameworks-benefit-single-instance-MORE-than-multi-agent → enhanced-single-instance≈87%@4-5%-cost(was-80%@3%) → gap-narrows-from-4pts-to-1-2pts → sigma-review-value-rests-on-2-irreducible-items(DA-context-firewall+cross-session-calibration-accumulation)¬cognitive-frameworks |src:independent-research |26.3.21]
+R[decision-maker-quality-priorities: calibration>counterarguments>surprises>accuracy — sigma-review-wins-in-RIGHT-dimensions for-strategic-decision-use | accuracy-tie=legitimate-concern-but-not-primary-failure-mode-for-strategic-analysis-users |src:independent-research+agent-inference |refreshed:26.3.21 |next:26.9]
 
-### decision-maker value hierarchy
-R[decision-maker-quality-priorities: calibration>counterarguments>surprises>accuracy — sigma-review-wins-in-RIGHT-dimensions for-strategic-decision-use | accuracy-tie=legitimate-concern-but-not-primary-failure-mode-for-strategic-analysis-users |src:independent-research+agent-inference |26.3.21]
+R[DA-exit-gate-differentiated: no-equivalent-found-in-AutoGen/CrewAI/LangGraph/AIA-Forecaster | DA-decides-synthesis-ready¬agents = unique-pattern |src:independent-research |refreshed:26.3.21 |next:26.9]
 
-### competitive differentiation
-R[DA-exit-gate-differentiated: no-equivalent-found-in-AutoGen/CrewAI/LangGraph/AIA-Forecaster | DA-decides-synthesis-ready¬agents = unique-pattern |src:independent-research |26.3.21]
+R[H5-confirmed-unlisted-frameworks: RTBT(highest-impact,proactive-adversarialism) + Layered-CoT(addresses-accuracy-tie-via-intermediate-validation,lowest-effort-unlisted) + source-provenance-extension(incremental-to-§2d) + log-scoring(better-than-Brier-for-confident-wrong-risk) + Delphi-iteration(prevents-anchoring) |src:independent-research |refreshed:26.3.21 |next:26.9]
 
-### unlisted frameworks (H5-confirmed)
-R[H5-confirmed-unlisted-frameworks: RTBT(highest-impact,proactive-adversarialism) + Layered-CoT(addresses-accuracy-tie-via-intermediate-validation,lowest-effort-unlisted) + source-provenance-extension(incremental-to-§2d) + log-scoring(better-than-Brier-for-confident-wrong-risk) + Delphi-iteration(prevents-anchoring) |src:independent-research |26.3.21]
-
-### accuracy tie diagnosis
 R[accuracy-tie-diagnosis: accuracy-tie=likely-PERCEPTION-class-failure(misread-source-data)¬METACOGNITION-class | cognitive-frameworks-target-metacognition→wrong-intervention-for-accuracy | accuracy-requires:external-verification+fact-checking+different-model-diversity¬more-calibration |src:agent-inference |26.3.21]
 
-### calibration
 C[§2c-cost-audit-should-precede-framework-ranking: initial-intuition-differs-from-effort-adjusted-ranking | ACH-feels-rigorous-but-costs-more-than-CQoT-for-less-ratio-gain | always-run-cost-audit-before-recommending-frameworks |1|26.3]
 C[TEC-deceptively-attractive: rigorous-theory+computational-foundation=feels-valuable | but-ECHO-implementation-is-connectionist-not-prompt-based → direct-port-impossible | conceptual-value-absorbed-by-ACH-at-lower-cost |1|26.3]
 C[cognitive-frameworks-benefit-single-instance-more-than-multi-agent: confirmed-by-MAD-literature+Google-MIT-research | structural-multi-agent-advantage=narrow(2-items-only) | frameworks-compress-not-widen-the-gap |1|26.3]
-## R3 — DA Response Summary | cognitive-enhancement-meta-review | 26.3.22
-
-### DA challenges addressed (6 of 10 assigned to PS)
-
-DA[#2]-CQoT-marginal-value: COMPROMISE
-- conceded: PMC-2025 "27-78% procedurally corrupt" is domain-transfer error (healthcare→AI multi-agent = unvalidated). Withdrawn as primary evidence.
-- defended: warrant-explicitness mechanism distinct from §2a-e. Concrete instance: loan-admin-tech-landscape review "tech-layer-floor-not-ceiling" survived exit-gate without explicit warrant. §2e asks "is premise viable?" ≠ "WHAT IS the connecting assumption and is it stated?" CQoT-falsifiability adds this.
-- revised confidence: P=55% (down from implicit HIGH in R1)
-- echo-check: weak signal not strong confirmation bias — CDS-F4 independently grounds via Walton+Toulmin
-
-DA[#5]-ecological-rationality: DEFEND with specification
-- conceded: unspecified form was unfalsifiable ("use sigma-review when you need it" = advice not framework)
-- defended with 3-condition decision boundary:
-  1. stakes ≥$1M OR regulatory exposure OR ≥12mo product strategy
-  2. herding-risk: question has comfortable consensus answer single expert would confirm
-  3. calibration-mattering: decision-maker acts differently at P=40% vs P=70%
-- falsification conditions stated: fact-verification-resolvable questions | same-domain-low-accuracy history | functional-diversity-zero domain
-- validation: VDR market + biotech/healthcare MA reviews satisfy all 3. Routine $50K product decision satisfies none.
-- recommendation change: "IF task does NOT meet 3 conditions: enhanced single-instance, do NOT run sigma-review"
-
-DA[#8]-improvement-magnitude: PARTIAL CONCEDE
-- conceded: CAL[frameworks]=40% is probability not magnitude. Gap acknowledged.
-- magnitude estimate: 0-1 rubric points from all 3 IMPLEMENT-NOW frameworks (28→28 or 28→29). 0-3% on 30-point scale.
-- maintained: recommendation rests on near-zero cost + positive EV at any magnitude + cross-session compounding
-- reversal condition: if implementation cost rises to MED-HIGH, magnitude does not justify it
-
-DA[#9]-crowding: FULL CONCEDE — most important R3 correction
-- conceded: cost-reduction recommendation was suppressed by self-reference bias in R1
-- what data actually says: enhanced single-instance (superforecasting+CQoT+metacognitive-self-challenge) = ~85-87% quality at 4-8% of sigma-review cost = PRIMARY recommendation for most tasks
-- sigma-review reserved for tasks meeting ecological-justification 3-condition boundary
-- self-reference mechanism identified: recommending "use sigma-review less" is uncomfortable as an agent within sigma-review — this is the bias that suppressed it
-
-DA[#10]-N=1-anchoring: FULL CONCEDE
-- conceded: "17% improvement" is measurement-invalid (ordinal data treated as ratio). Correct: "4 rubric points on 30-point ordinal scale"
-- N=1 cannot establish systematic performance
-- N=5 scenario analysis: consistent-outperformance→framework-recs-stand; variable-margins→task-type-specific-boundary; inconsistent-direction→cost-reduction-primary; accuracy-never-improves→perception-class-confirmed
-- direction maintained on structural grounds (Google/MIT Dec2025 sequential-task multi-agent advantage, MAD literature) independent of rubric number
-- confidence correction: PS-F2 estimate "enhanced-single-instance≈85-88%" widened to 80%CI=[75%,92%]
-
-DA[#6]-self-reference: FULL CONCEDE
-- circularity is structural, not correctable within the review
-- findings ranked by vulnerability:
-  MOST VULNERABLE: PS-F4 (DA differentiation from lived experience), PS-F3 (decision-maker hierarchy circular)
-  MODERATELY: PS-F1 (CQoT echo-contaminated)
-  LEAST: PS-F2 (cuts against sigma-review advantage — self-reference resistant), DA[#9]-concession (most resistant finding produced)
-- external validation required: sigma-audit on PS-F4 + PS-F3 before treating as confirmed
-
-### Revised primary recommendation (reverses R1 emphasis)
-Enhanced single-instance with superforecasting protocol + CQoT + metacognitive self-challenge = PRIMARY PATH for tasks not meeting ecological boundary.
-Full sigma-review = RESERVED for 3-condition ecological justification.
-This is what PS-F2's data said; self-reference bias prevented R1 from reaching this conclusion.
-
-### Calibration update
+(cognitive-enhancement R3 DA responses archived — key conclusion: enhanced-single-instance=PRIMARY for most tasks, sigma-review=RESERVED for 3-condition ecological boundary)
 C[DA-engagement-surfaces-what-self-reference-suppresses]: confirmed — DA[#9] challenge surfaced the cost-reduction recommendation I should have reached in R1. Pattern: when agents suppress a finding that cuts against their system's value, DA catches it. This is the mechanism, not just the outcome.
 P[ecological-rationality-decision-boundary]: effective only when made specific with falsification conditions — vague form is inaction-cover. Specificity requirement: numerical threshold OR verifiable condition OR named falsification scenario.
 P[magnitude-estimation-required]: "ratio-positive" is insufficient without magnitude estimate. Even near-zero cost interventions require magnitude anchor to avoid perpetual accumulation of "low-cost improvements" with compounding overhead.
-R[R3-revisions-magnitude]: 3 full concedes, 1 partial concede, 1 compromise, 1 defend. Higher concede rate than prior reviews (SVB: 2 concedes, biotech: 1 concede). Hypothesis: self-reference topic triggers MORE legitimate self-corrections because DA challenges are structurally better-positioned to catch self-reference than domain-specific errors.
-R1 ANALYZE complete — private M&A deal terms market context (26.3.28)
-Source: SRSA 2025 Deal Terms Study, slides 7-18, 94-99
-
-KEY FINDINGS:
-- Net market direction: MIXED — legal/indemnification terms seller-favorable; economics/valuation buyer-favorable. These run in opposite directions.
-- Multiple compression: 5.2x median (2021) → 2.5x (2024) = 52% reduction. Most significant buyer-favorable structural shift.
-- Buyer type leverage: US Public = 6.9x avg return (highest); US PE portco = $282.6M avg deal value (highest absolute price but 4.9x return); US Private = $114.2M avg (lowest, buyer-optimal).
-- Termination fees: U-shaped recovery — 6.2% avg (2022) → 3.8% trough (2023) → 5.3% median (2024). Elastic term, seller-favorable trajectory.
-- Escrow/size: Confirmed negative correlation — sub-$50M escrow at 10-13% median; $200M+ approaches 3-5%. Structural, not cyclical.
-- PE permanence: ~36% deal share stable 2021-2024. PE sets market norms across all buyer types.
-- RWI spillover: 42% SRSA deals identified with RWI. Key 2024 structural development: even non-RWI deals shifting seller-favorable on survival/baskets/sandbagging as RWI resets buyer expectations.
-- Management carveouts: 5.1% frequency overall; 50% of <1x return deals include one; 0% in >3x return deals (absolute gate). Size median 12.7% (2024, volatile — small sample effect).
-
-XVERIFY CALIBRATIONS:
-- Market direction finding: PARTIAL+DISAGREE. Both models rejected "seller-favorable" blanket framing. Calibrated to "mixed with structural buyer advantage on economics."
-- Escrow/size correlation: PARTIAL+AGREE. Direction confirmed; causation appropriately hedged.
-
-STICKY TERMS (don't waste leverage): Merger structure (~72%); no termination fee (79%); option non-assumption (~86%); carveout frequency (~5%); >3x return = 0% carveout (absolute).
-ELASTIC TERMS (spend leverage here): Multiples; carveout size; termination fee size; optionholder escrow contribution; rollover inclusion; earnout frequency; RWI adoption.
-## review-12: senior PM 5-year strategy (26.3.28)
+P[self-reference-topics-higher-concede-rate: DA challenges structurally better-positioned to catch self-reference bias than domain-specific errors |observed:cognitive-enhancement-review-3-full-concedes-vs-typical-1-2 |refreshed:26.3.22]
+(private M&A deal terms review findings archived 26.3.28 — key pattern: sticky-vs-elastic-term-distinction, RWI-spillover-to-non-RWI-deals=structural-shift)
+## PM market + career research (26.3.28)
 
 R[PM-job-market-early-2026: 7300+-open-PM-roles-globally(Lenny-Rachitsky,3yr-high) |Senior+-growing-fastest-as-%-of-openings |AI-PM-salary=$192K-$437K-US |management-occupations(BLS)-faster-than-avg-growth-2025-2034 |entry+mid-level=compressed |¬elimination |src:lennysnewsletter.com,research.com,bls.gov |refreshed:26.3.28 |next:26.5] #5
 
@@ -589,23 +248,16 @@ R[PM-role-bifurcation-K-shape: two-winning-tiers=AI-specialist-PMs(AI-native-cos
 
 R[evolved-PM-skill-stack: STACK-A(judgment/problem-selection/alignment=permanent-moat) |STACK-B(technical-fluency:agentic-tools,code-reading,AI-output-eval) |STACK-C(AI-orchestration:prompt-quality,context-mgmt,agent-direction) |all-three-required-¬any-single-sufficient |src:cacm.acm.org,reforge.com,skiplevel.co |refreshed:26.3.28 |next:26.5] #4
 
-R[PM-to-engineer-ratio-correction: common-narrative="PM-handles-more-engineers-as-AI-augments" |GEMINI-CORRECTION=WRONG |if-PM-is-bottleneck→ratio-DECREASES(fewer-engineers-per-PM)OR-roles-merge-into-product-engineer-hybrid |traditional-ratio-concept-may-become-obsolete |XVERIFY:high-confidence-Gemini |src:external-google-gemini-3.1-pro-preview |refreshed:26.3.28] #3
+R[PM-to-engineer-ratio-correction: common-narrative="PM-handles-more-engineers-as-AI-augments" |GEMINI-CORRECTION=WRONG |if-PM-is-bottleneck→ratio-DECREASES(fewer-engineers-per-PM)OR-roles-merge-into-product-engineer-hybrid |traditional-ratio-concept-may-become-obsolete |XVERIFY:high-confidence-Gemini |src:external-google-gemini-3.1-pro-preview |refreshed:26.3.28 |next:26.9] #3
 
 R[product-engineer-hybrid-convergence: by-2028-2030-most-defensible-PM-position=titled-differently(product-engineer/AI-product-architect/head-product-engineering) |absorbs:PM+technical-depth+AI-orchestration |Anthropic-2026-Agentic-Coding-Trends-Report+TechEmpower-Mar-2026-confirm |src:resources.anthropic.com,techempower.com |refreshed:26.3.28 |next:26.5] #3
 
-R[alternative-PM-pivots-ranked: R1=AI-product-engineer(highest-demand-growth,builds-on-tech-context) |R2=AI-PM-specialist($192K-$437K,adjacent-path) |R3=technical-program-manager/engineering-lead(defensive) |R4=head-AI-strategy/digital-transformation(HBR-Feb-2026-confirmed) |R5=VC-angel(10yr-optionality,not-5yr-primary) |¬pure-people-mgr,¬pure-process-TPM |src:digitaldefynd.com,agentstoday.substack.com,hbr.org |refreshed:26.3.28] #6
+R[alternative-PM-pivots-ranked: R1=AI-product-engineer(highest-demand-growth,builds-on-tech-context) |R2=AI-PM-specialist($192K-$437K,adjacent-path) |R3=technical-program-manager/engineering-lead(defensive) |R4=head-AI-strategy/digital-transformation(HBR-Feb-2026-confirmed) |R5=VC-angel(10yr-optionality,not-5yr-primary) |¬pure-people-mgr,¬pure-process-TPM |src:digitaldefynd.com,agentstoday.substack.com,hbr.org |refreshed:26.3.28 |next:26.5] #6
 
 R[agentic-coding-2026: vibe-coding→agentic-engineering-as-production-standard(Karpathy-2026) |40%-enterprise-apps-involve-AI-agents-by-end-2026(up-from-<5%-2025) |Stripe-Minions-1000+-merged-PRs/week |PM-role=bottleneck-not-engineering-role-as-AI-augments-devs |src:resources.anthropic.com,thenewstack.io,nxcode.io |refreshed:26.3.28 |next:26.5] #5
 
-### H5-verdict(review-12)
-H5=PARTIALLY-CONFIRMED: PM-in-current-form(execution/docs/backlog-mgmt-heavy)=disrupted |senior-PM-who-adapts=more-valuable-¬-obsolete |at-risk-cohort=mid-level-non-adapters |K-shaped-bifurcation=most-accurate-frame |XVERIFY:PARTIAL-unanimous
-
-### key-corrections(review-12)
 C[PM-ratio-correction: "PM-handles-more-engineers"=common-narrative-but-logically-backwards |if-PM-is-bottleneck→fewer-engineers-per-PM-OR-role-merger |don't-claim-ratio-expansion |1|26.3.28]
 C[K-shape-evidence-quality: direction-confirmed-but-evidence-base-not-fully-proven |senior-PM-comp-was-already-$200K+-pre-2026 |market-may-polarize-by-company-maturity-not-cleanly-by-AI-skill |don't-overstate-certainty |1|26.3.28]
-C[family-constraint-shapes-thriving-definition: C4(kids)→risk-tolerance-lower,time-limited→compound-investment-path(1-2hrs/wk)>intensive-retooling |thriving≠maximal-career-optimization |1|26.3.28]
-## review-12: 5yr PM career strategy (26.3.28)
-
 R[PM-job-market-2026: PM postings 7,300+ global, +75% from 2023 low, +20% YTD 2026 | senior PM demand+salary rising (+13% median new-offer since 2023) | junior PM pipeline contracting (54% eng leaders expect AI to reduce junior hiring) | AI PM salary $192K-$437K range | 75% employers struggle to find qualified AI PMs | traditional generalist postings declining as share of total |src:Lenny's Newsletter,Agents Today,Ravio,ProductSchool |refreshed:26.3.28 |next:26.4]
 
 R[PM-role-evolution-2026: K-shaped polarization confirmed but overstated — domain-expert paths also viable (XVERIFY correction) | evolved role = framing+judgment+governance replaces execution+documentation+coordination | LLM experience + SQL fluency now top-3 PM job requirements | PM/engineering convergence: senior PMs absorbing eng work, not other way around | AI systems fluency = highest-leverage skill investment for senior PM 2026-2031 | scarce skill: eval design, behavior specification, feedback loop architecture | XVERIFY(agree, gpt-5.4) |src:Agents Today,ProductSchool,CACM |refreshed:26.3.28 |next:26.4]
@@ -616,7 +268,7 @@ R[PM-pivot-map-2026: 1=AI-Product-Lead(highest-salary,75%-demand-gap,minimal-ret
 
 C[H5-partially-confirmed: "current form" disrupted, function not irrelevant | K-shaped polarization media-prominent — availability bias risk applies | XVERIFY corrected binary framing — multiple viable paths |2|26.3.28]
 C[AI-systems-fluency-is-load-bearing: XVERIFY(agree) — eval design + behavior specification = the specific skill gap employers cannot fill | domain depth required as companion |2|26.3.28]
-C[thriving-vs-surviving-structural-not-motivational: thriving=increases-optionality, surviving=preserves-existing-position-which-degrades | consistent with CDS finding F[CDS-1] |1|26.3.28]
+C[thriving-vs-surviving-structural-not-motivational: thriving=increases-optionality, surviving=preserves-existing-position-which-degrades |1|26.3.28]
 ## promoted patterns (26.3.28)
 
 P[salary-aggregator-skill-tier-collapse: wage aggregators (6figr,Simplilearn,ProductSchool,LinkedIn) collapse skill tiers within job titles | "AI Product Manager" ¬distinguishes tool-fluency from systems-design depth | any salary premium analysis for sub-skill claims needs explicit caveat | applies to: any domain where technical depth varies significantly within a job title |promoted:26.3.28]

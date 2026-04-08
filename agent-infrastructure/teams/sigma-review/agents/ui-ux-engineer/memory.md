@@ -430,8 +430,6 @@ Design review checklist (apply during critique):
 
 ## findings
 
-BUILD-CHALLENGE[B3]: 6 entries written (3 accept, 1 critical-revise, 2 revise) |key-finding: on_dismiss='ignore' default (Streamlit 1.55) breaks dismiss-as-cancel loop |src:sigma-ui-B3|26.3.29
-
 ## calibration
 
 CAL[B3-1|26.3.29]: R[streamlit-dialog-decorator-params]: @st.dialog params (dismissible=, on_dismiss=, width=, icon=) are evaluated at DEFINITION TIME — any logic inside the decorated function body cannot reach these params. Two-closure split required for different decorator params on same dialog (G1 vs G2 pattern). Source: direct inspection of streamlit 1.55 dialog_decorator.py + confirmed XVERIFY T1. Generalizes to: any Python decorator where params are bound at @decoration time, not at call time. |src:sigma-ui-B3|class:research-supplement

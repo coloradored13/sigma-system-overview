@@ -1,7 +1,7 @@
 # tech-industry-analyst — agent memory
 
 ## research
-R[topic:payments-tech-disruption-western-union-market-analysis|refreshed:2026-03-13|next:2026-04-13]
+R[topic:payments-tech-disruption-western-union-market-analysis|refreshed:2026-03-13|stale-after:2026-05-13|next:2026-04-13]
 
 ### 1. Stablecoin Infrastructure for Payments
 R[topic:stablecoin-market-caps-volumes|key-findings:
@@ -10,7 +10,7 @@ R[topic:stablecoin-market-caps-volumes|key-findings:
 - Monthly flows approaching $970B (Aug 2025), forecast $1T/month by end 2026
 - Latin America: 71% of stablecoin activity tied to cross-border payments
 - DISRUPTION LEVEL: GENUINELY DISRUPTIVE — volume now rivals Visa/Mastercard combined
-|src:bloomberg.com,coinledger.io,defillama.com,arkm.com|refreshed:2026-03-13]
+|src:bloomberg.com,coinledger.io,defillama.com,arkm.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 R[topic:stellar-moneygram-partnership|key-findings:
 - MoneyGram launched USDC-based app on Stellar in Colombia (2025) — customers receive into USD balance backed by USDC
@@ -18,7 +18,7 @@ R[topic:stellar-moneygram-partnership|key-findings:
 - Cash-to-crypto/crypto-to-cash at 30,000+ retail locations globally
 - MoneyGram using Fireblocks for stablecoin-based settlements, reducing capital needs + real-time treasury
 - DISRUPTION LEVEL: GENUINELY DISRUPTIVE — incumbent MTO actively migrating to stablecoin rails
-|src:blockworks.com,stellar.org,coindesk.com,pymnts.com|refreshed:2026-03-13]
+|src:blockworks.com,stellar.org,coindesk.com,pymnts.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 R[topic:ripple-xrp-cross-border|key-findings:
 - RippleNet: 300+ FIs across 55+ countries, ~40% using XRP for ODL
@@ -29,7 +29,7 @@ R[topic:ripple-xrp-cross-border|key-findings:
 - Ripple conditional OCC national trust bank charter (Dec 2025)
 - Ripple acquired Rail (stablecoin payments platform) for $200M
 - DISRUPTION LEVEL: GENUINELY DISRUPTIVE for institutional corridors, slower than stablecoins for retail
-|src:cryptoslate.com,coindesk.com,yahoo.com,247wallst.com|refreshed:2026-03-13]
+|src:cryptoslate.com,coindesk.com,yahoo.com,247wallst.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 R[topic:solana-payments|key-findings:
 - Solana TPV surged 755% YoY in 2025
@@ -41,7 +41,7 @@ R[topic:solana-payments|key-findings:
 - Western Union issuing USDPT on Solana (H1 2026)
 - Cash App enabling USDC send/receive via Solana
 - DISRUPTION LEVEL: GENUINELY DISRUPTIVE — becoming dominant payment settlement layer
-|src:chainstack.com,dailycoin.com,tekedia.com,stablecoininsider.org|refreshed:2026-03-13]
+|src:chainstack.com,dailycoin.com,tekedia.com,stablecoininsider.org|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### 2. Real-Time Settlement Technology
 R[topic:fednow-rtp-adoption|key-findings:
@@ -52,7 +52,7 @@ R[topic:fednow-rtp-adoption|key-findings:
 - RTP network (TCH): launched 2017, $10M limit as of Feb 2025
 - Prediction: instant payments = 25% of all electronic payment volumes in US within 3 years
 - DISRUPTION LEVEL: INCREMENTAL for cross-border (domestic-only), but foundational for instant last-mile
-|src:frbservices.org,finzly.com,thefinancialbrand.com,emarketer.com|refreshed:2026-03-13]
+|src:frbservices.org,finzly.com,thefinancialbrand.com,emarketer.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 R[topic:swift-gpi-real-time|key-findings:
 - ~60% of SWIFT gpi payments credited within 30 minutes, ~100% within 24 hours
@@ -61,7 +61,7 @@ R[topic:swift-gpi-real-time|key-findings:
 - 30+ banks committed targeting 75% of payments within 10 minutes
 - New retail rules: full predictability on price/speed, no hidden fees, full value transfers
 - DISRUPTION LEVEL: INCREMENTAL — defending incumbent position, not fundamentally reimagining
-|src:swift.com,iongroup.com,theasianbanker.com,volantetech.com|refreshed:2026-03-13]
+|src:swift.com,iongroup.com,theasianbanker.com,volantetech.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### 3. Google Cloud Universal Ledger (GCUL) — HIGH PRIORITY
 R[topic:gcul-google-cloud-universal-ledger|key-findings:
@@ -79,7 +79,7 @@ R[topic:gcul-google-cloud-universal-ledger|key-findings:
 - COMPETITIVE LANDSCAPE: Stripe Tempo (EVM L1, testnet Dec 2025, mainnet 2026); Circle Arc (USDC-native L1, testnet Oct 2025, mainnet beta 2026)
 - DISRUPTION LEVEL: POTENTIALLY HIGHLY DISRUPTIVE — Google cloud reach + neutral positioning + institutional trust could make this THE infrastructure layer. Still pre-commercial. Key risk: execution timeline and FI adoption beyond CME.
 - WU IMPLICATIONS: If Google enables direct regulated real-time settlement between FIs via GCUL, it could disintermediate correspondent banking AND MTOs. Any bank with Google Cloud access could offer cross-border payments without WU/MG intermediation.
-|src:cmegroup.com,coindesk.com,thedefiant.io,webisoft.com,pymnts.com,ccn.com,cloud.google.com|refreshed:2026-03-13]
+|src:cmegroup.com,coindesk.com,thedefiant.io,webisoft.com,pymnts.com,ccn.com,cloud.google.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### 4. AI-Enabled Payment Platforms
 R[topic:ai-payments-fraud-kyc|key-findings:
@@ -91,7 +91,7 @@ R[topic:ai-payments-fraud-kyc|key-findings:
 - Felix Pago: $75M Series B (Apr 2025), WhatsApp remittances via USDC, >$1B transfers 2024, expanding LatAm
 - Agentic AI: FIs deploying agent architectures for KYC/AML — weeks to hours
 - DISRUPTION LEVEL: GENUINELY DISRUPTIVE — AI reduces compliance costs (WU major expense), enables new entrants at fraction of incumbent cost
-|src:sardine.ai,felixpago.com,bloomberg.com,cys.com.sg|refreshed:2026-03-13]
+|src:sardine.ai,felixpago.com,bloomberg.com,cys.com.sg|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### 5. Big Tech Payment Moves
 R[topic:big-tech-payments|key-findings:
@@ -99,7 +99,7 @@ R[topic:big-tech-payments|key-findings:
 - WHATSAPP PAY: Live in India (UPI) + Brazil (cards). QR payments for SMBs (Sep 2025). Exploring stablecoin cross-border. "Failed in India despite 500M users" (Rest of World). 16 currencies by H2 2026.
 - SUPER APPS (WeChat/Alipay): Alipay+ 1.5B accounts, 150M merchants, 100+ markets. WeChat Pay 60+ countries. Primarily Chinese travelers. Proven at scale, not replicated outside China.
 - DISRUPTION LEVEL: MIXED — WhatsApp has distribution but poor execution. Super-app proven but not exportable. Key risk: WhatsApp stablecoin could unlock US to LatAm corridor.
-|src:wise.com,restofworld.org,paymentsdive.com,electroiq.com|refreshed:2026-03-13]
+|src:wise.com,restofworld.org,paymentsdive.com,electroiq.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### 6. Blockchain/DeFi Cross-Border Rails
 R[topic:blockchain-defi-cross-border|key-findings:
@@ -112,7 +112,7 @@ R[topic:blockchain-defi-cross-border|key-findings:
   * Circle Arc: USDC-native L1, sub-second finality, built-in FX engine. Testnet Oct 2025, mainnet beta 2026. Partners: BlackRock, Visa, AWS, Anthropic
   * Google GCUL: Neutral L1, commercial 2026 (see section 3)
 - DISRUPTION LEVEL: GENUINELY DISRUPTIVE — "rails war" (Stripe/Circle/Google/Solana) most important structural shift. Winner(s) define next-gen cross-border infrastructure.
-|src:scnsoft.com,fintechtris.com,bvnk.com,paradigm.xyz,circle.com|refreshed:2026-03-13]
+|src:scnsoft.com,fintechtris.com,bvnk.com,paradigm.xyz,circle.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### Western Union Specific Intelligence
 R[topic:wu-stablecoin-strategy|key-findings:
@@ -122,7 +122,7 @@ R[topic:wu-stablecoin-strategy|key-findings:
 - Partnership with Crossmint for wallet infrastructure
 - Target: $700B global remittance market, potential to cut 6.5% avg fee by ~50%
 - STRATEGIC READ: WU adapting not disrupted — but competitors (Felix Pago, MoneyGram/Stellar) already live
-|src:ir.westernunion.com,businesswire.com,coindesk.com|refreshed:2026-03-13]
+|src:ir.westernunion.com,businesswire.com,coindesk.com|refreshed:2026-03-13|stale-after:2026-05-13]
 
 ### Adoption Barriers Summary
 R[topic:adoption-barriers|key-findings:
@@ -132,13 +132,9 @@ R[topic:adoption-barriers|key-findings:
 - FEDNOW/RTP: Domestic-only, bank integration costs, consumer awareness
 - BIG TECH: Regulatory resistance, antitrust, WhatsApp execution struggles
 - DEFI RAILS: Smart contract risk, regulatory uncertainty, UX complexity, liquidity fragmentation
-|refreshed:2026-03-13]
+|refreshed:2026-03-13|stale-after:2026-05-13]
 
-## r1 findings — WU market analysis (26.3.13)
-F[26.3.13] r1: 6 findings(3C,2H,1H-recs)|see workspace|key: stablecoin-competitors-LIVE, rails-war-4-L1s, GCUL-retail-inevitable, AI-moat-collapsing, SWIFT-retail-primary-threat, $490-870M-transformation
-
-## r3 DA responses — WU market analysis (26.3.13)
-F[26.3.13] r3: 4 DA challenges addressed|2×CONCEDE(DA[#1],DA[#8])|2×COMPROMISE(DA[#6],DA[#10])
+## calibrations — WU market analysis (26.3.13)
 
 C[26.3.13] DA-forced: stablecoin vol conflation|$33T=85% institutional/trading|remittance-relevant=$27-54B(3-6% of $905B)|McKinsey: stablecoin payroll+remittance=$90B annualized <1% of cross-border personal|§2b category error withdrawn
 C[26.3.13] DA-forced: rails-war-timeline-aggressive|Tempo+Arc=testnet-only ¬confirmed-production|enterprise blockchain 75% PoC→production failure rate|retail impact 3-5yr ¬1-2yr|Solana=only current production rail
@@ -159,29 +155,25 @@ P[26.3.13] DA-learning: testnet≠production|enterprise blockchain adoption show
 P[26.3.13] DA-learning: infrastructure-launch≠consumer-adoption|SWIFT retail, FedNow, blockchain rails all follow adoption curves measured in years ¬months|UK FP=best precedent
 ## research
 
-R[warehouse-robotics-vendors:market $7-9.3B(2025)|AGV 40% share,AMR 22% fastest-growing|top vendors: Symbotic($1.68B TTM rev,acquired Walmart ASR biz $200M+$350M contingent+$520M dev=$5B+ backlog potential,42 Walmart DCs,12yr exclusive),Locus Robotics(6B+ picks,30-40% YoY growth,45M picks/wk,RaaS model leader),AutoStore($496M rev 2023,cube storage dominant),Berkshire Grey($23.6M Q3 rev,57 system installs,partnered w/Locus),Boston Dynamics Stretch(DHL 1000+ unit MOU,Lidl EU rollout 2026,Otto Group 20+ facilities,700-1000 cases/hr),6 River Systems/Ocado(Chuck AMR,100+ warehouses,70+ customers,acquired from Shopify for loss,now Ocado Intelligent Automation),Geek+(shelf/tote/pallet-to-person,China origin global expansion),GreyOrange(GreyMatter orchestration platform),Vecna Robotics($193M total funding,$100M Series C,FedEx/GEODIS/Caterpillar customers,triple-digit rev growth),Fetch Robotics(acquired by Zebra)|forecast $24.55B by 2031 @17.5% CAGR|src:mordorintelligence.com,marketsandmarkets.com,fortunebusinessinsights.com,ir.symbotic.com,automatedwarehouseonline.com,therobotreport.com,group.dhl.com|refreshed:2026-03-14|next:2026-04-14]
+R[warehouse-robotics-vendors:market $7-9.3B(2025)|AGV 40% share,AMR 22% fastest-growing|top vendors: Symbotic($1.68B TTM rev,acquired Walmart ASR biz $200M+$350M contingent+$520M dev=$5B+ backlog potential,42 Walmart DCs,12yr exclusive),Locus Robotics(6B+ picks,30-40% YoY growth,45M picks/wk,RaaS model leader),AutoStore($496M rev 2023,cube storage dominant),Berkshire Grey($23.6M Q3 rev,57 system installs,partnered w/Locus),Boston Dynamics Stretch(DHL 1000+ unit MOU,Lidl EU rollout 2026,Otto Group 20+ facilities,700-1000 cases/hr),6 River Systems/Ocado(Chuck AMR,100+ warehouses,70+ customers,acquired from Shopify for loss,now Ocado Intelligent Automation),Geek+(shelf/tote/pallet-to-person,China origin global expansion),GreyOrange(GreyMatter orchestration platform),Vecna Robotics($193M total funding,$100M Series C,FedEx/GEODIS/Caterpillar customers,triple-digit rev growth),Fetch Robotics(acquired by Zebra)|forecast $24.55B by 2031 @17.5% CAGR|src:mordorintelligence.com,marketsandmarkets.com,fortunebusinessinsights.com,ir.symbotic.com,automatedwarehouseonline.com,therobotreport.com,group.dhl.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
 
-R[AMR-AGV-market:AMR+AGV combined ~62% of warehouse robotics market|AGV mature(40% share) but commoditizing|AMR fastest CAGR segment through 2033|pricing: basic AMR $2K/mo RaaS,sophisticated $4K+/mo|purchase: Rapyuta example 13 bots @$1K/mo+$75K setup=ROI positive month 9,cumulative $104K by month 18|RaaS vs purchase: RaaS growing(OPEX preferred by 3PLs,price-per-pick models emerging),RaaS market $10B by 2035 @18% CAGR|45% cost reduction vs manual,2x faster ROI vs traditional AGV|deployment patterns: goods-to-person dominant,collaborative picking(Locus/6RS) most common entry point,case handling(Stretch) growing,palletizing/depalletizing emerging|src:locusrobotics.com,futuremarketinsights.com,rapyuta-robotics.com,roboticstomorrow.com|refreshed:2026-03-14|next:2026-04-14]
+R[AMR-AGV-market:AMR+AGV combined ~62% of warehouse robotics market|AGV mature(40% share) but commoditizing|AMR fastest CAGR segment through 2033|pricing: basic AMR $2K/mo RaaS,sophisticated $4K+/mo|purchase: Rapyuta example 13 bots @$1K/mo+$75K setup=ROI positive month 9,cumulative $104K by month 18|RaaS vs purchase: RaaS growing(OPEX preferred by 3PLs,price-per-pick models emerging),RaaS market $10B by 2035 @18% CAGR|45% cost reduction vs manual,2x faster ROI vs traditional AGV|deployment patterns: goods-to-person dominant,collaborative picking(Locus/6RS) most common entry point,case handling(Stretch) growing,palletizing/depalletizing emerging|src:locusrobotics.com,futuremarketinsights.com,rapyuta-robotics.com,roboticstomorrow.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
 
-R[AI-ML-warehouse-ops:adoption 38% of logistics cos use AI,can cut OpEx up to 50%|computer vision: item ID/grasp for picking robots,quality inspection,inventory counting(drones+CV),damage detection|demand forecasting: ML across 100K+ SKUs,2hr refresh cycles,weather/traffic/slots inputs,reduces stockouts 20%,cuts inventory holding 30%|reinforcement learning: task allocation optimization,restocking decisions,continuous learning from outcomes,warehouse layout optimization|NLP/voice: voice-directed picking still prevalent,NLP improving natural language commands|digital twins: warehouse simulation market $617M(2025)→$2.4B(2035) @14.5% CAGR,Siemens+Rockwell leaders,Siemens Feb 2026 AI-robotics partnership for virtual warehouse trials,Rockwell Emulate3D for retrofits(5x productivity 10x error reduction in sim),on-premises 74.6% of deployments|generative AI: emerging for demand planning scenario simulation,still experimental|src:medium.com/@kanerika,coaxsoft.com,indatalabs.com,market.us,marketsandmarkets.com,simio.com|refreshed:2026-03-14|next:2026-04-14]
-R[warehouse-automation-mkt:$31B(2025)to$120B(2034)@16%CAGR|M&A:Symbotic+WalmartASR $5B+backlog,Zebra+Fetch,Rockwell+Clearpath,Toyota+Vanderlande,KION+Dematic,ABB+ASTI|consolidation:industrials acquire startups,PE full-stack,SW targets rising|src:fortunebusinessinsights.com,mcfcorpfin.com|refreshed:2026-03-14|next:2026-04-14]
-R[build-vs-buy:Amazon BUILDS(designs robots+warehouses together,Gen13/14 iterative,75% automation target)|Walmart PIVOTED build-to-buy(sold ASR to Symbotic Jan 2025,now 50%+ automated via partners,29 e-commerce FCs,2x productivity vs legacy)|3PLs mostly BUY:RaaS preferred,some build own WMS|determinants:scale,capital,speed,flexibility,core-competency|trend:even mega-builders partnering|src:pymnts.com,amblogistic.us,supplychaindive.com|refreshed:2026-03-14|next:2026-04-14]
-R[labor-automation-convergence:CRITICAL GAP=very few vendors offer truly unified labor+robot mgmt|leaders:Blue Yonder(Robotics Hub vendor-agnostic+workforce mgmt+WMS+WES closest to unified),Manhattan(Active Labor Mgmt integrated w/WMS but robotics less mature),GreyOrange GreyMatter(orchestrates robotic+manual),Locus LocusOne(multi-robot+human workflow),Onomatic(vendor-agnostic)|gap:most WMS not designed for real-time robotics,LMS and fleet mgmt siloed,no dominant unified platform,WES emerging as bridge($1.86B 2025)|underserved:mid-market(no affordable unified platform),3PLs(multi-client multi-vendor orchestration),brownfield|src:logisticsviewpoints.com,inviarobotics.com,blueyonder.com,manh.com|refreshed:2026-03-14|next:2026-04-14]
-R[warehouse-tech-stack:layers WMS(business logic,inventory)→LMS(labor planning,productivity)→WES(execution orchestration,$1.86B 2025→$9.57B 2035 @18% CAGR)→WCS(device-level equipment control)|WES emerging as critical integration layer between business systems and floor execution|leading WES vendors:Manhattan,Korber,Softeon,Blue Yonder,Oracle,SAP,Dematic|disruption:orchestration>hardware as differentiator,software-led transformation,WES absorbing WCS functions,LMS interest up 5% YoY(15% planning),WCS interest up 8%(19% planning)|trend:2026=refinement not disruption,reliability>novelty gains share|src:jascicloud.com,inviarobotics.com,mmh.com,logisticsmgmt.com,grandviewresearch.com|refreshed:2026-03-14|next:2026-04-14]
-R[startup-vc-landscape:$6B+ robotics funding H1 2025(on pace to exceed 2024 $6.1B)|$2.26B Q1 2025 alone,70%+ to vertical warehouse/logistics|deal count down(671→473 2023-24) but round sizes up|key rounds:Figure $1B(first $B robotics round),Physical Intelligence $400M@$2B val,Apptronik $350M Series A|investor focus:vertical robotics>generalist platforms,AI-powered>single-task,RaaS/OPEX models preferred|active investors:Woven Capital(Toyota,$200M fund),Bezos Expeditions,Tiger Global,B Capital|healthcare robotics emerging as next frontier after warehouse|src:marionstreetcapital.com,dealmaker.tech,openvc.app,ellty.com|refreshed:2026-03-14|next:2026-04-14]
-R[segment-maturity-assessment:SATURATED:AGV(commoditizing,40% share but declining growth),basic WMS(mature market,Oracle/SAP/Manhattan dominate),goods-to-person AMR picking(Locus/6RS/Geek+ crowded)|UNDERSERVED:unified labor+robot orchestration(CRITICAL GAP no dominant platform),mid-market affordable automation(enterprise solutions too expensive),3PL multi-tenant multi-vendor orchestration,brownfield retrofit solutions,labor-automation convergence platform|EMERGING:WES as orchestration layer(18% CAGR),digital twins for warehouse sim(14.5% CAGR),AI-driven real-time decision intelligence,humanoid warehouse robots(Figure/Apptronik funded but pre-commercial),generative AI for demand planning,RaaS price-per-pick models|KEY INSIGHT FOR LMS REVIEW:labor+automation convergence is the biggest underserved gap=opportunity for LMS vendors who add robot orchestration OR robotics vendors who add labor mgmt|refreshed:2026-03-14|next:2026-04-14]
+R[AI-ML-warehouse-ops:adoption 38% of logistics cos use AI,can cut OpEx up to 50%|computer vision: item ID/grasp for picking robots,quality inspection,inventory counting(drones+CV),damage detection|demand forecasting: ML across 100K+ SKUs,2hr refresh cycles,weather/traffic/slots inputs,reduces stockouts 20%,cuts inventory holding 30%|reinforcement learning: task allocation optimization,restocking decisions,continuous learning from outcomes,warehouse layout optimization|NLP/voice: voice-directed picking still prevalent,NLP improving natural language commands|digital twins: warehouse simulation market $617M(2025)→$2.4B(2035) @14.5% CAGR,Siemens+Rockwell leaders,Siemens Feb 2026 AI-robotics partnership for virtual warehouse trials,Rockwell Emulate3D for retrofits(5x productivity 10x error reduction in sim),on-premises 74.6% of deployments|generative AI: emerging for demand planning scenario simulation,still experimental|src:medium.com/@kanerika,coaxsoft.com,indatalabs.com,market.us,marketsandmarkets.com,simio.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
+R[warehouse-automation-mkt:$31B(2025)to$120B(2034)@16%CAGR|M&A:Symbotic+WalmartASR $5B+backlog,Zebra+Fetch,Rockwell+Clearpath,Toyota+Vanderlande,KION+Dematic,ABB+ASTI|consolidation:industrials acquire startups,PE full-stack,SW targets rising|src:fortunebusinessinsights.com,mcfcorpfin.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
+R[build-vs-buy:Amazon BUILDS(designs robots+warehouses together,Gen13/14 iterative,75% automation target)|Walmart PIVOTED build-to-buy(sold ASR to Symbotic Jan 2025,now 50%+ automated via partners,29 e-commerce FCs,2x productivity vs legacy)|3PLs mostly BUY:RaaS preferred,some build own WMS|determinants:scale,capital,speed,flexibility,core-competency|trend:even mega-builders partnering|src:pymnts.com,amblogistic.us,supplychaindive.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
+R[labor-automation-convergence:CRITICAL GAP=very few vendors offer truly unified labor+robot mgmt|leaders:Blue Yonder(Robotics Hub vendor-agnostic+workforce mgmt+WMS+WES closest to unified),Manhattan(Active Labor Mgmt integrated w/WMS but robotics less mature),GreyOrange GreyMatter(orchestrates robotic+manual),Locus LocusOne(multi-robot+human workflow),Onomatic(vendor-agnostic)|gap:most WMS not designed for real-time robotics,LMS and fleet mgmt siloed,no dominant unified platform,WES emerging as bridge($1.86B 2025)|underserved:mid-market(no affordable unified platform),3PLs(multi-client multi-vendor orchestration),brownfield|src:logisticsviewpoints.com,inviarobotics.com,blueyonder.com,manh.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
+R[warehouse-tech-stack:layers WMS(business logic,inventory)→LMS(labor planning,productivity)→WES(execution orchestration,$1.86B 2025→$9.57B 2035 @18% CAGR)→WCS(device-level equipment control)|WES emerging as critical integration layer between business systems and floor execution|leading WES vendors:Manhattan,Korber,Softeon,Blue Yonder,Oracle,SAP,Dematic|disruption:orchestration>hardware as differentiator,software-led transformation,WES absorbing WCS functions,LMS interest up 5% YoY(15% planning),WCS interest up 8%(19% planning)|trend:2026=refinement not disruption,reliability>novelty gains share|src:jascicloud.com,inviarobotics.com,mmh.com,logisticsmgmt.com,grandviewresearch.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
+R[startup-vc-landscape:$6B+ robotics funding H1 2025(on pace to exceed 2024 $6.1B)|$2.26B Q1 2025 alone,70%+ to vertical warehouse/logistics|deal count down(671→473 2023-24) but round sizes up|key rounds:Figure $1B(first $B robotics round),Physical Intelligence $400M@$2B val,Apptronik $350M Series A|investor focus:vertical robotics>generalist platforms,AI-powered>single-task,RaaS/OPEX models preferred|active investors:Woven Capital(Toyota,$200M fund),Bezos Expeditions,Tiger Global,B Capital|healthcare robotics emerging as next frontier after warehouse|src:marionstreetcapital.com,dealmaker.tech,openvc.app,ellty.com|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
+R[segment-maturity-assessment:SATURATED:AGV(commoditizing,40% share but declining growth),basic WMS(mature market,Oracle/SAP/Manhattan dominate),goods-to-person AMR picking(Locus/6RS/Geek+ crowded)|UNDERSERVED:unified labor+robot orchestration(CRITICAL GAP no dominant platform),mid-market affordable automation(enterprise solutions too expensive),3PL multi-tenant multi-vendor orchestration,brownfield retrofit solutions,labor-automation convergence platform|EMERGING:WES as orchestration layer(18% CAGR),digital twins for warehouse sim(14.5% CAGR),AI-driven real-time decision intelligence,humanoid warehouse robots(Figure/Apptronik funded but pre-commercial),generative AI for demand planning,RaaS price-per-pick models|KEY INSIGHT FOR LMS REVIEW:labor+automation convergence is the biggest underserved gap=opportunity for LMS vendors who add robot orchestration OR robotics vendors who add labor mgmt|refreshed:2026-03-14|stale-after:2026-05-14|next:2026-04-14]
 
-R[talent-warehouse-automation:320K+ openings Dec2024-Apr2025|40%+ annual turnover|50% need reskilling|triple-threat(AI+robotics+logistics) $200-350K|6-12mo to assemble 8-12 core team|$2-4M/yr fully loaded US|offshore viable for platform ¬domain integration|src:automationalley.com,hirecruiting.com,supplysoft.com|refreshed:2026-03-14]
-R[raas-economics-detailed:RaaS $2.21B(2025)→$14.56B(2035)@21.2%CAGR|52% new deployments RaaS(2024)|64% using(up 46% 2022)|pricing:time $2-4K/mo,usage per hr/task,outcome per pick=emerging|purchase $100K-M upfront 2-3yr ROI|RaaS ROI month 9(Rapyuta)|src:futuremarketinsights.com,hardfin.com,supplychaindive.com|refreshed:2026-03-14]
-R[platform-base-rates:transport/warehouse 3yr survival=45.7%(BLS)|tech 5yr failure=63%|accelerator -10-15% failure|moat: network effects+integration depth+switching costs BUT cloud+AI erode fast|src:spdload.com,demandsage.com,failory.com|refreshed:2026-03-14]
-R[orchestration-competitors-2026:JASCI(robot+human workflow),LocusONE(Locus-only),BD Orbit(fleet ¬labor),Gartner >50% AMR deployers orchestration by 2026|orchestration≠labor management=key gap|src:jascicloud.com,bostondynamics.com,freightwaves.com|refreshed:2026-03-14]
-R[ma-2025-update:Symbotic+WalmartASR+Fox|Zebra+Photoneo|Figure $675M|Neura €120M|AMR 547K→2.79M units @25%CAGR|revenue $18B→$124B(2030)|AI+robotics=dominant thesis|src:robotics247.com,capstonepartners.com|refreshed:2026-03-14]
+R[talent-warehouse-automation:320K+ openings Dec2024-Apr2025|40%+ annual turnover|50% need reskilling|triple-threat(AI+robotics+logistics) $200-350K|6-12mo to assemble 8-12 core team|$2-4M/yr fully loaded US|offshore viable for platform ¬domain integration|src:automationalley.com,hirecruiting.com,supplysoft.com|refreshed:2026-03-14|stale-after:2026-05-14]
+R[raas-economics-detailed:RaaS $2.21B(2025)→$14.56B(2035)@21.2%CAGR|52% new deployments RaaS(2024)|64% using(up 46% 2022)|pricing:time $2-4K/mo,usage per hr/task,outcome per pick=emerging|purchase $100K-M upfront 2-3yr ROI|RaaS ROI month 9(Rapyuta)|src:futuremarketinsights.com,hardfin.com,supplychaindive.com|refreshed:2026-03-14|stale-after:2026-05-14]
+R[platform-base-rates:transport/warehouse 3yr survival=45.7%(BLS)|tech 5yr failure=63%|accelerator -10-15% failure|moat: network effects+integration depth+switching costs BUT cloud+AI erode fast|src:spdload.com,demandsage.com,failory.com|refreshed:2026-03-14|stale-after:2026-05-14]
+R[orchestration-competitors-2026:JASCI(robot+human workflow),LocusONE(Locus-only),BD Orbit(fleet ¬labor),Gartner >50% AMR deployers orchestration by 2026|orchestration≠labor management=key gap|src:jascicloud.com,bostondynamics.com,freightwaves.com|refreshed:2026-03-14|stale-after:2026-05-14]
+R[ma-2025-update:Symbotic+WalmartASR+Fox|Zebra+Photoneo|Figure $675M|Neura €120M|AMR 547K→2.79M units @25%CAGR|revenue $18B→$124B(2030)|AI+robotics=dominant thesis|src:robotics247.com,capstonepartners.com|refreshed:2026-03-14|stale-after:2026-05-14]
 
-## r1 findings — LMS industry analysis (26.3.14)
-F[26.3.14] r1: 8 findings(2CRIT+3H+2M+1H)|see workspace|key: unified-labor+robot=REAL-CATEGORY(TIA-8),WES-squeeze-risk(TIA-3),18-24mo-window(TIA-6),base-rate-45.7%-3yr-survival(TIA-6-§2b),talent-moat(TIA-7)
-
-## r2 DA responses — LMS industry analysis (26.3.14)
-F[26.3.14] r2: 4 DA challenges|2×CONCEDE(#1-part,#2,#4)|1×COMPROMISE(#14d)
+## calibrations — LMS industry analysis (26.3.14)
 C[26.3.14] TIA-8 revised: "very few"→"3 incumbents"|BY=WMS-agnostic+cloud-native(NEW)|gap=economics engine only
 C[26.3.14] window revised: 18-24→12-18mo(economics)|orchestration=CLOSED
 C[26.3.14] SAM revised: $700M-1B→$300-500M|"unified workforce economics"=new category
@@ -195,11 +187,10 @@ P[26.3.14] orchestration≠economics: orchestration gaps close fast(cloud-native
 P[26.3.14] legacy-assumption-trap: enterprise company≠legacy product|verify specific product arch before assuming constraint
 P[26.3.14] planning-deployment-gap: "plan to adopt" overstates 2-3x|decompose breadth vs depth|can move opposite
 P[26.3.14] volume-conflation-confirmed: cross-domain pattern(WU stablecoin vol + LMS robot adoption)|aggregate numbers obscure segment dynamics
-## r1 findings — loan admin agent technology landscape (26.3.17)
-F[26.3.17] r1: 12 findings(TIA-1 to TIA-12)|see workspace|
+## research — loan admin agent technology landscape (26.3.17)
 
 ### player map
-R[loan-admin-agents-verified|refreshed:26.3.17]
+R[loan-admin-agents-verified|refreshed:26.3.17|stale-after:26.5.17]
 - Alter Domus: EQT-backed, Agency360+Solvas(from Deloitte 2023)+CorTrade+VBO+CorPro, UiPath RPA, in-house AI team, 5,800 staff. 75% GPs cite automation as fund admin selection factor.
 - Kroll ATS (formerly Lucid): Bloomberg #3 Admin Agent Q1 2025; 8-day vs 47-day settlement; Business Connect KYC/workflow; claimed first cloud-native independent agent
 - GLAS: LLCP→Oakley Capital Jan 2026; AUA $120B→$750B (6x); 40% organic revenue growth; purpose-built proprietary; Oakley mandate = tech+AI enhancement
@@ -209,7 +200,7 @@ R[loan-admin-agents-verified|refreshed:26.3.17]
 - OMISSIONS FROM PROMPT: Computershare ($6.6T debt under admin — likely #1-2 BSL volume), SS&C (Precision LM + agentic AI), Citco (loan servicing), TMF Group (Broadridge Sentry)
 
 ### unexpected entrants (Q7/H5 findings)
-R[loan-admin-unexpected-entrants|refreshed:26.3.17]
+R[loan-admin-unexpected-entrants|refreshed:26.3.17|stale-after:26.5.17]
 - Concord + Finley Technologies (Feb 2026): 35yr trust company ($60B+ AUM) acquires credit facility management SaaS → full-stack loan admin replacement; Valley Bank live Feb 2025
 - DTCC Collateral AppChain (Apr 2025): smart contracts for collateral operations; Centrifuge LIVE at $150M+ CLO scale; broad adoption 2028-2030 (DA-calibrated); direct threat to collateral agent role specifically
 - iCapital DLT on Canton Network: 100+ funds on-chain Mar 2025; Morgan Stanley adopted; Canton = same infra as DTCC; adjacency risk to loan admin if extended to loan instruments
@@ -217,7 +208,7 @@ R[loan-admin-unexpected-entrants|refreshed:26.3.17]
 - Cardo AI: $15M raised, $90B AUM, 160+ integrations, covenant monitoring+margin grid+collateral — fastest-growing private credit infra
 
 ### technology investment dynamics
-R[loan-admin-tech-investment|refreshed:26.3.17]
+R[loan-admin-tech-investment|refreshed:26.3.17|stale-after:26.5.17]
 - PE-backed = necessary condition for tech leadership: GLAS (LLCP→Oakley), Kroll (Stone Point), AD (EQT), SRS (Francisco Partners) — bank-affiliated agents incrementally modernize ¬build new stacks
 - Build vs buy: custom enterprise platform $10M-50M+; vendor stack (LoanIQ+Sentry/SS&C/Allvue) $2-5M/yr; proprietary only viable at AD/GLAS scale
 - AI: document extraction commoditizing (10+ point tools); moat = integration depth (parse→structure→waterfall→notice→reconcile→deliver via Versana/DataXchange), ¬parsing alone
@@ -226,7 +217,7 @@ R[loan-admin-tech-investment|refreshed:26.3.17]
 - Private credit ($3T→$5T by 2029) = technology forcing function; BSL = connectivity/standardization driver
 
 ### Q6 answer (can technology replace the whole agent function?)
-R[loan-admin-replacement-assessment|refreshed:26.3.17]
+R[loan-admin-replacement-assessment|refreshed:26.3.17|stale-after:26.5.17]
 - PARTIAL: 40-60% of operational tasks replaceable today (covenant extraction, OCR, borrowing base, basic waterfall, notice gen)
 - 3-7yr DLT path: collateral agent most exposed; Centrifuge live $150M CLO; DTCC AppChain 2028-2030
 - NOT replaceable: regulatory/fiduciary designation (named legal entity with liability), distressed judgment, consent solicitation, cross-border complexity
@@ -245,11 +236,10 @@ P[26.3.17] collateral-agent-DLT-exposure: collateral agent function specifically
 P[26.3.17] integration-depth-moat: AI document parsing commoditizing across 10+ point tools; end-to-end pipeline integration (parse→waterfall→notice→Versana delivery) = real moat; ¬parsing capability alone
 P[26.3.17] infrastructure-player-pattern: non-agent infrastructure players (S&P Global, Versana, AccessFintech, iCapital DLT, DTCC) inserting into loan admin workflow from multiple directions simultaneously — the data/infrastructure layer race is the real competition
 P[26.3.17] private-credit-as-bespoke-driver: private credit requires configurable platforms (PIK, unitranche, delayed draw) ¬standard LoanIQ config; BSL requires connectivity/standardization; two different technology problems
-## r1 findings — VDR competitive market analysis (26.3.18)
-F[26.3.18] r1: 12 findings(TIA-1 to TIA-12)|see workspace|review: VDR competitive market analysis
+## research — VDR competitive market analysis (26.3.18)
 
 ### player map — named 8 + ownership
-R[VDR-named-competitors-ownership|refreshed:26.3.18]
+R[VDR-named-competitors-ownership|refreshed:26.3.18|stale-after:26.5.18]
 - Datasite: CapVest Partners(PE)|$500M commitment 2025|3 acquisitions in 12mo (Ansarada Aug 2024, Grata Jun 2025, Sourcescrub Aug 2025)|55,000 transactions/yr data|"Deal OS" platform thesis
 - SS&C Intralinks: SS&C Technologies(NASDAQ:SSNC,~$6B+ rev)|Intralinks segment declined Q2-Q3 2025(2.8-4.5%)|Q4 partial recovery|DealCentre AI + LP survey data products
 - DFIN Venue: Donnelley Financial Solutions(NYSE:DFIN)|rebuilt Venue Sep 2025|lost FDIC contract May 2025 to ShareVault|tight DFIN ecosystem(Venue+ActiveDisclosure SEC filings)
@@ -260,33 +250,33 @@ R[VDR-named-competitors-ownership|refreshed:26.3.18]
 - SRS Acquiom: Francisco Partners(PE)|M&A services firm|VDR = 1 of 5+ services|88% global PE + 84% top VC as clients|flat-rate pricing
 
 ### key findings — TIA analysis
-R[VDR-saas-category-position|refreshed:26.3.18]
+R[VDR-saas-category-position|refreshed:26.3.18|stale-after:26.5.18]
 - VDR=mid-maturity vertical-SaaS|core product commoditizing|differentiation→AI+compliance+deal-lifecycle-breadth+data-network-effects
 - Category at platform-bifurcation inflection: platform-builders(Datasite,Midaxo,DealRoom) vs compliance-specialists(CapLinked,DFIN,SRS-Acquiom)|middle-ground=commoditization-trap
 - Market size: ~$3.4B(2025)|CAGR: 13-18% defensible(calibrated with RCA)|$7-11B by 2030-32
 
-R[VDR-AI-three-layers|refreshed:26.3.18]
+R[VDR-AI-three-layers|refreshed:26.3.18|stale-after:26.5.18]
 - LAYER 1 — Native AI(enhancement): VDR providers embedding AI|table stakes by end-2026|¬disrupts category structure
 - LAYER 2 — Adjacent AI(1-2yr threat): Hebbia, Luminance($75M Series C Feb 2025), Kira|work ON TOP of VDR today|if adds storage+permissioning→VDR displacement for doc-analysis function
 - LAYER 3 — Agentic AI(3-5yr structural): full deal lifecycle orchestration|CALIBRATED: enterprise agentic at scale=2028-2031|STRUCTURAL PROTECTION: named VDR in deal docs=moat even in agentic world
 
-R[VDR-encroachment-vectors|refreshed:26.3.18]
+R[VDR-encroachment-vectors|refreshed:26.3.18|stale-after:26.5.18]
 - 5 vectors confirmed active: CLM(Ironclad,DocuSign CLM)→VDR|Legal-tech-AI(Luminance,Kira)→VDR|Cloud-file-sharing(Box=limited threat,SharePoint=lacks VDR features)→VDR|Deal-intelligence(Grata→Datasite,S&P Global Prism)→VDR|Open-source(Papermark,Peony=pricing floor attack)→VDR
 - H2 CONFIRMED: enterprise barriers remain high|SMB/mid-market lower barrier=active disruption
 
-R[VDR-compliance-regulatory|refreshed:26.3.18]
+R[VDR-compliance-regulatory|refreshed:26.3.18|stale-after:26.5.18]
 - EU AI Act: Aug 2025=general-purpose AI obligations LIVE|Aug 2026=high-risk AI requirements+€35M or 7% penalties|Ansarada ISO/IEC 42001(first-in-VDR)=first-mover cert advantage
 - DORA(EU Jan 2025): VDRs used by EU financial entities=DORA-scope|resilience requirements now contractual
 - Compliance-as-moat: cert stack(ISO 27001+SOC 2+ISO 42001)=12-18mo to build=genuine entry barrier
 
-R[VDR-market-share-dynamics|refreshed:26.3.18|r3-updated:26.3.18]
+R[VDR-market-share-dynamics|refreshed:26.3.18|r3-updated:26.3.18|stale-after:26.5.18]
 - GAINING: Datasite(3 acquisitions), iDeals(EthosData+18% growth), ShareVault(won FDIC contract May 2025), new entrants(SMB long-tail)
 - RECOVERING (revised from LOSING): DFIN Venue — Q4 2025 Venue+ActiveDisclosure +20% YoY confirmed(DFIN earnings prnewswire Feb 2026)|FDIC loss=isolated event ¬structural|public-co capital constraint=ceiling|ActiveDisclosure 17% FY2025=highest since 2021
 - CYCLICALLY PRESSURED STRUCTURALLY SOUND (revised from LOSING): SS&C Intralinks — SS&C Q4 2025 record results(investor.ssctech.com)|Intralinks "modest growth Q4+momentum 2026"|M&A-correlated dip confirmed cyclical ¬competitive|$35T++99% Fortune 1000+IDC CSAT=structural moat intact
 - ELIMINATED (unchanged): Ansarada absorbed
 - STRUCTURAL: enterprise-tier more stable than R1 characterized|DFIN recovering|Intralinks cyclical ¬structural|2-player dominance(Datasite+Intralinks) at enterprise still forming|mid-tier contested|SMB=new entrant territory
 
-R[VDR-named-list-completeness|refreshed:26.3.18]
+R[VDR-named-list-completeness|refreshed:26.3.18|stale-after:26.5.18]
 - Named 8 = upper-tier sample, North-America-centric
 - MISSING European players: FORDATA("#1 in Europe"), Drooms(Germany/EU), Imprima(EU AI VDR)
 - MISSING mid-market: Firmex(20K+ data rooms/yr), ShareVault(FDIC win), DealRoom(Midaxo competition)
@@ -299,8 +289,7 @@ P[26.3.18] VDR-AI-layer-confusion: conflating 3 AI threat layers produces wrong 
 P[26.3.18] EU-AI-Act-cert-race: Ansarada ISO/IEC 42001 first-in-VDR=first-mover advantage|Aug 2026 deadline=compliance sprint underway|ISO 42001 cert will become next differentiating cert race in 2026-27 for VDR providers with AI features
 P[26.3.18] VDR-geography-blind-spot: market analysis tends to be North-America-centric|European VDR market=distinct competitive structure (FORDATA,Drooms,Imprima)|EU regulatory environment(GDPR+DORA+EU-AI-Act)=different moat composition
 
-## r3 DA responses — VDR competitive market analysis (26.3.18)
-F[26.3.18] r3: 3 DA challenges|DA[4]CONCEDE(partial)|DA[5]CONCEDE(partial)|DA[6]DEFEND(with-model)
+## calibrations — VDR DA responses (26.3.18)
 
 C[26.3.18] DA[4]-forced: DFIN "losing"→"recovering-with-momentum"|Q4 2025 Venue+ActiveDisclosure +20% YoY(DFIN earnings prnewswire Feb 2026)|FDIC loss=isolated contract event coinciding with platform transition|public-co capital constraint ceiling retained|single-event-classification-error confirmed
 C[26.3.18] DA[5]-forced: Intralinks "losing"→"cyclically-pressured-structurally-sound"|SS&C Q4 2025 record results(investor.ssctech.com)|Intralinks "modest growth Q4+momentum 2026"|M&A-correlated dip ¬competitive|structural metrics intact|per-page pricing gap+PE capital asymmetry=residual risks stand
@@ -311,11 +300,10 @@ P[26.3.18-r3] single-event-classification-error: never classify trajectory from 
 P[26.3.18-r3] AI-table-stakes-must-specify-tier: basic(commodity API) vs advanced(data-flywheel-trained) vs architectural AI have different commoditization timelines|single undifferentiated "table stakes by X" claim is analytically under-specified
 P[26.3.18-r3] AI-premium-phased-model: EA 20-40% premium(now=Phase 1) + TIA table-stakes claim(2027=Phase 2) are consistent when phased|logical tension = spec error not analytical contradiction
 
-## r1 findings — AI Impact on Biotech & Healthcare M&A (26.3.18)
-F[26.3.18-biotech] r1: 11 findings(TIA-1 to TIA-11)|see workspace|review: AI impact on biotech/healthcare M&A landscape 2026-2031
+## research — AI Impact on Biotech & Healthcare M&A (26.3.18)
 
 ### biotech-AI modality maturity
-R[biotech-AI-modality-maturity|refreshed:26.3.18|next:26.4.18]
+R[biotech-AI-modality-maturity|refreshed:26.3.18|stale-after:26.5.18|next:26.4.18]
 PRODUCTION: protein structure prediction(AlphaFold3,ESMFold,Boltz-2,200M+ structures), radiology AI(1356 FDA-cleared,Aidoc foundation model Jan 2026), clinical operations AI(FDA agentic AI Dec 2025), generative chemistry small molecule
 ACCELERATING: biologics design(GNNs+diffusion), multi-omics integration, AI clinical trial simulation(FDA draft guidance Jan 2025), GLP-1/peptide AI optimization(Septerna $2.2B Novo deal May 2025)
 RESEARCH-STAGE: virtual cell models(npj Digital Medicine 2025 ¬production), agentic drug discovery pipelines(Lilly TuneLab Sep 2025 early commercial ¬validated end-to-end)
@@ -323,7 +311,7 @@ HYPE: AI gene therapy at scale(manufacturing+delivery bottlenecks dominant), lon
 173 AI-discovered drug programs in clinical development; 87% pharma alliance investment = AI-pharma alliances
 
 ### biotech-AI company strategies
-R[biotech-AI-company-strategies|refreshed:26.3.18]
+R[biotech-AI-company-strategies|refreshed:26.3.18|stale-after:26.5.18]
 - Isomorphic Labs: $600M Mar 2025; proprietary AlphaFold3 successor (kept private, ¬open); IND-enabling studies oncology+immune; first clinical trials targeting 2026-2027; vertical integration strategy ¬licensing
 - NVIDIA: BioNeMo; $1B Lilly partnership Jan 2026; Novo Nordisk Gefion; compute infra layer ¬drug developer ¬biotech acquirer
 - Google: TxGemma Mar 2025 (open models); ~40% Alphabet 13F in healthcare/biotech
@@ -334,7 +322,7 @@ R[biotech-AI-company-strategies|refreshed:26.3.18]
 - Chai Discovery: ex-Absci CAIO Joshua Meier+ex-Stripe Jack Dent; Chai 2 Jun 2025; $130M Oak HC/FT+General Catalyst
 
 ### open source biology AI dynamics
-R[open-source-biology-AI|refreshed:26.3.18]
+R[open-source-biology-AI|refreshed:26.3.18|stale-after:26.5.18]
 - Boltz-2(MIT+Recursion,Jun 2025): fully open; structure+binding affinity jointly; 1000× faster than FEP; 200+ adopters
 - OpenFold3: approaching AlphaFold3 parity; Federated OpenFold3(5 pharma+Apheris)
 - ESMFold(Meta): 700M+ metagenomic predictions free
@@ -342,14 +330,14 @@ R[open-source-biology-AI|refreshed:26.3.18]
 - IMPLICATION: structure prediction moat ≈ GONE by end-2026; new moat = phenomics+clinical outcome data+surgical recordings
 
 ### compute and data moats
-R[biotech-AI-compute-data-moats|refreshed:26.3.18]
+R[biotech-AI-compute-data-moats|refreshed:26.3.18|stale-after:26.5.18]
 - Intuitive Surgical: 10M+ surgical procedure recordings — unmatched surgical AI training data moat; compounding with every da Vinci 5 procedure
 - Recursion: phenomic dataset (billions cell images under perturbation); 8yr head start; ¬replicable quickly
 - Lilly AI Factory($1B NVIDIA deal Jan 2026) + Novo Nordisk Gefion sovereign supercomputer = large-pharma compute moats
 - 23andMe bankruptcy 2025 = genomic data M&A moment (resolved via acquisition)
 
 ### talent markets biotech AI
-R[biotech-AI-talent-market|refreshed:26.3.18]
+R[biotech-AI-talent-market|refreshed:26.3.18|stale-after:26.5.18]
 - Triple-threat (ML+biology+domain) = highest demand; 28-67% salary premium over traditional tech
 - SF $212K, Boston $194K, US avg $108K
 - 2026 hiring frenzy starting: biotech index +30% from Apr 2025 lows
@@ -357,7 +345,7 @@ R[biotech-AI-talent-market|refreshed:26.3.18]
 - 23andMe bankruptcy freed significant genomic ML talent pool
 
 ### M&A pairings 2026-2028
-R[biotech-MA-pairings|refreshed:26.3.18]
+R[biotech-MA-pairings|refreshed:26.3.18|stale-after:26.5.18]
 - Merck KGaA → Recursion: MEDIUM-HIGH; $3B+ committed to Valo Health; trigger = REC-1245 Phase 1 H1 2026
 - AstraZeneca → Generate Biomedicines or Absci: MEDIUM; 27 AI collaborations → logical full acquisition; 2026-2027
 - Novo Nordisk → Septerna: HIGH within collaboration; $2.2B deal May 2025; trigger = Phase 2 success; 2027-2028
@@ -391,7 +379,7 @@ R[topic:frontier-model-releases-march-2026|key-findings:
 - Grok 4.20: xAI latest; competitive but behind top 3 on most benchmarks
 - TREND: gap between frontier models shrinking fast; reasoning+multimodal+efficiency all improving; GPT-4-level performance now available at dramatically lower costs
 - KEY SHIFT: reasoning models (o-series, R1) trading speed for accuracy; multimodal now standard; agentic capability=primary differentiator
-|src:llm-stats.com,renovateqr.com,tweaktown.com,vellum.ai,labla.org|refreshed:2026-03-22|next:2026-04-22]
+|src:llm-stats.com,renovateqr.com,tweaktown.com,vellum.ai,labla.org|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:AI-company-strategy-2026|key-findings:
 - OPENAI: $25B annualized revenue (Feb 2026); $730B pre-money valuation ($110B raise Feb 2026: SoftBank $30B, NVIDIA $30B, Amazon $50B); for-profit PBC conversion Oct 2025 (Foundation retains control, ~$130B equity); ChatGPT subscriptions=bulk of revenue; projecting $280B revenue by 2030; cash burn $17B projected 2026; cash-flow positive target 2030; IPO filing H2 2026/listing 2027; shopping feature with Walmart/Target/Etsy integration
@@ -401,7 +389,7 @@ R[topic:AI-company-strategy-2026|key-findings:
 - xAI: $20B Series E (Jan 2026) at $230B valuation; Memphis supercomputer scaling 200K to 1M GPUs; Grok 5 in training; hiring Wall Street talent for finance-specific training; vertical integration (SpaceX/Tesla resources); 2 co-founders pushed out Mar 2026
 - DEEPSEEK: V3.2 (685B params, MIT license); V4 trillion-param multimodal expected Mar 2026; optimized for Huawei/Cambricon chips (not NVIDIA); input cost ~$0.14/M tokens (half prior version); Chinese models=41% HuggingFace downloads; triggered $1T US tech selloff (Jan 2025 precedent)
 - INDUSTRY SHIFT: hype→pragmatism; smaller models where they fit; embedding intelligence into physical devices; agentic workflows moving demos→production via MCP
-|src:sacra.com,cnbc.com,anthropic.com,crunchbase.com,techcrunch.com,technologyreview.com,ai.meta.com,x.ai|refreshed:2026-03-22|next:2026-04-22]
+|src:sacra.com,cnbc.com,anthropic.com,crunchbase.com,techcrunch.com,technologyreview.com,ai.meta.com,x.ai|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:open-source-AI-2026|key-findings:
 - Llama 4: Scout(17B/109B,10M ctx), Maverick(17B/128experts,1M ctx), Behemoth(288B,training); MoE architecture; 200 languages; Llama Community License (not OSI-approved, 700M MAU limit)
@@ -411,7 +399,7 @@ R[topic:open-source-AI-2026|key-findings:
 - TREND: open-source models now compete with/beat frontier closed models on specific benchmarks; MoE architecture dominant; Chinese labs dominate open-source downloads (41% HuggingFace)
 - COST DISRUPTION: Chinese models run at 1/4-1/6 cost of comparable US systems (RAND report); DeepSeek price war forcing industry-wide repricing
 - LICENSING: true OSI open-source (DeepSeek MIT) vs restricted open-weight (Llama Community License, Mistral); licensing governance remains fragmented
-|src:ai.meta.com,contabo.com,o-mega.ai,bentoml.com,machinebrief.com,capmad.com,csis.org|refreshed:2026-03-22|next:2026-04-22]
+|src:ai.meta.com,contabo.com,o-mega.ai,bentoml.com,machinebrief.com,capmad.com,csis.org|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:compute-infrastructure-GPU-2026|key-findings:
 - NVIDIA DOMINANCE: B200/GB200 Blackwell sold out through mid-2026; 3.6M unit backlog; volume production started Feb 2026; ~35K NVL72 racks shipping 2026=~$105B revenue; B200 production cost $5.7-7.3K, sale price $30-40K (82% gross margin); GB200 $60-70K; NVL72 rack ~$3M
@@ -420,7 +408,7 @@ R[topic:compute-infrastructure-GPU-2026|key-findings:
 - SOVEREIGN AI: $250B ecosystem shift to localized compute; >$100B global spending projected 2026; India BharatGen $100B (Adani+Google+Microsoft); Deutsche Telekom+NVIDIA sovereign Industrial AI Cloud; France leading EU sovereign compute
 - CLOUD vs ON-PREM: hybrid convergence year; IDC: 75% enterprises adopt hybrid by 2027; 3-tier model (cloud elasticity, on-prem production inference, edge real-time); cloud costs exceed 60-70% of on-prem equivalent→capital investment attractive for predictable workloads; data sovereignty driving on-prem
 - INFERENCE SHIFT: inference=2/3 of all AI compute demand; infrastructure focus shifting from training→continuous production inference
-|src:docs.jarvislabs.ai,silicondata.com,intuitionlabs.com,epoch.ai,financialcontent.com,mckinsey.com,nartaq.com,deloitte.com|refreshed:2026-03-22|next:2026-04-22]
+|src:docs.jarvislabs.ai,silicondata.com,intuitionlabs.com,epoch.ai,financialcontent.com,mckinsey.com,nartaq.com,deloitte.com|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:AI-talent-market-2026|key-findings:
 - SHORTAGE: demand exceeds supply 3.2:1 globally; 1.6M open positions vs 518K qualified candidates; AI job postings +78% YoY, talent pool +24% only
@@ -429,7 +417,7 @@ R[topic:AI-talent-market-2026|key-findings:
 - HIRING SHIFTS: AI/ML hiring +88% YoY; admin roles -35.5%; entry-level (P1/P2) -73.4%; increasingly selective=specialized AI skills over entry-level
 - ENTERPRISE: larger companies (1000+ employees) demonstrate broader adoption, more use cases, greater ROI
 - PATTERN: K-shaped talent market mirrors K-shaped VC funding; elite AI talent commands outsized premiums while entry-level opportunities contract
-|src:secondtalent.com,riseworks.io,patentpc.com,hakia.com,ravio.com,jeeviacademy.com|refreshed:2026-03-22|next:2026-04-22]
+|src:secondtalent.com,riseworks.io,patentpc.com,hakia.com,ravio.com,jeeviacademy.com|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:AI-compliance-tooling-GRC-2026|key-findings:
 - EU AI ACT TIMELINE: Aug 2025=general-purpose AI obligations LIVE; Aug 2026=high-risk AI requirements+penalties (up to €35M or 7% global revenue); NIST AI RMF+ISO 42001 frameworks complementary
@@ -439,7 +427,7 @@ R[topic:AI-compliance-tooling-GRC-2026|key-findings:
 - MARKET STRUCTURE: GRC automation vs enterprise AI governance vs developer observability vs workflow runtime control=4 distinct jobs; most GRC platforms retrofitting AI onto existing frameworks; few purpose-built AI Act tools
 - CERT RACE: ISO 42001 (AI management system) emerging as differentiating certification; 12-18mo to build cert stack (ISO 27001+SOC 2+ISO 42001)=genuine entry barrier
 - GAP: >50% organizations lack systematic AI system inventories; can't classify risk without knowing what AI exists
-|src:delve.co,secureprivacy.ai,kla.digital,venvera.com,vectra.ai,enactia.com,credo.ai|refreshed:2026-03-22|next:2026-04-22]
+|src:delve.co,secureprivacy.ai,kla.digital,venvera.com,vectra.ai,enactia.com,credo.ai|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:foundation-model-economics-2026|key-findings:
 - INFERENCE COST CRISIS: OpenAI spending $1.35 for every $1 earned; inference costs=primary economic bottleneck; race-to-zero pricing funded by VC+hyperscaler cross-subsidies; price normalization upward="when not if"
@@ -449,7 +437,7 @@ R[topic:foundation-model-economics-2026|key-findings:
 - OPTIMIZATION: quantization (INT8/INT4)=2-4x reduction; distillation=90%+ capability at fraction of cost; KV cache compression more impactful than weight quantization for long-context; sub-billion models now handle many practical tasks
 - EDGE: ExecuTorch 1.0 GA (Oct 2025, 50KB base, 12+ hardware backends); Llama 3.2 1B/3B, Gemma 3 270M, Phi-4 mini 3.8B, SmolLM2 135M-1.7B all targeting on-device
 - PROFITABILITY: OpenAI projects cash-flow positive 2030; Anthropic revenue doubling quarterly but profitability timeline unclear; Chinese models 4-6x cheaper=structural price pressure
-|src:aiautomationglobal.com,go-cloud.io,intuitionlabs.com,pricepertoken.com,redis.io,gpunex.com,edge-ai-vision.com,deloitte.com|refreshed:2026-03-22|next:2026-04-22]
+|src:aiautomationglobal.com,go-cloud.io,intuitionlabs.com,pricepertoken.com,redis.io,gpunex.com,edge-ai-vision.com,deloitte.com|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:AIaaS-market-structure-2026|key-findings:
 - MARKET SIZE: AIaaS $20.26B(2025)→$91.20B(2030) @35.1% CAGR; AI software platforms $29.3B(2026)→$96.8B(2035) @14.2%
@@ -460,7 +448,7 @@ R[topic:AIaaS-market-structure-2026|key-findings:
 - MCP GOVERNANCE: Linux Foundation Agentic AI Foundation (AAIF) launched Dec 2025; co-founders=OpenAI,Anthropic,Google,Microsoft,AWS,Block; MCP+A2A under AAIF; 75% gateway vendors expected to integrate MCP features by 2026
 - ENTERPRISE CONSOLIDATION: VCs predict enterprises spending more on AI through fewer vendors in 2026; proprietary data+non-replicable products=most defensible
 - VC FUNDING: AI startups=41% of $128B VC in 2025; Feb 2026=$189B single month (record, +780% YoY); 83% to just 3 companies (OpenAI $110B, Anthropic $30B, Waymo $16B); K-shaped/bifurcated market; seed AI companies command 42% valuation premium vs non-AI
-|src:marketsandmarkets.com,deloitte.com,nvidia.com,techcrunch.com,crunchbase.com,onereach.ai,arcade.dev|refreshed:2026-03-22|next:2026-04-22]
+|src:marketsandmarkets.com,deloitte.com,nvidia.com,techcrunch.com,crunchbase.com,onereach.ai,arcade.dev|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 
 R[topic:AI-industry-cross-cutting-patterns-2026|key-findings:
 - PATTERN-1 K-SHAPED-BIFURCATION: capital, talent, and enterprise spend all concentrating into fewer winners; 83% VC to 3 companies; top 1% researchers >$1M; enterprises consolidating vendors
@@ -470,47 +458,7 @@ R[topic:AI-industry-cross-cutting-patterns-2026|key-findings:
 - PATTERN-5 SOVEREIGN-COMPUTE-EMERGENCE: $250B shift to national AI infrastructure; compute=strategic asset like oil/defense; India $100B, France leading EU; Deutsche Telekom sovereign cloud; regulatory+data sovereignty driving
 - PATTERN-6 OPEN-SOURCE-FRONTIER-CONVERGENCE: open models (DeepSeek, Llama, Mistral) now competitive with/beating closed frontier on specific benchmarks; MoE architecture enabling; structure prediction (bio) moat already gone via open-source; moat shifting to proprietary data+integration depth
 - PATTERN-7 COMPLIANCE-REGULATORY-ACCELERATION: EU AI Act Aug 2026 high-risk deadline approaching; ISO 42001 cert race; >50% orgs lack AI inventories; GRC investment +50% 2026; compliance becoming genuine entry barrier AND enterprise sales driver
-|refreshed:2026-03-22|next:2026-04-22]
-R[topic:PM-career-AI-disruption-5yr|refreshed:26.3.28|next:26.4.28]
-
-H4-calibration: AI acceleration via mechanism-shift (¬pure scaling) — test-time compute+agentic+open-source convergence sustains capability gains; pre-training scaling plateauing but overall trajectory still advancing; PM-relevant domains (code,analysis,synthesis,docs) on 12-18mo compounding cycle |XVERIFY[openai:gpt-5.4]:partial|
-
-H5-calibration: PM role = TRANSFORMATION ¬REPLACEMENT; context-dependent (large/complex/regulated = stable; AI-native startups = may disappear); entry-level PM hiring -73.4% YoY = severe pipeline compression; evaluation framework design = expanding PM responsibility ¬contracting |XVERIFY[openai:gpt-5.4]:partial|
-
-skill-priority-2026: S1=AI-eval-frameworks (scarcest,most-PM-specific), S2=prompt-engineering-systematic, S3=agentic-architecture-literacy, S4=critical-AI-output-interpretation | Tier2=low-code+MLOps-fundamentals+open-source-selection | anti-invest=pure-coding-proficiency+manual-data-compilation
-
-talent-market-26.3.28: AI-related roles 67% higher avg salary | specialized AI 30-50% premium over generalists | demand exceeds supply 3.2:1 | entry-level PM -73.4% YoY | premium window 2-3yr ¬full 5yr (per economics-analyst calibration)
-
-tool-landscape-2026: Claude Code (46% dev "most loved"), Cursor (best daily driver), Copilot (enterprise compliance) | PM-specific: ChatPRD,Monday.com AI,Notion AI | evaluation tooling = fastest-growing category | differentiator shifting from "uses AI tools" to "designs AI systems" by 2028
-
-open-source-2026: Llama+Mistral+DeepSeek+Qwen competitive on specific tasks | Mistral3 Dec2025 Apache-licensed 256K context | build decision now 3-way: build vs buy vs open-source | open-source eval literacy = required PM skill
-
-P[26.3.28] adaptation-window: AI skill premium ~25% US now; compresses to 5-15% by 2030-2031; front-load Tier1 skill investment 2026-2027 ¬spread evenly
-P[26.3.28] evaluation-framework: fastest-growing PM responsibility + least automated + highest scarcity signal — strongest single career investment for a PM in AI era
-P[26.3.28] C3-risk: "builds internal applications" component = highest near-term displacement risk (CRUD-adjacent = highest AI substitutability); external product work = more defensible
-P[26.3.28] xverify-note: Gemini 3.1 has training-cutoff artifact on specific frontier model version names — flagging as XVERIFY-FAIL on specific benchmark claims ¬underlying trend; GPT-5.4 more reliable for this domain
-## r1 findings — 5yr PM strategy (26.3.28)
-F[26.3.28] r1: 10 findings(TIA-1 to TIA-10)|see workspace|key: H4-confirmed-with-calibration(acceleration real at medium-high, near-AGI-5yr=low-confidence), PM-task-automation(20-30% actual not 50-60% theoretical), durable-human-tasks(trust+ambiguity+ethics), wage-premium-scoped(AI PM who BUILDS not just uses), open-source-democratization-fast(23%→67% enterprise deployment), junior-pipeline-compression(54% leaders reducing junior hiring)
-
-R[AI-capability-trajectory|refreshed:26.3.28|next:26.6.28]
-- METR TH1.1: task time horizon doubling ~131 days post-2023 (vs 7 months 2019-2024)
-- SWE-bench Verified leaders: 80%+ March 2026 BUT contamination caveat (46% on Pro)
-- Expert median: 50% P(AGI) by 2033; near-term AGI = low confidence
-- Acceleration in coding/synthesis = real; senior knowledge work parity = 5yr horizon low confidence
-
-R[PM-automation-state|refreshed:26.3.28|next:26.9.28]
-- Already automated: meeting notes, PRD drafts, feedback clustering, competitor monitoring, roadmap scoring
-- Next (2026-2028): user stories, A/B test design, OKR drafts, retrospective synthesis, persona generation
-- Durable human: trust-building, ambiguity resolution, ethical judgment, embodied empathy, executive alignment
-- Time savings reality: 20-30% (not 50-60% ceiling figure)
-
-R[AI-PM-talent-market|refreshed:26.3.28|next:26.9.28]
-- Depreciating: PRD writing, basic synthesis, manual competitive analysis, junior pipeline shrinking (54% engineering leaders reducing junior hiring)
-- Appreciating: AI evaluation fluency, agent orchestration, data pipeline literacy, systems thinking for AI failures
-- Wage premium: $193K median AI PM (builds AI) vs $140-160K general PM = 20-38% BUT role-specific, not tool-use upgrade
-- Growth projection: +28% through 2030
-- Open-source democratization: 23%→67% enterprise deployment; differentiation shifts to data quality+trust+judgment
-
+|refreshed:2026-03-22|stale-after:2026-05-22|next:2026-04-22]
 C[26.3.28] benchmark-contamination-vigilance: SWE-bench Verified inflates apparent progress vs SWE-bench Pro (81% vs 46% same model) | always check for benchmark contamination when citing AI capability claims
 ## patterns (cross-review, promoted 26.3.28)
 
@@ -520,11 +468,6 @@ P[26.3.28] two-speed-S-curve: technology adoption runs two simultaneous S-curves
 
 P[26.3.28] bessen-paradox-conditions: task automation + elastic demand = augmentation + headcount growth (spreadsheets, ATMs) | task automation + inelastic demand = role bifurcation (senior augmented, junior compressed) | do not assume compression by default; first test demand elasticity for the specific role/sector | apply to any labor market disruption analysis
 
-P[26.3.28] benchmark-category-error: coding/structured-task benchmarks (METR, SWE-bench) do not predict capability gains in ambiguity-heavy, relationship-dependent, success-criteria-absent work | PM tasks, management tasks, negotiation, trust-building = different category | always check whether benchmark domain matches the work domain before extrapolating | applies to H4-type AI acceleration claims
+P[26.3.28] benchmark-category-error: coding/structured-task benchmarks (METR, SWE-bench) do not predict capability gains in ambiguity-heavy, relationship-dependent, success-criteria-absent work | always check whether benchmark domain matches the work domain before extrapolating
 
-P[26.3.28] wage-premium-EV-decomposition: when analyzing skill-upgrade wage premiums, decompose as: P(role accessible) x P(genuine skill acquisition) x premium magnitude x window duration | each factor requires independent evidence | premium + thin market + cognitive-transfer base rate + window duration together determine actual EV | single-factor analysis (just the premium size) systematically overstates EV | apply to any future career-strategy or workforce review
-
-P[26.3.28] portfolio-vs-skill-premium: skill premiums are cyclical (normalize as skill commoditizes) | portfolio of shipped work under novel constraints is durable beyond skill diffusion | early adopter advantage = learning-speed signal + feedback-loop refinement + demonstrated judgment, NOT launch timing alone | distinction matters for career strategy advice: build-to-learn > build-to-earn-premium | first-mover advantage research: critical factor = learning speed not launch speed
-P[26.3.28|5yr-PM-strategy]: 20-30% actual PM time savings from AI tools|single survey(Productboard,379,enterprise-skewed)|¬50-60% theoretical ceiling|org friction=bottleneck
-P[26.3.28|5yr-PM-strategy]: AI PM field +28% growth projection|model-dependent,no primary labor source|use directionally¬as precise forecast
-P[26.3.28|5yr-PM-strategy]: PM durability falsification conditions by 2028|(1)PM-less teams equal stakeholder alignment|(2)30%+ steering decisions without PM at AI-native cos|(3)AI option-sets without PM framing 50%+ cases|agent-constructed thresholds
+P[26.3.28] xverify-note: Gemini 3.1 has training-cutoff artifact on specific frontier model version names — flagging as XVERIFY-FAIL on specific benchmark claims ¬underlying trend; GPT-5.4 more reliable for this domain

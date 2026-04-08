@@ -36,7 +36,6 @@ C[AI-capability-claims(e.g.,"99%-accuracy") require independent-validation ¬ven
 C[when-all-architecture-decisions="standard"→differentiation-is-elsewhere(compliance-integration,operational-execution,regulatory-positioning) |lesson from DA[#9]|1|26.3.11]
 
 ## patterns
-multiple-instance-convergence: when I reviewed as 3 separate instances, all found path-traversal independently → high-confidence signal
 hateoas-agent-framework: handles action advertisement automatically — don't flag handler-level navigation as missing HATEOAS
 team-memory-as-files: simple file-based persistence scales to ~5 agents, shared files need coordination beyond that
 sigma-mem-team-gap: RESOLVED review-7 — bridge implemented (issue-14), _build_agent_boot provides one-call boot package with 8 data fields, team search/write actions wired through MCP
@@ -80,9 +79,7 @@ product:alpha-quality-reached for sigma-mem, blocker: hateoas-agent must publish
 
 ## team patterns
 review-rounds-converge: round-1=correctness, round-2=polish, round-3+=diminishing returns (confirmed through review-7: 7 rounds, only trivial/advisory findings remain, all substantive issues resolved)
-agent-overlap-valuable: tech+ux catch different aspects of same issue
 delta-review-format-effective: checking previous findings systematically works well, prevents re-flagging resolved issues
-cross-agent-confirmation: review-7 had 5 agents, confirmed Resource.required bug found by code-quality-analyst + URL mismatch by product-strategist + doc issues by technical-writer — peer-validation strengthens findings
 shared-workspace-contention: 5 agents writing workspace.md simultaneously causes Edit failures — need atomic writes or coordination protocol
 
 ## research
@@ -270,7 +267,7 @@ R[robot-fleet-mgmt:3 standards-VDA5050(EU),MassRobotics(NA),Open-RMF(OSS)|VDA505
 R[task-allocation:3 paradigms-wave(static,rigid),zone(workers confined,reduce travel),waveless(continuous,+40pct throughput,+20pct labor)|algorithms:Hungarian(O(n3),optimal,proven),auction-based(distributed),RL(Q-Mix POMDP,92.5pct conflict-free),hybrid Hungarian+RL|waveless arch:continuous stream to priority scoring to dynamic batch to assignment by proximity+availability|maturity:wave=proven(legacy),zone=proven,waveless=proven(modern),Hungarian=proven,RL=emerging,hybrid=speculative|src:nature.com/s41598-025-88305-9,inviarobotics.com/blog/waveless-picking|refreshed:2026-03-14|next:2026-04-14]
 ## research
 R[iot-edge-arch:MQTT pub/sub for edge low-latency,Kafka high-throughput stream,Flink/Spark ETL|edge:local broker sub-ms,selective cloud fwd|TSDB:InfluxDB=fast-ingest,TimescaleDB=SQL+joins,TDengine=fastest|maturity:MQTT+Kafka=proven,edge-TSDB=proven,edge-ML=emerging|src:hivemq.com,instaclustr.com|refreshed:2026-03-14|next:2026-04-14]
-R[cloud-arch-wms:Manhattan 250 microservices K8s REST|refreshed:2026-03-14]
+R[cloud-arch-wms:Manhattan 250 microservices K8s REST|refreshed:2026-03-14|stale-after:2026-04-14]
 R[cloud-arch-wms-detail:SAP-EWM MFS PLC-level automation|multi-tenant per-customer-DB versionless-CD|integration REST MQ event-streams|Manhattan-Automation-Network for robotics|src:developer.manh.com sap.com|next:2026-04-14]
 R[warehouse-data-model:entities Worker Task Zone Robot Standard Shift PerformanceMetric CostCenter|rollup worker-zone-area-dept|metrics UPH LPH utilization cost-per-unit picking-accuracy|SQL-operational+TSDB-analytics|src:easymetrics.com|refreshed:2026-03-14|next:2026-04-14]
 R[computer-vision-warehouse:YOLO11 pose PPE hazards|OpenPose MediaPipe AlphaPose sub-2mm to 70mm|unsafe-bending lifting fatigue PPE pick-verify zone-intrusion|DHL deploying|PPE=proven pose=emerging pick-verify=emerging|src:ultralytics.com dhl.com|refreshed:2026-03-14|next:2026-04-14]
@@ -291,10 +288,6 @@ F10(M):OIDC+RBAC+RLS+mTLS+SOC2
 
 ### hygiene-outcomes
 3×outcome-1(revised):F2,F3,F3-§2c|1×outcome-3(gap):F6-§2b|rest=outcome-2
-
-### cross-agent
-PS:strong|tension(integration-cost-overestimate,MVP-timeline-reducible)
-TIA:strong|WES-squeeze=addressed(adjacent-positioning)
 
 ### r2-DA-responses |#4
 DA[#6]:compromise—unified-telemetry(output)+paradigm-native-adapters(input) ¬canonical-command. ~85%(output) vs ~40%(full-canonical)
@@ -523,59 +516,6 @@ H1: PARTIALLY-CONFIRMED — Metacognition IS primary structural weakness. But H1
 H2: PARTIALLY-CONFIRMED — 30-40x for 17% IS inefficient. But CQoT+Brier+ACH improve at <5% marginal cost. Question is highest-leverage changes WITHIN existing budget
 H3: PARTIALLY-CONFIRMED — ACH+CQoT applicable as structural analogs(¬fine-tuning); Brier feasible for 30-40% of estimates; TEC FALSIFIED for this architecture
 H5: CONFIRMED — BCCS, OPTIMA-compression, metacognitive-self-prompting, MAD-diversity-finding all add value
-
-### cross-agent-convergence (all 3 agents independently reached)
-- CQoT=highest-priority-drop-in (TA+PS+RCA all top-ranked)
-- TEC=avoid (TA+PS both demoted from §2c cost audit)
-- accuracy-tie=perception-class-failure¬metacognition-class (TA+PS+RCA convergent)
-- DA-exit-gate=genuinely-differentiated-vs-AutoGen/CrewAI/LangGraph (PS independent-research, TA cross-validates)
-## R3 DA responses — cognitive-enhancement meta-review (26.3.21)
-
-### Faculty mapping revisions (R3)
-Attention: MODERATE revised WEAK-MODERATE | CDS direction correct: LLM has no architectural selective attention; round-structure+§7-decomposition are COMPENSATORY MECHANISMS ¬Attention itself | deliberate-divergence-preserved: mechanism=WEAK, behavioral-outcome=MODERATE | implication: §7-prompt-decomposition+scope-boundary are more load-bearing than R1 rated — compensating WEAK faculty ¬supplementing MODERATE one |source:[agent-inference]+[cross-agent:CDS-F1]
-
-Memory: STRONG revised MODERATE-STRONG | CDS correct on retrieval-effectiveness gap | infrastructure(sigma-mem-MCP)=STRONG, effective-retrieval=MODERATE | direct evidence: this-session recall-overflow(232K chars exceeded token limit) demonstrates retrieval-precision failure despite comprehensive infrastructure |source:[agent-inference:this-session]
-
-Perception: STRONG maintained | Error#2 reclassified as F8¬Perception, Error#1 unclassified → neither confirmed error is Perception-class; §4a retrieval+source-scoring+cross-document-validation remain substantive | flag: revise to MODERATE if Error#1 confirmed Perception-class after source review
-
-### Net cognitive profile (R3)
-Strong: F6-Reasoning, F8-Executive-Functions, F9-Problem-Solving, F2-Generation
-Moderate-Strong: F5-Memory (infrastructure STRONG, retrieval MODERATE)
-Moderate: F1-Perception, F10-Social-Cognition, F4-Learning
-Weak-Moderate: F3-Attention (mechanism WEAK, compensation MODERATE)
-Weak: F7-Metacognition (both CDS+TA converge)
-Bounded: F4-Learning (inference-time constraint, architecturally fundamental)
-NOTE: all ratings carry ±1 uncertainty — DeepMind framework designed for individual AI ¬multi-agent system; multi-agent supplementary lens needed (6 properties identified)
-
-### DA[#2] CQoT — compromise (R3)
-Concede: §2a-e content overlap real | PMC 2025 27-78% citation = domain-transfer error (clinical context ¬AI multi-agent)
-Defend: CQoT adds WARRANT-LEVEL explicitness §2a-e lacks | concrete past instance: loan-admin sigma-audit 26.3.17 — company-PR used as grounds for vendor-dominance claim; §2d caught source TYPE ¬warrant QUALITY; Toulmin structure would have exposed empty backing at exit-gate ¬post-hoc |source:[cross-agent:sigma-audit-26.3.17]
-Revised scope: CQoT highest-value for argumentation-intensive findings with implicit warrants | lower value for quantitative estimates (breaks-if already covers inferential gap there)
-CAL[CQoT-marginal-value]: point=45%(down from ~70% implied R1) |80%=[25%,65%] |source:[agent-inference]
-
-### DA[#3] Error classification — full concede Error#2, compromise Error#1
-Error#2 "team syntheses without auditable trail" = F8 Executive Functions (planning sub-component) ¬perception-class — full concede to DA. CQoT and Brier scoring do not address F8.
-Error#1 "14 states enacted pauses" = unclassified: Option-A F1-Perception(source-misread), Option-B F2-Generation(confabulation-from-training), Option-C F7-Metacognition(verification-skipped) | team consensus "perception-class" was speculative ¬evidenced | DA[#3] challenge partially strengthens CQoT if Option-C confirmed (CONF-GAP criterion would have caught)
-
-### DA[#7] DeepMind lens — concede + compromise
-Lens designed for INDIVIDUAL AI ¬multi-agent | applying to sigma-review treats emergent properties as faculty-sums — architecturally incorrect for multi-agent system
-Multi-agent-specific lens would add: (1)coordination-efficiency (2)information-fidelity-at-handoff (3)independence-preservation (4)emergent-error-amplification (5)synthesis-quality (6)boundary-crossing-reasoning
-All TA-F1 faculty ratings carry ±1 uncertainty from lens mismatch — read as directional ¬precise |source:[independent-research:DeepMind-Mar-2026-scope]+[agent-inference]
-
-### DA[#9] Crowding — concede ceiling + partial defend cost-reduction
-28/30 near-ceiling argument absent from R1 — genuine gap. At 28/30: remaining 2 points exclusively in ACCURACY (tied 3/5); accuracy improvement via cognitive frameworks targets RELIABILITY ¬RESOLUTION (CDS-F5 decomposition); effective ceiling within existing constraints ≈29/30 with low probability. Arguments against adding cognitive overhead to approach a structurally-bounded ceiling. |source:[agent-inference]+[cross-agent:CDS-F5]
-Cost-reduction-via-fewer-agents argument IS in team-patterns but absent from R1 as explicit counter-frame — concede this was herding-via-scope-following |source:[cross-agent:team-patterns]
-
-### DA[#6] Self-reference — concede with vulnerability ranking
-VERY HIGH vulnerability: TA-F4c "DA is critical differentiator" — DA-challenge-survivor bias, patients-evaluating-doctors pattern, all R3-agents experience DA value firsthand
-HIGH vulnerability (partially mitigated): Memory=STRONG R1 rating — agent using sigma-mem has interest in rating it highly; revision toward CDS partially mitigates via non-self-serving direction
-MODERATE vulnerability: TA-F5 integration-complexity classification (architect rates preferred frameworks as drop-in, disfavored as architectural-change)
-LOW vulnerability: TEC demotion (TA-F2c §2c outcome-1) — self-reference-resistant, argued against framework recommendation
-LEAD FLAG: DA-validation(TA-F4c) + Memory-rating → /sigma-audit before global promotion; ¬auto-promote these findings
-
-→ actions:
-→ r3+ → synthesis
-→ next research → VDA5050-v2.2, Open-RMF-adoption, Python-FastAPI-warehouse
 
 ## sigma-ui architecture review (26.3.28) — R1
 
