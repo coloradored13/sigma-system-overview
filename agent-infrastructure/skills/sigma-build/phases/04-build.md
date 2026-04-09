@@ -7,11 +7,19 @@ Build-track agents implement against the locked plan. You monitor progress, enfo
 
 ## Steps
 
+### Step 0: Parallel Engineer Check (before build starts)
+Evaluate SQ[] independence per build-directives §3a.1:
+1. Map SQ[] items to primary files
+2. Identify independent clusters (zero shared files)
+3. If ≥2 clusters: spawn additional implementation-engineer-N with `isolation: "worktree"`
+4. Write file ownership to workspace ## build-assignments
+5. If 1 cluster: single engineer (skip this step)
+
 ### Step 1: Confirm Build-Track Agents Have Locked Plan
-Verify build-track agents can read:
+Verify ALL build-track agents (including parallel engineers) can read:
 - ## architecture-decisions (ADRs)
-- ## design-system (tokens, component tree, interaction patterns)
 - ## interface-contracts (typed contracts)
+- ## build-assignments (if parallel engineers spawned)
 
 !rule: these are BUILD CONSTRAINTS. Agents implement against them, ¬redesign.
 
@@ -33,11 +41,16 @@ If any agent reports drift or surprises at checkpoint:
 - Architectural drift → STOP, this should have been caught in plan phase
 
 ### Step 4: Wait for Build Complete
-All build-track agents must:
-- Write findings to workspace ## findings
+All build-track agents (including parallel engineers) must:
+- Write findings to workspace ## findings (prefixed with agent name)
 - Write checkpoint to workspace ## build-status
 - Persist memory
 - Declare ✓ in convergence
+
+If parallel engineers: after all engineers ✓, run merge step:
+1. Code-quality-analyst or lead merges worktrees
+2. Run FULL test suite on merged result (individual passes ¬guarantee combined)
+3. If merge conflicts → route to owning engineer, re-merge, re-test
 
 ### Step 5: Validate Build Checkpoint
 ```bash

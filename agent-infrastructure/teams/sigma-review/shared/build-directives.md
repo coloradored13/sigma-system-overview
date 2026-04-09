@@ -249,6 +249,76 @@ lead reports tier selection:
 format: "complexity-assessment: BUILD {tier} |scores: module-count({N}),interface-changes({N}),test-complexity({N}),dependency-risk({N}),team-familiarity({N}) |total:{sum} |team-size:{N}"
 user may override tier selection
 
+#### §3a.1 parallel implementation engineers (v1.0, 26.4.8)
+
+!when: any build where SQ[] items form ≥2 file-independent clusters (not tier-gated)
+!purpose: parallelize build phase — N engineers build simultaneously in isolated worktrees
+
+##### eligibility check (lead runs at plan-lock)
+1→ map SQ[] items to primary files they modify
+2→ build dependency graph: SQ[A]→{types.py,loop.py} | SQ[B]→{security.py} | SQ[C]→{adapters.py}
+3→ identify independent clusters: SQ[] groups with zero shared files
+4→ ≥2 independent clusters → eligible for parallel engineers
+5→ shared files between clusters → assign to one engineer OR define sequential merge order
+!rule: 1 cluster = 1 engineer. ¬split a cluster across engineers (shared file = merge conflict)
+
+##### roster + spawning
+- roster: ONE `implementation-engineer` (primary). Additional instances are DYNAMIC.
+- naming: `implementation-engineer` (primary), `implementation-engineer-2`, `-3`, ..., `-N`
+- agent definition: all instances use `~/.claude/agents/implementation-engineer.md` (shared Role/Expertise)
+- primary spawns in Phase 01 (participates in plan challenge)
+- additional engineers spawn at plan-lock (Phase 03 exit → Phase 04 entry)
+- additional engineers get: their SQ[] subset + relevant ADRs + relevant ICs + primary's feasibility notes
+- additional engineers do NOT participate in plan challenge (primary already covered feasibility)
+
+##### memory model
+```
+T/agents/implementation-engineer/memory.md        ← shared domain knowledge (read by all instances)
+T/agents/implementation-engineer-2/memory.md       ← instance-specific findings (created at spawn)
+T/agents/implementation-engineer-3/memory.md       ← instance-specific findings (created at spawn)
+```
+shared memory = read-only during build (Python patterns, past build learnings)
+instance memory = captures what each engineer built this session
+promotion: instance findings merge back into shared memory
+
+##### worktree isolation
+- primary: works in main worktree (or own worktree if preferred)
+- additional engineers: `isolation: "worktree"` on Agent spawn → separate git branch per engineer
+- each engineer runs tests in their worktree independently
+- merge step AFTER all engineers complete individual builds
+
+##### file ownership (CRITICAL — prevents merge conflicts)
+lead assigns at spawn time based on SQ[] clustering:
+```
+format in workspace ## build-assignments:
+  "engineer-1: SQ[1,7,8] |files: types.py(fields), loop.py, bridge.py |worktree: main"
+  "engineer-2: SQ[4,5]   |files: types.py(normalize), adapters.py |worktree: f1-ip-hardening"
+  "engineer-3: SQ[6]     |files: security.py |worktree: f1-hardened"
+```
+!rule: if two engineers MUST touch the same file → define ownership by section (top/mid/bottom) or sequential merge order. Never concurrent edits to same file region.
+
+##### build phase workflow
+1→ all engineers read locked plan from workspace (same as single-engineer)
+2→ each engineer builds ONLY their SQ[] subset
+3→ each engineer writes CHECKPOINT at ~50% (same format, scoped to their SQ[])
+4→ each engineer runs tests in their worktree (individual pass required)
+5→ code-quality-analyst reviews ACROSS all worktrees (integration eye)
+6→ merge step: code-quality-analyst or lead merges worktrees after all engineers pass
+7→ integration tests run AFTER merge — individual tests passing ¬guarantees combined correctness
+8→ if merge conflicts → route to engineer who owns the conflicting file
+
+##### build review with multiple engineers
+- all N engineers stay alive for Phase 05
+- DA/plan-track issues route to the engineer who owns that SQ[]
+- engineer fixes in their worktree → re-merge → re-test
+- each engineer's workspace ## findings section is prefixed with their name
+
+##### when NOT to parallelize
+- SQ[] items share >50% of files → sequential is safer
+- only 1 SQ[] cluster exists → single engineer (nothing to parallelize)
+- high dependency-risk score (4-5) → shared state likely, sequential safer
+- team's first build in a new codebase → single engineer builds shared understanding first
+
 ### §3b BUILD evaluation rubric (v1.1, 26.3.15)
 
 !when: after review complete (post-r4), before promotion phase
