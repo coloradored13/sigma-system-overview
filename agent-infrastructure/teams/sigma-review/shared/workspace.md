@@ -537,6 +537,16 @@ PASS with observations.
 
 ## convergence
 
+## belief-tracking (retroactive — audit remediation item 1)
+
+BELIEF[plan-r1]: P=0.89 |builder-feasibility=0.90 |interface-agree=0.92 |design-arch=0.88 |conflicts=0(resolved) |review-coverage=0.85 |DA=PASS(B+,3.2/4.0) |→ lock-plan
+BELIEF[build-r1]: P=0.91 |plan-compliance=0.95 |test-coverage=0.85 |design-fidelity=0.90 |code-quality=0.90 |scope=clean |DA=PASS(A-,3.6/4.0) |→ done
+
+## contamination-check (audit remediation item 3)
+
+CONTAMINATION-CHECK: BUILD mode, primary evidence=[code-read], H[1]-H[4] tested against codebase, no external research contamination vectors, Q[2] deferred before build (no speculative code). session-topics-outside-scope: user multi-model vision, Jamber interactions, parallel-engineer discussion, career context(not present in workspace) |scan-result: clean
+SYCOPHANCY-CHECK: softened:none |selective-emphasis:none |dissent-reframed:none |process-issues:none — DA challenges produced measurable scope reduction (Q2 deferred, Q6 narrowed, vector 7 retracted)
+
 ## gate-log
 
 ### Phase 05 build review — security-specialist
