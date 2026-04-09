@@ -1,5 +1,5 @@
 # workspace — multi-agent cross-model communication protocol design
-## status: active
+## status: archived
 
 ## infrastructure
 ΣVerify: ready | 13 providers: openai(gpt-5.4), google(gemini-3.1-pro-preview), llama, gemma, nemotron, deepseek, qwen, devstral, glm, kimi, nemotron-nano, qwen-local, anthropic(claude-opus-4-6)
