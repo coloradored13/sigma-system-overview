@@ -394,9 +394,51 @@ def cmd_advance(args: argparse.Namespace) -> None:
         print(json.dumps({"error": "Orchestrator not started. Run 'start' first."}))
         sys.exit(1)
 
+    # --- Auto-validate: run required validation bundles before advancing ---
+    # Each phase transition has a required validation bundle. If the lead hasn't
+    # run it manually, we run it now and block advancement if it fails.
+    # This prevents the "gate exists but nobody turned the key" failure mode.
+    workspace_path = getattr(args, "workspace", None) or DEFAULT_WORKSPACE
+    current_phase = orch._current_phase.name if orch._current_phase else None
+
+    PHASE_REQUIRED_VALIDATIONS = {
+        "plan": "plan-convergence",
+        "challenge_plan": "challenge-round",
+        "build": "build-checkpoint",
+        "review": "pre-synthesis",
+        "research": "r1-convergence",       # ANALYZE mode
+        "challenge": "challenge-round",      # ANALYZE mode
+    }
+
+    required_bundle = PHASE_REQUIRED_VALIDATIONS.get(current_phase)
+    if required_bundle:
+        result = gate_checks.run_validation(required_bundle, workspace_path)
+        if not result.get("passed", result.get("checks", [{}])):
+            # Check if the validation result indicates failure
+            passed = result.get("passed", True)
+            if not passed:
+                failed_checks = [
+                    c for c in result.get("checks", [])
+                    if not c.get("passed", True)
+                ]
+                issues = []
+                for c in failed_checks:
+                    issues.extend(c.get("issues", []))
+                print(json.dumps({
+                    "error": "auto-validation-failed",
+                    "phase": current_phase,
+                    "bundle": required_bundle,
+                    "failed_checks": [c.get("name", "unknown") for c in failed_checks],
+                    "issues": issues,
+                    "message": (
+                        f"Cannot advance from '{current_phase}': validation bundle "
+                        f"'{required_bundle}' failed. Fix the issues above, then retry."
+                    ),
+                }, indent=2))
+                sys.exit(1)
+
     orch.advance(context=ctx)
     _save(orch, checkpoint_file)
-    workspace_path = getattr(args, "workspace", None) or DEFAULT_WORKSPACE
     _save_round_snapshot(orch, workspace_path)
     _output_state(orch)
 

@@ -763,6 +763,161 @@ def check_fixes_implemented(content: str) -> CheckResult:
     )
 
 
+def check_merge_verified(content: str) -> CheckResult:
+    """V24: When parallel engineers used, MERGE-VERIFIED must be in workspace.
+
+    Only enforced when ## build-assignments section exists (indicating parallel
+    engineers were spawned). If no build-assignments section, this check auto-passes
+    (single engineer — no merge needed).
+    """
+    sections = parse_sections(content)
+    has_build_assignments = bool(sections.get("build-assignments", "").strip())
+
+    if not has_build_assignments:
+        return CheckResult(
+            name="V24-merge-verified",
+            passed=True,
+            details={"parallel_engineers": False, "skip_reason": "no build-assignments section"},
+        )
+
+    has_merge_verified = bool(re.search(r"MERGE-VERIFIED:", content))
+    has_test_count = bool(re.search(r"MERGE-VERIFIED:.*\d+\s*passed", content))
+    has_conflicts = bool(re.search(r"MERGE-VERIFIED:.*conflicts:", content))
+
+    passed = has_merge_verified and has_test_count
+
+    issues = []
+    if not has_merge_verified:
+        issues.append(
+            "Parallel engineers detected (## build-assignments present) but no "
+            "MERGE-VERIFIED entry in ## build-status. Post-merge integration tests "
+            "must run before build review."
+        )
+    elif not has_test_count:
+        issues.append("MERGE-VERIFIED present but missing test count (e.g. '810 passed')")
+
+    return CheckResult(
+        name="V24-merge-verified",
+        passed=passed,
+        details={
+            "parallel_engineers": True,
+            "merge_verified_present": has_merge_verified,
+            "test_count_present": has_test_count,
+            "conflicts_documented": has_conflicts,
+        },
+        issues=issues,
+    )
+
+
+def check_xverify_security_critical(content: str) -> CheckResult:
+    """V25: Security-critical ADRs must have XVERIFY when ΣVerify available.
+
+    Security-critical = ADR mentions IP, permission, injection, trust boundary,
+    authentication, authorization, or encryption.
+    """
+    available = is_sigverify_available(content)
+    if not available:
+        return CheckResult(
+            name="V25-xverify-security-critical",
+            passed=True,
+            details={"sigverify_available": False, "skip_reason": "ΣVerify unavailable"},
+        )
+
+    sections = parse_sections(content)
+    adrs_text = sections.get("architecture-decisions", "")
+
+    security_keywords = (
+        r"(IP|permission|injection|trust.boundar|auth[oz]|encrypt|sanitiz|"
+        r"bypass|HARDENED|HIGH_CONSEQUENCE|firewall|egress|outbound)"
+    )
+
+    adr_blocks = re.findall(r"(ADR\[\d+\][^\n]*(?:\n(?!ADR\[)[^\n]*)*)", adrs_text)
+
+    security_adrs = []
+    for block in adr_blocks:
+        if re.search(security_keywords, block, re.IGNORECASE):
+            adr_id = re.match(r"(ADR\[\d+\])", block)
+            security_adrs.append(adr_id.group(1) if adr_id else "unknown")
+
+    if not security_adrs:
+        return CheckResult(
+            name="V25-xverify-security-critical",
+            passed=True,
+            details={"sigverify_available": True, "security_adrs": [], "skip_reason": "no security-critical ADRs"},
+        )
+
+    has_xverify = bool(re.search(r"XVERIFY[\[\(:=]", adrs_text))
+    has_xverify_fail = bool(re.search(r"XVERIFY-FAIL", adrs_text))
+
+    passed = has_xverify or has_xverify_fail
+
+    issues = []
+    if not passed:
+        issues.append(
+            f"Security-critical ADRs found ({', '.join(security_adrs)}) but no XVERIFY "
+            f"tag in ## architecture-decisions. ΣVerify is available — top-1 security-critical "
+            f"ADR requires cross-model verification."
+        )
+
+    return CheckResult(
+        name="V25-xverify-security-critical",
+        passed=passed,
+        details={
+            "sigverify_available": True,
+            "security_adrs": security_adrs,
+            "has_xverify": has_xverify,
+        },
+        issues=issues,
+    )
+
+
+def check_build_track_source_tags(content: str) -> CheckResult:
+    """V26: Build-track agent findings carry |source:{type}| tags.
+
+    Checks ## findings section for implementation-engineer and code-quality-analyst
+    subsections. Each subsection with content must have at least one |source: tag.
+    """
+    sections = parse_sections(content)
+    findings = sections.get("findings", "")
+
+    build_track_agents = ["implementation-engineer", "code-quality-analyst"]
+    missing_tags = []
+    checked = []
+
+    for agent in build_track_agents:
+        agent_section = _get_agent_section(findings, agent)
+        if not agent_section.strip():
+            continue
+        checked.append(agent)
+        has_source = bool(re.search(r"\|source:\[", agent_section))
+        has_code_read = bool(re.search(r"\[code-read", agent_section))
+        has_file_line = bool(re.search(r"\w+\.py:\d+", agent_section))
+        if not (has_source or has_code_read):
+            if has_file_line:
+                missing_tags.append(f"{agent} (has file:line refs but no formal |source: tag)")
+            else:
+                missing_tags.append(agent)
+
+    passed = len(missing_tags) == 0
+
+    issues = []
+    if missing_tags:
+        issues.append(
+            f"Build-track agents missing |source:{{type}}| tags: {', '.join(missing_tags)}. "
+            f"Add |source:[code-read file:line]| to findings."
+        )
+
+    return CheckResult(
+        name="V26-build-track-source-tags",
+        passed=passed,
+        details={
+            "agents_checked": checked,
+            "agents_missing_tags": missing_tags,
+        },
+        issues=issues,
+    )
+
+
 # ---------------------------------------------------------------------------
 # Bundle validation functions
 # ---------------------------------------------------------------------------
@@ -827,7 +982,7 @@ def validate_pre_synthesis(workspace_path: str | None = None) -> ValidationResul
 
 
 def validate_plan_convergence(workspace_path: str | None = None) -> ValidationResult:
-    """Bundle: V3+V4+V5+V6+V8 — BUILD plan round exit."""
+    """Bundle: V3+V4+V5+V6+V8+V25 — BUILD plan round exit."""
     content = read_workspace(workspace_path)
     agents = extract_agents_from_workspace(content)
 
@@ -835,6 +990,7 @@ def validate_plan_convergence(workspace_path: str | None = None) -> ValidationRe
         check_agent_output_non_empty(content, agents),
         check_source_provenance(content),
         check_xverify_coverage(content),
+        check_xverify_security_critical(content),
         check_dialectical_bootstrapping(content, agents),
         check_persist_before_convergence(content),
     ]
@@ -863,15 +1019,22 @@ def validate_plan_lock(workspace_path: str | None = None) -> ValidationResult:
 
 
 def validate_build_checkpoint(workspace_path: str | None = None) -> ValidationResult:
-    """Bundle: V19 — BUILD before review."""
+    """Bundle: V19+V24+V26 — BUILD before review."""
     content = read_workspace(workspace_path)
-    check = check_checkpoint(content)
+
+    checks = [
+        check_checkpoint(content),
+        check_merge_verified(content),
+        check_build_track_source_tags(content),
+    ]
+
+    all_passed = all(c.passed for c in checks)
 
     return ValidationResult(
         bundle="build-checkpoint",
-        passed=check.passed,
-        checks=[check],
-        context_update={"checkpoint_validated": check.passed},
+        passed=all_passed,
+        checks=checks,
+        context_update={"checkpoint_validated": all_passed},
     )
 
 
