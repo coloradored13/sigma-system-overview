@@ -75,13 +75,8 @@ Initialize sigma-review for this project. Project context: **$ARGUMENTS**
 Run the setup-project.sh script from sigma-system-overview:
 
 ```bash
-# Find setup-project.sh — check common locations
-SCRIPT=$(find ~/Projects/sigma-system-overview -name "setup-project.sh" -maxdepth 1 2>/dev/null | head -1)
-if [ -z "$SCRIPT" ]; then
-  # Try to locate it via the sigma-mem package
-  SCRIPT=$(python3 -c "import sigma_mem, os; print(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(sigma_mem.__file__)))), 'setup-project.sh'))" 2>/dev/null)
-fi
-bash "$SCRIPT"
+SCRIPT=~/Projects/sigma-system-overview/setup-project.sh
+[ -f "$SCRIPT" ] && bash "$SCRIPT" || echo "setup-project.sh not found"
 ```
 
 If setup-project.sh is not found, create the structure manually:
@@ -90,9 +85,36 @@ If setup-project.sh is not found, create the structure manually:
 .claude/teams/sigma-review/
   shared/decisions.md     — "# project decisions — expertise-weighted"
   shared/patterns.md      — "# project patterns — cross-agent"
-  shared/workspace.md     — "# workspace\n## status: idle\n## task"
+  shared/portfolio.md     — "# portfolio — review history"
+  shared/workspace.md     — (see workspace template below)
+  shared/wiki/INDEX.md    — "# Knowledge Wiki Index"
+  shared/archive/         — (empty directory for workspace archives)
+  shared/snapshots/       — (empty directory for orchestrator snapshots)
   agents/{name}/memory.md — "# {name} — project memory"  (for each agent in roster)
   inboxes/{name}.md       — "# inbox — {name}\n## processed\n## unread"
+```
+
+Workspace template (shared/workspace.md):
+```markdown
+# workspace
+## status: idle
+## mode: ANALYZE
+## task
+## infrastructure
+## prompt-decomposition
+## findings
+## convergence
+## compilation
+## promotion
+## open-questions
+```
+
+Also copy orchestrator infrastructure if available:
+```bash
+SRC=~/Projects/sigma-system-overview/agent-infrastructure/teams/sigma-review/shared
+[ -f "$SRC/orchestrator-config.py" ] && cp "$SRC/orchestrator-config.py" .claude/teams/sigma-review/shared/
+[ -f "$SRC/gate_checks.py" ] && cp "$SRC/gate_checks.py" .claude/teams/sigma-review/shared/
+[ -f "$SRC/protocols.md" ] && cp "$SRC/protocols.md" .claude/teams/sigma-review/shared/
 ```
 
 Add `.claude/teams/` to `.gitignore` if not already present.
@@ -101,7 +123,9 @@ Add `.claude/teams/` to `.gitignore` if not already present.
 
 Create or append to `.claude/CLAUDE.md` in the project root. Check for existing content first — append sigma section if file exists, create if not.
 
-Only add this section if the marker `# Sigma System` is not already present:
+Only add this section if the marker `# Sigma System` is not already present.
+
+Read the roster at `~/.claude/teams/sigma-review/shared/roster.md` to get the current agent list. Then generate:
 
 ```markdown
 # Sigma System
@@ -109,16 +133,17 @@ Only add this section if the marker `# Sigma System` is not already present:
 This project uses sigma-review for multi-agent expert reviews.
 
 ## Commands
-- `/sigma-review <task>` — Full team review (e.g., `/sigma-review Review the authentication flow`)
+- `/sigma-review <task>` — Full ANALYZE team review (phase-based, multi-agent)
+- `/sigma-build <task>` — Full BUILD team review (plan→challenge→build→review)
+- `/sigma-single <task>` — Enhanced single-instance analysis (below triage boundary)
+- `/sigma-audit [workspace]` — Independent process quality audit of a review
+- `/sigma-feedback [correction]` — Post-review calibration loop
+- `/sigma-evaluate [workspace]` — Multi-agent rubric evaluation of analysis quality
 - `/sigma-research [agent-name]` — Refresh domain research for one or all agents
-- `@agent-name question` — Direct question to a specific agent
+- `/sigma-dream [scope] [apply]` — Memory consolidation cycle
 
 ## Agents available
-- **tech-architect** — architecture, security, performance, API design
-- **product-strategist** — market, growth, prioritization, launch readiness
-- **ux-researcher** — usability, accessibility, mental models, learnability
-- **code-quality-analyst** — code quality, test coverage, style, edge cases
-- **technical-writer** — documentation, narrative, examples, onboarding
+{read from roster — list each agent with domain summary}
 
 ## Memory
 Two-tier memory is active:
@@ -135,23 +160,35 @@ recall via sigma-mem MCP auto-detects the project tier.
   - global memory file
   - project memory file
   - inbox file
-3→report any issues
+3→verify infrastructure:
+  - shared/wiki/INDEX.md exists
+  - shared/archive/ directory exists
+  - shared/workspace.md has required sections (## status, ## task, ## infrastructure, ## findings, ## convergence, ## promotion)
+  - orchestrator-config.py exists (warn if missing — phase advancement won't work)
+4→report any issues
 
 ## Step 4: Report
 
 Tell the user:
 
 ```
-Sigma-review initialized for this project.
+Sigma system initialized for this project.
 
 Created:
   .claude/teams/sigma-review/   — project-tier team data
   .claude/CLAUDE.md             — sigma system instructions (appended)
 
+Infrastructure:
+  workspace.md    — phase-based workspace with all required sections
+  wiki/           — persistent knowledge wiki (compounding across reviews)
+  archive/        — workspace archives (for audit + feedback)
+  orchestrator    — {installed|missing — install from sigma-system-overview}
+
 You can now run:
-  /sigma-review <task>     — full multi-agent review
+  /sigma-review <task>     — full ANALYZE team review
+  /sigma-build <task>      — full BUILD team review
+  /sigma-single <task>     — enhanced single-instance analysis
   /sigma-research          — refresh agent domain research
-  @agent-name question     — ask a specific agent
 
 Project context: {$ARGUMENTS if provided}
 ```

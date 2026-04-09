@@ -46,6 +46,8 @@ Load all audit inputs (do NOT summarize — auditor needs full text):
 - agent memories: `~/.claude/teams/sigma-review/agents/{name}/memory.md` per agent found in workspace
 - team decisions: `~/.claude/teams/sigma-review/shared/decisions.md`
 - team patterns: `~/.claude/teams/sigma-review/shared/patterns.md`
+- wiki index: `~/.claude/teams/sigma-review/shared/wiki/INDEX.md` (for compilation check)
+- archive directory listing: `~/.claude/teams/sigma-review/shared/archive/` (for post-exit-gate check)
 
 Store mode (ANALYZE|BUILD) from workspace ## status.
 
@@ -101,14 +103,22 @@ review — you see only the workspace and supporting files.
 - Find DA section in workspace findings
 - Count: challenges issued, challenges with specific evidence, challenges that were generic
 - Read agent responses to DA challenges: did they engage substantively or deflect?
-- Check exit-gate verdict: were all 5 criteria explicitly evaluated?
-  1. engagement quality ≥ B
-  2. no unresolved material disagreements
-  3. no untested new consensus
-  4. hygiene checks substantive
-  5. prompt contamination within tolerance
+- Check exit-gate verdict: were all 9 criteria explicitly evaluated?
+  1. engagement quality ≥ B across all agents
+  2. no material disagreements unresolved (or logged as deliberate divergence)
+  3. no new consensus formed in latest round without stress-test
+  4. analytical hygiene checks (§2a/§2b/§2c/§2e) produced substantive outcome
+  4a. §2d source provenance: all findings tagged with source type in R1
+  4b. §2d+ source quality tiers: load-bearing findings carry T1/T2/T3 tier tags
+  5. prompt contamination within tolerance (§7d): ≤30% prompt-claim without corroboration, no echo clusters, methodology investigative
+  6. CQoT-falsifiability: high-conviction findings state falsification conditions; conditions are reachable
+  7. CQoT-steelman: high-conviction findings include genuine steelman of opposing view
+  8. CQoT-confidence-gap: high-conviction findings include evidence needed for 90% confidence
+  9. cross-model verification: if ΣVerify available, ≥1 XVERIFY per agent on load-bearing findings; XVERIFY-FAIL flagged as gap
 - Flag: missing criteria in exit-gate = incomplete evaluation
 - Flag: DA accepting deflections without pushback = weak challenge
+- Flag: criteria 6-8 (CQoT) absent for any high-conviction finding = process violation
+- Flag: criterion 9 skipped when ΣVerify was available = process violation
 - SCORE: substantive|adequate|weak|rubber-stamp
 - ISSUES: {list specific weak challenges or accepted deflections}
 
@@ -137,21 +147,48 @@ review — you see only the workspace and supporting files.
 - SCORE: enforced|partial|skipped
 - ISSUES: {list specific gaps}
 
+### CHECK 8: Compilation Phase (06b)
+- Was a compilation agent spawned (lead must NOT write wiki content)?
+- Were wiki pages updated with source attribution `[R{number}, {date}]`?
+- Were contradictions flagged with `⚠ CONFLICT` markers (not silently resolved)?
+- Is `shared/wiki/INDEX.md` current (references match actual files)?
+- Were validation gates V24+V25+V26 run?
+  V24: source attribution on all wiki entries
+  V25: no contradiction silently resolved
+  V26: no wiki pages deleted (INDEX references match files)
+- SCORE: complete|partial|skipped
+- ISSUES: {list missing attribution, silent conflict merges, validation failures}
+- NOTE: if first review for this team (no prior wiki), compilation may create initial pages — verify creation, not just updates
+
+### CHECK 9: Post-Exit-Gate Phases
+After DA exit-gate PASS, four phases must complete in order:
+- 06b Compilation: wiki updated (see CHECK 8)
+- 07 Promotion: agents submitted learnings, user-approve candidates presented, MCP health check ran
+- 08 Sync: infrastructure drift detected, agent memory + inboxes synced
+- 09 Archive: workspace archived to `shared/archive/{date}-{task-slug}.md`, V22+V23 validation passed
+Check workspace/archive for evidence each phase ran:
+- Promotion: ## promotion section has entries or explicit "no candidates"
+- Sync: sync report in conversation or workspace
+- Archive: archive file exists at expected path, non-empty, contains workspace content
+- Flag: any phase skipped = protocol violation (these protect institutional memory)
+- SCORE: all-complete|partial|skipped
+- ISSUES: {list skipped phases and consequences}
+
 ## Verdict
 
 Based on all checks, issue verdict:
 
 GREEN: all protocols followed, minor notes only
-  criteria: all checks scored followed/clean/substantive/not-needed, zero process violations,
-  source provenance healthy, DA challenges substantive
+  criteria: all checks scored followed/clean/substantive/complete/not-needed, zero process violations,
+  source provenance healthy, DA challenges substantive, post-exit-gate phases complete
 
 YELLOW: specific issues found, targeted remediation needed
   criteria: 1-2 checks with issues, <30% findings affected, DA adequate but not thorough,
-  some process gaps but overall structure sound
+  some process gaps but overall structure sound, post-exit-gate phases mostly complete
 
 RED: systemic process failure, review integrity compromised
   criteria: 3+ checks with issues, >30% findings affected, DA weak/rubber-stamp,
-  structural contamination, multiple protocol violations
+  structural contamination, multiple protocol violations, post-exit-gate phases skipped
 
 ## Output Format
 
@@ -163,10 +200,12 @@ PROTOCOL COMPLIANCE:
 | §7 Prompt Decomposition | {score} | {brief or none} |
 | §2d Source Provenance | {score} | {brief or none} |
 | §2 Analytical Hygiene | {score} | {brief or none} |
-| DA Effectiveness | {score} | {brief or none} |
+| DA Effectiveness (9 criteria) | {score} | {brief or none} |
 | §6 Contamination Controls | {score} | {brief or none} |
 | Zero-Dissent CB | {score} | {brief or none} |
 | BUILD Guardrails (if applicable) | {score} | {brief or none} |
+| Compilation Phase (06b) | {score} | {brief or none} |
+| Post-Exit-Gate Phases | {score} | {brief or none} |
 
 SOURCE PROVENANCE DISTRIBUTION:
 - total findings: {N}
@@ -203,7 +242,7 @@ Translate auditor output to user (plain English):
 ### Protocol Compliance
 | Protocol | Score | Issues |
 |----------|-------|--------|
-{from auditor}
+{from auditor — all 9 checks}
 
 ### Source Provenance
 {distribution table from auditor}

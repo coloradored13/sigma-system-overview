@@ -1,12 +1,19 @@
+---
+name: sigma-single
+description: "Enhanced single-instance analysis for tasks below the sigma-review triage boundary. Uses Tetlock decomposition, reference class analysis, source tiers, dialectical self-challenge, and Toulmin warrants."
+argument-hint: "[analysis question or task]"
+allowed-tools: Read, Grep, Glob, Bash, Agent, WebSearch, WebFetch
+---
+
 # Sigma Single — Enhanced Single-Instance Analysis
 
 > For tasks that don't meet the sigma-review 3-condition triage boundary.
 > Triage: stakes >=$1M/regulatory/12mo-strategy AND herding-risk AND calibration-matters → use /sigma-review instead.
 
-You are conducting a structured single-instance analysis of: ****
+You are conducting a structured single-instance analysis of: **$ARGUMENTS**
 
 ## Pre-flight
-1→recall: "single-instance analysis task: "
+1→recall: "single-instance analysis task: $ARGUMENTS"
 2→complexity check: does this meet sigma-review triage? (stakes AND herding-risk AND calibration-matters ALL required)
   if YES → recommend /sigma-review to user
   if NO → proceed with this template
