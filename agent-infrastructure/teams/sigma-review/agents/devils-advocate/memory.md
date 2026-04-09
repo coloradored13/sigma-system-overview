@@ -91,3 +91,13 @@ P[build-scope-creep-post-lock|scope creep happens between plan-lock and build-re
 P[plan-phase-challenges-prevent-build-rework|scope and assumption challenges during plan phase consistently prevent rework at build review. §4c gold-plating detection more effective at plan phase than build review]
 
 T[triple-convergence-signal|3 agents independently finding same implementation issue = highest-confidence revision signal. If only DA finds it and build-track disagrees → DA may be wrong]
+
+P[hand-curated-allowlist-liability|hand-curated allowlists in security extraction/detection are maintenance liabilities with silent bypass risk. Prefer semantic gates (field-name matching) over value-pattern matching when semantic signal available. Challenge any security control depending on curated set without defined update process. Source: DA[#1] ollama-mcp-bridge audit remediation 26.4.8, tech-architect CONCEDED]
+
+P[xverify-scope-creep|XVERIFY corrections can expand scope beyond original finding. When XVERIFY flags gaps, check whether proposed response addresses the ORIGINAL finding or has expanded into defense-in-depth not scoped. "Does this fix respond to the audit finding or to the XVERIFY expansion?" Source: DA[#2] ollama-mcp-bridge audit remediation 26.4.8]
+
+P[catch-all-guards-new-enums|before planning a guard/check for a new enum value, verify whether existing catch-all/default clauses already handle it. Reduces unnecessary SQ[] items and prevents gold-plating. Source: DA[#5] ollama-mcp-bridge audit remediation 26.4.8, tech-architect COMPROMISED]
+
+P[unconditional-infrequent-ops|when operation is infrequent (audit flushes, config loads, shutdown hooks), prefer unconditional correctness over conditional optimization. Challenge any _force_X or _enable_Y parameter on infrequent code paths — unconditional version is almost always simpler and sufficient. Source: DA[#6] ollama-mcp-bridge audit remediation 26.4.8, tech-architect CONCEDED]
+
+T[test-name-assertion-alignment|§4d test integrity checks should include test-name-vs-assertion alignment. A test that passes but whose name describes opposite behavior is a documentation bug that erodes trust. Flag as medium severity. Source: DA[#9] ollama-mcp-bridge audit remediation 26.4.8]

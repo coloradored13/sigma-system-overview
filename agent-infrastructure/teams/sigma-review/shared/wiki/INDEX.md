@@ -10,7 +10,7 @@ Persistent, compiled domain knowledge from sigma-review analyses. Each page is u
 
 ## Pages
 
-{No pages yet — pages will be listed here as reviews populate the wiki}
+- [ollama-mcp-bridge Security Architecture](ollama-mcp-bridge-security-architecture.md) — SecurityGateway chokepoint, SafePath/SafeURL/SafeRecipient adapters, policy-surface vs enforcement-surface, ToolState lifecycle, field-name gate, dormant field pattern, known limitations [B6, 26.4.9]
 
 ## Convention
 - One page per entity, domain, or topic that appears across reviews or warrants standalone reference

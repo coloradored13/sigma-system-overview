@@ -502,3 +502,17 @@ Convention-only async enforcement ("use asyncio.to_thread() where needed") = des
 
 P[strenum-derived-frozenset-validation|src:sigma-ui-B1|promoted:26.3.29|class:pattern]
 When implementing string-validated enum fields in Python, derive the validation frozenset FROM the enum: `_VALID = frozenset(tag.value for tag in MyEnum)`. This guarantees a single canonical source — adding a member to the enum automatically adds it to validation. Using an independently-defined frozenset creates drift risk (add to enum, forget frozenset, or vice versa). ADR[5]/DA[#3] in sigma-ui B1 caught an independent frozenset definition and required derivation. O(1) membership check preserved. Pattern: always pair StrEnum with `_VALID_X = frozenset(tag.value for tag in X)`.
+
+## patterns (auto-promoted from ollama-mcp-bridge audit remediation — 26.4.8)
+
+P[enum-split-cascade-3pass|src:ollama-mcp-bridge|promoted:26.4.8|class:pattern]
+Splitting one enum state into 2 terminal states requires 3-pass grep before any code change: (1) enum definition, (2) all assignment sites in logic files, (3) error/log message strings referencing old value. Missing any pass = silent regression. O(1) to grep, catastrophic if skipped. Applied: BLOCKED_SANITIZATION→BLOCKED_SANITIZATION+BLOCKED_PROFILE, security.py line 1947 was the only assignment site needing change (line 1889 correctly stayed BLOCKED_SANITIZATION).
+
+P[fsync-inside-with-block|src:ollama-mcp-bridge|promoted:26.4.8|class:pattern]
+os.fsync(f.fileno()) for crash-durable audit writes MUST be called inside `with open(...) as f:` block, before block exits. Calling after block close raises OSError on closed fd. Pattern: `with open(path, "a") as f: ...; f.flush(); os.fsync(f.fileno())`. Always-fsync (no parameter toggle) is correct default for audit logs — conditional adds complexity with no meaningful perf benefit at audit write frequency.
+
+P[str-enum-json-serializes-lowercase|src:ollama-mcp-bridge|promoted:26.4.8|class:calibration]
+Python `class Foo(str, Enum)` serializes to JSON as VALUE string, not attribute NAME. If defined as `tool_blocked = "tool_blocked"`, model_dump_json() produces `"tool_blocked"` — NOT `"TOOL_BLOCKED"`. Test assertions on serialized output must match the value string. Discovered via AuditEventType: test asserted uppercase, received lowercase. Fix assertion to match value.
+
+P[pre-grep-call-sites-before-validators|src:ollama-mcp-bridge|promoted:26.4.8|class:pattern]
+Before adding a Pydantic field_validator that raises on a field value, grep ALL instantiation sites of the model class first. Internal construction in library code (e.g. config auto-conversion) may pass a value that triggers the new validator immediately. Pattern: `grep -rn "ModelClass(" src/` → inspect each callsite → verify none pass the rejected value. In ollama-mcp-bridge, config.py:515 had `allow_redirects=True` in DestinationPolicy() auto-conversion — required fix before validator could be added.
