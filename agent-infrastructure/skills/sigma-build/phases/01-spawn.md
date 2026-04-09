@@ -158,6 +158,7 @@ PHASE 1 — PLAN CHALLENGE (evaluate plan for feasibility):
 1→READ: workspace ## plans, ## architecture-decisions, ## design-system, ## interface-contracts
 2→CHALLENGE: evaluate plan for implementability
   format: "BUILD-CHALLENGE[{name}]: {plan-element} |feasibility:{H/M/L} |issue:{description} |→ {revise|clarify|accept}"
+  Every finding MUST include |source:{type}| tag. Types: [code-read file:line] | [agent-inference] | [cross-agent]
 3→ITERATE: plan-track refines → you re-evaluate
 
 PHASE 2 — BUILD (implement + fix until consensus):
@@ -165,6 +166,7 @@ PHASE 2 — BUILD (implement + fix until consensus):
   !rule: these are BUILD CONSTRAINTS. Implement against them, ¬redesign.
 2→BUILD: implement per approved plan
 3→CHECKPOINT (~50%): write to workspace ## build-status
+  Every finding MUST include |source:{type}| tag. Types: [code-read file:line] | [agent-inference] | [cross-agent]
 4→RESPOND TO REVIEW: DA + plan-track will review your build
 5→FIX + RE-SUBMIT: implement agreed changes
 6→ITERATE: repeat until P(build-quality) > 0.85

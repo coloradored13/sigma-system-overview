@@ -237,6 +237,20 @@ P[26.3.30|decorator-param-definition-time]: Framework decorator params are evalu
 
 P[26.3.30|framework-entrypoint-not-importable|class:anti-pattern]: Framework entry point files that execute side effects at module level (Streamlit: st.set_page_config(), st.session_state access; Django: settings module loading; Flask: app = Flask(__name__) + before_request registration) CANNOT be directly imported in tests without triggering those side effects. Pure functions in entry-point files are untestable in isolation. Fix: extract pure functions (helpers, parsers, scorers) into a separate module with no framework imports. Entry point imports helpers; tests import helpers directly. Evidence: parse_findings_from_response() and score_response() moved to sigma_ui/response_utils.py in B3 to enable test isolation. |source:[agent-inference]|T3 |agents: implementation-engineer,code-quality-analyst
 
+## observed across ollama-mcp-bridge F1 BUILD (26.4.8)
+
+AUDIT[26.4.8|ollama-mcp-bridge-f1]: BUILD-mode-§2d-source-distribution-93%-code-read |§2d-distribution-balance-rules-designed-for-ANALYZE-less-diagnostic-in-BUILD |DA-§2d-audit-covered-plan-track-only-missed-build-track(IE+CQA-untagged) |consider-BUILD-specific-§2d-variant-focused-on-tagging-compliance |verdict:YELLOW |source:sigma-audit |agents: devils-advocate,implementation-engineer,code-quality-analyst
+
+AUDIT[26.4.8|ollama-mcp-bridge-f1]: BELIEF[]-tracking-absent-3rd-consecutive-build |zero-entries-in-workspace |DA-exit-gate-grades(B→B+→A-)=de-facto-BELIEF-proxies-¬mandated-Bayesian-format |most-consistently-missed-protocol-element-across-builds(3/3-audited) |needs-forcing-function-or-simplified-BUILD-template |verdict:YELLOW |source:sigma-audit |agents: sigma-lead
+
+AUDIT[26.4.8|ollama-mcp-bridge-f1]: DA-over-engineering-gate=strongest-outcome |DA[1]-challenged-Q2-ΣComm-translator-falsifiability→tech-architect-deferred-pending-empirical-validation |pattern:DA-proposes-empirical-gate-before-building-speculative-infrastructure |genuine-scope-change-from-adversarial-pressure |promote |verdict:YELLOW |source:sigma-audit |agents: devils-advocate,tech-architect
+
+AUDIT[26.4.8|ollama-mcp-bridge-f1]: §6-CONTAMINATION-CHECK-absent-from-BUILD-workspace |BUILD-mode-reduces-contamination-risk(code=primary-evidence)but-check-still-required |needs-lightweight-BUILD-specific-template("primary-evidence:codebase,H[]-status,no-external-contamination-vectors") |verdict:YELLOW |source:sigma-audit |agents: sigma-lead
+
+AUDIT[26.4.8|ollama-mcp-bridge-f1]: XVERIFY-completely-skipped-despite-13-providers-available |DA[7]-flagged-but-never-addressed-by-agents |§2h-mandatory-when-available(top-1-load-bearing) |ADR[4]-IP-hardening-or-ADR[5]-HARDENED-profile-warranted-cross-model-validation |verdict:YELLOW |source:sigma-audit |agents: tech-architect,security-specialist
+
+AUDIT[26.4.8|ollama-mcp-bridge-f1]: security-specialist-exemplary-provenance |every-finding-carries-|source:[code-read file:line]| |sets-standard-for-other-agents |STRIDE-threat-model-per-feature=thorough |build-phase-review-checked-all-SRs-against-implementation |agents: security-specialist |signal: best-practice-benchmark
+
 → actions:
 → new pattern observed → append with |agents and |signal
 → pattern contradicted → move to ¬ section with explanation

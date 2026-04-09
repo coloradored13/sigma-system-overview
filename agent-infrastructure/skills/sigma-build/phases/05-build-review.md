@@ -14,6 +14,8 @@ DA reviews:
 - Scope compliance (§4a): built only what's in scope
 - Gold-plating detection (§4c)
 - XREVIEW findings (advisory, from Phase 04 Step 6)
+- §2d source provenance audit — ALL agents (plan-track AND build-track). Not just those DA challenged.
+  !rule: DA must verify |source:{type}| tags on build-track findings, not just plan-track.
 
 Plan-track reviews (intent fidelity):
 - tech-architect: do implementations match ADRs? interface contracts correct? tech stack as designed?
@@ -37,11 +39,14 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --ch
 ```
 Address any failures.
 
-### Step 4: Compute Belief State
+### Step 4: Compute Belief State (HARD GATE — must write to workspace)
 ```bash
 python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py compute-belief --belief-mode build-quality --round N
 ```
-Write: `"BELIEF[build-r{N}]: P={posterior} |plan-compliance={score} |test-coverage={score} |design-fidelity={score} |code-quality={score} |scope={clean|creep} |DA={grade} |→ {done|another-round({issues})|escalate}"`
+Write to workspace ## belief-tracking:
+`"BELIEF[build-r{N}]: P={posterior} |plan-compliance={score} |test-coverage={score} |design-fidelity={score} |code-quality={score} |scope={clean|creep} |DA={grade} |→ {done|another-round({issues})|escalate}"`
+
+!gate: BELIEF[] MUST be written to workspace before advancing. Not optional. DA exit-gate grades are NOT a substitute.
 
 ### Step 5: Check Exit Condition
 - **P > 0.85 + DA PASS** → proceed to pre-synthesis validation (Step 6)
@@ -61,11 +66,12 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --ch
 ```
 This runs V13+V14+V15+V16. Address failures.
 
-Anti-contamination check:
+Anti-contamination check (HARD GATE — must write to workspace before advancing):
 1. Re-read workspace ## scope-boundary
 2. Identify topics in this conversation OUTSIDE build scope
-3. Write: `CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})`
-4. Write: `SYCOPHANCY-CHECK: softened:{list|none} |selective-emphasis:{list|none} |dissent-reframed:{list|none} |process-issues:{list|none}`
+3. Write to workspace ## contamination-check: `CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})`
+4. Write to workspace ## contamination-check: `SYCOPHANCY-CHECK: softened:{list|none} |selective-emphasis:{list|none} |dissent-reframed:{list|none} |process-issues:{list|none}`
+!gate: both checks MUST be written to workspace. Not optional. Skipping = audit YELLOW.
 
 BUILD rubric evaluation (build-directives §3b, final round only):
 1→ correctness | 2→ test-coverage | 3→ maintainability | 4→ performance | 5→ security | 6→ api-design

@@ -879,6 +879,19 @@ AUDIT-VERDICT[26.3.29|sigma-ui-build]: YELLOW |§7=followed |§2d=clean(PD-untag
 26.3.30|asyncio-primitives-bound-to-creating-loop: asyncio.Semaphore (and Lock, Event, Condition) created in one event loop CANNOT be acquired/waited in a different loop. asyncio.run() in a worker thread creates a new event loop — any Semaphore from the main thread raises RuntimeError. Fix: create asyncio primitives INSIDE the coroutine that uses them, or use threading.Semaphore for cross-thread caps. For ThreadPoolExecutor + asyncio.run() pattern: create fresh object (including any containing class) inside the thread. |evidence: DA[#7] + IE independent discovery in B3 |Python 3.10+ behavior |by:implementation-engineer,devils-advocate |weight:primary
   |ctx: sigma-ui B3 build, threading + asyncio integration. Source: [independent-research] T1.
 
+## ollama-mcp-bridge F1 BUILD audit (26.4.8)
+
+AUDIT-VERDICT:YELLOW |by:sigma-audit(independent) |weight:primary
+  |ctx: BUILD: ollama-mcp-bridge F1 upgrade. 5 agents (TA,SS,IE,CQA,DA). TIER-2. Q1-Q6 scope, Q2 deferred.
+  |findings: (1) BELIEF[] absent (3rd consecutive build), (2) build-track source tags missing (IE+CQA), (3) §6 CONTAMINATION-CHECK absent, (4) XVERIFY skipped (13 providers avail)
+  |strengths: DA substantive (9 challenges, genuine scope change on Q[2]), §4a-d all exercised, security-specialist exemplary provenance, BUILD guardrails PASS
+  |DA-plan-exit-gate: PASS B+ (3.2/4.0) |DA-build-exit-gate: PASS A- (3.6/4.0)
+  |remediation: targeted fixes, no rerun needed
+  |status: open — remediation items pending
+
+AUDIT-FLAG[26.4.8]: BELIEF[]-systematic-absence |3/3-audited-builds-missing |remediation:lead-must-write-BELIEF[]s-retroactively+going-forward |status:open
+AUDIT-FLAG[26.4.8]: DA-§2d-audit-scope-incomplete |only-audited-plan-track-agents |remediation:DA-audit-must-cover-all-agents |status:open
+
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
 → disagreement → record both positions with |ctx from each agent

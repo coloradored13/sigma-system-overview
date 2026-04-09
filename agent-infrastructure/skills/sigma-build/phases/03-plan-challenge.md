@@ -63,12 +63,14 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --ch
 ```
 Address any failures.
 
-### Step 7: Compute Belief State
+### Step 7: Compute Belief State (HARD GATE — must write to workspace)
 ```bash
 python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py compute-belief --belief-mode build-plan --round N
 ```
-Write: `"BELIEF[plan-r{N}]: P={posterior} |builder-feasibility={score} |interface-agree={score} |design-arch={score} |conflicts={none|count} |review-coverage={score} |DA={grade} |→ {lock-plan|another-round({gaps})|Toulmin-debate}"`
+Write to workspace ## belief-tracking:
+`"BELIEF[plan-r{N}]: P={posterior} |builder-feasibility={score} |interface-agree={score} |design-arch={score} |conflicts={none|count} |review-coverage={score} |DA={grade} |→ {lock-plan|another-round({gaps})|Toulmin-debate}"`
 
+!gate: BELIEF[] MUST be written to workspace before advancing. Not optional. DA exit-gate grades are NOT a substitute.
 If |declared - computed| > 0.15: must justify divergence.
 
 ### Step 8: Check Exit Condition

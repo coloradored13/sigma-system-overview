@@ -25,13 +25,19 @@ Before accepting any agent's plan output:
 3. Check: has agent persisted memory? (`get_agent_memory`)
 4. If plan incomplete: SendMessage to agent with specific missing items
 
-### Step 3: Verify XVERIFY Coverage (when ΣVerify available)
+### Step 3: Verify XVERIFY Coverage (mandatory-when-available for security-critical)
 Each plan-track agent MUST verify top 1 load-bearing decision:
 - tech-architect: top ADR (highest reversal cost)
 - product-designer: top design system decision
 - product-strategist: top priority sequencing assumption
 
+Security-critical ADRs (IP normalization, permission architecture, injection defense, trust boundaries):
+- ΣVerify available → XVERIFY MANDATORY on top-1 security-critical ADR. Not advisory.
+- ΣVerify available + non-security ADR → advisory (recommended, not required)
+- ΣVerify unavailable → neutral, no penalty
+
 If XVERIFY missing on any agent: SendMessage reminder before advancing.
+If XVERIFY missing on security-critical ADR with ΣVerify available: DO NOT advance. Hard gate.
 
 ### Step 4: Wait for All Plan-Track Agents ✓
 Do not proceed until ALL plan-track agents have:
