@@ -31,7 +31,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from hateoas_agent import AgentSlot, Orchestrator
 from hateoas_agent.conditions import (
-    all_converged,
     belief_above,
     context_true,
     exit_gate_passed,
@@ -115,11 +114,20 @@ def build_analyze_workflow(agents: list[AgentSlot] | None = None) -> Orchestrato
         guard=exit_gate_passed() & belief_above(0.85) & context_true("pre_synthesis_validated"),
     )
 
+    # H2: Self-loop when exit gate passed but belief not yet high enough for synthesis
+    orch.transition(
+        "challenge",
+        "challenge",
+        name="exit_passed_low_belief",
+        guard=exit_gate_passed() & ~belief_above(0.85) & round_limit(5, key="round"),
+    )
+
+    # H1: Added round_limit to prevent unbounded challenge↔debate loop
     orch.transition(
         "challenge",
         "debate",
         name="deep_disagreement",
-        guard=~exit_gate_passed() & ~belief_above(0.6),
+        guard=~exit_gate_passed() & ~belief_above(0.6) & round_limit(5, key="round"),
     )
 
     orch.transition(
@@ -223,11 +231,18 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
         name="plans_approved",
         guard=exit_gate_passed() & belief_above(0.85) & context_true("plan_lock_validated"),
     )
+    # H3: Added round_limit to prevent unbounded self-loops (consistent with ANALYZE)
     orch.transition(
         "challenge_plan",
         "challenge_plan",
         name="revise_plans",
-        guard=~exit_gate_passed(),
+        guard=~exit_gate_passed() & round_limit(5, key="round"),
+    )
+    orch.transition(
+        "challenge_plan",
+        "build",
+        name="plan_hard_cap",
+        guard=~round_limit(5, key="round"),  # round >= 5: force to build
     )
     orch.transition(
         "build",
@@ -241,7 +256,15 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
         name="review_done",
         guard=exit_gate_passed() & context_true("pre_synthesis_validated"),
     )
-    orch.transition("review", "review", name="review_revisions", guard=~exit_gate_passed())
+    # H3: Added round_limit to prevent unbounded self-loop
+    orch.transition("review", "review", name="review_revisions",
+                    guard=~exit_gate_passed() & round_limit(5, key="round"))
+    orch.transition(
+        "review",
+        "synthesis",
+        name="review_hard_cap",
+        guard=~round_limit(5, key="round"),  # round >= 5: force to synthesis
+    )
 
     # Post-exit-gate transitions (guarded — lead must set completion flags)
     orch.transition(
@@ -313,18 +336,40 @@ def _load_or_create(mode: str, checkpoint_file: str) -> Orchestrator:
     orch = builder()
 
     if os.path.exists(checkpoint_file):
-        with open(checkpoint_file) as f:
-            data = json.load(f)
+        try:
+            with open(checkpoint_file) as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, OSError) as e:
+            print(json.dumps({
+                "warning": f"Corrupt checkpoint ({e}), starting fresh",
+                "checkpoint_file": checkpoint_file,
+            }), file=sys.stderr)
+            return orch
+
+        # H6: Validate mode matches checkpoint
+        saved_mode = data.get("_mode")
+        if saved_mode and saved_mode != mode:
+            print(json.dumps({
+                "error": f"Mode mismatch: checkpoint is '{saved_mode}' but --mode is '{mode}'",
+                "hint": f"Use --mode {saved_mode} or delete {checkpoint_file} to start fresh",
+            }))
+            sys.exit(1)
+
         load_orchestrator_checkpoint(orch, data)
 
     return orch
 
 
 def _save(orch: Orchestrator, checkpoint_file: str) -> None:
-    """Save orchestrator state to checkpoint file."""
+    """Save orchestrator state to checkpoint file (atomic write)."""
     data = save_orchestrator_checkpoint(orch)
-    with open(checkpoint_file, "w") as f:
+    # H6: Persist mode so we can detect mismatches on load
+    data["_mode"] = "analyze" if orch.name == "sigma-review-analyze" else "build"
+    # H4: Atomic write — write to temp then rename to prevent corruption
+    tmp = checkpoint_file + ".tmp"
+    with open(tmp, "w") as f:
         json.dump(data, f, indent=2)
+    os.replace(tmp, checkpoint_file)
 
 
 def _output_state(orch: Orchestrator) -> None:
@@ -365,8 +410,29 @@ DEFAULT_WORKSPACE = os.path.join(
 
 def cmd_start(args: argparse.Namespace) -> None:
     mode = args.mode
-    ctx = json.loads(args.context) if args.context else {}
+    try:
+        ctx = json.loads(args.context) if args.context else {}
+    except json.JSONDecodeError as e:
+        print(json.dumps({"error": f"Invalid JSON in --context: {e}"}))
+        sys.exit(1)
     checkpoint_file = args.checkpoint or DEFAULT_CHECKPOINT
+
+    # M1: Guard against overwriting an in-progress review
+    if os.path.exists(checkpoint_file):
+        try:
+            with open(checkpoint_file) as f:
+                existing = json.load(f)
+            existing_phase = existing.get("current_phase")
+            if existing_phase and existing_phase != "complete":
+                if not ctx.get("force_restart"):
+                    print(json.dumps({
+                        "error": f"Active session exists (phase: {existing_phase}). "
+                                 "Pass force_restart=true in context to overwrite.",
+                        "current_phase": existing_phase,
+                    }))
+                    sys.exit(1)
+        except (json.JSONDecodeError, OSError):
+            pass  # Corrupt checkpoint — safe to overwrite
 
     # V21: TeamCreate enforcement — agents MUST be spawned via TeamCreate for shared context
     if not ctx.get("team_created"):
@@ -386,7 +452,11 @@ def cmd_start(args: argparse.Namespace) -> None:
 
 def cmd_advance(args: argparse.Namespace) -> None:
     mode = args.mode
-    ctx = json.loads(args.context) if args.context else None
+    try:
+        ctx = json.loads(args.context) if args.context else None
+    except json.JSONDecodeError as e:
+        print(json.dumps({"error": f"Invalid JSON in --context: {e}"}))
+        sys.exit(1)
     checkpoint_file = args.checkpoint or DEFAULT_CHECKPOINT
 
     orch = _load_or_create(mode, checkpoint_file)
@@ -399,7 +469,7 @@ def cmd_advance(args: argparse.Namespace) -> None:
     # run it manually, we run it now and block advancement if it fails.
     # This prevents the "gate exists but nobody turned the key" failure mode.
     workspace_path = getattr(args, "workspace", None) or DEFAULT_WORKSPACE
-    current_phase = orch._current_phase.name if orch._current_phase else None
+    current_phase = orch._current_phase
 
     PHASE_REQUIRED_VALIDATIONS = {
         "plan": "plan-convergence",
@@ -407,40 +477,74 @@ def cmd_advance(args: argparse.Namespace) -> None:
         "build": "build-checkpoint",
         "review": "pre-synthesis",
         "research": "r1-convergence",       # ANALYZE mode
+        "circuit_breaker": "cb",            # ANALYZE mode
         "challenge": "challenge-round",      # ANALYZE mode
     }
 
     required_bundle = PHASE_REQUIRED_VALIDATIONS.get(current_phase)
     if required_bundle:
         result = gate_checks.run_validation(required_bundle, workspace_path)
-        if not result.get("passed", result.get("checks", [{}])):
-            # Check if the validation result indicates failure
-            passed = result.get("passed", True)
-            if not passed:
-                failed_checks = [
-                    c for c in result.get("checks", [])
-                    if not c.get("passed", True)
-                ]
-                issues = []
-                for c in failed_checks:
-                    issues.extend(c.get("issues", []))
-                print(json.dumps({
-                    "error": "auto-validation-failed",
-                    "phase": current_phase,
-                    "bundle": required_bundle,
-                    "failed_checks": [c.get("name", "unknown") for c in failed_checks],
-                    "issues": issues,
-                    "message": (
-                        f"Cannot advance from '{current_phase}': validation bundle "
-                        f"'{required_bundle}' failed. Fix the issues above, then retry."
-                    ),
-                }, indent=2))
-                sys.exit(1)
 
+        # C2: Handle error dicts (e.g. unknown bundle) — treat as blocking failure
+        if "error" in result:
+            print(json.dumps({
+                "error": "auto-validation-error",
+                "phase": current_phase,
+                "bundle": required_bundle,
+                "message": result["error"],
+            }, indent=2))
+            sys.exit(1)
+
+        if not result.get("passed", False):
+            failed_checks = [
+                c for c in result.get("checks", [])
+                if not c.get("passed", True)
+            ]
+            issues = []
+            for c in failed_checks:
+                issues.extend(c.get("issues", []))
+            print(json.dumps({
+                "error": "auto-validation-failed",
+                "phase": current_phase,
+                "bundle": required_bundle,
+                "failed_checks": [c.get("name", "unknown") for c in failed_checks],
+                "issues": issues,
+                "message": (
+                    f"Cannot advance from '{current_phase}': validation bundle "
+                    f"'{required_bundle}' failed. Fix the issues above, then retry."
+                ),
+            }, indent=2))
+            sys.exit(1)
+
+        # C1: Merge context_update from successful validation into advance context
+        context_update = result.get("context_update", {})
+        if context_update:
+            if ctx is None:
+                ctx = {}
+            ctx.update(context_update)
+
+    phase_before = orch._current_phase
     orch.advance(context=ctx)
     _save(orch, checkpoint_file)
     _save_round_snapshot(orch, workspace_path)
-    _output_state(orch)
+
+    # M2: Diagnostic when no guard matched — caller can detect "stuck" vs "advanced"
+    output = orch._make_state()
+    if output.current_phase == phase_before:
+        state = orch._make_state()
+        agents = orch.get_agents_for_phase(state.current_phase) if state.current_phase else []
+        result = {
+            "phase": state.current_phase,
+            "is_terminal": state.is_terminal,
+            "phase_history": state.phase_history,
+            "context": state.context,
+            "agents": [a.name for a in agents],
+            "agent_statuses": {name: a.status.value for name, a in orch._agents.items()},
+            "warning": f"No transition matched from '{phase_before}'. Phase unchanged.",
+        }
+        print(json.dumps(result, indent=2))
+    else:
+        _output_state(orch)
 
 
 def cmd_status(args: argparse.Namespace) -> None:
@@ -477,8 +581,21 @@ def cmd_restore(args: argparse.Namespace) -> None:
         print(json.dumps({"error": f"File not found: {src}"}))
         sys.exit(1)
 
-    with open(src) as f:
-        data = json.load(f)
+    try:
+        with open(src) as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        print(json.dumps({"error": f"Cannot read checkpoint: {e}"}))
+        sys.exit(1)
+
+    # Validate mode matches checkpoint
+    saved_mode = data.get("_mode")
+    if saved_mode and saved_mode != mode:
+        print(json.dumps({
+            "error": f"Mode mismatch: checkpoint is '{saved_mode}' but --mode is '{mode}'",
+            "hint": f"Use --mode {saved_mode}",
+        }))
+        sys.exit(1)
 
     orch = build_analyze_workflow() if mode == "analyze" else build_build_workflow()
     load_orchestrator_checkpoint(orch, data)
@@ -520,7 +637,7 @@ def cmd_watch(args: argparse.Namespace) -> None:
     mode = args.mode
     checkpoint_file = args.checkpoint or DEFAULT_CHECKPOINT
     workspace_path = Path(args.workspace)
-    interval = int(args.interval)
+    interval = args.interval
 
     orch = _load_or_create(mode, checkpoint_file)
     if orch._current_phase is None:
@@ -577,7 +694,7 @@ def cmd_watch(args: argparse.Namespace) -> None:
         conv_section = conv_match.group(1)
         current_phase = orch._current_phase
 
-        if current_phase is None or current_phase == "complete":
+        if current_phase is None or orch._make_state().is_terminal:
             print("[watch] Terminal phase reached. Exiting.", flush=True)
             break
 
@@ -638,6 +755,8 @@ def main() -> None:
 
     p_advance = sub.add_parser("advance", help="Advance to next phase")
     p_advance.add_argument("--context", help="JSON context update string")
+    p_advance.add_argument("--workspace", default=None,
+                           help=f"Workspace path for auto-validate (default: {DEFAULT_WORKSPACE})")
 
     p_status = sub.add_parser("status", help="Show current state")
 
@@ -683,7 +802,8 @@ def main() -> None:
     )
     p_watch.add_argument(
         "--interval",
-        default="10",
+        type=int,
+        default=10,
         help="Poll interval in seconds (default: 10)",
     )
 

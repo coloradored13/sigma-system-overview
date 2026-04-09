@@ -294,13 +294,13 @@ def check_source_provenance(content: str) -> CheckResult:
 
     # Find primary finding declarations — lines that START with F[...] (not DA response references)
     # This avoids counting "DA[#1] response to F[PS-1]" as a finding
-    finding_lines = re.findall(r"^(F\[[\w-]+\].+)", findings, re.MULTILINE)
+    finding_lines = re.findall(r"^((?:F|FINDING)\[[\w-]+\][:\s].+)", findings, re.MULTILINE)
 
     # Deduplicate by finding ID — first occurrence is the declaration
     seen_ids: set[str] = set()
     unique_findings: list[str] = []
     for line in finding_lines:
-        fid_match = re.match(r"(F\[[\w-]+\])", line)
+        fid_match = re.match(r"((?:F|FINDING)\[[\w-]+\])", line)
         if fid_match:
             fid = fid_match.group(1)
             if fid not in seen_ids:
@@ -318,7 +318,7 @@ def check_source_provenance(content: str) -> CheckResult:
         if has_source or has_src:
             tagged += 1
         else:
-            fid = re.match(r"(F\[[\w-]+\])", line)
+            fid = re.match(r"((?:F|FINDING)\[[\w-]+\])", line)
             untagged.append(fid.group(1) if fid else "unknown")
 
         # Check load-bearing for tier
@@ -365,7 +365,7 @@ def check_xverify_coverage(content: str) -> CheckResult:
     for agent in agents:
         section = _get_agent_section(content, agent)
         # Match XVERIFY[, XVERIFY(, XVERIFY:, XVERIFY= — various workspace formats
-        has_xverify = bool(re.search(r"XVERIFY[\[\(:=]", section))
+        has_xverify = bool(re.search(r"(?:T[123]-)?XVERIFY(?:-PARTIAL)?[\[\s(:]", section, re.IGNORECASE))
         has_xverify_fail = bool(re.search(r"XVERIFY-FAIL", section))
         if not has_xverify and not has_xverify_fail:
             missing.append(agent)
@@ -390,7 +390,7 @@ def check_dialectical_bootstrapping(content: str, agents: list[str] | None = Non
     missing = []
     for agent in agents:
         section = _get_agent_section(content, agent)
-        has_db = bool(re.search(r"DB\[", section))
+        has_db = bool(re.search(r"(?:DB\[|DB-reconciled|DISCONFIRM\[)", section, re.IGNORECASE))
         if not has_db:
             missing.append(agent)
 
@@ -497,19 +497,24 @@ def check_cross_track_participation(content: str) -> CheckResult:
 
     # Count DA challenges — multiple formats used in workspaces:
     # DA[#N] individual challenges, CH[N] challenge themes, or narrative "N challenges"
-    da_individual = re.findall(r"DA\[#?\d+\]", da_section) if da_section else []
+    da_individual = re.findall(r"DA\[#?\d+\]|DA-C\[\d+\]", da_section) if da_section else []
     da_themes = re.findall(r"CH\[\d+\]", da_section) if da_section else []
     # Narrative count: "26 challenges across 6 agents"
     narrative_match = re.search(r"(\d+)\s+challenges?\s+(?:across|delivered|issued)", da_section, re.IGNORECASE) if da_section else None
     narrative_count = int(narrative_match.group(1)) if narrative_match else 0
     da_challenge_count = max(len(da_individual), len(da_themes), narrative_count)
+    if da_challenge_count == 0 and da_section and len(da_section.strip()) > 100:
+        da_challenge_count = 1
 
     # Count agent DA responses across all agent sections
     agents = extract_agents_from_workspace(content)
     da_responses = 0
     for agent in agents:
         section = _get_agent_section(content, agent)
-        da_responses += len(re.findall(r"DA\[#?\d+\].*(?:concede|defend|compromise)", section, re.IGNORECASE))
+        da_responses += len(re.findall(
+            r"DA\[#?\d+\].*(?:concede|defend|compromise|accept|reject|revise|acknowledge)",
+            section, re.IGNORECASE
+        ))
 
     issues = []
     if da_challenge_count == 0:
@@ -1154,6 +1159,7 @@ def compute_analyze_belief(workspace_path: str | None = None, round_num: int | N
             "gap_count": gaps,
             "da_grade": grade_match.group(1) if grade_match else "B (default)",
             "exit_gate": exit_match.group(1) if exit_match else "not found",
+            "outcome_1_includes_fuzzy": outcome_1 > outcome_1_all,
         },
     )
 

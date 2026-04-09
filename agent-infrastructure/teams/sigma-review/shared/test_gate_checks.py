@@ -623,6 +623,9 @@ class TestOrchestratorGuards:
 
         # Post-exit chain
         orch.advance(context={"synthesis_delivered": True})
+        assert orch._make_state().current_phase == "compilation"
+
+        orch.advance(context={"compilation_complete": True})
         assert orch._make_state().current_phase == "promotion"
 
         orch.advance(context={"promotion_complete": True})
@@ -674,9 +677,11 @@ class TestOrchestratorGuards:
 
     def test_start_requires_team_created(self):
         """V21: orchestrator start blocks without team_created in context."""
-        import subprocess
+        import subprocess, tempfile
+        cp = tempfile.mktemp(suffix=".json")
         result = subprocess.run(
             ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--checkpoint", cp,
              "start", "--context", '{"task": "test"}'],
             capture_output=True, text=True, timeout=10,
         )
@@ -684,6 +689,8 @@ class TestOrchestratorGuards:
         output = json.loads(result.stdout)
         assert "error" in output
         assert "team_created" in output["error"]
+        if os.path.exists(cp):
+            os.unlink(cp)
 
     def test_start_succeeds_with_team_created(self):
         """V21: orchestrator start proceeds with team_created."""
@@ -715,6 +722,7 @@ class TestOrchestratorGuards:
             "pre_synthesis_validated": True,
         })
         orch.advance(context={"synthesis_delivered": True})
+        orch.advance(context={"compilation_complete": True})
         orch.advance(context={"promotion_complete": True})
         orch.advance(context={"sync_complete": True})
         assert orch._make_state().current_phase == "archive"
@@ -770,7 +778,7 @@ class TestV23SynthesisArtifact:
         import tempfile
         archive_dir = Path.home() / ".claude/teams/sigma-review/shared/archive"
         # Create a temporary synthesis file
-        synth_file = archive_dir / "2026-03-28-test-synthesis.md"
+        synth_file = archive_dir / "9999-99-99-test-synthesis.md"
         synth_file.write_text(
             "# Synthesis\n## prompt-decomposition\nQ1: test\nH1: test\n"
             "## findings\nF[T-1] finding |source:[independent-research]\n"
@@ -781,7 +789,7 @@ class TestV23SynthesisArtifact:
         try:
             result = gate_checks.check_synthesis_artifact(MINIMAL_WORKSPACE)
             assert result.passed is True
-            assert "2026-03-28-test-synthesis.md" in result.details["dedicated_synthesis_files"]
+            assert "9999-99-99-test-synthesis.md" in result.details["dedicated_synthesis_files"]
             assert len(result.details["missing_sections"]) == 0
         finally:
             synth_file.unlink(missing_ok=True)
@@ -812,3 +820,311 @@ class TestV23SynthesisArtifact:
                 assert len(result.details["missing_sections"]) > 0
         finally:
             synth_file.unlink(missing_ok=True)
+
+
+# ---------------------------------------------------------------------------
+# Regression tests for R16 gate enforcement bugs (2026-04-09)
+# ---------------------------------------------------------------------------
+
+WORKSPACE_FINDING_FORMAT = MINIMAL_WORKSPACE.replace(
+    "F[A-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\n"
+    "F[A-2] Finding two — more analysis |source:[agent-inference]",
+    "FINDING[TA-1]: Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\n"
+    "FINDING[TA-2]: Finding two — more analysis |source:[agent-inference]",
+)
+
+WORKSPACE_XVERIFY_PARTIAL = MINIMAL_WORKSPACE.replace(
+    "XVERIFY: F1=PARTIAL",
+    "T1-XVERIFY-PARTIAL[gpt-5.4]: F1 partial agreement",
+).replace(
+    "XVERIFY: F1=AGREE(gpt-5.4)",
+    "XVERIFY PARTIAL (gemini-3.1): F1 partial agreement",
+)
+
+WORKSPACE_DB_RECONCILED = MINIMAL_WORKSPACE.replace(
+    "DB[F[A-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final",
+    "DB-reconciled: F[A-1] (1) initial: X (2) assume-wrong: Y → reconciled: final",
+).replace(
+    "DB[F[B-2]]: (1) initial: A (2) assume-wrong: B (3) strongest-counter: C (4) re-estimate: D (5) reconciled: E",
+    "DISCONFIRM[F[B-2]]: tested and rejected alternative hypothesis",
+)
+
+WORKSPACE_DA_C_FORMAT = MINIMAL_WORKSPACE.replace(
+    "10 challenges across 2 agents",
+    "DA-C[1] challenge alpha\nDA-C[2] challenge beta",
+)
+
+WORKSPACE_DA_SECTION_ONLY = MINIMAL_WORKSPACE.replace(
+    "10 challenges across 2 agents\n\n**RESPONSE QUALITY**\n"
+    "| Agent | Challenges | Grade |\n"
+    "|-------|-----------|-------|\n"
+    "| alpha | 5 | A |\n"
+    "| beta | 5 | A- |\n\n"
+    "Overall engagement: A\n\n"
+    "CH[1] TOPIC ONE — RESOLVED\n"
+    "CH[2] TOPIC TWO — RESOLVED",
+    "Extended narrative about challenges issued to agents with detailed "
+    "discussion of methodology concerns and analytical rigor questions "
+    "that spans well over one hundred characters to trigger the fallback "
+    "minimum signal detection for DA sections without formal markers",
+)
+
+
+class TestAdvanceNoCrash:
+    """Regression: Bug 1 — orch.advance must not crash with AttributeError on _current_phase."""
+
+    def test_advance_no_attribute_error(self):
+        orch = build_analyze_workflow()
+        orch.start("research", context={"team_created": True})
+        # This used to crash with: AttributeError: 'str' object has no attribute 'name'
+        orch.advance(context={"r1_converged": True, "r1_validated": True})
+        state = orch._make_state()
+        assert state.current_phase == "circuit_breaker"
+
+
+class TestV4FindingFormatVariants:
+    """Regression: Bug 4 — V4 must detect FINDING[TA-1]: prefix, not just F[...]."""
+
+    def test_finding_prefix_detected(self):
+        result = gate_checks.check_source_provenance(WORKSPACE_FINDING_FORMAT)
+        assert result.details["total_findings"] > 0, "FINDING[] prefix not detected"
+
+    def test_original_f_prefix_still_works(self):
+        result = gate_checks.check_source_provenance(MINIMAL_WORKSPACE)
+        assert result.details["total_findings"] > 0, "F[] prefix regression"
+
+
+class TestV5XverifyPartialVariants:
+    """Regression: Bug 2 — V5 must detect T1-XVERIFY-PARTIAL[model] and XVERIFY PARTIAL (model)."""
+
+    def test_xverify_partial_detected(self):
+        result = gate_checks.check_xverify_coverage(WORKSPACE_XVERIFY_PARTIAL)
+        assert result.details["agents_missing_xverify"] == [], (
+            f"XVERIFY-PARTIAL variants not detected: {result.details['agents_missing_xverify']}"
+        )
+
+
+class TestV6DbReconciledAndDisconfirm:
+    """Regression: Bug 3 — V6 must detect DB-reconciled and DISCONFIRM[ as DB variants."""
+
+    def test_db_reconciled_detected(self):
+        result = gate_checks.check_dialectical_bootstrapping(WORKSPACE_DB_RECONCILED)
+        assert result.details["agents_missing_db"] == [], (
+            f"DB-reconciled/DISCONFIRM not detected: {result.details['agents_missing_db']}"
+        )
+
+    def test_original_db_bracket_still_works(self):
+        result = gate_checks.check_dialectical_bootstrapping(MINIMAL_WORKSPACE)
+        assert result.details["agents_missing_db"] == []
+
+
+class TestV10DaSectionMinimumSignal:
+    """Regression: Bug 5 — DA section with >100 chars content counts as >= 1 challenge."""
+
+    def test_da_section_fallback(self):
+        result = gate_checks.check_cross_track_participation(WORKSPACE_DA_SECTION_ONLY)
+        assert result.details["da_challenges_issued"] >= 1, "DA section fallback not triggered"
+
+    def test_da_c_format_detected(self):
+        result = gate_checks.check_cross_track_participation(WORKSPACE_DA_C_FORMAT)
+        assert result.details["da_challenges_issued"] >= 2, "DA-C[] format not detected"
+
+
+class TestBeliefOutcomeFuzzyFlag:
+    """Regression: Bug 6 — breakdown includes outcome_1_includes_fuzzy transparency flag."""
+
+    def test_fuzzy_flag_present(self):
+        import tempfile, os
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+            f.write(MINIMAL_WORKSPACE)
+            f.flush()
+            result = gate_checks.run_compute_belief("analyze", f.name)
+        os.unlink(f.name)
+        assert "outcome_1_includes_fuzzy" in result["breakdown"]
+
+    def test_fuzzy_flag_false_when_no_inflation(self):
+        import tempfile, os
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+            f.write(MINIMAL_WORKSPACE)
+            f.flush()
+            result = gate_checks.run_compute_belief("analyze", f.name)
+        os.unlink(f.name)
+        # MINIMAL_WORKSPACE has no outcome markers, so outcome_1 <= outcome_total
+        assert result["breakdown"]["outcome_1_includes_fuzzy"] is False
+
+
+# ---------------------------------------------------------------------------
+# Regression tests for orchestrator code review findings (2026-04-09)
+# ---------------------------------------------------------------------------
+
+class TestTransitionGuardCoverage:
+    """Regression: H1/H2/H3 — guard gaps and unbounded loops."""
+
+    def test_hard_cap_fires_when_belief_low_at_round_5(self):
+        """H1: hard_cap must fire even when belief <= 0.6 at round >= 5."""
+        orch = build_analyze_workflow()
+        orch.start("research", context={"team_created": True})
+        orch.advance(context={"r1_converged": True, "r1_validated": True})
+        orch.advance(context={"cb_validated": True})
+        # Simulate 5 rounds of challenge with low belief — hard_cap should force synthesis
+        for i in range(5):
+            orch.advance(context={"round": i + 1})
+        # After round 5, hard_cap should fire regardless of belief/exit_gate
+        orch.advance(context={"round": 6})
+        assert orch._make_state().current_phase == "synthesis", \
+            "hard_cap should force synthesis at round >= 5"
+
+    def test_exit_passed_low_belief_loops(self):
+        """H2: exit_gate PASS + belief < 0.85 should self-loop, not deadlock."""
+        orch = build_analyze_workflow()
+        orch.start("research", context={"team_created": True})
+        orch.advance(context={"r1_converged": True, "r1_validated": True})
+        orch.advance(context={"cb_validated": True})
+        assert orch._make_state().current_phase == "challenge"
+        # exit gate passed but belief only 0.75 — should self-loop (not deadlock)
+        orch.advance(context={"exit_gate": "PASS", "belief_state": 0.75, "round": 1})
+        assert orch._make_state().current_phase == "challenge", \
+            "Should self-loop when exit_gate PASS but belief < 0.85"
+
+    def test_build_challenge_plan_bounded(self):
+        """H3: BUILD challenge_plan must not loop unbounded."""
+        orch = build_build_workflow()
+        orch.start("plan", context={"team_created": True})
+        orch.advance(context={"plans_ready": True, "plan_round_validated": True})
+        assert orch._make_state().current_phase == "challenge_plan"
+        # Simulate rounds without exit gate — should hit hard cap
+        for i in range(6):
+            orch.advance(context={"round": i + 1})
+        assert orch._make_state().current_phase == "build", \
+            "plan_hard_cap should force to build at round >= 5"
+
+    def test_build_review_bounded(self):
+        """H3: BUILD review must not loop unbounded."""
+        orch = build_build_workflow()
+        orch.start("plan", context={"team_created": True})
+        orch.advance(context={"plans_ready": True, "plan_round_validated": True})
+        orch.advance(context={
+            "exit_gate": "PASS", "belief_state": 0.9,
+            "plan_lock_validated": True,
+        })
+        assert orch._make_state().current_phase == "build"
+        orch.advance(context={"build_complete": True, "checkpoint_validated": True})
+        assert orch._make_state().current_phase == "review"
+        # Simulate rounds without exit gate — should hit hard cap
+        for i in range(6):
+            orch.advance(context={"round": i + 1})
+        assert orch._make_state().current_phase == "synthesis", \
+            "review_hard_cap should force to synthesis at round >= 5"
+
+
+class TestCheckpointResilience:
+    """Regression: H4/H5/H6 — atomic writes, corrupt recovery, mode validation."""
+
+    def test_atomic_write_creates_file(self):
+        """H4: _save should produce a valid checkpoint file."""
+        import tempfile
+        orch = build_analyze_workflow()
+        orch.start("research", context={"team_created": True})
+        cp = tempfile.mktemp(suffix=".json")
+        try:
+            _orch_mod._save(orch, cp)
+            with open(cp) as f:
+                data = json.load(f)
+            assert data["current_phase"] == "research"
+            assert data["_mode"] == "analyze"
+            # Temp file should be cleaned up
+            assert not os.path.exists(cp + ".tmp")
+        finally:
+            if os.path.exists(cp):
+                os.unlink(cp)
+
+    def test_corrupt_checkpoint_recovery(self):
+        """H5: corrupt JSON should not crash — falls back to fresh orchestrator."""
+        import tempfile
+        cp = tempfile.mktemp(suffix=".json")
+        with open(cp, "w") as f:
+            f.write("{corrupt json!!!")
+        try:
+            orch = _orch_mod._load_or_create("analyze", cp)
+            # Should return fresh orchestrator, not crash
+            assert orch._current_phase is None
+        finally:
+            os.unlink(cp)
+
+    def test_mode_mismatch_rejected(self):
+        """H6: loading analyze checkpoint with --mode build should fail."""
+        import tempfile, subprocess
+        # Create an analyze checkpoint
+        cp = tempfile.mktemp(suffix=".json")
+        subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--mode", "analyze", "--checkpoint", cp,
+             "start", "--context", '{"task": "test", "team_created": true}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        # Try to load with build mode
+        result = subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--mode", "build", "--checkpoint", cp,
+             "status"],
+            capture_output=True, text=True, timeout=10,
+        )
+        assert result.returncode != 0
+        output = json.loads(result.stdout)
+        assert "mismatch" in output["error"].lower()
+        os.unlink(cp)
+
+
+class TestAutoValidatePipeline:
+    """Regression: C1/C2/H7 — context injection, error handling, cb mapping."""
+
+    def test_cb_in_phase_required_validations(self):
+        """H7: circuit_breaker must be in PHASE_REQUIRED_VALIDATIONS."""
+        # Read the source to verify — this is a structural test
+        import inspect
+        source = inspect.getsource(_orch_mod.cmd_advance)
+        assert '"circuit_breaker"' in source and '"cb"' in source
+
+    def test_start_overwrite_guard(self):
+        """M1: start should refuse to overwrite active session."""
+        import subprocess, tempfile
+        cp = tempfile.mktemp(suffix=".json")
+        # Start a session
+        subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--checkpoint", cp,
+             "start", "--context", '{"task": "test", "team_created": true}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        # Try to start again — should be blocked
+        result = subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--checkpoint", cp,
+             "start", "--context", '{"task": "test2", "team_created": true}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        assert result.returncode != 0
+        output = json.loads(result.stdout)
+        assert "Active session" in output["error"]
+        os.unlink(cp)
+
+    def test_start_force_restart(self):
+        """M1: start with force_restart should overwrite."""
+        import subprocess, tempfile
+        cp = tempfile.mktemp(suffix=".json")
+        # Start a session
+        subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--checkpoint", cp,
+             "start", "--context", '{"task": "test", "team_created": true}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        # Force restart
+        result = subprocess.run(
+            ["python3", os.path.join(_shared_dir, "orchestrator-config.py"),
+             "--checkpoint", cp,
+             "start", "--context", '{"task": "test2", "team_created": true, "force_restart": true}'],
+            capture_output=True, text=True, timeout=10,
+        )
+        assert result.returncode == 0
+        os.unlink(cp)

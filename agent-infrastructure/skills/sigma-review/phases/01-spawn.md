@@ -6,7 +6,7 @@
 
 ### Step 1: Initialize Orchestrator
 ```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py start --mode analyze --context '{"task": "$ARGUMENTS", "tier": N, "team_created": true}'
+python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py --mode analyze start --context '{"task": "$ARGUMENTS", "tier": N, "team_created": true}'
 ```
 Record the returned state. Current phase should be `research`.
 
