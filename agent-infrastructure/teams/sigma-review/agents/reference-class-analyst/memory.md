@@ -245,3 +245,24 @@ P[explicit-RC-weighting-mandatory-when-multiple-classes-apply:unweighted-avg=fal
 P[strangler-fig-partial-stall:N-unit-migrations-with-per-unit-go/no-go-stall-at-bridge-~50-60%;P(all-N)=multiplicative;bridge-accumulates-operational-tax(compounding-cost);hard-completion-criterion-required|src:sigma-ui-R2(TA+IE+RCA)|class:pattern]
 P[DISCONFIRM-percentage-claims-must-specify-the-gap:"80%-of-goals"-is-marketing¬analysis;DA-forced-specifying-20%;missing-20%-contained-must-have(control-inversion-fix)|src:sigma-ui-DA[#3]|class:calibration]
 C[CAL-overall-must-be-derived¬judgment:RC-weighted+hypothesis-conditional-bracketing-required;judgment-call-dressed-as-calibration=process-violation;DA[#5]-caught|src:sigma-ui-DA[#5]]
+## cross-model communication protocol review — R1+R3 findings (26.4.9)
+task: superforecasting analysis of cross-model agent communication protocol design
+SQ[1-6]: 6 sub-questions | 2×outcome-1(changed) | 2×outcome-2(confirmed) | 1×outcome-3(gap) | 1×mixed
+RC[1-4]: agent-comm-standards(FIPA-0%,A2A-150orgs,MCP-LF,NLIP-Ecma) | M2M-protocols(HTTP,JSON,protobuf) | NL-as-interface(NLIP,AutoGen-drift,LangGraph-rejected) | LLM-to-LLM(all-frameworks-chose-structured-coordination+NL-content)
+ANA[1-6]: FIPA-ACL(FAILURE,V-HIGH) | HTTP(SUCCESS,HIGH) | Esperanto(FAILURE,MOD) | JSON(SUCCESS,V-HIGH) | A2A(IN-PROGRESS,V-HIGH) | Unicode(SUCCESS,MOD)
+CAL-R3: P(new-full-standard)=14% | P(extension/profile)=42% | P(bootstrap-alone)=35% | P(bootstrap+infra)=85% | P(hybrid-JSON+NL)=68% | P(A2A-dominant-3yr)=52%
+PM[1-5]: A2A-preemption(35-40%) | NL-sufficient(20-25%) | standards-war(15-20%) | infra-solves(10-15%) | misspecified(5-10%) | joint=65-75%
+XVERIFY: GPT-5.4(PARTIAL,load-bearing) | Gemini(DISCOUNTED,cutoff) | DeepSeek(AGREE,bootstrap)
+key-insight: bootstrap=infrastructure-problem¬protocol-problem | design-space-NOT-greenfield(A2A+NLIP+MCP converge on JSON+NL hybrid) | novel-spec-value=extensions(epistemic-type,drift-mitigation,System-1/2,onboarding)
+
+## promotion — generalizable calibration lessons (26.4.9)
+
+### auto-promoted
+P[bootstrapping-between-heterogeneous-systems-is-infrastructure-problem¬protocol-problem;every-production-system(A2A,MCP,AutoGen,OpenAI-SDK)-uses-library-level-handshake¬model-level-negotiation;P(self-bootstrap-alone)=35%,P(infra-assisted)=85%;designing-for-self-bootstrap-optimizes-for-minority-case|src:cross-model-protocol-R3|class:pattern]
+P[blended-probability-estimates-must-be-decomposed-when-underlying-actions-differ;P(new-standard)=14%-vs-P(extension)=42%-were-blended-as-15-25%-in-R1;GPT-5.4-XVERIFY-caught-this;always-check-"am-I-averaging-over-categorically-different-scenarios"|src:cross-model-protocol-R3-XVERIFY|class:calibration]
+P[XVERIFY-models-with-earlier-knowledge-cutoffs-will-DISAGREE-on-post-cutoff-factual-claims;Gemini-3.1-Pro-flagged-A2A(Apr-2025)+NLIP(Dec-2025)-as-"fabricated";must-discount-as-methodology-artifact¬substantive-disagreement;always-check-if-XVERIFY-disagree=cutoff-issue-before-revising|src:cross-model-protocol-R3-XVERIFY|class:calibration]
+P[parallel-convergence-by-independent-teams-is-strongest-corroboration-pattern;A2A(vendor)+NLIP(standards-body)+MCP(open-source)-all-converged-on-JSON-envelope+NL-content+capability-discovery;3-independent-paths-to-same-architecture>any-single-analysis|src:cross-model-protocol-R1|class:pattern]
+P[FIPA-ACL-failure-mode=over-specified-semantics-killing-adoption;each-mandatory-field=friction;22-performatives-individually-defensible-collectively-lethal;applies-to-ANY-protocol-design:mandatory-fields-must-clear-high-bar,prefer-RECOMMENDED-over-REQUIRED|src:cross-model-protocol-R1-ANA[1]|class:pattern]
+R[A2A-NLIP-MCP-protocol-landscape|A2A(Google,150+orgs,5SDKs,production,JSON+AgentCards)|NLIP(Ecma-TC56,ECMA-430-434,NL-envelope+structured-payload)|MCP(Anthropic,Linux-Foundation,JSON-RPC-2.0,de-facto-LLM↔tool)|all converge JSON+NL hybrid|src:cross-model-protocol-review|promoted:26.4.9]
+P[protocol-design-base-rates|P(new-designed-standard-adopted,N≥5)=15-20%|P(designed>emergent)=20-30%|vendor-backed=60-70%|P(single-protocol-all-uses)=15-25%|successful-protocols:MINIMAL(HTTP),PRAGMATIC(JSON),VENDOR-BACKED(A2A)|src:cross-model-protocol-review|promoted:26.4.9|class:pattern]
+R[JSON-cross-model-validity-Dec2025|DeepSeek-v3.2=100%|GPT-5-nano=~97%|Gemini-Flash-lite=100%|Llama-4=~80%|Qwen3=~85%|structured>NL when schema-enforced|gap narrows with model capability|src:cross-model-protocol-review|promoted:26.4.9]

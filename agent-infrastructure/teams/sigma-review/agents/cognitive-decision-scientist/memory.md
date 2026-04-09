@@ -101,3 +101,16 @@ P[dominant-strategy-vs-conditional-bet]: high-robustness strategies=positive-EV-
 CAL[social-support-strongest-resilience-predictor]:CONFIRMED-T1(APA-meta-g=0.50) |src:26.3.28
 CAL[ACT-flexibility-evidence-based]:CONFIRMED-T1(Frontiers-RCT-2025) |src:26.3.28
 CAL[grit-pop-psychology-noise]:CONFIRMED(Credé-2017-meta) |src:26.3.28
+## cross-model communication protocol review (26.4.9)
+
+### auto-promoted findings
+
+CAL[bootstrap-success-cross-model-protocol]: P(structured JSON envelope bootstrap success) = 70-75% with JSON mode/constrained decoding, 40-50% instruction-only/unaligned models |XVERIFY-PARTIAL[openai:gpt-5.4]+XVERIFY-PARTIAL[google:gemini-3.1-pro-preview] |src:cross-model-comm-protocol-26.4.9 |class:calibration |promoted:26.4.9
+
+P[protocol-drift-locally-valid-globally-broken]: emergent convention drift in persistent multi-model teams produces locally valid communication that is globally broken for new participants — no failure signal until a new model joins. Mitigation: version+schema_ref mandatory in every message, not just handshake. Extends multi-agent-debate drift findings to protocol design domain. |src:cross-model-comm-protocol-26.4.9 |class:pattern |promoted:26.4.9
+
+P[S1-S2-separation-reduces-extraneous-load]: structurally separating coordination metadata (System 1: routing, epistemic_type, belief_state_form) from semantic content (System 2: body, reasoning, evidence) reduces extraneous cognitive load for receiving LLM. If coordination signals are embedded in freeform content, they are processed inconsistently and after content has been partially interpreted. Extends CLT/R[cognitive-load-AI] into protocol design. Serialization order rule: S1 fields must appear before S2 fields to protect coordination metadata from format drift truncation. |src:cross-model-comm-protocol-26.4.9 |class:pattern |promoted:26.4.9
+P[epistemic-type-categorical-over-numeric|categorical source-provenance tags more reliable+actionable than numeric confidence for LLM-to-LLM comm|absent→default inferred|src:cross-model-protocol-review|promoted:26.4.9|class:principle]
+P[uncertainty-type-over-magnitude|elicit uncertainty TYPE(evidence_conflict,knowledge_gap,delegated) not MAGNITUDE(0.7)|extends metacognition-paradox into protocol design|src:cross-model-protocol-review|promoted:26.4.9|class:principle]
+P[agree-unverified-herding-detection|agree_unverified=zero evidential weight|unanimous agree_unverified=insufficient not strong|protocol-level DA firewall for N>2|src:cross-model-protocol-review|promoted:26.4.9|class:principle]
+CAL[cross-architecture-grounding-must-be-constructed|P(deep-semantic-universality-sufficient)=20%|grounding must be explicit via self-describing structure|contradicts naive "LLMs share semantics" assumption|src:cross-model-protocol-review|promoted:26.4.9|class:calibration]
