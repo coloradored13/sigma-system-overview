@@ -51,6 +51,9 @@ If parallel engineers: after all engineers ✓, run merge step:
 1. Code-quality-analyst or lead merges worktrees
 2. Run FULL test suite on merged result (individual passes ¬guarantee combined)
 3. If merge conflicts → route to owning engineer, re-merge, re-test
+4. Write to workspace ## build-status:
+   `MERGE-VERIFIED: {test-count} passed |conflicts:{none|resolved({files})} |worktrees-merged:{list}`
+   !gate: MERGE-VERIFIED MUST be in workspace before advancing to Step 5. No merge verification = no build review.
 
 ### Step 5: Validate Build Checkpoint
 ```bash
@@ -85,6 +88,7 @@ Confirm returned phase = `review`.
 - [ ] All agents wrote checkpoints at ~50%
 - [ ] Drift/scope issues handled (if any)
 - [ ] All agents declared build complete with findings
+- [ ] If parallel engineers: MERGE-VERIFIED written to workspace (HARD GATE)
 - [ ] Build checkpoint validation passed (V19)
 - [ ] Cross-model code review completed (if ΣVerify available)
 - [ ] Plan-track agents re-spawned for review
