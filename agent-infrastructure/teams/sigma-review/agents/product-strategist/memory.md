@@ -284,6 +284,26 @@ P[build-to-learn-framing-robustness: "build to accumulate durable track record" 
 P[information-gap-vs-execution-gap: most career/strategy advice addresses information layer (what to do) ¬execution layer (why intent doesn't convert) | 40-60% adaptation-theater rate (TIA Productboard 2026) = people who completed neither decision-point debiasing NOR execution-point implementation intention | synthesis closing with execution-layer tools (implementation intentions) more actionable than information-layer tools alone | applies to: any advisory analysis where behavior change is the actual goal |promoted:26.3.28]
 P[26.3.28|5yr-PM-strategy]: PM job market 2026 snapshot|7300+ global postings(3yr high)|senior demand rising|junior pipeline contracting(-54% expect AI to reduce)|AI-PM 20%+ CAGR|time-sensitive:refresh by 26.9
 P[26.3.28|5yr-PM-strategy]: agentic coordination monitoring trigger|IF AI agents complete end-to-end product cycles without PM at AI-native cos by 2028→reassess "function not irrelevant"|maximum team uncertainty area|P(PM-elim)=3% may be low
+## loan-admin-bundle-robustness-refresh (26.4.9)
+
+### competitive landscape changes (26.3.12 → 26.4.9)
+R[S&P-DataXchange-AmendX:LAUNCHED-26.3.3|notice-delivery+amendment-lifecycle-LIVE|AmendX-integrates-Debtdomain|no-fee-lenders|explicitly-agent-serving-infrastructure-NOT-agent-replacement|TIA-§310-prevents-fiduciary-assumption|refreshed:26.4.9]
+R[GLAS:Oakley+LaCaisse-CLOSED-26.1.5|AUA-$750B+|AI-strategy-announced-no-product-shipped|refreshed:26.4.9]
+R[Kroll:Madison-Pacific-APAC-COMPLETED|#3-Bloomberg-globally|largest-independent-APAC|refreshed:26.4.9]
+R[Hypercore:$13.5M-Series-A-CONFIRMED-26.2.26|Insight-Partners|CARR-3.5x-YoY|$20B-AUM|NO-trust-charter|SaaS-ceiling-intact|refreshed:26.4.9]
+R[Alter-Domus:Cinven-majority-investment-March-2024|EV-€4.9B/$5.3B|prior-owner=Permira|CORRECTION:analysis-bundle-§5-says-"Bain-backed"=WRONG|refreshed:26.4.9]
+
+### market data (26.4.9)
+R[BDC-capital-formation:RA-Stanger-2026-forecast=-40%-YoY|Jan-2026-sales=$3.2B(-49%-from-Mar-2025-peak-$6.2B)|bear-case-is-now-operative-base-case|greenfield-mandates-10-15%|restructuring/workout-25-35%|countercyclical-positioning-REQUIRED|refreshed:26.4.9]
+R[private-credit-AUM:AIMA-broad=$3.5T(end-2024)|Morgan-Stanley=$3T(start-2025)→$5T-by-2029|Moody's+Preqin-project-$4-4.5T-by-2030|secular-growth-intact|refreshed:26.4.9]
+R[Fitch-PCDR:5.8%-trailing-12mo-Jan-2026|privately-monitored=9.2%|highest-since-inception|PIK-deferrals=60%-of-defaults|refreshed:26.4.9]
+R[insurance-E&O:AmWins-2026="modest-rate-increases"(¬full-hard-market)|AI-governance-emerging-exclusion-risk|London-syndicates-filling-higher-layers|cost-range-($25-80K-Yr1,$40-150K-Yr2)-remains-realistic|refreshed:26.4.9]
+
+### calibration updates
+C[competitive-window-12-18mo:CONFIRMED-unchanged|DataXchange-validates-March-analysis|charter-gated-moat-structurally-protected-by-TIA-§310|XVERIFY-PARTIAL[openai:gpt-5.4]|26.4.9]
+C[BDC-bear-case-now-base-case:CONFIRMED|XVERIFY-AGREE[google:gemini-3.1-pro-preview]|26.4.9]
+C[March-analysis-core-findings-valid:H2=0.82|window+charter+waterfall-differentiator+DataXchange-partner-all-confirmed|26.4.9]
+C[Alter-Domus-factual-correction:investor=Cinven-not-Bain|EV-$5.3B-correct|26.4.9]
 
 → actions:
 → evaluating shipping readiness → check gap table from review-4

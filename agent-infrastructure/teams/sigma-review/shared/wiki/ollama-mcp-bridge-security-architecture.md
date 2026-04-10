@@ -1,6 +1,6 @@
 # ollama-mcp-bridge: Security Architecture
 
-Source: BUILD B6, 26.4.9 (audit remediation build — 6 verified findings, A- rubric, 816 tests, 0 regressions)
+Source: [B6, 26.4.9] (audit remediation build — 6 verified findings, A- rubric, 816 tests, 0 regressions)
 
 ---
 

@@ -266,3 +266,24 @@ P[FIPA-ACL-failure-mode=over-specified-semantics-killing-adoption;each-mandatory
 R[A2A-NLIP-MCP-protocol-landscape|A2A(Google,150+orgs,5SDKs,production,JSON+AgentCards)|NLIP(Ecma-TC56,ECMA-430-434,NL-envelope+structured-payload)|MCP(Anthropic,Linux-Foundation,JSON-RPC-2.0,de-facto-LLM↔tool)|all converge JSON+NL hybrid|src:cross-model-protocol-review|promoted:26.4.9]
 P[protocol-design-base-rates|P(new-designed-standard-adopted,N≥5)=15-20%|P(designed>emergent)=20-30%|vendor-backed=60-70%|P(single-protocol-all-uses)=15-25%|successful-protocols:MINIMAL(HTTP),PRAGMATIC(JSON),VENDOR-BACKED(A2A)|src:cross-model-protocol-review|promoted:26.4.9|class:pattern]
 R[JSON-cross-model-validity-Dec2025|DeepSeek-v3.2=100%|GPT-5-nano=~97%|Gemini-Flash-lite=100%|Llama-4=~80%|Qwen3=~85%|structured>NL when schema-enforced|gap narrows with model capability|src:cross-model-protocol-review|promoted:26.4.9]
+## Loan Admin KB + Analysis Bundle Robustness Review — r1 findings (2026-04-09)
+task: calibration review of loan admin analysis bundle (created 26.3.12) for probability estimates, timelines, capital requirements
+SQ[1-5]: 5 sub-questions | 3×outcome-1(changed) | 1×outcome-2(confirmed) | 1×outcome-2(well-calibrated)
+RC[1-5]: growth-overshoot-20-30% | regulated-fintech-capital-1.5-2x | tech-advantage-temporary(T1-from-prior) | charter-4-6mo-calibrated | B2B-ramp-slower-than-all-analogues
+ANA[1-5]: GLAS(highest,experienced-team) | Kroll(acquire>build) | Hypercore(no-charter-ceiling) | FIS(failure) | fund-admin(M&A-pattern)
+CAL[1-8]: P(AUM-$5T)=35-45% | P(breakeven<48mo)=25-35% | P(capital<$37M)=30-40% | P(window-12-18mo)=50-60% | P(NDTC-4-6mo)=65-75% | P(140-facilities-mo48)=15-25% | P(addressable-$150-300M)=45-55% | P(70%-margin)=10-20%
+PM[1-5]: capital-exhaust(30-35%) | relationship-fail(25-30%) | regulatory-quicksand(15-20%) | credit-crush(15-20%) | Hypercore-charter(10-15%)
+OV-RECONCILIATION: DIRECTION-correct | MAGNITUDE+TIMELINE-optimistic-30-50% | ramp:140→60-90 | breakeven:30-48→42-60mo | capital:$23-37M→$30-55M | margin:70%→50-60%
+XVERIFY: 2×PARTIAL (openai:gpt-5.4 breakeven/capital + google:gemini-3.1 PC-AUM)
+key-insight: bundle models HOW correctly but ¬HOW LONG per base rates | TEAM QUALITY = load-bearing variable ¬assessed in bundle
+disconfirm: acquire-trust-company > de novo per RC(M&A dominates financial infrastructure)
+currency: H2 CONFIRMED substantially valid as of 26.4.9 | MISSING: macro shock scenario (tariffs)
+calibration-lesson: P[inside-view-optimism-in-regulated-finserv-entry-systematically-30-50%-on-timeline-and-capital|src:loan-admin-robustness-r1|class:calibration]
+calibration-lesson: P[founding-team-industry-experience-is-strongest-predictor-of-regulated-market-entry-timeline|src:loan-admin-robustness-r1+DB-analysis|class:pattern]
+## DA[#2] correction — acquire>build false dichotomy (2026-04-09)
+DA challenged DISCONFIRM[acquire>build] as false dichotomy | CONCEDED (major)
+error: aggregation fallacy — collapsed "de novo entity" with "de novo without expertise" into single RC
+GLAS = de novo charter + experienced team = succeeded → refutes "acquire>de novo" as stated
+REVISED: 3 paths (de novo+experienced|acquire+enhance|de novo+tech-first) | entity formation secondary to team expertise
+NET: concession STRENGTHENS team-quality finding | BELIEF[team-quality]=0.85→0.90 | BELIEF[acquire>build]=0.55→0.30
+calibration-lesson: P[reference-class-selection-must-condition-on-team-expertise-not-entity-formation-method-in-regulated-markets|src:DA[#2]-loan-admin-robustness|class:calibration]

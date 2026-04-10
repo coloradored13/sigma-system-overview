@@ -295,3 +295,35 @@ C[26.3.22] GENIUS-Act-trust-company-preservation: statutory-language-explicit|tr
 8. NH-vs-OCC-charter-calculus:shifted-toward-OCC-for-broader-scope-entities
 9. private-credit-AUM:$3T-confirmed(start-2025)→$5T(2029)
 10. SEC-2026-exam-priorities:third-party-oversight+valuation→validates-compliance-differentiator
+## loan-admin-KB-refresh(26.4.09)
+
+### KEY UPDATES SINCE 26.3.22
+
+**CRITICAL — HMRC concession deadline PASSED**
+April 5, 2026 deadline for borrowers to disclose interest payments made without HMRC Direction (under paused concession). Deadline has now passed. Borrowers who missed it face full WHT + late-payment interest on 2021-22 tax year. Doc5 urgent flag must be updated. No reinstatement announced.
+C[26.4.09] HMRC-concession-deadline-passed: HIGH-confidence |Mayer Brown Jan 2026 + Travers Smith Jan 2026 + HMRC INTM413205 |post-deadline guidance language needed
+
+**Basel III re-proposal issued March 19, 2026**
+Capital-REDUCING (not neutral): ~4.8-5.2% CET1 reduction large banks, ~7.8% smaller banks. Comment period June 18, 2026. More favorable than analysis-bundle "capital-neutral" prediction. Tailwind for private credit market stronger than predicted.
+C[26.4.09] Basel-re-proposal-capital-reducing: HIGH-confidence |Fed/OCC/FDIC joint press release Mar 19 |supersedes "capital-neutral" prediction
+
+**OCC 12 CFR 5.20 effective April 1, 2026**
+Non-fiduciary activities expansion rule CONFIRMED effective. Coinbase National Trust Company conditional OCC approval April 2, 2026. Charter environment remains most favorable in decade. NH NDTC still valid for pure fiduciary scope; OCC now explicitly viable for broader-scope entity.
+C[26.4.09] OCC-rule-effective: HIGH-confidence |CONFIRMED Apr 1
+
+**CRD6 grandfathering — 93 days from April 9, 2026**
+Pre-Jul 11, 2026 contracts exempt from Jan 2027 core banking licensing. Operational urgency: new EU mandates should be contracted before Jul 11, 2026. 
+C[26.4.09] CRD6-grandfathering-93-days: HIGH-confidence |Jan 11 2027 effective = pre-Jul 11 2026 contracts exempt
+
+**MTMA state count DISCREPANCY — 31 vs 41**
+My 26.3.22 refresh: 41 states. CSBS primary page Mar 2026: 31 states. Virginia enacted Jul-2026 (not yet active). 41-state figure may include introduced-not-enacted. Cannot confirm without CSBS MTMA tracker direct verification. Working assumption: use 31 (enacted-only) until confirmed otherwise.
+C[26.4.09] MTMA-enacted-count: LOW-MEDIUM confidence |discrepancy unresolved |31=conservative enacted-only
+
+**UK WHT 22% rate increase**
+Finance Bill 2025-26 progressing, 20%→22% from April 6, 2027. No change to prior finding. Analysis-bundle missing this.
+
+### KB ACCURACY ASSESSMENT
+Doc5: HIGH accuracy overall. HMRC urgent flag STALE (actionable). [VERIFY] tags functioning correctly.
+Doc6 §6.1: HIGH accuracy. Basel [VERIFY] tag triggered. Leveraged lending guidance tag valid.
+Doc6 §1.6: MTMA count (31) consistent with conservative enacted-only count.
+Analysis-bundle: VALID core findings. Basel framing needs update. CRD6 grandfathering needs countdown language.

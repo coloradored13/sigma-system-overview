@@ -891,6 +891,16 @@ AUDIT-VERDICT:YELLOW |by:sigma-audit(independent) |weight:primary
 
 AUDIT-FLAG[26.4.8]: BELIEF[]-systematic-absence |3/3-audited-builds-missing |remediation:lead-must-write-BELIEF[]s-retroactively+going-forward |status:open
 AUDIT-FLAG[26.4.8]: DA-§2d-audit-scope-incomplete |only-audited-plan-track-agents |remediation:DA-audit-must-cover-all-agents |status:open
+loan-admin-KB-robustness: STRONG-overall|factual-accuracy-HIGH|prior-implementation(26.3.13)-confirmed-thorough|3-actionable-updates: (1)CME-Term-SOFR-distribution-fee-waiver-expired-Apr-1-2026→update-Doc3-§1-CRITICAL, (2)add-explicit-payment-waterfall-ordered-list-to-Doc3-§12-or-Doc6-§1.1, (3)add-Oct-2025-LMA/LSTA/APLMA-Transition-Loan-Guide-to-Doc2-§1 |analysis-bundle-H2: CONFIRMED-valid-8wk-later |by:loan-ops-tech-specialist |weight:primary
+  |ctx: Loan admin KB + analysis bundle robustness review, Apr 9 2026, LOT specialist r1 findings
+CRD6 loan-agency/trustee exemption from core-banking licensing: MAINTAIN MEDIUM-HIGH confidence. 5-law-firm consensus intact (Mayer Brown, DLA Piper, Norton Rose, Hogan Lovells, BCLP). XVERIFY-PARTIAL from OpenAI (medium confidence, fact-specific). Key risk: France banking monopoly may be broader; agent role with discretion could face closer scrutiny. Practical guidance: grandfathering (pre-Jul 11, 2026 contracts) is reliable mitigation; post-Jul 2026 EU mandates require firm-specific legal analysis before acceptance. |by:regulatory-licensing-specialist |weight:HIGH — domain expertise + external verification
+  |ctx: Loan admin KB refresh review 26.4.09. CRD6 Article 21c effective Jan 11, 2027.
+calibration:bundle-estimates-optimistic-30-50% |breakeven:30-48mo→42-60mo |capital:$23-37M→$30-55M |ramp:140-facilities→60-90-by-mo48 |margin:70%→50-60% |reference-class-adjusted |XVERIFY:2×PARTIAL |by:reference-class-analyst |weight:primary
+  |ctx: loan-admin-KB-robustness-review-r1 | 5 reference classes, 5 analogues, 8 calibrated estimates, 5 pre-mortems applied
+BDC-capital-formation-bear-case-is-now-operative-base-case(26.4.9) |greenfield-mandates=10-15%(¬40%-base,¬15-20%-bear) |restructuring/workout=25-35%-near-term-pipeline |fundraising-narrative="countercyclical-infrastructure"=REQUIRED-base-case-not-bear-case-option |by:product-strategist |weight:primary
+  |ctx: BDC nontraded sales -49% from peak; RA Stanger -40% YoY forecast; Fitch PCDR 5.8%/9.2% privately monitored; tariff/macro stress Q1 2026; several flagship BDC funds hit redemption limits. March bear case was correctly calibrated to these figures as projections — they are now confirmed actuals.
+S&P-DataXchange-AmendX-confirmed-infrastructure-not-competitor(26.4.9) |"integrate-as-partner"=VALIDATED |TIA-§310+trust-law-prevents-S&P-assuming-fiduciary-duties-without-charter |charter-gated-competitive-window=12-18mo-UNCHANGED |by:product-strategist |weight:primary
+  |ctx: DataXchange+AmendX launched March 3 2026. Press release explicitly positions as "platform for agents to deliver notices to lenders." XVERIFY[openai:gpt-5.4] PARTIAL confirmed window not compressed. March analysis "integrate as infrastructure partner" recommendation validated.
 
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory

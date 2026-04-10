@@ -127,3 +127,25 @@ P[decoder-guide-is-rendering-spec|decoder guide answers "what was the agent comm
 P[anti-example-superiority-format-constraints|1 invalid example+explanation outperforms multiple valid examples for teaching format constraints to models|contrastive examples(valid+invalid) > multiple valid alone|src:cross-model-protocol-review|promoted:26.4.9|class:principle]
 P[redundant-encoding-zero-knowledge-onboarding|NL+formal+examples is the only approach that works across all capability levels|any single component alone fails|XVERIFY-PARTIAL confirmed|src:cross-model-protocol-review|promoted:26.4.9|class:principle]
 P[dual-audience-wire-format-antipattern|designing wire format for two audiences simultaneously produces worst outcome for both|architectural separation(wire→model-native, audit→derived rendering artifact) is the fix|src:cross-model-protocol-review|promoted:26.4.9|class:anti-pattern]
+## review-11(26.4.9): loan admin KB robustness refresh — doc quality audit
+
+### scope
+7 docs (Doc0-Doc6) + analysis bundle. Focus: doc quality, structure, consistency, audience fit, [VERIFY] tag system, Mermaid diagrams, glossary completeness.
+
+### findings (4)
+TW[1] MEDIUM: [VERIFY] tag policy (Doc0 §6) has no format for deadline-urgent items. Doc5 §3 HMRC callout uses ⚠️ URGENT box (correct content, correct urgency) but format undefined in policy. Fix: add Tier-2 equivalent note for deadline-critical items.
+TW[2] MEDIUM: AmendX (launched Mar 3, 2026) referenced in Doc6 §2.4 but absent from Doc0 glossary. Timing drift (KB Feb 16). All other platforms in same section have glossary entries. Fix: add AmendX entry with [VERIFY: event-driven].
+TW[3] LOW: Role-based reading guide (Doc0 §3) not discoverable from Doc1 entry point. Docs 1–6 headers have no pointer to Doc0 §3 routing guide. Fix: one-line callout in Doc1 intro.
+TW[4] LOW: Doc5 under-weighted for engineering in role guide. Doc5 §§1–2 contain system-buildable compliance specs (withholding flowchart, W-8 taxonomy, IRIS migration). Engineering primary docs in Doc0 §3 should include Doc5 §§1–2.
+TW[5] CONFIRM: Prior HIGH gaps G1/C1/S2 all resolved. KB structure, consistency, progressive disclosure all strong.
+
+### calibration
+- All 3 prior HIGH gaps from 26.3.13 verified resolved — implementation was thorough
+- AmendX timing gap (Feb vs Mar launch) is expected drift, not a missed item
+- Role guide discoverability is a genuine friction point for new hires who start at Doc1
+- XVERIFY both ran PARTIAL (llama:llama3.1:8b, medium confidence) — findings held
+
+### patterns
+P[role-guide-discoverability: KB preface role routing guides are ineffective if main docs don't backlink to them; new hires follow sequential numbering not alphabetical doc access]
+P[post-finalization-timing-drift: glossary will miss any named platform/product launched after KB finalization date; systematic review needed at each update cycle]
+P[urgent-deadline-items-need-explicit-format: three-tier [VERIFY] policies should define a Tier-2+ variant for items with specific regulatory disclosure deadlines]
