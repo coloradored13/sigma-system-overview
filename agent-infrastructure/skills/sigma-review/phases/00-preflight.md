@@ -57,6 +57,15 @@ Report to user:
 
 ### Step 8: Prompt Decomposition (HARD GATE)
 Per directives §7 — this step cannot be skipped:
+
+**IF workspace ## socratic-session exists:**
+  → decomposition already completed during socratic-grill handoff
+  → read workspace ## socratic-session for pre-populated Q/H/C
+  → present to user for re-confirmation (they may have refined thinking since)
+  → skip cold extraction — go straight to confirmation
+  → Report: `"PROMPT-DECOMPOSITION (socratic-warm): Q:{count} |H:{count} |C:{count} |user-confirmed: {yes/pending}"`
+
+**IF no socratic-session:**
 1. Read directives §7a
 2. Extract from user prompt:
    - Q[]: questions user wants answered (define research scope)
