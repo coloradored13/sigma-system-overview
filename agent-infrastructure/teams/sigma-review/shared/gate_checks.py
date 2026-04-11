@@ -1691,6 +1691,109 @@ def validate_compilation(workspace_path: str | None = None, **kwargs: Any) -> Va
 
 
 # ---------------------------------------------------------------------------
+# Post-exit-gate content checks (V27-V28)
+# ---------------------------------------------------------------------------
+
+
+def check_promotion_content(content: str) -> CheckResult:
+    """V27: Promotion phase produced workspace evidence.
+
+    Checks for ## promotion section with content, or agent memory store
+    indicators (auto-promote, user-approve entries).
+    """
+    sections = parse_sections(content)
+    promotion = sections.get("promotion", "")
+
+    has_promotion_section = bool(promotion.strip())
+    has_auto_promote = bool(re.search(r"auto.promot|P\[.*promoted", content, re.IGNORECASE))
+    has_user_approve = bool(re.search(r"user.approve|P.candidate\[", content, re.IGNORECASE))
+    has_promotion_markers = has_auto_promote or has_user_approve
+
+    passed = has_promotion_section or has_promotion_markers
+
+    issues = []
+    if not passed:
+        issues.append(
+            "No promotion evidence found — neither ## promotion section with content "
+            "nor auto-promote/user-approve markers. The promotion round must execute "
+            "before advancing. Agents classify findings as auto-promote or user-approve."
+        )
+
+    return CheckResult(
+        name="V27-promotion-content",
+        passed=passed,
+        details={
+            "promotion_section": has_promotion_section,
+            "auto_promote_found": has_auto_promote,
+            "user_approve_found": has_user_approve,
+        },
+        issues=issues,
+    )
+
+
+def check_sync_evidence(content: str) -> CheckResult:
+    """V28: Sync phase produced evidence of infrastructure check.
+
+    Checks for ## sync section, git operations, or drift detection markers.
+    """
+    sections = parse_sections(content)
+    sync_section = sections.get("sync", "")
+
+    has_sync_section = bool(sync_section.strip())
+    has_git_markers = bool(re.search(
+        r"git\s+(?:status|diff|add|commit|push)|committed|pushed|no.drift|in.sync",
+        content, re.IGNORECASE,
+    ))
+    has_drift_check = bool(re.search(r"drift|sync.check|infrastructure", sync_section, re.IGNORECASE))
+
+    passed = has_sync_section or has_git_markers
+
+    issues = []
+    if not passed:
+        issues.append(
+            "No sync evidence found — neither ## sync section nor git/drift markers. "
+            "The sync phase must check for infrastructure drift before archiving."
+        )
+
+    return CheckResult(
+        name="V28-sync-evidence",
+        passed=passed,
+        details={
+            "sync_section": has_sync_section,
+            "git_markers": has_git_markers,
+            "drift_check": has_drift_check,
+        },
+        issues=issues,
+    )
+
+
+def validate_promotion(workspace_path: str | None = None, **kwargs: Any) -> ValidationResult:
+    """Bundle: V27 — promotion phase content check."""
+    content = read_workspace(workspace_path)
+    checks = [check_promotion_content(content)]
+    all_passed = all(c.passed for c in checks)
+    return ValidationResult(
+        bundle="promotion",
+        passed=all_passed,
+        checks=checks,
+        context_update={"promotion_validated": all_passed},
+    )
+
+
+def validate_sync(workspace_path: str | None = None, **kwargs: Any) -> ValidationResult:
+    """Bundle: V28 — sync phase evidence check."""
+    content = read_workspace(workspace_path)
+    checks = [check_sync_evidence(content)]
+    all_passed = all(c.passed for c in checks)
+    return ValidationResult(
+        bundle="sync",
+        passed=all_passed,
+        checks=checks,
+        context_update={"sync_validated": all_passed},
+    )
+
+
+# ---------------------------------------------------------------------------
 # Convenience: run a named bundle
 # ---------------------------------------------------------------------------
 
@@ -1703,6 +1806,8 @@ BUNDLES = {
     "build-checkpoint": validate_build_checkpoint,
     "challenge-round": validate_challenge_round,
     "compilation": validate_compilation,
+    "promotion": validate_promotion,
+    "sync": validate_sync,
     "session-end": validate_session_end,
 }
 

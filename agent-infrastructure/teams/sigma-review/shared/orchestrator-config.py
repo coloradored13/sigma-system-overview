@@ -479,6 +479,10 @@ def cmd_advance(args: argparse.Namespace) -> None:
         "research": "r1-convergence",       # ANALYZE mode
         "circuit_breaker": "cb",            # ANALYZE mode
         "challenge": "challenge-round",      # ANALYZE mode
+        "compilation": "compilation",        # Post-exit-gate (V24+V25+V26)
+        "promotion": "promotion",            # Post-exit-gate (V27)
+        "sync": "sync",                      # Post-exit-gate (V28)
+        "archive": "session-end",            # Post-exit-gate (V22+V23)
     }
 
     required_bundle = PHASE_REQUIRED_VALIDATIONS.get(current_phase)
