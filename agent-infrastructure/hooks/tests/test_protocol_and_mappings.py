@@ -10,7 +10,9 @@ from pathlib import Path
 
 import pytest
 
-CLAUDE_DIR = Path.home() / ".claude"
+from conftest import get_infra_dir
+
+CLAUDE_DIR = get_infra_dir()
 SKILLS_DIR = CLAUDE_DIR / "skills"
 AGENTS_DIR = CLAUDE_DIR / "agents"
 MEMORY_DIR = CLAUDE_DIR / "projects" / "-Users-bjgilbert" / "memory"

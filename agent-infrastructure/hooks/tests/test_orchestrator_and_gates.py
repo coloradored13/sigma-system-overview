@@ -25,7 +25,9 @@ import pytest
 # Import gate_checks (stdlib only -- always available)
 # ---------------------------------------------------------------------------
 
-_shared_dir = str(Path.home() / ".claude" / "teams" / "sigma-review" / "shared")
+from conftest import get_infra_dir
+
+_shared_dir = str(get_infra_dir() / "teams" / "sigma-review" / "shared")
 sys.path.insert(0, _shared_dir)
 
 import gate_checks

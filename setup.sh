@@ -603,37 +603,51 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 9. Append recall-first instructions to ~/.claude/CLAUDE.md
+# 8b. Symlink settings.json into repo (if not already symlinked)
 # ─────────────────────────────────────────────
-info "Configuring recall-first behavior in $CLAUDE_MD..."
+REPO_SETTINGS="$SCRIPT_DIR/agent-infrastructure/settings.json"
+if [ -L "$SETTINGS_JSON" ]; then
+    ok "settings.json already symlinked"
+elif [ -f "$REPO_SETTINGS" ]; then
+    info "settings.json can be symlinked to repo for version control"
+    read -rp "  Create symlink? (Y/n): " do_symlink
+    if [[ ! "$do_symlink" =~ ^[Nn]$ ]]; then
+        if [ -f "$SETTINGS_JSON" ]; then
+            cp "$SETTINGS_JSON" "$SETTINGS_JSON.backup-$(date +%Y%m%d)"
+            rm "$SETTINGS_JSON"
+        fi
+        ln -s "$REPO_SETTINGS" "$SETTINGS_JSON"
+        ok "settings.json symlinked to repo"
+    fi
+fi
 
-RECALL_MARKER="# Sigma System — recall-first behavior"
+echo ""
+
+# ─────────────────────────────────────────────
+# 9. Assemble CLAUDE.md from modular sources
+# ─────────────────────────────────────────────
+info "Assembling CLAUDE.md from modular sources..."
+
+ASSEMBLE_SCRIPT="$SCRIPT_DIR/agent-infrastructure/claude-md/assemble.sh"
 
 mkdir -p "$CLAUDE_DIR"
 
-if [ -f "$CLAUDE_MD" ]; then
-    if grep -qF "$RECALL_MARKER" "$CLAUDE_MD" 2>/dev/null; then
-        ok "Recall-first instructions already present"
-    else
-        cat >> "$CLAUDE_MD" << 'CLAUDE_MD_EOF'
-
-# Sigma System — recall-first behavior
-
-Always start conversations by calling mcp__sigma-mem__recall before reading memory files directly. Use its actions (search_memory, get_project, etc.) to go deeper when needed.
-
-When storing memories, use the sigma-mem MCP actions (store_memory, log_decision, log_correction, log_failure) rather than writing files directly. Match the compressed notation format you see in the recall response — pipe-separated fields, checksums, dates as YY.M.D. See rosetta.md (via recall → decode notation) if unsure about notation.
-CLAUDE_MD_EOF
-        ok "Appended recall-first instructions to $CLAUDE_MD"
-    fi
+if [ -x "$ASSEMBLE_SCRIPT" ]; then
+    "$ASSEMBLE_SCRIPT"
+    ok "Assembled CLAUDE.md from modular sources"
 else
-    cat > "$CLAUDE_MD" << 'CLAUDE_MD_EOF'
-# Sigma System — recall-first behavior
+    # Fallback: write minimal recall-first instructions
+    RECALL_MARKER="!start→recall"
+    if [ -f "$CLAUDE_MD" ] && grep -qF "$RECALL_MARKER" "$CLAUDE_MD" 2>/dev/null; then
+        ok "CLAUDE.md already has recall-first instructions"
+    else
+        cat > "$CLAUDE_MD" << 'CLAUDE_MD_EOF'
+!start→recall before reading files directly | actions(search_memory,get_project,etc.)→deeper
 
-Always start conversations by calling mcp__sigma-mem__recall before reading memory files directly. Use its actions (search_memory, get_project, etc.) to go deeper when needed.
-
-When storing memories, use the sigma-mem MCP actions (store_memory, log_decision, log_correction, log_failure) rather than writing files directly. Match the compressed notation format you see in the recall response — pipe-separated fields, checksums, dates as YY.M.D. See rosetta.md (via recall → decode notation) if unsure about notation.
+!store→sigma-mem MCP(store_memory,log_decision,log_correction,log_failure) ¬direct file writes
 CLAUDE_MD_EOF
-    ok "Created $CLAUDE_MD with recall-first instructions"
+        ok "Created minimal CLAUDE.md (run assemble.sh for full version)"
+    fi
 fi
 
 echo ""

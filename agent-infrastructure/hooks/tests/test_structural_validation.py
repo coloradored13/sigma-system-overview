@@ -16,7 +16,9 @@ from pathlib import Path
 
 import pytest
 
-CLAUDE_DIR = Path.home() / ".claude"
+from conftest import get_infra_dir
+
+CLAUDE_DIR = get_infra_dir()
 SKILLS_DIR = CLAUDE_DIR / "skills"
 HOOKS_DIR = CLAUDE_DIR / "hooks"
 AGENTS_DIR = CLAUDE_DIR / "agents"

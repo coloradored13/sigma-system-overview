@@ -147,6 +147,24 @@ loan-ops-tech-specialist reviewing a credit agreement's payment waterfall:
 
 ---
 
+## Trigger Conflict Resolution
+
+When multiple skills match a request, apply these rules:
+
+| Ambiguous Trigger | Resolution | Rationale |
+|-------------------|------------|-----------|
+| "research" / "analyze" | If multi-agent context → sigma-review; if single-instance → research-analysis | sigma-review is team orchestration, research-analysis is solo |
+| "review this" | If process audit → sigma-audit; if code → review-critique (standards); if design → design-ops | Match the OBJECT being reviewed, not the verb |
+| "write a spec" / "PRD" | product-ops (chains structured-writing) ¬ standalone structured-writing | product-ops adds planning context around the writing |
+| "SQL" / "query" | query (execution-layer) → loads data-analysis parent automatically | query is the hands-on complement |
+| "chart" / "dashboard" | visualize (execution-layer) → loads data-analysis parent automatically | visualize is the hands-on complement |
+| "optimize prompts" | sigma-optimize ¬ sigma-review | sigma-optimize is experimental search, not analysis |
+| "journal entry" / "reconciliation" | financial-close (execution-layer) → loads finance-accounting parent | financial-close is the hands-on complement |
+
+The skill-improver passive skill also watches for routing misfires and flags them.
+
+---
+
 ## Adding skills
 
 ### New capability skill

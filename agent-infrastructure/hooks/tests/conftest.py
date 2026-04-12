@@ -16,6 +16,18 @@ import pytest
 HOOKS_DIR = Path(__file__).parent.parent
 
 
+def get_infra_dir() -> Path:
+    """Return the infrastructure directory for structural tests.
+
+    Uses SIGMA_INFRA_DIR env var if set (for CI where ~/.claude doesn't exist),
+    otherwise defaults to ~/.claude (for local runs with symlinks installed).
+    """
+    env_dir = os.environ.get("SIGMA_INFRA_DIR")
+    if env_dir:
+        return Path(env_dir)
+    return Path.home() / ".claude"
+
+
 @pytest.fixture
 def tmp_home(tmp_path):
     """Create a fake HOME with .claude structure for integration tests."""
