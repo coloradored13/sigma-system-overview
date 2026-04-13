@@ -20,6 +20,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Read|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/recall-reminder.py",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Stop": [
@@ -72,6 +82,11 @@
             "type": "command",
             "command": "python3 ~/.claude/hooks/prompt-echo-detector.py",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/memory-sync-reminder.py",
+            "timeout": 5
           }
         ]
       },
@@ -96,6 +111,16 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/mcp-compliance-monitor.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__sigma-mem__recall",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/recall-reminder.py",
             "timeout": 5
           }
         ]

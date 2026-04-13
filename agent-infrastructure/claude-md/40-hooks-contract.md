@@ -15,3 +15,7 @@ hooks fire automatically on tool calls via settings.json — lead cannot opt out
 !agent-calibration-tracker(PostToolUse on SendMessage): records per-agent metrics(finding count, DA grades, concessions, source tiers, XVERIFY hits) → agents/{name}/calibration.md
 
 !sigma-retrospective(Stop): fires after sigma-review completion | analyzes review outcomes → shared/patterns.md | dedup via workspace hash
+
+!recall-reminder(PreToolUse on Read|Bash + PostToolUse on mcp__sigma-mem__recall): nudges to call sigma-mem recall once per session | also detects drift between auto-memory and sigma-mem(>48h) | marks recall done when mcp__sigma-mem__recall completes
+
+!memory-sync-reminder(PostToolUse on Write|Edit): detects writes to auto-memory(~/.claude/projects/*/memory/) → reminds to also store in sigma-mem if globally relevant | warns on direct writes to sigma-mem files(use MCP tools instead) | max 2 reminders/session
