@@ -115,6 +115,61 @@ class TestCheckMemoryDrift:
 
 
 # ---------------------------------------------------------------------------
+# check_wiki_available
+# ---------------------------------------------------------------------------
+
+class TestCheckWikiAvailable:
+    def test_none_when_no_wiki(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(recall_reminder, "WIKI_INDEX", tmp_path / "nope" / "INDEX.md")
+        assert recall_reminder.check_wiki_available() is None
+
+    def test_none_when_wiki_empty(self, tmp_path, monkeypatch):
+        index = tmp_path / "wiki" / "INDEX.md"
+        index.parent.mkdir(parents=True)
+        index.write_text("# Wiki Index\n---\n")
+        monkeypatch.setattr(recall_reminder, "WIKI_INDEX", index)
+        assert recall_reminder.check_wiki_available() is None
+
+    def test_returns_info_when_wiki_has_entries(self, tmp_path, monkeypatch):
+        index = tmp_path / "wiki" / "INDEX.md"
+        index.parent.mkdir(parents=True)
+        index.write_text(
+            "# Wiki Index\n\n"
+            "- [Loan Admin Landscape](loan-admin-tech-landscape.md) [R5, 26.3.17]\n"
+            "- [Competitors](key-competitors-loan-admin.md) [R5, 26.3.17]\n"
+            "- [Private Credit](private-credit-market.md) [R5, 26.3.17]\n"
+        )
+        monkeypatch.setattr(recall_reminder, "WIKI_INDEX", index)
+        result = recall_reminder.check_wiki_available()
+        assert result is not None
+        assert "3 entries" in result
+        assert "INDEX.md" in result
+
+    def test_nudge_includes_wiki_info(self, tmp_path, monkeypatch, capsys):
+        # Set up wiki
+        index = tmp_path / "wiki" / "INDEX.md"
+        index.parent.mkdir(parents=True)
+        index.write_text(
+            "# Wiki\n\n"
+            "- [Entry 1](entry1.md)\n"
+            "- [Entry 2](entry2.md)\n"
+        )
+        monkeypatch.setattr(recall_reminder, "WIKI_INDEX", index)
+
+        monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
+            "event": "PreToolUse",
+            "tool_name": "Read",
+            "tool_input": {"file_path": "/some/file.py"},
+        })))
+
+        with pytest.raises(SystemExit):
+            recall_reminder.main()
+
+        output = json.loads(capsys.readouterr().out)
+        assert "wiki" in output["systemMessage"].lower()
+
+
+# ---------------------------------------------------------------------------
 # get_newest_mtime
 # ---------------------------------------------------------------------------
 

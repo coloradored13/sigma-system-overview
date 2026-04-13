@@ -31,6 +31,7 @@ RECALL_TTL_SECONDS = 4 * 3600  # 4 hours — after this, nudge again
 
 AUTO_MEMORY_DIR = Path.home() / ".claude" / "projects"
 SIGMA_MEM_DIR = Path.home() / ".claude" / "memory"
+WIKI_INDEX = Path.home() / ".claude" / "teams" / "sigma-review" / "shared" / "wiki" / "INDEX.md"
 
 # How many hours of drift between the two systems before we flag it
 DRIFT_THRESHOLD_HOURS = 48
@@ -99,6 +100,26 @@ def get_newest_mtime(directory):
     return newest
 
 
+def check_wiki_available():
+    """Check if the persistent wiki exists and has content. Return info or None."""
+    if not WIKI_INDEX.exists():
+        return None
+    try:
+        content = WIKI_INDEX.read_text(encoding="utf-8")
+        # Count non-empty, non-header lines to estimate page count
+        lines = [l for l in content.strip().split("\n")
+                 if l.strip() and not l.startswith("#") and not l.startswith("---")]
+        if len(lines) < 1:
+            return None
+        return (
+            f"Wiki knowledge base available at {WIKI_INDEX} "
+            f"({len(lines)} entries). Check INDEX.md before researching "
+            f"topics that may already be covered."
+        )
+    except OSError:
+        return None
+
+
 def check_memory_drift():
     """Compare auto-memory and sigma-mem freshness. Return warning or None."""
     auto_newest = get_newest_mtime(AUTO_MEMORY_DIR)
@@ -162,6 +183,11 @@ def main():
             "mcp__sigma-mem__recall to load global memory (patterns, "
             "decisions, corrections) before proceeding."
         )
+
+        # Check for wiki
+        wiki_info = check_wiki_available()
+        if wiki_info:
+            messages.append(wiki_info)
 
         # Check for drift
         drift_warning = check_memory_drift()
