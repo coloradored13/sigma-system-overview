@@ -305,6 +305,198 @@ def build_build_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
     return orch
 
 
+# ------------------------------------------------------------------
+# 3-Conversation BUILD workflows (v2, 26.4.13)
+# Each conversation has its own small state machine.
+# ------------------------------------------------------------------
+
+
+def build_plan_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
+    """C1: PLAN conversation workflow.
+
+    Phases:
+      plan → challenge_plan ⟲ → plan_locked
+                  ↘ debate ↗
+
+    Produces a locked plan file with DA exit-gate PASS.
+    """
+    orch = Orchestrator(
+        name="sigma-build-plan",
+        agents=agents or _default_build_agents(),
+        gateway_name="start_plan",
+    )
+
+    orch.phase("plan", description="Plan-track agents design ADRs/ICs/SQs", parallel=True)
+    orch.phase("challenge_plan", description="DA + build-track challenge plan feasibility", parallel=True)
+    orch.phase("debate", description="Toulmin structured debate for deep plan disagreement")
+    orch.phase("plan_locked", description="Plan locked, ready for C2", terminal=True)
+
+    # plan → challenge_plan
+    orch.transition(
+        "plan", "challenge_plan",
+        name="plans_ready",
+        guard=context_true("plans_ready") & context_true("plan_round_validated"),
+    )
+
+    # challenge_plan → plan_locked (exit gate PASS + high belief)
+    orch.transition(
+        "challenge_plan", "plan_locked",
+        name="plan_approved",
+        guard=exit_gate_passed() & belief_above(0.85) & context_true("plan_lock_validated"),
+    )
+
+    # challenge_plan self-loop (not yet approved)
+    orch.transition(
+        "challenge_plan", "challenge_plan",
+        name="revise_plans",
+        guard=~exit_gate_passed() & belief_above(0.6) & round_limit(5, key="round"),
+    )
+
+    # challenge_plan → debate (deep disagreement)
+    orch.transition(
+        "challenge_plan", "debate",
+        name="deep_disagreement",
+        guard=~exit_gate_passed() & ~belief_above(0.6) & round_limit(5, key="round"),
+    )
+
+    # debate → challenge_plan (feeds back)
+    orch.transition("debate", "challenge_plan", name="debate_resolved")
+
+    # Hard cap: force plan lock at round 5
+    orch.transition(
+        "challenge_plan", "plan_locked",
+        name="plan_hard_cap",
+        guard=~round_limit(5, key="round"),
+    )
+
+    return orch
+
+
+def build_exec_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
+    """C2: BUILD (execution) conversation workflow.
+
+    Phases:
+      build → build_done
+
+    Pure execution — no DA, no review. Reads locked plan file.
+    """
+    orch = Orchestrator(
+        name="sigma-build-exec",
+        agents=agents or [
+            AgentSlot("implementation-engineer", role="Code implementation"),
+            AgentSlot("code-quality-analyst", role="Build-time quality checks"),
+        ],
+        gateway_name="start_exec",
+    )
+
+    orch.phase("build", description="Build-track implements against locked plan", parallel=True)
+    orch.phase("build_done", description="Build complete, ready for C3", terminal=True)
+
+    orch.transition(
+        "build", "build_done",
+        name="build_complete",
+        guard=context_true("build_complete") & context_true("checkpoint_validated"),
+    )
+
+    return orch
+
+
+def build_review_workflow(agents: list[AgentSlot] | None = None) -> Orchestrator:
+    """C3: REVIEW conversation workflow.
+
+    Phases:
+      review ⟲ → fixes → synthesis → compilation → promotion → sync → archive → complete
+          ↘ debate ↗
+
+    DA + plan-track review build, build-track fixes, then close-out.
+    """
+    orch = Orchestrator(
+        name="sigma-build-review",
+        agents=agents or _default_build_agents(),
+        gateway_name="start_review",
+    )
+
+    # Review phases
+    orch.phase("review", description="DA + plan-track review shipped code", parallel=True)
+    orch.phase("debate", description="Toulmin structured debate for deep build disagreement")
+    orch.phase("fixes", description="Build-track applies fixes from review findings")
+
+    # Close-out phases
+    orch.phase("synthesis", description="Synthesis agent writes artifact")
+    orch.phase("compilation", description="Integrate findings into persistent knowledge wiki")
+    orch.phase("promotion", description="Memory promotion round")
+    orch.phase("sync", description="Infrastructure drift detection + sync")
+    orch.phase("archive", description="Plan file + scratch archived")
+    orch.phase("complete", description="Build review complete", terminal=True)
+
+    # review → fixes (exit gate PASS)
+    orch.transition(
+        "review", "fixes",
+        name="review_approved",
+        guard=exit_gate_passed() & belief_above(0.85) & context_true("pre_synthesis_validated"),
+    )
+
+    # review self-loop
+    orch.transition(
+        "review", "review",
+        name="review_revisions",
+        guard=~exit_gate_passed() & belief_above(0.6) & round_limit(5, key="round"),
+    )
+
+    # review → debate (deep disagreement)
+    orch.transition(
+        "review", "debate",
+        name="deep_disagreement",
+        guard=~exit_gate_passed() & ~belief_above(0.6) & round_limit(5, key="round"),
+    )
+
+    # debate → review
+    orch.transition("debate", "review", name="debate_resolved")
+
+    # Hard cap: force to fixes at round 5
+    orch.transition(
+        "review", "fixes",
+        name="review_hard_cap",
+        guard=~round_limit(5, key="round"),
+    )
+
+    # fixes → synthesis
+    orch.transition(
+        "fixes", "synthesis",
+        name="fixes_applied",
+        guard=context_true("fixes_complete") & context_true("tests_pass"),
+    )
+
+    # Close-out chain (same guards as monolith)
+    orch.transition(
+        "synthesis", "compilation",
+        name="synthesis_delivered",
+        guard=context_true("synthesis_delivered"),
+    )
+    orch.transition(
+        "compilation", "promotion",
+        name="compilation_complete",
+        guard=context_true("compilation_complete"),
+    )
+    orch.transition(
+        "promotion", "sync",
+        name="promotion_complete",
+        guard=context_true("promotion_complete"),
+    )
+    orch.transition(
+        "sync", "archive",
+        name="sync_complete",
+        guard=context_true("sync_complete"),
+    )
+    orch.transition(
+        "archive", "complete",
+        name="archive_verified",
+        guard=context_true("archive_verified") & context_true("session_end_verified"),
+    )
+
+    return orch
+
+
 def _default_analyze_agents() -> list[AgentSlot]:
     """Default agent roster for ANALYZE — overridden by lead's tier selection."""
     return [
@@ -330,9 +522,26 @@ def _default_build_agents() -> list[AgentSlot]:
 # ------------------------------------------------------------------
 
 
+_MODE_BUILDERS = {
+    "analyze": build_analyze_workflow,
+    "build": build_build_workflow,          # legacy monolith
+    "build-plan": build_plan_workflow,      # C1
+    "build-exec": build_exec_workflow,      # C2
+    "build-review": build_review_workflow,  # C3
+}
+
+_MODE_INITIAL_PHASE = {
+    "analyze": "research",
+    "build": "plan",
+    "build-plan": "plan",
+    "build-exec": "build",
+    "build-review": "review",
+}
+
+
 def _load_or_create(mode: str, checkpoint_file: str) -> Orchestrator:
     """Load orchestrator from checkpoint, or create fresh."""
-    builder = build_analyze_workflow if mode == "analyze" else build_build_workflow
+    builder = _MODE_BUILDERS[mode]
     orch = builder()
 
     if os.path.exists(checkpoint_file):
@@ -364,7 +573,14 @@ def _save(orch: Orchestrator, checkpoint_file: str) -> None:
     """Save orchestrator state to checkpoint file (atomic write)."""
     data = save_orchestrator_checkpoint(orch)
     # H6: Persist mode so we can detect mismatches on load
-    data["_mode"] = "analyze" if orch.name == "sigma-review-analyze" else "build"
+    _name_to_mode = {
+        "sigma-review-analyze": "analyze",
+        "sigma-review-build": "build",
+        "sigma-build-plan": "build-plan",
+        "sigma-build-exec": "build-exec",
+        "sigma-build-review": "build-review",
+    }
+    data["_mode"] = _name_to_mode.get(orch.name, "build")
     # H4: Atomic write — write to temp then rename to prevent corruption
     tmp = checkpoint_file + ".tmp"
     with open(tmp, "w") as f:
@@ -443,8 +659,9 @@ def cmd_start(args: argparse.Namespace) -> None:
         }))
         sys.exit(1)
 
-    orch = build_analyze_workflow() if mode == "analyze" else build_build_workflow()
-    initial_phase = "research" if mode == "analyze" else "plan"
+    builder = _MODE_BUILDERS[mode]
+    orch = builder()
+    initial_phase = _MODE_INITIAL_PHASE[mode]
     orch.start(initial_phase, context=ctx)
     _save(orch, checkpoint_file)
     _output_state(orch)
@@ -601,7 +818,8 @@ def cmd_restore(args: argparse.Namespace) -> None:
         }))
         sys.exit(1)
 
-    orch = build_analyze_workflow() if mode == "analyze" else build_build_workflow()
+    builder = _MODE_BUILDERS[mode]
+    orch = builder()
     load_orchestrator_checkpoint(orch, data)
     _save(orch, checkpoint_file)
     _output_state(orch)
@@ -749,7 +967,11 @@ def cmd_watch(args: argparse.Namespace) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sigma-review orchestrator CLI")
-    parser.add_argument("--mode", choices=["analyze", "build"], default="analyze")
+    parser.add_argument(
+        "--mode",
+        choices=["analyze", "build", "build-plan", "build-exec", "build-review"],
+        default="analyze",
+    )
     parser.add_argument("--checkpoint", help=f"Checkpoint file path (default: {DEFAULT_CHECKPOINT})")
 
     sub = parser.add_subparsers(dest="command", required=True)
