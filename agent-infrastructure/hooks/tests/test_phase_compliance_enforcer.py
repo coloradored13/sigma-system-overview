@@ -1078,3 +1078,112 @@ class TestSendMessageGate:
         checkpoint = {"current_phase": "synthesis"}
         blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
         assert blocked
+
+
+# ---------------------------------------------------------------------------
+# Layer 1: Default-deny code write authorization tests
+# ---------------------------------------------------------------------------
+
+class TestCodeWriteAuthorization:
+    """Default-deny model: code writes blocked unless phase explicitly authorizes."""
+
+    # -- Blocked cases --
+
+    def test_code_write_blocked_during_plan(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "plan"}
+        blocked, reason = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert blocked
+        assert "CODE WRITE BLOCKED" in reason
+
+    def test_code_write_blocked_during_challenge(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "challenge_plan"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/router.py", checkpoint)
+        assert blocked
+
+    def test_code_write_blocked_during_review(self):
+        checkpoint = {"_mode": "build-review", "current_phase": "review"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert blocked
+
+    def test_code_write_blocked_during_synthesis(self):
+        checkpoint = {"_mode": "build-review", "current_phase": "synthesis"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert blocked
+
+    def test_code_write_blocked_during_promotion(self):
+        checkpoint = {"_mode": "build-review", "current_phase": "promotion"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert blocked
+
+    def test_code_write_blocked_during_pre(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "pre"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert blocked
+
+    # -- Allowed: authorized phases --
+
+    def test_code_write_allowed_during_build(self):
+        checkpoint = {"_mode": "build-exec", "current_phase": "build"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert not blocked
+
+    def test_code_write_allowed_during_fixes(self):
+        checkpoint = {"_mode": "build-review", "current_phase": "fixes"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert not blocked
+
+    # -- Allowed: infrastructure paths (any phase) --
+
+    def test_workspace_write_allowed_during_plan(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "plan"}
+        blocked, _ = enforcer.check_code_write_authorization(
+            "/Users/x/.claude/teams/sigma-review/shared/builds/scratch.md", checkpoint
+        )
+        assert not blocked
+
+    def test_plan_file_write_allowed_during_plan(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "plan"}
+        blocked, _ = enforcer.check_code_write_authorization(
+            "/Users/x/.claude/plans/my-plan.md", checkpoint
+        )
+        assert not blocked
+
+    def test_memory_write_allowed_during_challenge(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "challenge_plan"}
+        blocked, _ = enforcer.check_code_write_authorization(
+            "/Users/x/.claude/memory/decisions.md", checkpoint
+        )
+        assert not blocked
+
+    def test_tmp_write_allowed_during_plan(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "plan"}
+        blocked, _ = enforcer.check_code_write_authorization("/tmp/checkpoint.json", checkpoint)
+        assert not blocked
+
+    def test_hooks_write_allowed_during_plan(self):
+        checkpoint = {"_mode": "build-plan", "current_phase": "plan"}
+        blocked, _ = enforcer.check_code_write_authorization(
+            "/Users/x/.claude/hooks/state.json", checkpoint
+        )
+        assert not blocked
+
+    # -- Not enforced: non-build modes --
+
+    def test_not_enforced_for_analyze_mode(self):
+        checkpoint = {"_mode": "analyze", "current_phase": "research"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert not blocked
+
+    def test_not_enforced_without_mode(self):
+        checkpoint = {"current_phase": "plan"}
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/main.py", checkpoint)
+        assert not blocked
+
+    # -- Creative phrasing loophole: tool-level gate catches what SendMessage misses --
+
+    def test_blocks_regardless_of_how_dispatch_was_phrased(self):
+        """The IE's Write tool is blocked even if the lead used vague language to dispatch."""
+        checkpoint = {"_mode": "build-plan", "current_phase": "challenge_plan"}
+        # Doesn't matter what the lead said — the TOOL is blocked
+        blocked, _ = enforcer.check_code_write_authorization("/project/src/cache.py", checkpoint)
+        assert blocked

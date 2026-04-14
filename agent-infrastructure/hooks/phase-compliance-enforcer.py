@@ -11,8 +11,9 @@ HARD BLOCKS (PreToolUse exit code 2 — lead cannot proceed):
   3. BELIEF on advance — blocks advance from challenge/review without BELIEF[] in workspace
   4. CB evidence — blocks advance from circuit_breaker without CB[]/divergence in workspace
   5. Lead synthesis write — blocks writing synthesis/report during synthesis without agent evidence
-  6. Git commit gate (1b) — blocks git commit/push before synthesis+promotion phases complete
-  7. SendMessage gate (1c) — blocks dispatching implementation work to agents in non-build phases
+  6. Code write authorization (L1) — default-deny on Write/Edit to code files; requires phase=build|fixes
+  7. Git commit gate (1b) — blocks git commit/push before synthesis+promotion phases complete
+  8. SendMessage gate (1c) — blocks dispatching implementation work to agents in non-build phases (soft)
 
 SOFT WARNS (PostToolUse/Stop systemMessage — guidance):
   8. BELIEF format — warns when BELIEF[] present but malformed
@@ -487,6 +488,62 @@ def check_premature_work_dispatch(tool_input, checkpoint):
     return False, ""
 
 
+# ---------------------------------------------------------------------------
+# Layer 1: Default-deny code writes (26.4.13 — positive authorization model)
+# ---------------------------------------------------------------------------
+
+# Phases where code file writes are authorized
+CODE_WRITE_AUTHORIZED_PHASES = {"build", "fixes"}
+
+# Paths that are always writable (infrastructure, not code)
+INFRASTRUCTURE_PATH_MARKERS = [
+    "/.claude/teams/",
+    "/.claude/plans/",
+    "/.claude/memory/",
+    "/.claude/projects/",
+    "/.claude/hooks/",
+    "/.claude/skills/",
+    "/.claude/agents/",
+    "/.claude/cache/",
+    "/tmp/",
+]
+
+# Build modes that enforce code write restrictions
+BUILD_MODES = {"build", "build-plan", "build-exec", "build-review"}
+
+
+def check_code_write_authorization(file_path, checkpoint):
+    """BLOCK Write/Edit to code files unless orchestrator has authorized the phase.
+
+    Default-deny model: code writes are blocked unless the orchestrator checkpoint
+    shows a phase that explicitly permits them. Infrastructure writes (workspace,
+    plan files, memory, scratch) are always allowed.
+
+    This is the primary enforcement gate — not pattern matching, not behavioral
+    directives. The tool literally won't execute.
+    """
+    mode = checkpoint.get("_mode", checkpoint.get("mode", ""))
+    if mode not in BUILD_MODES:
+        return False, ""  # Not a build session — no restriction
+
+    current_phase = checkpoint.get("current_phase", "")
+    if current_phase in CODE_WRITE_AUTHORIZED_PHASES:
+        return False, ""  # Phase is authorized for code writes
+
+    # Allow infrastructure writes in any phase
+    for marker in INFRASTRUCTURE_PATH_MARKERS:
+        if marker in file_path:
+            return False, ""
+
+    basename = os.path.basename(file_path)
+    return True, (
+        f"CODE WRITE BLOCKED: Write/Edit to '{basename}' denied during "
+        f"'{current_phase}' phase. Code writes require orchestrator phase "
+        f"'build' or 'fixes'. Current mode: {mode}. "
+        f"Infrastructure paths (/.claude/*, /tmp/*) are always writable."
+    )
+
+
 def enforce_pre_tool_use(data):
     """PreToolUse enforcement. Returns (exit_code, output_dict)."""
     checkpoint = read_checkpoint()
@@ -526,6 +583,13 @@ def enforce_pre_tool_use(data):
 
     elif tool_name in ("Write", "Edit"):
         file_path = tool_input.get("file_path", "")
+
+        # Layer 1: Default-deny code writes — must be in authorized phase
+        should_block, reason = check_code_write_authorization(file_path, checkpoint)
+        if should_block:
+            return 2, {"reason": reason}
+
+        # Existing: block lead from writing synthesis without agent evidence
         should_block, reason = block_lead_synthesis_write(file_path, checkpoint)
         if should_block:
             return 2, {"reason": reason}
