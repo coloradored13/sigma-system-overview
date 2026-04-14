@@ -98,7 +98,7 @@ class TestPhaseOrdering:
         assert len(enforcer.ANALYZE_PHASE_MAP) == 12
 
     def test_build_map_covers_all_files(self):
-        assert len(enforcer.BUILD_PHASE_MAP) == 13
+        assert len(enforcer.BUILD_PHASE_MAP) == 16  # 13 legacy + 3 v2 (c1/c2/c3)
 
 
 class TestExtractPhaseFromPath:
@@ -959,3 +959,122 @@ class TestSubprocessSmoke:
                 cp.write_text(backup)
             elif cp.exists():
                 cp.unlink()
+
+
+# ---------------------------------------------------------------------------
+# Layer 1b: Git commit gate tests
+# ---------------------------------------------------------------------------
+
+class TestGitCommitGate:
+    def test_git_commit_blocked_before_synthesis(self):
+        checkpoint = {"current_phase": "build", "phase_history": ["plan", "challenge_plan", "build"]}
+        blocked, reason = enforcer.check_premature_git_operation("git commit -m 'test'", checkpoint)
+        assert blocked
+        assert "GIT OPERATION BLOCKED" in reason
+
+    def test_git_push_blocked_before_synthesis(self):
+        checkpoint = {"current_phase": "review", "phase_history": ["plan", "build", "review"]}
+        blocked, reason = enforcer.check_premature_git_operation("git push origin main", checkpoint)
+        assert blocked
+
+    def test_git_commit_allowed_after_required_phases(self):
+        checkpoint = {"current_phase": "sync", "phase_history": ["plan", "build", "review", "synthesis", "promotion", "sync"]}
+        blocked, _ = enforcer.check_premature_git_operation("git commit -m 'build complete'", checkpoint)
+        assert not blocked
+
+    def test_git_commit_allowed_at_sync_phase(self):
+        checkpoint = {"current_phase": "sync", "phase_history": []}
+        blocked, _ = enforcer.check_premature_git_operation("git commit -m 'sync'", checkpoint)
+        assert not blocked
+
+    def test_git_commit_allowed_at_archive_phase(self):
+        checkpoint = {"current_phase": "archive", "phase_history": []}
+        blocked, _ = enforcer.check_premature_git_operation("git commit -m 'archive'", checkpoint)
+        assert not blocked
+
+    def test_git_add_not_blocked(self):
+        checkpoint = {"current_phase": "build", "phase_history": []}
+        blocked, _ = enforcer.check_premature_git_operation("git add src/main.py", checkpoint)
+        assert not blocked
+
+    def test_git_status_not_blocked(self):
+        checkpoint = {"current_phase": "plan", "phase_history": []}
+        blocked, _ = enforcer.check_premature_git_operation("git status", checkpoint)
+        assert not blocked
+
+    def test_git_diff_not_blocked(self):
+        checkpoint = {"current_phase": "plan", "phase_history": []}
+        blocked, _ = enforcer.check_premature_git_operation("git diff HEAD", checkpoint)
+        assert not blocked
+
+    def test_non_git_command_not_blocked(self):
+        checkpoint = {"current_phase": "plan", "phase_history": []}
+        blocked, _ = enforcer.check_premature_git_operation("python3 -m pytest", checkpoint)
+        assert not blocked
+
+
+# ---------------------------------------------------------------------------
+# Layer 1c: SendMessage gate tests
+# ---------------------------------------------------------------------------
+
+class TestSendMessageGate:
+    def test_implement_blocked_during_plan(self):
+        tool_input = {"content": "Implement SQ[1] — fix the model mutation bug"}
+        checkpoint = {"current_phase": "plan"}
+        blocked, reason = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert blocked
+        assert "WORK DISPATCH BLOCKED" in reason
+
+    def test_implement_allowed_during_build(self):
+        tool_input = {"content": "Implement SQ[1] — fix the model mutation bug"}
+        checkpoint = {"current_phase": "build"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert not blocked
+
+    def test_sq_reference_blocked_during_challenge(self):
+        tool_input = {"content": "Start working on SQ[3] and SQ[4]"}
+        checkpoint = {"current_phase": "challenge_plan"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert blocked
+
+    def test_file_extension_blocked_during_plan(self):
+        tool_input = {"content": "Create file src/pipeline/validator.py with the gate logic"}
+        checkpoint = {"current_phase": "plan"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert blocked
+
+    def test_review_message_allowed_during_plan(self):
+        tool_input = {"content": "Review the findings and provide your assessment"}
+        checkpoint = {"current_phase": "plan"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert not blocked
+
+    def test_empty_message_not_blocked(self):
+        tool_input = {"content": ""}
+        checkpoint = {"current_phase": "plan"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert not blocked
+
+    def test_no_content_key_not_blocked(self):
+        tool_input = {}
+        checkpoint = {"current_phase": "plan"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert not blocked
+
+    def test_build_the_blocked_during_pre(self):
+        tool_input = {"content": "Build the validator module now"}
+        checkpoint = {"current_phase": "pre"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert blocked
+
+    def test_write_code_blocked_during_review(self):
+        tool_input = {"content": "Write code for the audit logger"}
+        checkpoint = {"current_phase": "review"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert blocked
+
+    def test_create_file_blocked_during_synthesis(self):
+        tool_input = {"content": "Create file src/new_module.py"}
+        checkpoint = {"current_phase": "synthesis"}
+        blocked, _ = enforcer.check_premature_work_dispatch(tool_input, checkpoint)
+        assert blocked

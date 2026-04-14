@@ -1,53 +1,89 @@
 ---
 name: sigma-build
-description: Run a sigma-build team review for code implementation tasks. Orchestrates specialist agents through plan→challenge→build+checkpoint→review rounds. Use when the user says "sigma-build", "build review", or asks for multi-agent implementation with adversarial quality gates. BUILD mode only — for analysis use /sigma-review.
+description: Run a sigma-build team review for code implementation tasks. Orchestrates specialist agents through plan→challenge→build→review across 3 separate conversations. Use when the user says "sigma-build", "build review", or asks for multi-agent implementation with adversarial quality gates. BUILD mode only — for analysis use /sigma-review.
 argument-hint: "[build task description]"
 allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage, TodoWrite
 ---
 
-# Sigma Build — BUILD Mode Orchestration
+# Sigma Build — 3-Conversation BUILD Orchestration
 
 > BUILD mode separated from sigma-review on 2026-03-19.
+> Restructured from 13-phase monolith to 3-conversation model on 2026-04-13.
 > ANALYZE mode → /sigma-review skill.
 > BUILD-specific directives → ~/.claude/teams/sigma-review/shared/build-directives.md
 > DA agent definition → ~/.claude/agents/devils-advocate.md (serves both modes)
 
-You are the sigma-build lead. Orchestrate a multi-agent BUILD review of: **$ARGUMENTS**
+You are the sigma-build lead. Orchestrate a multi-agent BUILD of: **$ARGUMENTS**
 
-## How This Works
+## Architecture
 
-This build is phase-driven. You execute ONE phase at a time. Each phase has its own instruction file. You do not read ahead. You do not skip phases.
-
-### Execution Protocol
+Each build runs across 3 separate conversations. The conversation boundary IS the gate — you cannot skip DA challenge because Phase 2 requires a plan file that only exists after DA exit-gate PASS.
 
 ```
-1. Determine current phase (orchestrator status or starting from preflight)
-2. Read ONLY the phase file for the current phase
-3. Execute EVERY step in that phase file — no exceptions
-4. Complete the phase exit checklist at the bottom of each phase file
-5. Advance the orchestrator (if applicable)
-6. Read the NEXT phase file — not before
+Conversation 1: PLAN    →  preflight, spawn, plan design, DA + build-track challenge → locked plan file
+Conversation 2: BUILD   →  pure execution against locked plan → code + tests
+Conversation 3: REVIEW  →  DA + plan-track review build, code fixes, synthesis, close-out
 ```
 
-### Phase Sequence
+**Plan file** bridges conversations: `~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}.plan.md`
+**sigma-mem** bridges institutional memory (calibration, patterns, lessons)
+**Scratch workspace** is ephemeral per conversation: `builds/{build-id}/c{N}-scratch.md`
+
+## Routing
+
+Determine which conversation to run based on the plan file state.
+
+### Step 1: Search for existing plan file
 
 ```
-00-preflight        → Pre-flight checks, complexity, prompt understanding
-01-spawn            → Workspace initialization, agent creation
-02-plan             → Plan-track agents design (ADRs, design system, contracts)
-03-plan-challenge   → DA + build-track challenge plan (may loop)
-04-build            → Build-track implements + checkpoint + cross-model code review
-05-build-review     → DA + plan-track review build (may loop)
-05b-debate          → Toulmin structured debate (only if belief < 0.6)
-06-synthesis        → Synthesis agent + artifact save
-06b-compilation     → Integrate findings into persistent knowledge wiki
-07-promotion        → Memory promotion round
-08-sync             → Infrastructure drift detection + sync
-09-archive          → Workspace archive + git verification
-10-shutdown         → Agent shutdown + final report
+Search: ~/.claude/teams/sigma-review/shared/builds/*.plan.md
+Match: $ARGUMENTS against plan file ## Meta build-id and ## Context
 ```
 
-Phase files: `~/.claude/skills/sigma-build/phases/{filename}.md`
+### Step 2: Route based on plan file status
+
+```
+No matching plan file found
+  → This is a NEW build. Run Conversation 1 (PLAN).
+  → Read phases/c1-plan.md now.
+
+Match found — read ## Meta section:
+
+  status: plan
+    → C1 in progress or interrupted. Resume Conversation 1 (PLAN).
+    → Read phases/c1-plan.md now.
+
+  status: plan-locked AND plan-exit-gate: PASS
+    → Plan approved. Run Conversation 2 (BUILD).
+    → Read phases/c2-build.md now.
+
+  status: built
+    → Build complete. Run Conversation 3 (REVIEW).
+    → Read phases/c3-review.md now.
+
+  status: closing
+    → C3 in progress or interrupted. Resume Conversation 3 (REVIEW).
+    → Read phases/c3-review.md now.
+
+  status: complete
+    → Build already finished.
+    → Report: "Build {build-id} complete. Archive at {archive-path}."
+    → Offer: "Run /sigma-build {new task} to start a new build."
+```
+
+### Step 3: Handle multiple matches
+
+If multiple plan files match $ARGUMENTS:
+```
+Multiple builds match "$ARGUMENTS":
+1. {build-id-1} (status: {status}, plan-exit-gate: {gate})
+2. {build-id-2} (status: {status}, plan-exit-gate: {gate})
+Select build [1-N] or "new" to start fresh:
+```
+
+### Step 4: Handle --phase override (optional)
+
+User can force a specific phase: `/sigma-build --phase plan {task}` or `/sigma-build --phase build {task}` or `/sigma-build --phase review {task}`.
 
 ## Why Every Step Matters
 
@@ -61,28 +97,29 @@ This build system produces code that humans ship to production. Every step exist
 - Skipped anti-contamination → lead bias leaked into "independent" analysis
 - Skipped promotion → agent learnings lost, same mistakes repeated
 - Skipped sync → 12 agent memories drifted undetected
+- **Ran all phases in one conversation → context degraded, DA never spawned, build shipped unchallenged (B7 RED audit)**
 
 **Skipping a step is not efficiency. It is a failure.** The user trusts this system because every step runs, every check fires, every gate validates. An incomplete build that ran every step is more valuable than a polished build that skipped checks. Completeness IS the product.
-
-If a step seems unnecessary for this particular build, execute it anyway and note the result.
 
 ## Lead Role Boundary
 
 You manage agents and phases. You do NOT:
 - Call analytical tools directly (sigma-verify, WebSearch for research). Agents research, you organize.
-- Write synthesis content. A separate synthesis agent does this. If that agent fails, deliver raw findings with an explicit gap flag. Lead-written synthesis is provenance contamination.
-- Shut down agents until ALL post-exit-gate phases complete (promotion → sync → archive → THEN shutdown).
+- Write synthesis content. A separate synthesis agent does this (C3 only). Lead-written synthesis is provenance contamination.
+- Skip conversation exit protocol. Every conversation has a formal exit that writes to the plan file.
+- Dispatch implementation work before the plan is locked. The plan file with exit-gate: PASS is the build authorization.
 
 ## Paths
 
 ```
 T=~/.claude/teams/sigma-review        # global tier
 P={project}/.claude/teams/sigma-review # project tier (if exists)
+B=T/shared/builds                     # plan files and scratch workspaces
 ```
 
-project tier exists → use P/ for workspace,decisions,patterns,project-memory | T/ for global-memory,roster,agent-defs
+project tier exists → use P/ for decisions,patterns,project-memory | T/ for global-memory,roster,agent-defs
 ¬project tier → all→T/
 
 ## Begin
 
-Read `phases/00-preflight.md` now. Do not read any other phase file.
+Execute the routing logic above. Read ONLY the phase file for the determined conversation. Do not read any other phase file.

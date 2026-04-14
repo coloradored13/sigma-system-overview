@@ -11,11 +11,13 @@ HARD BLOCKS (PreToolUse exit code 2 — lead cannot proceed):
   3. BELIEF on advance — blocks advance from challenge/review without BELIEF[] in workspace
   4. CB evidence — blocks advance from circuit_breaker without CB[]/divergence in workspace
   5. Lead synthesis write — blocks writing synthesis/report during synthesis without agent evidence
+  6. Git commit gate (1b) — blocks git commit/push before synthesis+promotion phases complete
+  7. SendMessage gate (1c) — blocks dispatching implementation work to agents in non-build phases
 
 SOFT WARNS (PostToolUse/Stop systemMessage — guidance):
-  6. BELIEF format — warns when BELIEF[] present but malformed
-  7. Context firewall — warns when personal context detected in workspace writes
-  8. Synthesis file gate — warns when advancing past synthesis without file written
+  8. BELIEF format — warns when BELIEF[] present but malformed
+  9. Context firewall — warns when personal context detected in workspace writes
+  10. Synthesis file gate — warns when advancing past synthesis without file written
 
 The lead agent cannot opt out — hooks fire automatically on tool calls.
 Design principle: if a WARN can be ignored like a directive, and there's no legitimate
@@ -54,6 +56,7 @@ ANALYZE_PHASE_MAP = {
 }
 
 BUILD_PHASE_MAP = {
+    # Legacy 13-phase mapping (archive-v1)
     "00-preflight": "pre",
     "01-spawn": "pre",
     "02-plan": "plan",
@@ -67,6 +70,10 @@ BUILD_PHASE_MAP = {
     "08-sync": "sync",
     "09-archive": "archive",
     "10-shutdown": "complete",
+    # 3-conversation mapping (v2)
+    "c1-plan": "plan",
+    "c2-build": "build",
+    "c3-review": "review",
 }
 
 # Ordered phase sequences (orchestrator progression order)
@@ -397,6 +404,89 @@ def block_lead_synthesis_write(file_path, checkpoint):
     )
 
 
+# ---------------------------------------------------------------------------
+# Layer 1b: Git commit gate (26.4.13 — 3-conversation model)
+# ---------------------------------------------------------------------------
+
+# Minimum phases that must be in phase_history before git operations are allowed
+REQUIRED_PHASES_BEFORE_COMMIT = {"synthesis", "promotion"}
+
+def check_premature_git_operation(command, checkpoint):
+    """BLOCK git commit/push if required phases haven't completed.
+
+    Prevents the lead from committing code before synthesis + promotion are done.
+    In the 3-conversation model, this fires within each conversation's scope.
+    """
+    if not re.search(r'\bgit\s+(commit|push)\b', command):
+        return False, ""
+
+    current_phase = checkpoint.get("current_phase", "")
+    phase_history = checkpoint.get("phase_history", [])
+
+    # If we're at sync/archive/complete, git operations are expected
+    if current_phase in ("sync", "archive", "complete"):
+        return False, ""
+
+    # Check which required phases are missing
+    missing = REQUIRED_PHASES_BEFORE_COMMIT - set(phase_history)
+
+    if not missing:
+        return False, ""
+
+    return True, (
+        f"GIT OPERATION BLOCKED: Cannot run git commit/push — "
+        f"required phases not yet completed: {', '.join(sorted(missing))}. "
+        f"Current phase: {current_phase}. Complete the full phase sequence "
+        f"(synthesis → promotion → sync) before committing."
+    )
+
+
+# ---------------------------------------------------------------------------
+# Layer 1c: SendMessage gate (26.4.13 — closes "never advance = never blocked")
+# ---------------------------------------------------------------------------
+
+IMPLEMENTATION_DISPATCH_PATTERNS = [
+    r'\bimplement\b',
+    r'\bbuild\s+(?:the|this|a|all|SQ)\b',
+    r'\bwrite\s+(?:code|the|this)\b',
+    r'\bSQ\[\d+\]',
+    r'\bcreate\s+(?:file|module|function|class)\b',
+    r'\.(?:py|ts|js|tsx|jsx|go|rs|java|rb)\s',  # file extensions with trailing space
+]
+
+# Phases where implementation dispatch is permitted
+BUILD_DISPATCH_PHASES = {"build"}
+
+
+def check_premature_work_dispatch(tool_input, checkpoint):
+    """BLOCK dispatching implementation work to agents during non-build phases.
+
+    Closes the "never advance = never blocked" loophole from B7 RED audit:
+    the lead bypassed all gates by never advancing phases and instead sending
+    implementation tasks directly to agents via SendMessage.
+    """
+    message = tool_input.get("content", "") or tool_input.get("message", "")
+    if not message:
+        return False, ""
+
+    current_phase = checkpoint.get("current_phase", "")
+
+    if current_phase in BUILD_DISPATCH_PHASES:
+        return False, ""  # Build phase — dispatch allowed
+
+    # Check if message contains implementation-scoped content
+    for pattern in IMPLEMENTATION_DISPATCH_PATTERNS:
+        match = re.search(pattern, message, re.IGNORECASE)
+        if match:
+            return True, (
+                f"WORK DISPATCH BLOCKED: Cannot send implementation instructions "
+                f"to agents during '{current_phase}' phase. Advance to build phase "
+                f"first. Matched: '{match.group(0)}'"
+            )
+
+    return False, ""
+
+
 def enforce_pre_tool_use(data):
     """PreToolUse enforcement. Returns (exit_code, output_dict)."""
     checkpoint = read_checkpoint()
@@ -415,6 +505,11 @@ def enforce_pre_tool_use(data):
     elif tool_name == "Bash":
         command = tool_input.get("command", "")
 
+        # Layer 1b: Git commit gate — block premature git commit/push
+        should_block, reason = check_premature_git_operation(command, checkpoint)
+        if should_block:
+            return 2, {"reason": reason}
+
         # Check all advance-time BLOCKs
         for check_fn in (check_da_exit_gate_in_workspace,
                          check_belief_before_advance,
@@ -422,6 +517,12 @@ def enforce_pre_tool_use(data):
             should_block, reason = check_fn(command, checkpoint)
             if should_block:
                 return 2, {"reason": reason}
+
+    elif tool_name == "SendMessage":
+        # Layer 1c: SendMessage gate — block implementation dispatch in non-build phases
+        should_block, reason = check_premature_work_dispatch(tool_input, checkpoint)
+        if should_block:
+            return 2, {"reason": reason}
 
     elif tool_name in ("Write", "Edit"):
         file_path = tool_input.get("file_path", "")
