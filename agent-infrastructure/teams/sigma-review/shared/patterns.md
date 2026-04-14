@@ -260,3 +260,23 @@ absence-gap-claims-require-complete-doc-read: agent-declared-content-missing(F3-
 → actions:
 → new pattern observed → append with |agents and |signal
 → pattern contradicted → move to ¬ section with explanation
+
+## Retro: R3 — Review loan administration knowledge base (7 docs, ~534KB at (2026-04-11)
+value: reference-class-analyst, loan-ops-tech-specialist, regulatory-licensing-specialist, product-strategist, technical-writer, devils-advocate converged (0 timeouts)
+herding: CB fired, CB fired: yes
+hygiene: outcome-1: 18, outcome-2: 34, outcome-3: 11 — perfunctory risk: low
+da-effectiveness: revision-rate: 59%, concession-type: genuine
+sources: T1:0 T2:0 T3:0
+xverify: used:9 failed:1 available:no
+complexity: tier-assessed: 2
+-> recommendation: Review metrics within normal ranges — no immediate action.
+
+## Retro: B7 — sigma-predict cross-pollination (2026-04-13) — RED AUDIT
+value: none detected converged (0 timeouts) — DA never spawned, no exit-gate, no CB
+herding: not detected, CB fired: no — CB should have fired (zero divergence on 50+ findings)
+hygiene: outcome-1: 0, outcome-2: 0, outcome-3: 0 — perfunctory risk: high
+da-effectiveness: N/A — DA absent
+sources: T1:0 T2:0 T3:0, code-read:84%
+xverify: used:0 failed:0 available:yes(unused)
+complexity: tier-assessed: 2
+-> recommendation: RED. "never-advance=never-blocked" loophole exposed. Gates guard transitions not actions. Entire adversarial layer bypassed. Code competent (130 tests) but process invalid. See feedback_never-advance-loophole.md.

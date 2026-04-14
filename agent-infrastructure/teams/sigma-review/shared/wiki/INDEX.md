@@ -18,6 +18,11 @@ Persistent, compiled domain knowledge from sigma-review analyses. Each page is u
 - [Private Credit Market](private-credit-market.md) — AUM $3-3.5T broad / ~$2T narrow, BDC bear-as-base (BELIEF=0.88), mandate mix shift, calibrated breakeven 36-48mo, capital $30-55M realistic [R17, 26.4.9]
 - [Key Competitors — Loan Administration](key-competitors-loan-admin.md) — Alter Domus (Cinven-backed, corrected from Bain), GLAS reference class, Kroll APAC, Hypercore (no charter), competitive window 12-18mo XVERIFY confirmed, 3 entry paths [R17, 26.4.9]
 
+- [sigma-predict Architecture](sigma-predict-architecture.md) — LLMRouter client cache fix, PROVIDERS registry integration, deliberation hardcode fix, open defects (BUILD-R1/R3/R4/R5), known tech debt [B7, 26.4.13]
+- [sigma-predict Prediction Methodology](sigma-predict-prediction-methodology.md) — parse_failed contamination, reference class instance count, falsification anchors, source clustering, hedging correction conditioning, multiplicative guard, BELIEF scores [B7, 26.4.13]
+- [sigma-predict Validation Gates](sigma-predict-validation-gates.md) — PipelineValidator 5-gate architecture, non-blocking default, strict mode, gate descriptions [B7, 26.4.13]
+- [Audit Logging Pattern](audit-logging-pattern.md) — JSON-L per-call log, hash-of-params, cross-system comparison (ollama-mcp-bridge fsync vs sigma-predict buffered), BUILD-R4 wiring gap [B6+B7, 26.4.13]
+
 ## Convention
 - One page per entity, domain, or topic that appears across reviews or warrants standalone reference
 - Page filenames: lowercase, hyphenated (e.g., `loan-admin-tech-landscape.md`, `alter-domus.md`)

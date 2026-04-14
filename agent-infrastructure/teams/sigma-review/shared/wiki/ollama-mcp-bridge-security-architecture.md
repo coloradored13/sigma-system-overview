@@ -97,6 +97,14 @@ The allow_redirects field received an additional fix: config.py's auto-conversio
 
 ---
 
+## Audit Logging Pattern: Ported to sigma-predict
+
+The ollama-mcp-bridge audit logging pattern (JSON-L per-call log, fsync-on-write, hash-of-params, raw prompts never logged) was ported to sigma-predict's LLMAuditLogger in B7. The two implementations share the same core design philosophy but diverge on buffering: ollama-mcp-bridge uses fsync-per-call (durable for a long-running service); sigma-predict uses a buffer of 10 (acceptable for a short single-pipeline run). See [audit-logging-pattern.md] for cross-system comparison. [B6, 26.4.9] [B7, 26.4.13]
+
+Note: sigma-predict's LLMAuditLogger is currently instantiated but not wired into LLMRouter.call() — BUILD-R4 open defect. The port is structural, not yet functional.
+
+---
+
 ## Cross-Agent Convergence Notes
 
 Four findings in B6 reached multi-agent convergence independently, lending higher confidence:
