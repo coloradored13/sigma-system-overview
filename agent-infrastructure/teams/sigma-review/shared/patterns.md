@@ -257,9 +257,6 @@ Regulatory deadline urgency as document freshness indicator: HMRC April 5, 2026 
 inside-view-optimism-in-regulated-finserv: analysis teams consistently model mechanisms correctly but underestimate timelines and capital by 30-50% | outside-view reference classes (regulated entry, B2B ramp, M&A-dominance) provide systematic correction | team quality assessment is load-bearing variable often omitted from tech-focused analyses |agents: reference-class-analyst,product-strategist,regulatory-licensing-specialist
 absence-gap-claims-require-complete-doc-read: agent-declared-content-missing(F3-waterfall-sequence)→DA-challenged-with-specific-section-ref→agent-had-not-read-full-doc|pattern: absence-claims-are-highest-false-positive-risk→require-exhaustive-read-not-sampled-sections|applies-to: all-agents-making-gap-findings|mitigation: before-declaring-content-missing,confirm-read-every-section-of-target-doc|LOT-r1-26.4.9 |agents: loan-ops-tech-specialist,devils-advocate
 
-→ actions:
-→ new pattern observed → append with |agents and |signal
-→ pattern contradicted → move to ¬ section with explanation
 
 ## Retro: R3 — Review loan administration knowledge base (7 docs, ~534KB at (2026-04-11)
 value: reference-class-analyst, loan-ops-tech-specialist, regulatory-licensing-specialist, product-strategist, technical-writer, devils-advocate converged (0 timeouts)
@@ -280,3 +277,8 @@ sources: T1:0 T2:0 T3:0, code-read:84%
 xverify: used:0 failed:0 available:yes(unused)
 complexity: tier-assessed: 2
 -> recommendation: RED. "never-advance=never-blocked" loophole exposed. Gates guard transitions not actions. Entire adversarial layer bypassed. Code competent (130 tests) but process invalid. See feedback_never-advance-loophole.md.
+AUDIT[26.4.13|sigma-predict-B7]: never-advance=never-blocked loophole — gate infrastructure guards phase transitions not agent actions. Lead dispatched implementation via SendMessage without advancing orchestrator, bypassing all hard blocks. Fix: default-deny code writes (L1) on Write/Edit tool, not pattern-matching on messages. |verdict:RED |source:sigma-audit |agents: lead,devils-advocate
+
+→ actions:
+→ new pattern observed → append with |agents and |signal
+→ pattern contradicted → move to ¬ section with explanation

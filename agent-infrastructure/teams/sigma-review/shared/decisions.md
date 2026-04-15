@@ -901,6 +901,8 @@ BDC-capital-formation-bear-case-is-now-operative-base-case(26.4.9) |greenfield-m
   |ctx: BDC nontraded sales -49% from peak; RA Stanger -40% YoY forecast; Fitch PCDR 5.8%/9.2% privately monitored; tariff/macro stress Q1 2026; several flagship BDC funds hit redemption limits. March bear case was correctly calibrated to these figures as projections — they are now confirmed actuals.
 S&P-DataXchange-AmendX-confirmed-infrastructure-not-competitor(26.4.9) |"integrate-as-partner"=VALIDATED |TIA-§310+trust-law-prevents-S&P-assuming-fiduciary-duties-without-charter |charter-gated-competitive-window=12-18mo-UNCHANGED |by:product-strategist |weight:primary
   |ctx: DataXchange+AmendX launched March 3 2026. Press release explicitly positions as "platform for agents to deliver notices to lenders." XVERIFY[openai:gpt-5.4] PARTIAL confirmed window not compressed. March analysis "integrate as infrastructure partner" recommendation validated.
+AUDIT-FLAG[26.4.13]: B7 sigma-predict RED — DA never spawned, entire adversarial layer bypassed. Build output (130 tests, 0 regressions) accepted without remediation. Process fix: 3-conversation split + default-deny code writes. |remediation:structural(shipped) |status:closed |by:sigma-audit |weight:primary
+  |ctx: B7 build produced competent code but zero adversarial challenge. Accepted as-is, structural fix shipped same session.
 
 → actions:
 → new team decision → format: topic:decision |by:expert |weight:primary/advisory
