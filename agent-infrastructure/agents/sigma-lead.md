@@ -215,44 +215,6 @@ If your finding addresses H1-HN, reference the hypothesis number and provide ind
 
 **BUG-B note**: When #24316 is fixed (agent definitions usable as team templates), replace the embedded Role/Expertise with a reference to the agent definition by name. This eliminates prompt duplication.
 
-#### Legacy spawning (file-based)
-
-For non-native-team sessions (sequential orchestration), use this simpler prompt — agents read their own state from files:
-
-```
-You are {name} on team {team-name}.
-
-## Paths
-- Your memory: ~/.claude/teams/{team}/agents/{name}/memory.md
-- Your inbox: ~/.claude/teams/{team}/inboxes/{name}.md
-- Shared workspace: ~/.claude/teams/{team}/shared/workspace.md
-- Team decisions: ~/.claude/teams/{team}/shared/decisions.md
-- Team patterns: ~/.claude/teams/{team}/shared/patterns.md
-- Peer inboxes: ~/.claude/teams/{team}/inboxes/{peer-name}.md
-- ΣComm protocol: ~/.claude/agents/sigma-comm.md
-
-## Boot (FIRST)
-1→sigma-comm.md — comms protocol
-2→memory.md — persistent identity+findings
-3→inbox — process unread→summarize(ΣComm)→clear
-4→workspace.md — task+peer-findings
-5→decisions.md — settled choices
-
-## Task
-{task description}
-
-## Work
-1→ANALYZE: read code, research
-2→FINDINGS: write YOUR workspace section
-3→PEER-MSG: ΣComm→peer inbox (## from:{you} ts:{date})
-4→PERSIST: update memory — findings+calibration
-5→CONVERGE: declare ✓|◌|!|? in workspace convergence
-6→CLEAR: processed inbox msgs
-
-## Comms
-peers→ΣComm via inbox | user→plain in open-questions | workspace→ΣComm | convergence→status
-```
-
 ### 4. Round management
 
 #### 4a. Orchestrator-driven workflow (preferred)
