@@ -624,30 +624,30 @@ fi
 echo ""
 
 # ─────────────────────────────────────────────
-# 9. Assemble CLAUDE.md from modular sources
+# 9. Verify CLAUDE.md exists
 # ─────────────────────────────────────────────
-info "Assembling CLAUDE.md from modular sources..."
-
-ASSEMBLE_SCRIPT="$SCRIPT_DIR/agent-infrastructure/claude-md/assemble.sh"
+info "Checking CLAUDE.md..."
 
 mkdir -p "$CLAUDE_DIR"
 
-if [ -x "$ASSEMBLE_SCRIPT" ]; then
-    "$ASSEMBLE_SCRIPT"
-    ok "Assembled CLAUDE.md from modular sources"
-else
-    # Fallback: write minimal recall-first instructions
-    RECALL_MARKER="!start→recall"
-    if [ -f "$CLAUDE_MD" ] && grep -qF "$RECALL_MARKER" "$CLAUDE_MD" 2>/dev/null; then
-        ok "CLAUDE.md already has recall-first instructions"
+if [ -f "$CLAUDE_MD" ]; then
+    SIGMA_LINES=$(grep -c -E '(sigma-mem|recall|store_memory|ΣComm)' "$CLAUDE_MD" 2>/dev/null || echo "0")
+    if [ "$SIGMA_LINES" -gt 0 ]; then
+        ok "CLAUDE.md exists with sigma content ($SIGMA_LINES references)"
     else
-        cat > "$CLAUDE_MD" << 'CLAUDE_MD_EOF'
-!start→recall before reading files directly | actions(search_memory,get_project,etc.)→deeper
-
-!store→sigma-mem MCP(store_memory,log_decision,log_correction,log_failure) ¬direct file writes
-CLAUDE_MD_EOF
-        ok "Created minimal CLAUDE.md (run assemble.sh for full version)"
+        warn "CLAUDE.md exists but has no sigma references — may need manual update"
     fi
+else
+    cat > "$CLAUDE_MD" << 'CLAUDE_MD_EOF'
+## Memory Gateway
+
+At the start of every session, call sigma-mem recall before reading files directly. Use the context parameter to describe what's happening so the system surfaces the right memories.
+
+Store new knowledge via sigma-mem MCP tools (store_memory, log_decision, log_correction, log_failure), not by writing directly to memory files.
+
+Follow the HATEOAS navigation hints returned by recall to load deeper context as needed.
+CLAUDE_MD_EOF
+    ok "Created minimal CLAUDE.md — add behavioral rails manually (see agent-infrastructure/claude-md/README.md)"
 fi
 
 echo ""
