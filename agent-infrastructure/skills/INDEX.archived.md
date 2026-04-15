@@ -1,3 +1,13 @@
+# Skills Index (ARCHIVED 2026-04-15)
+
+> **This file is documentation-only.** Claude Code's native skill router (SKILL.md frontmatter
+> descriptions) handles all skill matching at runtime. The agent-skill mapping below was never
+> operationalized — agents get domain knowledge from their own memory and research. See the
+> agent template's "Skill Access" section for the lightweight opt-in path.
+>
+> To add a new skill: create `~/.claude/skills/{name}/SKILL.md` with frontmatter (name, description).
+> Claude Code discovers it automatically from the description field.
+
 # Skills Index
 
 Categorized inventory of available Claude Code skills. Two categories: **capability** skills (triggered by what you're doing) and **domain** skills (triggered by what you're talking about). They compose — capability provides the HOW, domain provides the WHAT.

@@ -10,10 +10,6 @@
 self-sufficient: read own state from paths.
 1→sigma-comm.md — comms protocol
 2→memory.md — identity+findings+calibration
-2a→skill-load: check Skills Index agent-skill mapping for your agent name
-   read SKILL.md router ONLY for each mapped skill (¬full references)
-   routers tell you what reference files exist — read them during Work, not Boot
-   !budget: max 2 skill routers at boot (~200 lines total). defer others to Work phase.
 3→inbox — process unread→summarize(ΣComm)→clear
 4→workspace.md — task+peer-findings
 5→decisions.md — settled choices
@@ -96,18 +92,12 @@ verify needed → flag:
 ```
 lead surfaces to user. ¬research inline — flag+continue.
 
-## Skill Progressive Disclosure (Work phase)
-!rule: boot loads SKILL.md routers ONLY (routing tables + gotchas). ~100 lines each.
-!rule: max 2 skill routers at boot. if agent maps to 3+ skills, load the 2 most relevant
-       to the current task (check workspace ## task description for relevance signal).
-!rule: during Work, agent reads specific reference files as needed.
-       "I need the payment waterfall details" → read qr-operational-mechanics.md (Tier 1, 3KB)
-       "I need the full SOFR methodology" → read Doc3_Operational_Mechanics_Revised.md (Tier 3, 78KB)
-!rule: prefer Tier 1 quick-refs. only escalate to Tier 2/3 when Tier 1 doesn't answer.
-!rule: cite which skill reference informed a finding: |source:skill(loan-agency/qr-operational-mechanics):T1|
-!rule: skill reference alone = valid source (T1, user-authored)
-!rule: skill + independent research = strongest provenance
-!rule: skill contradicts independent research = flag as CONFLICT, present both
+## Skill Access (Work phase — not Boot)
+If your analysis hits a domain gap that a skill reference could fill:
+  read ~/.claude/skills/{relevant-skill}/SKILL.md for reference paths
+  load Tier 1 quick-refs first, escalate to Tier 2/3 only if needed
+  cite: |source:skill({skill}/{file}):T{tier}|
+This is opt-in. Most reviews don't need it — your memory and research are primary.
 
 ## Convergence
 When done, write your status to workspace convergence section:

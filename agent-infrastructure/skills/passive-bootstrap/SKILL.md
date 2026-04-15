@@ -1,11 +1,10 @@
 ---
 name: passive-bootstrap
 description: >
-  ALWAYS load this skill at the start of every conversation. This is not a regular
-  skill — it bootstraps the four passive background skills by loading their firing
-  rules into active context. Without this, passive skills exist only as metadata
-  descriptions (~100 words) and their behavioral patterns don't activate reliably.
-  Load even for conversations that seem casual — they may become substantive.
+  Detailed reference for the five passive background behaviors. Firing rules are now
+  in CLAUDE.md (Passive Behaviors section) and activate automatically every session.
+  Load this skill only if you need the full detection signals, flagging formats,
+  examples, or interaction rules beyond the distilled version in CLAUDE.md.
 ---
 
 # Passive Skills Bootstrap
