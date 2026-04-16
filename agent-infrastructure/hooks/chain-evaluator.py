@@ -717,7 +717,14 @@ def main():
         sys.exit(0)
 
     cmd = args[0].lower()
-    workspace = args[1] if len(args) > 1 and cmd == "item" else None
+    # evaluate/status accept workspace path as args[1]; item uses args[1] as the item ID
+    # and args[2] (if present) as the workspace path.
+    if cmd in ("evaluate", "status"):
+        workspace = args[1] if len(args) > 1 else None
+    elif cmd == "item":
+        workspace = args[2] if len(args) > 2 else None
+    else:
+        workspace = None
 
     if cmd == "evaluate":
         result = evaluate_chain(workspace)
@@ -739,9 +746,9 @@ def main():
         print(json.dumps(summary, indent=2))
     elif cmd == "item":
         if len(args) < 2:
-            print("Usage: chain-evaluator.py item <ID>", file=sys.stderr)
+            print("Usage: chain-evaluator.py item <ID> [workspace]", file=sys.stderr)
             sys.exit(1)
-        item = evaluate_single(args[1])
+        item = evaluate_single(args[1], workspace)
         print(json.dumps(item.to_dict(), indent=2))
     else:
         print(f"Unknown command: {cmd}", file=sys.stderr)

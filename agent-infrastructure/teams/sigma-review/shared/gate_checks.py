@@ -338,46 +338,52 @@ def check_agent_output_non_empty(content: str, agents: list[str] | None = None) 
 
 
 def check_source_provenance(content: str) -> CheckResult:
-    """V4: All findings carry |source:{type} tag; load-bearing carry tier."""
+    """V4: All findings carry |source:{type} tag; load-bearing carry tier.
+
+    Tags may appear anywhere in the finding's block — header or body. A block
+    runs from its F[...] header to the next F[...] header, the next ### agent
+    subsection, the next ## major section, or the end of the findings region.
+    """
     findings = _get_findings_region(content)
 
-    # Find primary finding declarations — lines that START with F[...] (not DA response references)
-    # This avoids counting "DA[#1] response to F[PS-1]" as a finding
-    finding_lines = re.findall(r"^((?:F|FINDING)\[[\w-]+\][:\s].+)", findings, re.MULTILINE)
+    # Line-anchored F[...] or FINDING[...] header — excludes inline references
+    # like "DA[#1] response to F[PS-1]" since those don't start the line.
+    header_re = re.compile(r"^((?:F|FINDING)\[[\w-]+\])[:\s].*$", re.MULTILINE)
+    boundary_re = re.compile(r"^(?:(?:F|FINDING)\[[\w-]+\]|###\s|##\s)", re.MULTILINE)
 
-    # Deduplicate by finding ID — first occurrence is the declaration
-    seen_ids: set[str] = set()
-    unique_findings: list[str] = []
-    for line in finding_lines:
-        fid_match = re.match(r"((?:F|FINDING)\[[\w-]+\])", line)
-        if fid_match:
-            fid = fid_match.group(1)
-            if fid not in seen_ids:
-                seen_ids.add(fid)
-                unique_findings.append(line)
+    # A FID can appear in multiple places (primary declaration, peer-verify
+    # reference in another agent's section, DA response quote, etc.). Group
+    # all occurrences per FID — the finding is tagged if ANY occurrence
+    # carries the provenance tag, since the tag only needs to exist once.
+    fid_blocks: dict[str, list[str]] = {}
+    for m in header_re.finditer(findings):
+        fid = m.group(1)
+        start = m.start()
+        next_boundary = boundary_re.search(findings, pos=m.end())
+        end = next_boundary.start() if next_boundary else len(findings)
+        fid_blocks.setdefault(fid, []).append(findings[start:end])
 
-    total = len(unique_findings)
+    total = len(fid_blocks)
     tagged = 0
-    untagged = []
-    load_bearing_without_tier = []
+    untagged: list[str] = []
+    load_bearing_without_tier: list[str] = []
 
-    for line in unique_findings:
-        has_source = bool(re.search(r"\|source:", line, re.IGNORECASE))
-        has_src = bool(re.search(r"\|src:", line, re.IGNORECASE))
+    for fid, blocks_list in fid_blocks.items():
+        combined = "\n".join(blocks_list)
+        has_source = bool(re.search(r"\|source:", combined, re.IGNORECASE))
+        has_src = bool(re.search(r"\|src:", combined, re.IGNORECASE))
         if has_source or has_src:
             tagged += 1
         else:
-            fid = re.match(r"((?:F|FINDING)\[[\w-]+\])", line)
-            untagged.append(fid.group(1) if fid else "unknown")
+            untagged.append(fid)
 
-        # Check load-bearing for tier
         is_load_bearing = bool(re.search(
-            r"(LOAD.BEARING|>70%|highest.conviction|superlative|primary)", line, re.IGNORECASE
+            r"(LOAD.BEARING|>70%|highest.conviction|superlative|primary)",
+            combined, re.IGNORECASE,
         ))
-        has_tier = bool(re.search(r"T[123]", line))
+        has_tier = bool(re.search(r"T[123]", combined))
         if is_load_bearing and not has_tier:
-            fid = re.match(r"(F\[[\w-]+\])", line)
-            load_bearing_without_tier.append(fid.group(1) if fid else "unknown")
+            load_bearing_without_tier.append(fid)
 
     issues = []
     if untagged:

@@ -437,3 +437,120 @@ class TestChainEvaluatorIntegration:
         assert "last_complete" in data
         assert "last_evaluation" in data
         assert "failed_items" in data
+
+
+# ---------------------------------------------------------------------------
+# Fix 5 (audit residual): A2 source-provenance block-scope parser
+# ---------------------------------------------------------------------------
+
+class TestSourceProvenanceBlockScope:
+    """check_source_provenance must find |source: anywhere in a finding block,
+    not only on the F[...] header line.
+
+    R18 (26.4.16 enterprise-ai-rollout) had findings like F[TA-1] with the
+    |source:independent-research| tag on a body line alongside |addresses:...|.
+    The pre-fix parser scanned only the header line and falsely flagged 15
+    findings as untagged.
+    """
+
+    def _wrap(self, findings_block: str) -> str:
+        return (
+            "## agents\n\n"
+            "### tech-architect\n\n"
+            "#### findings\n"
+            f"{findings_block}\n\n"
+            "## convergence\n"
+        )
+
+    def test_tag_on_body_line_is_detected(self):
+        """Multi-line finding with |source: tag on body line passes A2."""
+        content = self._wrap(
+            "F[TA-1] |T2-corroborated |COMPLIANCE GATE SEQUENCING — CRITICAL\n"
+            "Financial services AI tool selection is compliance-filtered first.\n"
+            "SOC2 Type II is necessary but insufficient — governance on top.\n"
+            "|source:independent-research| |addresses: Q6, C1, C2|"
+        )
+        result = gc.check_source_provenance(content)
+        assert result.passed, f"body-line tag should pass: {result.issues}"
+        assert result.details["untagged"] == []
+        assert result.details["total_findings"] == 1
+        assert result.details["tagged"] == 1
+
+    def test_untagged_finding_still_fails(self):
+        """Finding with no |source: or |src: tag anywhere must fail A2."""
+        content = self._wrap(
+            "F[TA-1] |T2-corroborated |some claim\n"
+            "Body text with no tag at all.\n"
+            "|addresses: Q1|"
+        )
+        result = gc.check_source_provenance(content)
+        assert not result.passed
+        assert "F[TA-1]" in result.details["untagged"]
+
+    def test_mixed_header_and_body_placement(self):
+        """Multiple findings with tags in different positions all count."""
+        content = self._wrap(
+            "F[TA-1] |T2 |header-placed |source:independent-research| |addresses: Q1|\n"
+            "\n"
+            "F[TA-2] |T3 |multi-line finding\n"
+            "Body line one.\n"
+            "|source:cross-agent| |addresses: Q2|\n"
+            "\n"
+            "F[TA-3] |T2 |src-variant\n"
+            "|src:agent-inference| |addresses: Q3|"
+        )
+        result = gc.check_source_provenance(content)
+        assert result.passed, f"issues: {result.issues}"
+        assert result.details["total_findings"] == 3
+        assert result.details["tagged"] == 3
+
+    def test_da_response_lines_not_counted_as_findings(self):
+        """Inline references like 'DA response to F[PS-1]' must not count."""
+        content = self._wrap(
+            "F[TA-1] |T2 |claim |source:independent-research| |addresses: Q1|\n"
+            "\n"
+            "DA response to F[PS-1]: this line mentions F[TA-2] but is not a finding.\n"
+        )
+        result = gc.check_source_provenance(content)
+        assert result.details["total_findings"] == 1, (
+            "Only the line-starting F[TA-1] is a primary finding"
+        )
+
+    def test_block_boundary_at_agent_subsection(self):
+        """A ### agent subsection ends the prior finding's block."""
+        content = (
+            "## agents\n\n"
+            "### tech-architect\n\n"
+            "#### findings\n"
+            "F[TA-1] |T2 |claim with no tag in body\n"
+            "Body text here.\n"
+            "\n"
+            "### product-strategist\n\n"
+            "#### findings\n"
+            "F[PS-1] |T2 |tagged |source:independent-research| |addresses: Q1|\n"
+            "\n"
+            "## convergence\n"
+        )
+        result = gc.check_source_provenance(content)
+        # F[TA-1] should be untagged because the ### product-strategist boundary
+        # terminates its block BEFORE the tagged F[PS-1] line.
+        assert "F[TA-1]" in result.details["untagged"]
+        assert "F[PS-1]" not in result.details["untagged"]
+
+    def test_r18_archive_a2_passes(self):
+        """Real R18 archive with body-tagged findings must now pass A2.
+
+        Regression test against the exact archive that triggered the audit.
+        """
+        archive = (
+            HOOKS_DIR.parent
+            / "teams/sigma-review/shared/archive/2026-04-16-enterprise-ai-rollout-workspace.md"
+        )
+        if not archive.exists():
+            pytest.skip("R18 archive not present")
+        content = archive.read_text(encoding="utf-8")
+        result = gc.check_source_provenance(content)
+        assert result.passed, (
+            f"R18 A2 still failing after block-scope fix: {result.issues}"
+        )
+        assert result.details["total_findings"] > 0
