@@ -279,116 +279,27 @@ complexity: tier-assessed: 2
 -> recommendation: RED. "never-advance=never-blocked" loophole exposed. Gates guard transitions not actions. Entire adversarial layer bypassed. Code competent (130 tests) but process invalid. See feedback_never-advance-loophole.md.
 AUDIT[26.4.13|sigma-predict-B7]: never-advance=never-blocked loophole — gate infrastructure guards phase transitions not agent actions. Lead dispatched implementation via SendMessage without advancing orchestrator, bypassing all hard blocks. Fix: default-deny code writes (L1) on Write/Edit tool, not pattern-matching on messages. |verdict:RED |source:sigma-audit |agents: lead,devils-advocate
 
-→ actions:
-→ new pattern observed → append with |agents and |signal
-→ pattern contradicted → move to ¬ section with explanation
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 1, outcome-2: 3, outcome-3: 0 — perfunctory risk: medium
-da-effectiveness: revision-rate: 0%, concession-type: n/a
-sources: T1:0 T2:0 T3:0
-xverify: used:3 failed:5 available:yes
-complexity: tier-assessed: 2
--> recommendation: Low agent convergence count — check if agents are stalling or timing out.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 4, outcome-2: 4, outcome-3: 1 — perfunctory risk: low
-da-effectiveness: revision-rate: 0%, concession-type: n/a
-sources: T1:0 T2:0 T3:0
-xverify: used:6 failed:4 available:yes
-complexity: tier-assessed: 2
--> recommendation: Low agent convergence count — check if agents are stalling or timing out.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 6, outcome-2: 6, outcome-3: 1 — perfunctory risk: low
-da-effectiveness: revision-rate: 0%, concession-type: n/a
-sources: T1:0 T2:0 T3:0
-xverify: used:11 failed:2 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 6, outcome-2: 6, outcome-3: 1 — perfunctory risk: low
-da-effectiveness: revision-rate: 100%, concession-type: genuine
-sources: T1:0 T2:0 T3:0
-xverify: used:11 failed:2 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 11, outcome-2: 14, outcome-3: 2 — perfunctory risk: low
-da-effectiveness: revision-rate: 100%, concession-type: genuine
-sources: T1:0 T2:0 T3:0
-xverify: used:13 failed:2 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 13, outcome-2: 16, outcome-3: 3 — perfunctory risk: low
-da-effectiveness: revision-rate: 100%, concession-type: genuine
-sources: T1:0 T2:0 T3:0
-xverify: used:13 failed:1 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
 
 ## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
 value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst, devils-advocate converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 13, outcome-2: 16, outcome-3: 3 — perfunctory risk: low
-da-effectiveness: revision-rate: 50%, concession-type: genuine
-sources: T1:0 T2:0 T3:0
-xverify: used:21 failed:3 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst, devils-advocate converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 13, outcome-2: 16, outcome-3: 3 — perfunctory risk: low
-da-effectiveness: revision-rate: 32%, concession-type: performative
-sources: T1:0 T2:0 T3:0
-xverify: used:20 failed:3 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst, devils-advocate converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 13, outcome-2: 16, outcome-3: 3 — perfunctory risk: low
-da-effectiveness: revision-rate: 40%, concession-type: performative
-sources: T1:0 T2:0 T3:0
-xverify: used:20 failed:3 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst, devils-advocate converged (0 timeouts)
-herding: CB fired, CB fired: yes
-hygiene: outcome-1: 13, outcome-2: 16, outcome-3: 3 — perfunctory risk: low
-da-effectiveness: revision-rate: 37%, concession-type: performative
-sources: T1:0 T2:0 T3:0
-xverify: used:19 failed:3 available:yes
-complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
-
-## Retro: R3 — Enterprise AI Tool Rollout Strategy for Financial Services C (2026-04-16)
-value: tech-architect, product-strategist, cognitive-decision-scientist, reference-class-analyst, devils-advocate converged (0 timeouts)
-herding: CB fired, CB fired: yes
+herding: not detected, CB fired: no
 hygiene: outcome-1: 13, outcome-2: 16, outcome-3: 4 — perfunctory risk: low
 da-effectiveness: revision-rate: 41%, concession-type: genuine
 sources: T1:0 T2:0 T3:0
 xverify: used:19 failed:2 available:yes
 complexity: tier-assessed: 2
--> recommendation: Review metrics within normal ranges — no immediate action.
+-> recommendation: No circuit breaker with 4+ agents — verify genuine divergence exists (workspace §circuit-breaker documents 2 substantive tensions found at R1; CB decision was correct).
+(backfill 26.4.16: deduplicated from 11 intermediate-Stop emissions; CB field corrected — workspace §circuit-breaker said "NOT triggered" but pre-fix literal-regex misread it as fired.)
+AUDIT-VERIFY[26.4.16]: sigma-review team symlink restored — store_team_pattern call now succeeds where it failed during initial audit run |source:fix-1-verify |agents: sigma-audit
+
+## R18 high-signal patterns (2026-04-16 enterprise-ai-rollout — promoted to team level per sigma-audit Fix 4)
+
+P[compliance-floor-x-adoption-likelihood|regulated-sector AI tool evaluation must pair compliance adequacy with realized adoption likelihood; compliance envelope alone insufficient|failure case: M365 Copilot -24.1 NPS + 64% inactive licensed users despite strong compliance docs — zero realized compliance value|pair compliance-check with effectiveness/adoption-check always|src:workspace-26.4.16-DA[#7]+F[TA-5]-revised|BELIEF:0.35-0.45 M365-specific|agents:tech-architect,devils-advocate|class:vendor-evaluation-heuristic|promoted:26.4.16]
+
+P[four-condition-adoption-model|enterprise tech rollout success requires four necessary conditions: data-readiness, use-case-fit, compliance-adequacy, adoption-quality|all four must pass; no strict sequential ordering but data-readiness most commonly skipped|failure mechanism: data-readiness omission drops ROI P from 0.50+ to 0.15-0.25 (Gartner 60%, Informatica 43%)|src:workspace-26.4.16-DA[#8]+F[PS-1]-revised|BELIEF:0.68 vs 0.72-three-gate|agents:product-strategist,tech-architect,cognitive-decision-scientist,reference-class-analyst|class:enterprise-rollout-framework|promoted:26.4.16]
+
+P[vendor-stats-as-independent-antipattern|vendor-published statistics (compliance docs, marketing benchmarks) accepted as independent evidence without effectiveness corroboration|mechanism: vendor docs create appearance of neutrality; actual adoption/NPS metrics sourced elsewhere|mitigation: pair every vendor-origin claim with independent adoption/effectiveness validation, discount T2→T3 by default|src:workspace-26.4.16-DA[#7]+RCA-evidence|class:anti-pattern|agents:devils-advocate,reference-class-analyst|promoted:26.4.16]
+
+→ actions:
+→ new pattern observed → append with |agents and |signal
+→ pattern contradicted → move to ¬ section with explanation

@@ -41,7 +41,12 @@ class TestAnalyzeWorkspace:
         assert metrics["cb_fired"] is False
 
     def test_detects_circuit_breaker(self):
-        content = "## convergence\nagent: ✓\n\nCircuit breaker fired due to herding"
+        # CB detection now reads the ## circuit-breaker section specifically,
+        # not literal substring matches elsewhere in the workspace.
+        content = (
+            "## convergence\nagent: ✓\n\n"
+            "## circuit-breaker\nCircuit breaker fired due to herding\n"
+        )
         metrics = retro.analyze_workspace(content)
         assert metrics["cb_fired"] is True
 
@@ -179,10 +184,118 @@ class TestWriteRetro:
 
 
 class TestDeduplication:
-    def test_same_hash_skips(self, tmp_path, monkeypatch):
-        """Running retro on identical workspace content should skip."""
+    def test_legacy_hash_file_is_discarded(self, tmp_path, monkeypatch):
+        """Legacy single-string hash format should migrate to empty dict."""
+        state = tmp_path / ".retro-last-hash"
+        state.write_text("abc123legacy", encoding="utf-8")
+        monkeypatch.setattr(retro, "RETRO_STATE", state)
+        assert retro.load_state() == {}
+
+    def test_empty_state_returns_empty_dict(self, tmp_path, monkeypatch):
+        state = tmp_path / ".retro-last-hash"
+        monkeypatch.setattr(retro, "RETRO_STATE", state)
+        assert retro.load_state() == {}
+
+    def test_json_state_round_trips(self, tmp_path, monkeypatch):
+        state = tmp_path / ".retro-last-hash"
+        monkeypatch.setattr(retro, "RETRO_STATE", state)
+        retro.save_state({"2026-04-16:foo": "abc", "2026-04-16:bar": "def"})
+        assert retro.load_state() == {"2026-04-16:foo": "abc", "2026-04-16:bar": "def"}
+
+
+# ---------------------------------------------------------------------------
+# Fix 5 (audit residual): CB-detection reads ## circuit-breaker section scope,
+# not literal substring matches throughout the workspace.
+# ---------------------------------------------------------------------------
+
+class TestCircuitBreakerDetection:
+    """detect_cb_fired must read the ## circuit-breaker section semantically."""
+
+    def test_not_triggered_returns_false(self):
+        """R18 regression: 'circuit breaker NOT triggered' must NOT report fired."""
+        content = (
+            "## circuit-breaker\n"
+            "R1 divergence detected: 2 substantive tensions found — "
+            "circuit breaker NOT triggered.\n"
+        )
+        assert retro.detect_cb_fired(content) is False
+
+    def test_section_with_fired_returns_true(self):
+        content = (
+            "## circuit-breaker\n"
+            "All agents agreed in R1 — CB fired to force dissent.\n"
+        )
+        assert retro.detect_cb_fired(content) is True
+
+    def test_missing_section_returns_false(self):
+        """No ## circuit-breaker section ⇒ not fired."""
+        content = "## convergence\nagent: ✓\n## findings\nbody"
+        assert retro.detect_cb_fired(content) is False
+
+    def test_literal_match_outside_section_ignored(self):
+        """Old-parser bug: 'circuit breaker' outside the section triggered false positive."""
+        content = (
+            "## notes\n"
+            "The circuit breaker design inspired this pattern.\n"
+            "## convergence\n"
+            "agent: ✓\n"
+        )
+        assert retro.detect_cb_fired(content) is False
+
+    def test_herding_detected_fires(self):
+        content = "## circuit-breaker\nHerding detected across 4 agents.\n"
+        assert retro.detect_cb_fired(content) is True
+
+    def test_not_needed_returns_false(self):
+        content = "## circuit-breaker\nNo divergence — CB not needed.\n"
+        assert retro.detect_cb_fired(content) is False
+
+
+# ---------------------------------------------------------------------------
+# Fix 5 (audit residual): emission gating prevents multi-Stop duplicate entries
+# ---------------------------------------------------------------------------
+
+class TestShouldEmit:
+    def test_archived_status_emits(self):
+        content = "## status: archived\n## convergence\n\n"
+        assert retro.should_emit(content) is True
+
+    def test_converged_active_emits(self):
+        content = "## status: active\n## convergence\nagent: ✓ done\n"
+        assert retro.should_emit(content) is True
+
+    def test_active_without_convergence_skipped(self):
+        content = "## status: active\n## convergence\n\n"
+        assert retro.should_emit(content) is False
+
+    def test_no_status_but_converged_emits(self):
+        """Backward compat: archives without ## status header but with ✓ work."""
+        content = "## convergence\nagent: ✓\n"
+        assert retro.should_emit(content) is True
+
+
+class TestTaskScopedDedup:
+    """Same (date, task) pair must emit at most once across multiple Stops."""
+
+    def _make_workspace(self, task, convergence="agent: ✓ done"):
+        return (
+            f"## task\n{task}\n\n"
+            f"## infrastructure\n\n"
+            f"## convergence\n{convergence}\n"
+            f"## circuit-breaker\nNot triggered.\n"
+        )
+
+    def _run_main(self, monkeypatch, stop_event):
+        """Call retro.main() without caring about SystemExit signaling."""
+        monkeypatch.setattr("sys.stdin", __import__("io").StringIO(stop_event))
+        try:
+            retro.main()
+        except SystemExit:
+            pass
+
+    def test_same_task_same_date_only_one_entry(self, tmp_path, monkeypatch):
+        """Intermediate Stop events during a review must not append duplicates."""
         ws = tmp_path / "workspace.md"
-        ws.write_text("## convergence\nagent: ✓ done\n", encoding="utf-8")
         patterns = tmp_path / "patterns.md"
         patterns.write_text("", encoding="utf-8")
         state = tmp_path / ".retro-last-hash"
@@ -191,13 +304,57 @@ class TestDeduplication:
         monkeypatch.setattr(retro, "PATTERNS", patterns)
         monkeypatch.setattr(retro, "RETRO_STATE", state)
 
-        import hashlib
-        convergence = "agent: ✓ done"
-        h = hashlib.sha256(convergence.encode()).hexdigest()[:16]
-        state.write_text(h, encoding="utf-8")
+        stop_event = json.dumps({"hook_event_name": "Stop"})
 
-        # The main() would sys.exit(0) on duplicate hash
-        # Test the logic directly
-        content_hash = hashlib.sha256(convergence.encode()).hexdigest()[:16]
-        last_hash = state.read_text().strip()
-        assert content_hash == last_hash  # Would skip
+        # First Stop: fresh task → 1 entry
+        ws.write_text(self._make_workspace("R18 enterprise-ai-rollout"), encoding="utf-8")
+        self._run_main(monkeypatch, stop_event)
+        assert patterns.read_text().count("## Retro:") == 1
+
+        # Second Stop: same task, convergence has more agents now → must skip
+        ws.write_text(
+            self._make_workspace(
+                "R18 enterprise-ai-rollout",
+                convergence="agent-a: ✓\nagent-b: ✓\nagent-c: ✓",
+            ),
+            encoding="utf-8",
+        )
+        self._run_main(monkeypatch, stop_event)
+        count_after = patterns.read_text().count("## Retro:")
+        assert count_after == 1, (
+            f"Second Stop on same task must not append; got {count_after} entries"
+        )
+
+    def test_different_task_same_date_emits(self, tmp_path, monkeypatch):
+        """Different review on the same day should still retro."""
+        ws = tmp_path / "workspace.md"
+        patterns = tmp_path / "patterns.md"
+        patterns.write_text("", encoding="utf-8")
+        state = tmp_path / ".retro-last-hash"
+
+        monkeypatch.setattr(retro, "WORKSPACE", ws)
+        monkeypatch.setattr(retro, "PATTERNS", patterns)
+        monkeypatch.setattr(retro, "RETRO_STATE", state)
+
+        stop_event = json.dumps({"hook_event_name": "Stop"})
+
+        ws.write_text(self._make_workspace("task-A different"), encoding="utf-8")
+        self._run_main(monkeypatch, stop_event)
+
+        ws.write_text(self._make_workspace("task-B different"), encoding="utf-8")
+        self._run_main(monkeypatch, stop_event)
+
+        count = patterns.read_text().count("## Retro:")
+        assert count == 2, f"Different tasks should both emit; got {count}"
+
+
+class TestSlugify:
+    def test_basic_slugify(self):
+        assert retro.slugify("Enterprise AI Rollout") == "enterprise-ai-rollout"
+
+    def test_special_chars_collapsed(self):
+        assert retro.slugify("Foo / Bar — Baz") == "foo-bar-baz"
+
+    def test_truncation(self):
+        s = retro.slugify("a" * 200)
+        assert len(s) == 50

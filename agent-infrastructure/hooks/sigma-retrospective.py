@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """Sigma-Review Retrospective — Stop hook.
 
-Fires after every Stop event. Checks if a sigma-review just completed
-(workspace has agent convergence markers). If so, analyzes the review
-and appends a retrospective to shared/patterns.md.
+Fires after every Stop event but emits at most ONCE per (date, task) review.
+Emits when the workspace either transitions to archived status OR has first-seen
+convergence markers for a given task. Dedup is keyed by (date, task_slug), not
+by convergence-content hash — convergence mutates across rounds, so the older
+hash-based dedup emitted 8+ times per review.
 
-Avoids duplicates by hashing the workspace convergence section.
+CB-fired detection reads the ## circuit-breaker section semantically, inverting
+on "NOT triggered" / "not fired" / "not detected" rather than matching any
+literal "circuit.?breaker" substring in the whole document.
 """
-import json
-import sys
-import os
-import re
 import hashlib
-from pathlib import Path
+import json
+import re
+import sys
 from datetime import datetime
+from pathlib import Path
 
 
 TEAM_DIR = Path.home() / ".claude" / "teams" / "sigma-review" / "shared"
@@ -40,19 +43,64 @@ def count_pattern(text, pattern):
     return len(re.findall(pattern, text, re.IGNORECASE))
 
 
+def slugify(text, max_len=50):
+    """Lowercase, non-alphanum→dash, trim, truncate — used for dedup key."""
+    s = re.sub(r"[^a-zA-Z0-9]+", "-", text.strip().lower()).strip("-")
+    return s[:max_len]
+
+
+def detect_cb_fired(content):
+    """Semantic CB-fired detection from the ## circuit-breaker section.
+
+    Reads the dedicated section and inverts on explicit negation rather than
+    matching substring occurrences throughout the whole workspace. Fixes the
+    26.4.16 R18 bug where "circuit breaker NOT triggered" was reported as fired.
+    """
+    cb_section = extract_section(content, "circuit-breaker")
+    if not cb_section:
+        return False
+    if re.search(r"\bnot\s+(?:triggered|fired|detected|needed)\b",
+                 cb_section, re.IGNORECASE):
+        return False
+    return bool(re.search(
+        r"(?:CB|circuit[\s-]?breaker)\s*(?:was\s+)?(?:fired|triggered)"
+        r"|herding\s+(?:detected|confirmed)",
+        cb_section, re.IGNORECASE,
+    ))
+
+
+def get_workspace_status(content):
+    """Return the value of `## status: <x>` header — 'active', 'archived', etc."""
+    m = re.search(r"^##\s*status:\s*(\S+)", content, re.MULTILINE | re.IGNORECASE)
+    return m.group(1).lower() if m else "unknown"
+
+
+def load_state():
+    """Load dedup state: {task_key: content_hash}. Migrates legacy single-hash."""
+    raw = read_file(RETRO_STATE).strip()
+    if not raw:
+        return {}
+    try:
+        parsed = json.loads(raw)
+        return parsed if isinstance(parsed, dict) else {}
+    except json.JSONDecodeError:
+        return {}  # legacy single-string hash format, discard
+
+
+def save_state(state):
+    RETRO_STATE.write_text(json.dumps(state, indent=2), encoding="utf-8")
+
+
 def analyze_workspace(content):
     """Extract metrics from workspace content."""
     convergence = extract_section(content, "convergence")
     infrastructure = extract_section(content, "infrastructure")
 
-    # Agent value-add: count agents that converged
     agents_converged = re.findall(r"^(\S+):\s*✓", convergence, re.MULTILINE)
     agents_timeout = re.findall(r"auto-shutdown", convergence, re.IGNORECASE)
 
-    # Herding: check for circuit breaker
-    cb_fired = bool(re.search(r"circuit.?breaker|CB.?fired|herding.?detected", content, re.IGNORECASE))
+    cb_fired = detect_cb_fired(content)
 
-    # Analytical hygiene: count outcomes
     outcome_1 = count_pattern(content, r"outcome.?1|revised from|CHECK CHANGES")
     outcome_2 = count_pattern(content, r"outcome.?2|confirmed.*risk|CHECK CONFIRMS")
     outcome_3 = count_pattern(content, r"outcome.?3|gap:|CHECK REVEALS")
@@ -66,28 +114,26 @@ def analyze_workspace(content):
         elif confirm_ratio > 0.6:
             perfunctory_risk = "medium"
 
-    # DA effectiveness: look for revision markers vs concession markers
     da_revisions = count_pattern(content, r"revised|changed|updated.*(?:after|following).*DA|challenge.?accepted")
     da_concessions = count_pattern(content, r"concede|accept.*challenge|acknowledge.*point")
     da_total = da_revisions + da_concessions
     revision_rate = round(da_revisions / da_total * 100) if da_total > 0 else 0
     concession_type = "genuine" if revision_rate > 40 else "performative" if da_total > 0 else "n/a"
 
-    # Source quality: count tier tags — match :T1/:T2/:T3 followed by non-alphanumeric
     t1_count = count_pattern(content, r":T1(?=[|\]\s(]|$)")
     t2_count = count_pattern(content, r":T2(?=[|\]\s(]|$)")
     t3_count = count_pattern(content, r":T3(?=[|\]\s(]|$)")
 
-    # XVERIFY usage
     xverify_used = count_pattern(content, r"XVERIFY\[")
     xverify_failed = count_pattern(content, r"XVERIFY-FAIL")
-    xverify_available = bool(re.search(r"ΣVerify.*available|sigma.?verify.*available", infrastructure, re.IGNORECASE))
+    xverify_available = bool(re.search(
+        r"ΣVerify.*available|sigma.?verify.*available",
+        infrastructure, re.IGNORECASE,
+    ))
 
-    # Complexity: look for TIER assessment
     tier_match = re.search(r"TIER-(\d)", content)
     tier_assessed = int(tier_match.group(1)) if tier_match else 0
 
-    # Task slug
     task_match = re.search(r"##\s*task\s*\n+(.*?)(?:\n|$)", content, re.IGNORECASE)
     task_slug = task_match.group(1).strip()[:60] if task_match else "unknown"
 
@@ -155,39 +201,48 @@ complexity: tier-assessed: {metrics['tier_assessed']}
         f.write(entry)
 
 
+def should_emit(content):
+    """Gate: only emit at review completion, not on every intermediate Stop.
+
+    Completion = workspace ## status is archived OR convergence has ✓ markers.
+    Intermediate rounds have evolving convergence — we rely on the task-scoped
+    dedup in main() to prevent those from appending duplicate entries.
+    """
+    status = get_workspace_status(content)
+    convergence = extract_section(content, "convergence")
+    return status == "archived" or "✓" in convergence
+
+
 def main():
     try:
         data = json.loads(sys.stdin.read())
     except (json.JSONDecodeError, EOFError):
         data = {}
 
-    # Quick exit if not a Stop event
     if data.get("hook_event_name") != "Stop":
         sys.exit(0)
 
-    # Check if workspace exists and has convergence markers
     workspace_content = read_file(WORKSPACE)
     if not workspace_content:
         sys.exit(0)
 
-    convergence = extract_section(workspace_content, "convergence")
-    if "✓" not in convergence:
+    if not should_emit(workspace_content):
         sys.exit(0)
 
-    # Dedup: hash convergence section, skip if already retro'd
-    content_hash = hashlib.sha256(convergence.encode()).hexdigest()[:16]
-    last_hash = read_file(RETRO_STATE).strip()
-    if content_hash == last_hash:
-        sys.exit(0)
-
-    # Run retrospective
     metrics = analyze_workspace(workspace_content)
+    date = datetime.now().strftime("%Y-%m-%d")
+    task_key = f"{date}:{slugify(metrics['task_slug'])}"
+
+    state = load_state()
+    convergence = extract_section(workspace_content, "convergence")
+    content_hash = hashlib.sha256(convergence.encode()).hexdigest()[:16]
+    if state.get(task_key) is not None:
+        sys.exit(0)  # already retro'd this (date, task) pair
+
     write_retro(metrics)
+    state[task_key] = content_hash
+    save_state(state)
 
-    # Save hash to prevent duplicate retros
-    RETRO_STATE.write_text(content_hash, encoding="utf-8")
-
-    # Non-blocking output
     print(json.dumps({"continue": True}))
 
 
