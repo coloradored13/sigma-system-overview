@@ -152,6 +152,9 @@ DS[]: typography: Inter 14/16/20 | colors: slate-50 through slate-900
 ## interface-contracts
 IC[1]: POST /api/items |type:API |consumer:implementation-engineer
 
+## meta
+plan-exit-gate: PASS
+
 ## build-status
 CHECKPOINT[implementation-engineer]: app.py,models.py |functions:3/5 |interfaces-matched:yes |drift:none
 
@@ -386,6 +389,34 @@ class TestV17PlanLock:
         ws = BUILD_WORKSPACE.replace("IC[1]", "no-ic")
         result = gate_checks.check_plan_lock(ws)
         assert result.passed is False
+
+    def test_pass_with_exit_gate(self):
+        """V17: passes when ADR, DS, IC AND plan-exit-gate: PASS are all present."""
+        result = gate_checks.check_plan_lock(BUILD_WORKSPACE)
+        assert result.passed is True
+        assert result.details["plan_exit_gate_pass"] is True
+
+    def test_fail_missing_exit_gate(self):
+        """V17: fails when plan-exit-gate is missing."""
+        ws = BUILD_WORKSPACE.replace("plan-exit-gate: PASS", "")
+        result = gate_checks.check_plan_lock(ws)
+        assert result.passed is False
+        assert result.details["plan_exit_gate_pass"] is False
+        assert any("Plan exit-gate not marked as PASS" in i for i in result.issues)
+
+    def test_fail_exit_gate_pending(self):
+        """V17: fails when plan-exit-gate is PENDING (not PASS)."""
+        ws = BUILD_WORKSPACE.replace("plan-exit-gate: PASS", "plan-exit-gate: PENDING")
+        result = gate_checks.check_plan_lock(ws)
+        assert result.passed is False
+        assert result.details["plan_exit_gate_pass"] is False
+
+    def test_exit_gate_case_insensitive(self):
+        """V17: plan-exit-gate check is case-insensitive."""
+        ws = BUILD_WORKSPACE.replace("plan-exit-gate: PASS", "plan-exit-gate: pass")
+        result = gate_checks.check_plan_lock(ws)
+        assert result.passed is True
+        assert result.details["plan_exit_gate_pass"] is True
 
 
 class TestV19Checkpoint:

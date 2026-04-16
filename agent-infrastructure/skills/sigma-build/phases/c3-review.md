@@ -522,7 +522,7 @@ Run `python3 ~/.claude/hooks/chain-evaluator.py evaluate` as formal pre-close ve
 
 ### Step 18: Shutdown
 
-**Only execute after the orchestrator has returned is_terminal: true.**
+**Only execute Step 18 after the chain evaluator reports all items complete. Run `python3 ~/.claude/hooks/chain-evaluator.py status` to verify.**
 
 #### 18a: Verify Terminal State
 ```bash

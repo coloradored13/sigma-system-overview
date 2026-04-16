@@ -678,12 +678,15 @@ def check_exit_gate_format(content: str) -> CheckResult:
 
 
 def check_plan_lock(content: str) -> CheckResult:
-    """V17: BUILD plan-lock completeness — ADR, DS, IC sections populated."""
+    """V17: BUILD plan-lock completeness — ADR, DS, IC sections populated + plan-exit-gate PASS."""
     sections = parse_sections(content)
 
     has_adrs = bool(re.search(r"ADR\[\d+\]", sections.get("architecture-decisions", "")))
     has_ds = bool(re.search(r"DS\[", sections.get("design-system", "")))
     has_ic = bool(re.search(r"IC\[\d+\]", sections.get("interface-contracts", "")))
+
+    # Check for plan-exit-gate: PASS (case-insensitive)
+    has_plan_exit_gate = bool(re.search(r"plan-exit-gate:\s*PASS", content, re.IGNORECASE))
 
     # Check for belief state confirming plan ready
     has_belief = bool(re.search(r"BELIEF\[plan.*P=0\.\d{2}", content))
@@ -695,6 +698,8 @@ def check_plan_lock(content: str) -> CheckResult:
         missing.append("## design-system (no DS[] entries)")
     if not has_ic:
         missing.append("## interface-contracts (no IC[] entries)")
+    if not has_plan_exit_gate:
+        missing.append("Plan exit-gate not marked as PASS")
 
     return CheckResult(
         name="V17-plan-lock-completeness",
@@ -703,6 +708,7 @@ def check_plan_lock(content: str) -> CheckResult:
             "adrs_present": has_adrs,
             "design_system_present": has_ds,
             "interface_contracts_present": has_ic,
+            "plan_exit_gate_pass": has_plan_exit_gate,
             "belief_state_present": has_belief,
         },
         issues=[f"Plan lock incomplete: {m}" for m in missing],
