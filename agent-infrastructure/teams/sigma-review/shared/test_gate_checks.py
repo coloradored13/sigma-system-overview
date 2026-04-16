@@ -14,17 +14,29 @@ sys.path.insert(0, _shared_dir)
 
 import gate_checks
 
-# orchestrator-config.py has a hyphen — use importlib
+# orchestrator-config.py was deleted in the atomic checklist migration.
+# Import conditionally — tests that depend on it are skipped.
 import importlib.util
 
-_orch_spec = importlib.util.spec_from_file_location(
-    "orchestrator_config",
-    os.path.join(_shared_dir, "orchestrator-config.py"),
+_orch_path = os.path.join(_shared_dir, "orchestrator-config.py")
+_HAS_ORCHESTRATOR = os.path.exists(_orch_path)
+_orch_mod = None
+build_analyze_workflow = None
+build_build_workflow = None
+
+if _HAS_ORCHESTRATOR:
+    _orch_spec = importlib.util.spec_from_file_location(
+        "orchestrator_config", _orch_path,
+    )
+    _orch_mod = importlib.util.module_from_spec(_orch_spec)
+    _orch_spec.loader.exec_module(_orch_mod)
+    build_analyze_workflow = _orch_mod.build_analyze_workflow
+    build_build_workflow = _orch_mod.build_build_workflow
+
+requires_orchestrator = pytest.mark.skipif(
+    not _HAS_ORCHESTRATOR,
+    reason="orchestrator-config.py deleted — atomic checklist model",
 )
-_orch_mod = importlib.util.module_from_spec(_orch_spec)
-_orch_spec.loader.exec_module(_orch_mod)
-build_analyze_workflow = _orch_mod.build_analyze_workflow
-build_build_workflow = _orch_mod.build_build_workflow
 
 # ---------------------------------------------------------------------------
 # Fixtures: minimal workspace content for targeted tests
@@ -547,6 +559,7 @@ class TestBeliefComputation:
 # ---------------------------------------------------------------------------
 
 
+@requires_orchestrator
 class TestOrchestratorGuards:
     """Verify that guards block transitions when validation flags are missing."""
 
@@ -870,6 +883,7 @@ WORKSPACE_DA_SECTION_ONLY = MINIMAL_WORKSPACE.replace(
 )
 
 
+@requires_orchestrator
 class TestAdvanceNoCrash:
     """Regression: Bug 1 — orch.advance must not crash with AttributeError on _current_phase."""
 
@@ -957,6 +971,7 @@ class TestBeliefOutcomeFuzzyFlag:
 # Regression tests for orchestrator code review findings (2026-04-09)
 # ---------------------------------------------------------------------------
 
+@requires_orchestrator
 class TestTransitionGuardCoverage:
     """Regression: H1/H2/H3 — guard gaps and unbounded loops."""
 
@@ -1017,6 +1032,7 @@ class TestTransitionGuardCoverage:
             "review_hard_cap should force to synthesis at round >= 5"
 
 
+@requires_orchestrator
 class TestCheckpointResilience:
     """Regression: H4/H5/H6 — atomic writes, corrupt recovery, mode validation."""
 
@@ -1075,6 +1091,7 @@ class TestCheckpointResilience:
         os.unlink(cp)
 
 
+@requires_orchestrator
 class TestAutoValidatePipeline:
     """Regression: C1/C2/H7 — context injection, error handling, cb mapping."""
 

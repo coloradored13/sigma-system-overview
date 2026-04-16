@@ -654,6 +654,18 @@ def enforce_stop(data: dict) -> dict:
     result = check_monotonicity(result)
     write_evaluation_to_workspace(result)
 
+    # Update state hash to reflect post-write workspace content.
+    # Without this, the idempotency guard fails on the next call because
+    # write_evaluation_to_workspace changed the workspace content.
+    try:
+        post_write_content = gc.read_workspace()
+        post_write_hash = _content_hash(post_write_content)
+        state = _load_state()
+        state["last_content_hash"] = post_write_hash
+        _save_state(state)
+    except (FileNotFoundError, OSError):
+        pass
+
     # Informational messages only — do NOT phrase as demands or instructions.
     # The lead runs chain-evaluator.py evaluate explicitly before declaring done.
     if result.complete:
