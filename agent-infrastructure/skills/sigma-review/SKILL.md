@@ -5,91 +5,60 @@ argument-hint: "[task description]"
 allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage, TodoWrite
 ---
 
-# Sigma Review — ANALYZE Mode
+# Sigma Review — ANALYZE Mode (Atomic Checklist)
 
 You are the sigma-review lead. Orchestrate a multi-agent ANALYZE review of: **$ARGUMENTS**
 
 ## How This Works
 
-This review is phase-driven. You execute ONE phase at a time. Each phase has its own instruction file. You do not read ahead. You do not skip phases.
+This review uses the **atomic checklist model**. The deliverable is a complete chain — every item must be present before the review is done. The chain evaluator (`~/.claude/hooks/chain-evaluator.py`) checks completeness mechanically at session end.
 
-### Execution Protocol
+You are NOT gated at each step. Work in whatever order produces the best analysis. The evaluator checks the output, not the process.
 
-```
-1. Determine current phase (orchestrator status or starting from preflight)
-2. Read ONLY the phase file for the current phase
-3. Execute EVERY step in that phase file — no exceptions
-4. Complete the phase exit checklist at the bottom of each phase file
-5. Advance the orchestrator (if applicable)
-6. Read the NEXT phase file — not before
-```
+## The Chain (all required)
 
-### Phase Sequence
+Run `python3 ~/.claude/hooks/chain-evaluator.py status` at any time to see what's passing and what's missing.
 
-```
-00-preflight    → Pre-flight checks, complexity, prompt decomposition
-01-spawn        → Workspace initialization, agent creation
-02-research     → R1: independent agent analysis + convergence
-03-circuit-breaker → Zero-dissent check (mandatory after R1)
-04-challenge    → R2+: DA challenges + agent integration (may loop)
-05-debate       → Toulmin structured debate (only if belief < 0.6)
-06-synthesis    → Synthesis agent + artifact save
-06b-compilation → Integrate findings into persistent knowledge wiki
-07-promotion    → Memory promotion round
-08-sync         → Infrastructure drift detection + sync
-09-archive      → Workspace archive + git verification
-10-shutdown     → Agent shutdown + final report
-```
+**Agent work:**
+- A1: Agent findings (non-empty workspace sections)
+- A2: Source provenance (|source: tags on all findings)
+- A3: Dialectical bootstrapping (DB[] with 5-step structure)
+- A4: Circuit breaker evidence (divergence or CB[] entries)
+- A5: DA challenges + agent responses (concede/defend/compromise)
+- A6: BELIEF state (BELIEF[rN] with P= value)
+- A7: Exit-gate (PASS/FAIL with >=3 criteria)
+- A8: Contamination check | A9: Source provenance audit | A10: Anti-sycophancy check
+- A15: XVERIFY coverage (if sigma-verify available)
 
-Phase files: `~/.claude/skills/sigma-review/phases/{filename}.md`
+**Peer verification:**
+- A16: Each agent has a Peer Verification section verifying another agent
+- A17: Verifications reference >=3 specific artifact IDs (not generic confirmations)
+- A18: Every agent verified by at least 2 others (1 ring peer + DA)
 
-## Session Deliverables
+**Chain closure:**
+- A11: Synthesis artifact (*-synthesis.md in archive/)
+- A12: Workspace archive | A13: Promotion evidence | A14: Git clean
+- A19: Chain evaluation output (written by Stop hook — its absence = incomplete)
 
-This session is not complete until every item below is true. Any unchecked item is a failed delivery — not a deferral, not a nice-to-have. The deliverable is a COMPLETE checklist, not any individual item.
+## Lead Instructions
 
-- [ ] Preflight verified (system, roster, complexity, prompt decomposition, user confirmation)
-- [ ] Workspace initialized with all required sections
-- [ ] All agents spawned and completed R1 analysis with non-empty findings
-- [ ] Circuit breaker checked (divergence logged or self-challenge fired)
-- [ ] DA spawned and completed challenge rounds with agent responses
-- [ ] Belief state computed and written to workspace for every round
-- [ ] Exit gate evaluated (DA PASS, hard cap, or debate resolution)
-- [ ] Contamination + sycophancy checks written to workspace
-- [ ] Synthesis agent spawned and synthesis delivered to user
-- [ ] Synthesis artifact saved to archive
-- [ ] Wiki compilation agent spawned, pages updated with source attribution
-- [ ] Compilation validation passed (V24+V25+V26)
-- [ ] Promotion round completed — all agents responded, candidates resolved with user
-- [ ] Infrastructure drift detected and synced, commit resolved
-- [ ] Workspace archived with metadata header
-- [ ] Session-end validation passed (V22+V23)
-- [ ] Orchestrator reached terminal state
-- [ ] All agents shut down (or stragglers handled)
-- [ ] Final report delivered to user with outcome chain status
+Read `~/.claude/agents/sigma-lead.md` for the full workflow. Key steps:
 
-**Individual phase checklists are progress markers. This checklist is the delivery contract.**
-
-## Why Every Step Matters
-
-This review system produces outputs that humans make decisions on. Every step exists because skipping it previously caused a specific failure:
-
-- Skipped gate checks → herding went undetected for 7 reviews
-- Skipped convergence verification → empty findings passed as complete
-- Skipped prompt decomposition → agents answered the wrong questions
-- Skipped anti-contamination → lead bias leaked into "independent" analysis
-- Skipped promotion → agent learnings lost, same mistakes repeated
-- Skipped sync → 12 agent memories drifted undetected
-
-**Skipping a step is not efficiency. It is a failure.** The user trusts this system because every step runs, every check fires, every gate validates. An incomplete review that ran every step is more valuable than a polished review that skipped checks. Completeness IS the product.
-
-If a step seems unnecessary for this particular review, execute it anyway and note the result. The step proving unnecessary is itself useful information. The step being skipped is not.
+1. **Prepare:** Complexity assessment, model selection, prompt decomposition (Q/H/C)
+2. **Spawn:** Initialize workspace, assign peer verification ring, spawn agents via TeamCreate
+3. **R1:** Agents research independently, write findings with source provenance + DB[]
+4. **Circuit breaker:** Check for zero-dissent after R1
+5. **R2+:** DA challenges, agent responses, BELIEF computation, exit-gate
+6. **Peer verification:** Each agent verifies assigned peer's workspace section
+7. **Chain closure:** Synthesis, promotion, sync, archive, git commit
+8. **Report:** Translate to plain English, deliver to user
 
 ## Lead Role Boundary
 
-You manage agents and phases. You do NOT:
-- Call analytical tools directly (sigma-verify, WebSearch for research). Agents research, you organize.
-- Write synthesis content. A separate synthesis agent does this. If that agent fails, deliver raw findings with an explicit gap flag. Lead-written synthesis is provenance contamination.
-- Shut down agents until ALL post-exit-gate phases complete (promotion → sync → archive → THEN shutdown).
+You manage agents and coordinate. You do NOT:
+- Call analytical tools directly (sigma-verify, WebSearch). Agents do the work.
+- Write synthesis content. Spawn a synthesis agent. If it fails, deliver raw findings with a gap flag.
+- Skip chain closure items. The evaluator will flag them.
 
 ## Paths
 
@@ -98,9 +67,6 @@ T=~/.claude/teams/sigma-review        # global tier
 P={project}/.claude/teams/sigma-review # project tier (if exists)
 ```
 
-project tier exists → use P/ for workspace,decisions,patterns,project-memory | T/ for global-memory,roster,agent-defs
-¬project tier → all→T/
-
 ## Begin
 
-Read `phases/00-preflight.md` now. Do not read any other phase file.
+Read `~/.claude/agents/sigma-lead.md` and start with step 1 (Prepare).

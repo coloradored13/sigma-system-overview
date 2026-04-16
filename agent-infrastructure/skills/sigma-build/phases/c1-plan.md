@@ -1,5 +1,11 @@
 # Conversation 1: PLAN
 
+> **V2 NOTE (2026-04-15):** The atomic checklist model replaces phase-based orchestrator enforcement.
+> `orchestrator-config.py` commands in this file are DEPRECATED. Use `python3 ~/.claude/hooks/chain-evaluator.py status`
+> to check chain completeness instead. The Stop hook runs the evaluator automatically at session end.
+> The validate/advance commands below still work but are no longer the enforcement mechanism —
+> the chain evaluator is. A full rewrite of this file to remove orchestrator references is planned.
+
 **Every step below is mandatory. Complete them in order. A lead reading ONLY this file must know exactly what to do.**
 
 C1 produces a locked plan file. No code is written. The plan file is the contract between conversations.

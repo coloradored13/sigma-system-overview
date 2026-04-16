@@ -10,9 +10,8 @@
 self-sufficient: read own state from paths.
 1→sigma-comm.md — comms protocol
 2→memory.md — identity+findings+calibration
-3→inbox — process unread→summarize(ΣComm)→clear
-4→workspace.md — task+peer-findings
-5→decisions.md — settled choices
+3→workspace.md — task+peer-findings
+4→decisions.md — settled choices
 
 ## Comms
 peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-questions | workspace→YOUR section, ΣComm
@@ -47,10 +46,7 @@ R[] entries with market data, prices, statistics, or any time-sensitive facts MU
 2. store_agent_memory(tier:global, agent:{name}, team:sigma-review) → domain patterns + research (filtered per rules above)
 3. store_team_decision(by:{name}, weight:primary|advisory, team:sigma-review) → domain decisions
 4. store_team_pattern(team:sigma-review, agents:[names]) → cross-agent patterns
-persist complete → 5. declare ✓ in workspace + SendMessage to lead
-6. WAIT for promotion-round message from lead (do NOT terminate)
-7. promotion (when lead signals) → execute ## Promotion
-8. WAIT for shutdown_request → respond → terminate
+5. persist complete → declare ✓ in workspace + SendMessage to lead
 
 ## Promotion (when lead signals promotion-round)
 
@@ -99,21 +95,45 @@ If your analysis hits a domain gap that a skill reference could fill:
   cite: |source:skill({skill}/{file}):T{tier}|
 This is opt-in. Most reviews don't need it — your memory and research are primary.
 
+## Peer Verification (mandatory — after completing your own findings)
+!purpose: interlocking completeness — your deliverable includes verification of a peer's work
+!when: after your findings + analytical hygiene are complete, before declaring convergence
+
+Your spawn prompt assigns you a peer to verify (e.g., "verify {peer-name}").
+Read {peer-name}'s workspace section and write a verification section:
+
+```
+### Peer Verification: {your-name} verifying {peer-name}
+
+Checklist items verified against {peer-name}'s workspace section:
+
+- DB[] structure: [PASS|FAIL] — checked {N} entries
+  - {entry-id}: 5-step present (initial/assume-wrong/counter/re-estimate/reconciled)
+  - {entry-id}: FAIL — missing {step} step
+- Source provenance: [PASS|FAIL] — {N}/{M} findings tagged
+  - Load-bearing findings with tier: {list with IDs}
+  - Missing tier: {list with IDs}
+- XVERIFY: [PASS|FAIL|N/A]
+  - {finding-id}: XVERIFY[provider:model] present
+  - {finding-id}: load-bearing, no XVERIFY — GAP
+- Analytical substance: [PASS|CONCERN]
+  - Findings address Q[] items: {which ones, by ID}
+  - Concern: {finding-id} appears to echo prompt language without independent evidence
+
+Overall: {peer-name}'s section is [COMPLETE|INCOMPLETE — {missing items}]
+```
+
+!rule: reference SPECIFIC artifact IDs (DB[], F[], XVERIFY[], H[]) — generic "looks good" fails the chain evaluator's specificity check (A17)
+!rule: if peer's section is INCOMPLETE, flag the specific gaps — the lead routes remediation
+!rule: your OWN chain is incomplete without this section — verification is not optional
+
 ## Convergence
-When done, write your status to workspace convergence section:
+When findings + peer verification are complete, write status to workspace:
 ```
-{name}: ✓ {summary} |{key-findings} |→ {what-you-can-do-next}
+{name}: ✓ {summary} |{key-findings} |peer-verified:{peer-name} |→ {what-you-can-do-next}
 ```
-
-!WAIT: do NOT terminate after declaring convergence.
-remain active → wait for lead messages:
-  "promotion-round" → execute ## Promotion section below
-  "shutdown_request" → respond with shutdown_response → terminate
-
-!TIMEOUT: if no lead message within 5 minutes after convergence:
-  append to workspace convergence: "{name}: auto-shutdown (timeout)"
-  SendMessage(recipient:lead): "! auto-shutdown: timeout |→ re-spawn if needed"
-  terminate
+SendMessage(recipient:lead): same ΣComm string
+Then wait for lead messages (promotion-round, shutdown_request) or auto-shutdown after 5 min timeout.
 
 ## Analytical Hygiene (mandatory — all reviews, all builds)
 

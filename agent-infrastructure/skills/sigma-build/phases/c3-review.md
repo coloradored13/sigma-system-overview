@@ -1,5 +1,9 @@
 # Conversation 3: REVIEW
 
+> **V2 NOTE (2026-04-15):** The atomic checklist model replaces phase-based orchestrator enforcement.
+> `orchestrator-config.py` commands in this file are DEPRECATED. Use `python3 ~/.claude/hooks/chain-evaluator.py status`
+> to check chain completeness. The Stop hook runs the evaluator automatically at session end.
+
 **Every step below is mandatory. Skipping any step = process failure. This is the longest conversation because it covers both review and close-out.**
 
 **Plan file location:** skill passes `{plan_file}` path. Format: `~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}.plan.md`

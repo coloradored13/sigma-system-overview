@@ -17,7 +17,7 @@ You are the sigma-build lead. Orchestrate a multi-agent BUILD of: **$ARGUMENTS**
 
 ## Architecture
 
-Each build runs across 3 separate conversations. The conversation boundary IS the gate — you cannot skip DA challenge because Phase 2 requires a plan file that only exists after DA exit-gate PASS.
+Each build runs across 3 separate conversations. The conversation boundary provides scope isolation. The **chain evaluator** (`~/.claude/hooks/chain-evaluator.py`) checks completeness at the end of each conversation.
 
 ```
 Conversation 1: PLAN    →  preflight, spawn, plan design, DA + build-track challenge → locked plan file
@@ -28,6 +28,7 @@ Conversation 3: REVIEW  →  DA + plan-track review build, code fixes, synthesis
 **Plan file** bridges conversations: `~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}.plan.md`
 **sigma-mem** bridges institutional memory (calibration, patterns, lessons)
 **Scratch workspace** is ephemeral per conversation: `builds/{build-id}/c{N}-scratch.md`
+**Chain evaluator** runs at session end (Stop hook) and can be invoked mid-session: `python3 ~/.claude/hooks/chain-evaluator.py status`
 
 ## Routing
 
@@ -180,6 +181,8 @@ Each conversation (C1/C2/C3) has its own deliverable checklist below. A conversa
 
 **Individual phase checklists within each conversation are progress markers. These checklists are the delivery contracts.**
 
+**Chain evaluator:** Before ending each conversation, run `python3 ~/.claude/hooks/chain-evaluator.py evaluate`. The Stop hook runs it automatically, but checking before you declare done catches gaps while you can still address them. BUILD-specific chain items (B1-B4) are checked alongside the ANALYZE items (A1-A19).
+
 ## Begin
 
-Execute the routing logic above. Read ONLY the phase file for the determined conversation. Do not read any other phase file.
+Execute the routing logic above. Read the phase file for the determined conversation.

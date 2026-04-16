@@ -12,11 +12,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Read|Bash|Write|Edit",
+        "matcher": "Write|Edit|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/phase-compliance-enforcer.py",
+            "command": "python3 ~/.claude/hooks/phase-gate.py",
             "timeout": 5
           }
         ]
@@ -40,22 +40,17 @@
             "type": "command",
             "command": "python3 ~/.claude/hooks/sigma-retrospective.py",
             "timeout": 30
-          },
-          {
-            "type": "command",
-            "command": "python3 ~/.claude/hooks/phase-compliance-enforcer.py",
-            "timeout": 5
           }
         ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|Bash",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 ~/.claude/hooks/phase-compliance-enforcer.py",
+            "command": "python3 ~/.claude/hooks/phase-gate.py",
             "timeout": 5
           }
         ]
