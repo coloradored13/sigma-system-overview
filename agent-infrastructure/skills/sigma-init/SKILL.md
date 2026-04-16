@@ -109,10 +109,9 @@ Workspace template (shared/workspace.md):
 ## open-questions
 ```
 
-Also copy orchestrator infrastructure if available:
+Also copy gate checks and protocol infrastructure if available:
 ```bash
 SRC=~/Projects/sigma-system-overview/agent-infrastructure/teams/sigma-review/shared
-[ -f "$SRC/orchestrator-config.py" ] && cp "$SRC/orchestrator-config.py" .claude/teams/sigma-review/shared/
 [ -f "$SRC/gate_checks.py" ] && cp "$SRC/gate_checks.py" .claude/teams/sigma-review/shared/
 [ -f "$SRC/protocols.md" ] && cp "$SRC/protocols.md" .claude/teams/sigma-review/shared/
 ```
@@ -164,7 +163,7 @@ recall via sigma-mem MCP auto-detects the project tier.
   - shared/wiki/INDEX.md exists
   - shared/archive/ directory exists
   - shared/workspace.md has required sections (## status, ## task, ## infrastructure, ## findings, ## convergence, ## promotion)
-  - orchestrator-config.py exists (warn if missing — phase advancement won't work)
+  - gate_checks.py exists (warn if missing — chain evaluator checks won't work)
 4→report any issues
 
 ## Step 4: Report

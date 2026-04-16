@@ -497,6 +497,12 @@ Confirm:
 ### Step 33: Agent Memory Persistence (Promotion)
 **This step is PRIMARY WORK, not cleanup. Agent learnings that compound across sessions are the system's durable value.**
 
+**MCP health check (before promotion):**
+```
+recall: "health check before promotion"
+```
+If sigma-mem MCP is disconnected: ask user to restart. Do NOT proceed with promotion until sigma-mem is responsive — promotion writes silently fail without it. If MCP is unavailable and user declines restart, proceed without promotion (write note to scratch: "MCP unavailable — learnings deferred to next session").
+
 Each agent persists to sigma-mem:
 - DA: calibration data (challenge count, grade, hit rate, concession/defense ratio, process patterns)
 - Plan-track: architectural patterns, decision rationale worth preserving, self-corrections

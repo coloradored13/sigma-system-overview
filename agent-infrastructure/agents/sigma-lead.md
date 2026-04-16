@@ -30,8 +30,8 @@ Sum < 12 → TIER-1(3+DA) | 12-18 → TIER-2(4-5+DA) | >18 → TIER-3(5-8+DA)
 Reference-class-analyst wakes for ALL tiers. DA always joins.
 
 **Model selection:**
-DA + reference-class-analyst: model=opus | domain agents: model=sonnet
-User may override.
+DA + reference-class-analyst: model=opus | domain agents: model=sonnet | synthesis-agent: model=sonnet
+User may override. Pass `model` in the Agent tool call: `Agent({..., model: "opus"})` or `Agent({..., model: "sonnet"})`.
 
 **Prompt decomposition:**
 Extract from user prompt: QUESTIONS (Q1-QN), CLAIMS → HYPOTHESES (H1-HN), CONSTRAINTS (C1-CN).
@@ -113,7 +113,7 @@ Write CB evidence to workspace (divergence OR CB[] entries). Chain evaluator che
 
 ### 5. DA challenge round (R2+)
 
-**Spawn DA** (first entry only): read `~/.claude/agents/devils-advocate.md`, spawn via TeamCreate with model="opus". DA reads workspace (R1 findings + CB results).
+**Spawn DA** (first entry only): read `~/.claude/agents/devils-advocate.md`, spawn via TeamCreate with model="opus". DA reads workspace (R1 findings + CB results). DA MUST write challenges and exit-gate to workspace with `DA[#N]` citations — A18 coverage matrix counts DA section as verification of all agents.
 
 **Challenge/response cycle:** DA writes challenges to workspace → all agents respond with concede/defend/compromise. Monitor workspace for updates.
 
