@@ -108,3 +108,28 @@ jobs:
         run: |
           pytest agent-infrastructure/hooks/tests/ \
             -q --override-ini="addopts="
+
+  submodule-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Ruff check across submodules
+        run: |
+          set -e
+          for sub in hateoas-agent sigma-mem sigma-verify; do
+            echo "── $sub"
+            (cd "$sub" && ruff check src/ tests/ && ruff format --check src/ tests/)
+          done
