@@ -17,7 +17,7 @@ You are the sigma-build lead. Orchestrate a multi-agent BUILD of: **$ARGUMENTS**
 
 ## Architecture
 
-Each build runs across 3 separate conversations. The conversation boundary provides scope isolation. The **chain evaluator** (`~/.claude/hooks/chain-evaluator.py`) checks completeness at the end of each conversation.
+Each build runs across 3 separate conversations. Each conversation is a recipe — follow the steps in order, each step uses the output of the previous one. The conversation boundary enforces scope isolation. The **chain evaluator** (`~/.claude/hooks/chain-evaluator.py`) verifies the final result: followed steps + completed chain + quality output.
 
 ```
 Conversation 1: PLAN    →  preflight, spawn, plan design, DA + build-track challenge → locked plan file

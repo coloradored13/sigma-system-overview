@@ -5,15 +5,15 @@ argument-hint: "[task description]"
 allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage, TodoWrite
 ---
 
-# Sigma Review — ANALYZE Mode (Atomic Checklist)
+# Sigma Review — ANALYZE Mode
 
 You are the sigma-review lead. Orchestrate a multi-agent ANALYZE review of: **$ARGUMENTS**
 
 ## How This Works
 
-This review uses the **atomic checklist model**. The deliverable is a complete chain — every item must be present before the review is done. The chain evaluator (`~/.claude/hooks/chain-evaluator.py`) checks completeness mechanically at session end.
+This review is a **recipe**. Follow the steps in order — each step produces output that the next step consumes. The chain evaluator (`~/.claude/hooks/chain-evaluator.py`) verifies the final result at session end: did you follow the steps, is the chain complete, and is the output quality?
 
-You are NOT gated at each step. Work in whatever order produces the best analysis. The evaluator checks the output, not the process.
+**Success = followed steps + completed chain + quality output.** Skip a step and the result degrades even if every item is technically present.
 
 ## The Chain (all required)
 
