@@ -95,7 +95,7 @@ Report: `"PROMPT-UNDERSTANDING: Q:{count} |H:{count}(challenged:{count}) |C:{cou
 - Estimated total: report to user
 - If estimated > $10: warn user, get confirmation
 
-### Preflight Exit Checklist
+### Preflight Phase Verification
 
 - [ ] Memory recall completed
 - [ ] System validation passed
@@ -108,8 +108,8 @@ Report: `"PROMPT-UNDERSTANDING: Q:{count} |H:{count}(challenged:{count}) |C:{cou
 - [ ] User confirmed prompt understanding
 - [ ] Cost estimate reported (and confirmed if > $10)
 
-**All items checked → proceed to SPAWN**
-**Any item unchecked → complete it before proceeding**
+**All items verified → continue to SPAWN (C1 not complete — see SKILL.md C1 Deliverables)**
+**Any item not verified → resolve it before continuing**
 
 ---
 
@@ -264,7 +264,7 @@ PLAN CHALLENGE ONLY — build-track evaluates plan for feasibility in C1:
 ### Step 12: Verify Spawn
 Confirm all agents spawned successfully. For any failed spawn: retry once, report to user if retry fails.
 
-### Spawn Exit Checklist
+### Spawn Phase Verification
 
 - [ ] Scratch workspace written with all required sections
 - [ ] Prompt understanding in scratch matches user-confirmed version
@@ -273,7 +273,7 @@ Confirm all agents spawned successfully. For any failed spawn: retry once, repor
 - [ ] DA NOT spawned (DA joins in plan challenge)
 - [ ] Spawn failures handled
 
-**All items checked → proceed to PLAN**
+**All items verified → continue to PLAN (C1 not complete — see SKILL.md C1 Deliverables)**
 
 ---
 
@@ -325,7 +325,7 @@ Before advancing, verify:
 
 Flag any misalignment in scratch ## open-questions for challenge phase.
 
-### Plan Exit Checklist
+### Plan Phase Verification
 
 - [ ] All plan-track agents wrote non-empty plans
 - [ ] Required outputs present per agent role
@@ -333,7 +333,7 @@ Flag any misalignment in scratch ## open-questions for challenge phase.
 - [ ] All agents persisted memory
 - [ ] Cross-agent coherence verified
 
-**All items checked → proceed to PLAN CHALLENGE**
+**All items verified → continue to PLAN CHALLENGE (C1 not complete — see SKILL.md C1 Deliverables)**
 
 > **Note — orchestrator commands:** The original monolithic build used `orchestrator-config.py start --mode build`, `validate --check plan-convergence` (V3+V4+V5+V6+V8), and `advance --mode build` between plan and challenge phases. If the orchestrator has been updated for the 3-conversation model (C1 sub-workflow: `plan → challenge_plan → plan_locked`), run those commands here. If the orchestrator update is deferred, skip — the conversation boundary is the primary gate.
 
@@ -415,7 +415,7 @@ If |declared - computed| > 0.15: must justify divergence.
 - **P < 0.6** → proceed to DEBATE (Step 27)
 - **Round >= 5 (hard cap)** → lock plan, proceed to Step 26
 
-### Step 26: Lock Plan (only when exiting to Conversation Exit Protocol)
+### Step 26: Lock Plan (only when exiting to Outcome Delivery)
 Lock ADRs, design system, interface contracts in scratch workspace.
 
 ```bash
@@ -425,11 +425,11 @@ Plan-lock runs V17. If fails: plan-track agents complete missing output.
 
 !rule: plan-track and build-track agents exit after plan locked.
 
-**Plan locked → proceed to Conversation Exit Protocol**
+**Plan locked → proceed to Outcome Delivery**
 **Looping → re-execute from Step 19**
 **Belief < 0.6 → proceed to DEBATE**
 
-### Plan Challenge Exit Checklist (when leaving this section)
+### Plan Challenge Phase Verification (when leaving this section)
 
 - [ ] DA spawned and participated
 - [ ] Circuit breaker checked (mandatory after first round)
@@ -474,7 +474,7 @@ Write debate outcome to scratch workspace:
 ### Step 31: Return to Plan Challenge
 After debate, return to Step 19 (plan challenge) for re-evaluation with the debate resolution factored in.
 
-### Debate Exit Checklist
+### Debate Phase Verification
 
 - [ ] Disagreement identified and articulated
 - [ ] Both sides presented Toulmin-structured arguments
@@ -484,9 +484,11 @@ After debate, return to Step 19 (plan challenge) for re-evaluation with the deba
 
 ---
 
-## CONVERSATION EXIT PROTOCOL (Steps 32-38)
+## OUTCOME DELIVERY (Steps 32-38)
 
-**This is the enforcement. Plan is locked. No code written. C1 is done.**
+**The analysis is the output. This section is the outcome. Output without outcome is worthless.**
+
+The plan file is the LAST artifact written — it cannot exist until promotion, archive, and verification are complete. The session is not done when the plan locks. The plan locking is the midpoint. The complete delivery chain is: exit-gate verification → agent memory persistence → archive → plan file → validation → report. Any missing component is a failure.
 
 ### Step 32: Verify Plan Exit Gate
 Confirm:
@@ -494,7 +496,39 @@ Confirm:
 - BELIEF[] written to scratch workspace for every challenge round
 - Plan-lock validation (V17) passed
 
-### Step 33: Write Plan File
+### Step 33: Agent Memory Persistence (Promotion)
+**This step is PRIMARY WORK, not cleanup. Agent learnings that compound across sessions are the system's durable value.**
+
+Each agent persists to sigma-mem:
+- DA: calibration data (challenge count, grade, hit rate, concession/defense ratio, process patterns)
+- Plan-track: architectural patterns, decision rationale worth preserving, self-corrections
+- Build-track: feasibility insights, measurement patterns, codebase state observations
+
+Persist generalizable patterns and calibration. Build-specific details live in the plan file.
+
+!gate: Do NOT proceed to Step 34 until every agent has completed persistence. Verify by reading sigma-mem for new entries from this session's agents. If an agent was shut down before persisting, the lead persists their key learnings from the scratch workspace (with source attribution to the agent).
+
+### Step 34: Archive Scratch Workspace + Copy to Archive
+Two actions, both required:
+
+1. Mark scratch workspace status:
+```
+~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}/c1-scratch.md
+→ mark ## status: archived-c1
+```
+
+2. Copy to archive directory for audit access:
+```
+cp {scratch} ~/.claude/teams/sigma-review/shared/archive/{date}-{task-slug}-workspace.md
+```
+
+3. Update archive INDEX.md with this session's entry.
+
+!gate: Do NOT proceed to Step 35 until archive copy exists AND INDEX.md is updated. An analysis that can't be audited or recreated is garbage.
+
+### Step 35: Write Plan File
+**This is the LAST analytical artifact, not the first. It can only be written after promotion and archive are complete.**
+
 Create `~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}.plan.md` with the following structure. Distill agent plans from scratch workspace into clean locked sections:
 
 ```markdown
@@ -552,8 +586,15 @@ PM[N]: {failure mode} |likelihood:{} |mitigation:{}
 {How to test the changes end-to-end}
 ```
 
-### Step 34: Validate Plan File Completeness
-Before proceeding, verify the plan file contains:
+### Step 36: Validate Plan File + Outcome Chain Completeness
+Before proceeding, verify the COMPLETE delivery chain:
+
+Outcome chain (must all be YES):
+- [ ] Agent memories persisted to sigma-mem (Step 33 complete)
+- [ ] Scratch workspace archived + copied to archive directory (Step 34 complete)
+- [ ] Archive INDEX.md updated (Step 34 complete)
+
+Plan file content (must all be present):
 - [ ] All Meta fields populated (status = plan-locked, plan-exit-gate = PASS)
 - [ ] Context section non-empty
 - [ ] Prompt Understanding matches user-confirmed Q/H/C
@@ -566,23 +607,8 @@ Before proceeding, verify the plan file contains:
 - [ ] Plan Challenge Summary with DA grade + CB status
 - [ ] Build Status, Build Review Summary, Close Status present (empty placeholders)
 
-If any section is missing or empty when it should not be: go back and fill it from scratch workspace content.
-
-### Step 35: Mini-Promotion (Agent Memory Persistence)
-Each agent persists to sigma-mem:
-- DA: calibration data (challenge count, grade, concession/defense ratio)
-- Plan-track: architectural patterns, decision rationale worth preserving
-- Build-track: feasibility insights from challenge round
-
-Persist only generalizable patterns and calibration — build-specific details live in the plan file.
-
-### Step 36: Archive Scratch Workspace
-Move (or mark as archived) the scratch workspace:
-```
-~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}/c1-scratch.md
-→ mark ## status: archived-c1
-```
-The scratch workspace is NOT read by C2. The plan file is the sole contract.
+If any outcome chain item is NO: go back and complete it. Do NOT skip.
+If any plan file section is missing: go back and fill it from scratch workspace content.
 
 ### Step 37: Report to User
 ```
@@ -592,17 +618,22 @@ The scratch workspace is NOT read by C2. The plan file is the sole contract.
  Challenges: {N} DA + {N} build-track | CB: {fired|not-needed}
  Plan file: ~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}.plan.md
  
+ Outcome chain: promotion({status}) | archive({status}) | plan-file({status})
+ 
  Run `/sigma-build {task}` to start build (C2)."
 ```
 
-### Step 38: Final Exit Checklist
+### Step 38: C1 Delivery Verification
 
 - [ ] Plan-exit-gate PASS confirmed
 - [ ] BELIEF[] present in scratch for every round
+- [ ] Agent memories persisted to sigma-mem (promotion complete)
+- [ ] Scratch workspace archived + copied to archive directory
+- [ ] Archive INDEX.md updated
 - [ ] Plan file written with all sections populated
 - [ ] Plan file validated for completeness
-- [ ] Agent memories persisted to sigma-mem
-- [ ] Scratch workspace archived
-- [ ] User report delivered
+- [ ] User report delivered with outcome chain status
+
+**C1 is complete ONLY when every item above is verified. Cross-check against SKILL.md C1 Deliverables before ending this conversation.**
 
 **C1 complete. Conversation ends here. C2 starts in a new conversation.**

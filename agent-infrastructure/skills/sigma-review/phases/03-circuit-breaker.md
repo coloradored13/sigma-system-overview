@@ -51,7 +51,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned phase = `challenge`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Workspace scanned for inter-agent divergence
 - [ ] If zero divergence: circuit breaker fired and all agents responded
@@ -59,4 +59,4 @@ Confirm returned phase = `challenge`.
 - [ ] CB validation passed
 - [ ] Orchestrator advanced to challenge
 
-**All items checked → read `phases/04-challenge.md`**
+**All items verified → continue to `phases/04-challenge.md` (session not complete — see SKILL.md Session Deliverables)**

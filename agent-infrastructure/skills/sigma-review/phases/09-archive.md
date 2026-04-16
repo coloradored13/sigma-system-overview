@@ -34,11 +34,11 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned state has `is_terminal: true`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Workspace archived with metadata header
 - [ ] Archive file verified (exists, non-empty, contains content)
 - [ ] Session-end validation passed (V22+V23)
 - [ ] Orchestrator advanced to terminal state
 
-**All items checked → read `phases/10-shutdown.md`**
+**All items verified → continue to `phases/10-shutdown.md` (session not complete — see SKILL.md Session Deliverables)**

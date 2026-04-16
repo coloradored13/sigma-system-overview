@@ -48,7 +48,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned phase = `archive`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Drift detection completed for all file categories
 - [ ] Agent memory and inboxes synced (mandatory every session)
@@ -56,4 +56,4 @@ Confirm returned phase = `archive`.
 - [ ] Commit offered and resolved (committed, user deferred, or no changes)
 - [ ] Orchestrator advanced to archive
 
-**All items checked → read `phases/09-archive.md`**
+**All items verified → continue to `phases/09-archive.md` (session not complete — see SKILL.md Session Deliverables)**

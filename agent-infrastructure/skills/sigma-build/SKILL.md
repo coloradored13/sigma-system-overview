@@ -101,12 +101,14 @@ This build system produces code that humans ship to production. Every step exist
 
 **Skipping a step is not efficiency. It is a failure.** The user trusts this system because every step runs, every check fires, every gate validates. An incomplete build that ran every step is more valuable than a polished build that skipped checks. Completeness IS the product.
 
+**The analysis/build is the OUTPUT. Promotion, archive, synthesis are the OUTCOME. Output without outcome is worthless.** The output is a one-time artifact. The outcome is what compounds — agents that get better across sessions, calibration data that improves future reviews, archives that enable audit and recreation. An experiment that can't be recreated is garbage. A review whose learnings aren't persisted is a one-shot that never compounds. The "outcome delivery" steps are not cleanup after the real work — they ARE the durable value. The plan file is the LAST artifact written, not the first. It cannot exist until promotion and archive are complete.
+
 ## Lead Role Boundary
 
 You manage agents and phases. You do NOT:
 - Call analytical tools directly (sigma-verify, WebSearch for research). Agents research, you organize.
 - Write synthesis content. A separate synthesis agent does this (C3 only). Lead-written synthesis is provenance contamination.
-- Skip conversation exit protocol. Every conversation has a formal exit that writes to the plan file.
+- Skip outcome delivery. Every conversation has a formal outcome chain: promotion → archive → plan file. The plan file is the LAST artifact. Shutdown before promotion and archive is an incomplete delivery — log it as a failure.
 - Dispatch implementation work before the plan is locked. The plan file with exit-gate: PASS is the build authorization.
 
 ## Paths
@@ -119,6 +121,64 @@ B=T/shared/builds                     # plan files and scratch workspaces
 
 project tier exists → use P/ for decisions,patterns,project-memory | T/ for global-memory,roster,agent-defs
 ¬project tier → all→T/
+
+## Build Deliverables
+
+Each conversation (C1/C2/C3) has its own deliverable checklist below. A conversation is not complete until every item in its checklist is true. The build is not complete until C3's checklist is fully verified.
+
+### C1 (PLAN) Deliverables
+- [ ] Preflight verified (system, roster, complexity, prompt understanding, user confirmation)
+- [ ] Scratch workspace initialized with all required sections
+- [ ] All plan-track agents wrote non-empty plans with required outputs per role
+- [ ] All build-track agents completed feasibility challenge
+- [ ] DA spawned and completed plan challenge with agent responses
+- [ ] Circuit breaker checked (mandatory after first challenge round)
+- [ ] Belief state computed and written to scratch for every round
+- [ ] Plan exit gate evaluated (PASS or hard cap)
+- [ ] Plan locked, plan-lock validation passed
+- [ ] Agent memories persisted to sigma-mem (promotion)
+- [ ] Scratch workspace archived + copied to archive directory
+- [ ] Archive INDEX.md updated
+- [ ] Plan file written with all sections populated and validated
+- [ ] User report delivered with outcome chain status
+
+### C2 (BUILD) Deliverables
+- [ ] Plan file validated (status: plan-locked, plan-exit-gate: PASS)
+- [ ] Scratch workspace initialized with build-assignments
+- [ ] Parallel engineer check completed (clusters evaluated)
+- [ ] Build-track agents spawned with SQ[] assignments
+- [ ] All agents wrote checkpoints at ~50% (drift evaluated)
+- [ ] All SQ[] items have build status (DONE, PARTIAL, or BLOCKED)
+- [ ] Tests pass with zero regressions
+- [ ] If parallel engineers: merge verified with full test suite
+- [ ] Cross-model code review completed (or ΣVerify unavailable noted)
+- [ ] Build Status section written to plan file
+- [ ] Plan file status set to "built"
+- [ ] Build-track agents persisted memory to sigma-mem
+- [ ] Scratch workspace archived
+- [ ] Report delivered to user
+
+### C3 (REVIEW) Deliverables
+- [ ] Plan file validated (status: built, all sections present)
+- [ ] DA + plan-track review completed with build-track responses
+- [ ] All review rounds validated with BELIEF[] written to scratch
+- [ ] Contamination + sycophancy checks written to scratch
+- [ ] BUILD rubric evaluated
+- [ ] Build-track applied fixes, tests pass
+- [ ] Build Review Summary written to plan file
+- [ ] Synthesis agent spawned and synthesis delivered to user
+- [ ] Synthesis artifact saved to archive
+- [ ] Wiki compilation agent spawned, pages updated with attribution
+- [ ] Compilation validated (V24+V25+V26)
+- [ ] Promotion round completed — all agents responded, candidates resolved
+- [ ] Infrastructure drift detected and synced, commit resolved
+- [ ] Scratch workspace archived with metadata header
+- [ ] Session-end validation passed (V22+V23)
+- [ ] Close Status written to plan file, status set to complete
+- [ ] All agents shut down (or stragglers handled)
+- [ ] Final report delivered to user
+
+**Individual phase checklists within each conversation are progress markers. These checklists are the delivery contracts.**
 
 ## Begin
 

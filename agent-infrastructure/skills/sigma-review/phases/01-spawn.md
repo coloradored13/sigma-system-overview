@@ -126,7 +126,7 @@ Confirm all agents spawned successfully. For any failed spawn:
 - Retry once
 - If retry fails, report to user and adjust agent count
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Orchestrator started (phase = research)
 - [ ] Workspace written with all required sections
@@ -134,4 +134,4 @@ Confirm all agents spawned successfully. For any failed spawn:
 - [ ] All selected agents spawned (excluding DA)
 - [ ] Spawn failures handled (retried or reported)
 
-**All items checked → read `phases/02-research.md`**
+**All items verified → continue to `phases/02-research.md` (session not complete — see SKILL.md Session Deliverables)**

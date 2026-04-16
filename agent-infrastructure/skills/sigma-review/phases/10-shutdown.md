@@ -36,7 +36,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py checkpoint
 ```
 Save final state for audit trail.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Orchestrator confirmed terminal
 - [ ] All agents received shutdown_request
@@ -44,4 +44,4 @@ Save final state for audit trail.
 - [ ] Final report delivered to user
 - [ ] Checkpoint saved
 
-**Review complete.**
+**All items verified → return to SKILL.md Session Deliverables and verify the full checklist before reporting session complete.**

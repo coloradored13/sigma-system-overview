@@ -1,6 +1,6 @@
 # Phase 00: Preflight
 
-**Every step below is mandatory. Complete them in order. Do not proceed to Phase 01 until the exit checklist passes.**
+**Every step below is mandatory. Complete them in order. Do not continue to Phase 01 until the phase verification passes.**
 
 ## Steps
 
@@ -82,7 +82,7 @@ Before spawning agents:
 - Estimated total: report to user
 - ⚠ If estimated > $10: warn user, get confirmation before proceeding
 
-## Exit Checklist
+## Phase Verification
 
 Before moving to Phase 01, confirm ALL of the following. If any item is incomplete, go back and complete it.
 
@@ -97,5 +97,5 @@ Before moving to Phase 01, confirm ALL of the following. If any item is incomple
 - [ ] User confirmed prompt decomposition
 - [ ] Cost estimate reported (and confirmed if > $10)
 
-**All items checked → read `phases/01-spawn.md`**
-**Any item unchecked → complete it before proceeding**
+**All items verified → continue to `phases/01-spawn.md` (session not complete — see SKILL.md Session Deliverables)**
+**Any item not verified → resolve it before continuing**

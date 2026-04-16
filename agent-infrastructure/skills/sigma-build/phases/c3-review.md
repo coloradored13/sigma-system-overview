@@ -611,7 +611,7 @@ Build review complete. Plan file: {plan_file} | Status: complete | Archive: {arc
 
 ---
 
-## EXIT CHECKLIST (verify ALL before ending conversation)
+## C3 VERIFICATION (every item must be true before ending conversation)
 
 ### Part A: Review
 - [ ] Plan file validated (status: built, all sections present)
@@ -650,4 +650,4 @@ Build review complete. Plan file: {plan_file} | Status: complete | Archive: {arc
 - [ ] Final report delivered to user
 - [ ] Checkpoint saved
 
-**All items checked → build complete.**
+**All items verified → cross-check against SKILL.md C3 Deliverables. Build is complete ONLY when the C3 Deliverables checklist is fully verified.**

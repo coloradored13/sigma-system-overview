@@ -59,7 +59,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned phase = `circuit_breaker`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] All agents declared ✓ with non-empty findings
 - [ ] All agents persisted memory before ✓
@@ -67,4 +67,4 @@ Confirm returned phase = `circuit_breaker`.
 - [ ] Belief state computed and written to workspace
 - [ ] Orchestrator advanced to circuit_breaker
 
-**All items checked → read `phases/03-circuit-breaker.md`**
+**All items verified → continue to `phases/03-circuit-breaker.md` (session not complete — see SKILL.md Session Deliverables)**

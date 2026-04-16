@@ -85,7 +85,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Orchestrator routes to debate phase.
 
-## Exit Checklist (when leaving this phase)
+## Phase Verification (when leaving this phase)
 
 - [ ] DA spawned and participated
 - [ ] All challenge rounds completed with agent responses
@@ -96,6 +96,6 @@ Orchestrator routes to debate phase.
 - [ ] If exiting to synthesis: contamination + sycophancy checks written
 - [ ] Orchestrator advanced
 
-**Exiting to synthesis → read `phases/06-synthesis.md`**
-**Exiting to debate → read `phases/05-debate.md`**
+**Exiting to synthesis → continue to `phases/06-synthesis.md` (session not complete — see SKILL.md Session Deliverables)**
+**Exiting to debate → continue to `phases/05-debate.md` (session not complete — see SKILL.md Session Deliverables)**
 **Looping → re-execute this phase from Step 2**

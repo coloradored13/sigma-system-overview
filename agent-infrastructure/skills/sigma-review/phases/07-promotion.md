@@ -58,7 +58,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned phase = `sync`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Promotion round triggered for all agents
 - [ ] All agents responded
@@ -68,4 +68,4 @@ Confirm returned phase = `sync`.
 - [ ] Portfolio entry written
 - [ ] Orchestrator advanced to sync
 
-**All items checked → read `phases/08-sync.md`**
+**All items verified → continue to `phases/08-sync.md` (session not complete — see SKILL.md Session Deliverables)**

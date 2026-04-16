@@ -105,7 +105,28 @@ SQ[2]: ...
 4. Set plan file `status: built`
 5. Mini-promotion: build-track agents persist to sigma-mem (execution patterns, code debt, checkpoint cadence)
 6. Archive scratch: copy `builds/{build-id}/c2-scratch.md` to `builds/{build-id}/c2-scratch-archive.md`
-7. Report: "Build complete. Run `/sigma-build {task}` for review."
+7. Report: "Build verified. Run `/sigma-build {task}` for review (C3)."
+
+### C2 Verification
+
+Before ending this conversation, verify ALL items. Any unchecked item is a failed delivery.
+
+- [ ] Plan file validated at boot (status: plan-locked, plan-exit-gate: PASS)
+- [ ] Scratch workspace created with build-assignments
+- [ ] Parallel engineer check completed (independence clusters evaluated)
+- [ ] All build-track agents spawned via TeamCreate
+- [ ] All agents wrote checkpoint at ~50% (drift addressed if found)
+- [ ] All SQ[] items have build status (DONE, PARTIAL, or BLOCKED)
+- [ ] Tests pass with zero regressions
+- [ ] If parallel engineers: MERGE-VERIFIED written to scratch
+- [ ] Cross-model code review completed (or ΣVerify unavailable noted)
+- [ ] Build Status section written to plan file with test results + SQ status
+- [ ] Plan file status set to "built"
+- [ ] Build-track agents persisted memory to sigma-mem
+- [ ] Scratch workspace archived (c2-scratch-archive.md)
+- [ ] Report delivered to user
+
+**C2 is complete ONLY when every item above is verified. Cross-check against SKILL.md C2 Deliverables before ending this conversation.**
 
 ## Rules
 

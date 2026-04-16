@@ -38,7 +38,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance
 ```
 This returns to challenge phase for re-evaluation.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Disagreement identified and articulated
 - [ ] Both sides presented Toulmin-structured arguments
@@ -46,4 +46,4 @@ This returns to challenge phase for re-evaluation.
 - [ ] Resolution/outcome recorded in workspace
 - [ ] Orchestrator advanced back to challenge
 
-**All items checked → read `phases/04-challenge.md` (re-entering challenge phase)**
+**All items verified → continue to `phases/04-challenge.md` (re-entering challenge — session not complete)**

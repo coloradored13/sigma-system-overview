@@ -43,6 +43,32 @@ This review is phase-driven. You execute ONE phase at a time. Each phase has its
 
 Phase files: `~/.claude/skills/sigma-review/phases/{filename}.md`
 
+## Session Deliverables
+
+This session is not complete until every item below is true. Any unchecked item is a failed delivery — not a deferral, not a nice-to-have. The deliverable is a COMPLETE checklist, not any individual item.
+
+- [ ] Preflight verified (system, roster, complexity, prompt decomposition, user confirmation)
+- [ ] Workspace initialized with all required sections
+- [ ] All agents spawned and completed R1 analysis with non-empty findings
+- [ ] Circuit breaker checked (divergence logged or self-challenge fired)
+- [ ] DA spawned and completed challenge rounds with agent responses
+- [ ] Belief state computed and written to workspace for every round
+- [ ] Exit gate evaluated (DA PASS, hard cap, or debate resolution)
+- [ ] Contamination + sycophancy checks written to workspace
+- [ ] Synthesis agent spawned and synthesis delivered to user
+- [ ] Synthesis artifact saved to archive
+- [ ] Wiki compilation agent spawned, pages updated with source attribution
+- [ ] Compilation validation passed (V24+V25+V26)
+- [ ] Promotion round completed — all agents responded, candidates resolved with user
+- [ ] Infrastructure drift detected and synced, commit resolved
+- [ ] Workspace archived with metadata header
+- [ ] Session-end validation passed (V22+V23)
+- [ ] Orchestrator reached terminal state
+- [ ] All agents shut down (or stragglers handled)
+- [ ] Final report delivered to user with outcome chain status
+
+**Individual phase checklists are progress markers. This checklist is the delivery contract.**
+
 ## Why Every Step Matters
 
 This review system produces outputs that humans make decisions on. Every step exists because skipping it previously caused a specific failure:

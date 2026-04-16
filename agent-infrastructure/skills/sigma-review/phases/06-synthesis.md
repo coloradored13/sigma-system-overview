@@ -66,7 +66,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned phase = `compilation`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Cross-agent intelligence gathered (memory, decisions, patterns)
 - [ ] Convergence and tensions identified
@@ -75,4 +75,4 @@ Confirm returned phase = `compilation`.
 - [ ] Synthesis artifact saved to archive
 - [ ] Orchestrator advanced to promotion
 
-**All items checked → read `phases/06b-compilation.md`**
+**All items verified → continue to `phases/06b-compilation.md` (session not complete — see SKILL.md Session Deliverables)**

@@ -111,7 +111,7 @@ python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --con
 ```
 Confirm returned phase = `promotion`.
 
-## Exit Checklist
+## Phase Verification
 
 - [ ] Synthesis artifact read
 - [ ] Existing wiki scanned
@@ -122,4 +122,4 @@ Confirm returned phase = `promotion`.
 - [ ] No process observations leaked into wiki (those belong in patterns.md)
 - [ ] Compilation validation passed (V24+V25+V26)
 
-**All items checked → read `phases/07-promotion.md`**
+**All items verified → continue to `phases/07-promotion.md` (session not complete — see SKILL.md Session Deliverables)**
