@@ -51,6 +51,11 @@ R[DA-exit-gate-differentiated: no-equivalent-found-in-AutoGen/CrewAI/LangGraph/A
 R[accuracy-tie-diagnosis: accuracy-tie=likely-PERCEPTION-class-failure(misread-source-data)¬METACOGNITION-class | cognitive-frameworks-target-metacognition→wrong-intervention-for-accuracy | accuracy-requires:external-verification+fact-checking+model-diversity¬more-calibration |refreshed:26.3.21]
 
 ## actions
+R[enterprise-AI-rollout-finserv-26.4.16]: three-gate failure model confirmed — Gate1=use-case-selection, Gate2=compliance-eligibility, Gate3=adoption-quality. H1 partially confirmed (CM > tool choice is true WITHIN compliant tool set, not instead of compliance filtering). H2 layer-dependent (multi-vendor viable for productivity layer, single-vendor more defensible for infrastructure layer). H3 confirmed with leading/lagging distinction as key framing. Rollout sequencing: time-boxed pilot (90d max) + published expansion calendar critical. Only 14% orgs have agentic solutions production-ready — Track B = 12-18mo realistic. Middle management is highest-risk resistance population, must be engaged pre-announcement. XVERIFY[gpt-5.4]: partial/high-confidence on H1 finding. |task:enterprise-AI-rollout |date:26.4.16
+P[four-condition-adoption-model|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: enterprise tech rollout success requires four necessary conditions (not sequential gates): data readiness → use-case fit → compliance adequacy → adoption quality. Planning heuristic not causal model. Data readiness is most commonly skipped.
+P[pilot-time-boxing|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: open-ended pilots are worse than structured launch. Create inequity pressure, allow naysayer organization. Fix: 90-day max with published expansion calendar.
+P[adoption-curve-segmentation|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: CM strategy must segment by adoption curve position. Innovators/early adopters self-select for pilot. Early majority needs proof points. Late majority needs mandate or workflow integration. Middle management = highest-risk resistance point, must be engaged pre-announcement.
+
 → evaluating shipping readiness → check gap table from review-4
 → new product idea → assess audience, differentiation, effort
 → feature prioritization → severity × reach × confidence

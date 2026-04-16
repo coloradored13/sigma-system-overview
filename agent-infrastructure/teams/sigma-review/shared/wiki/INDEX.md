@@ -23,6 +23,8 @@ Persistent, compiled domain knowledge from sigma-review analyses. Each page is u
 - [sigma-predict Validation Gates](sigma-predict-validation-gates.md) — PipelineValidator 5-gate architecture, non-blocking default, strict mode, gate descriptions [B7, 26.4.13]
 - [Audit Logging Pattern](audit-logging-pattern.md) — JSON-L per-call log, hash-of-params, cross-system comparison (ollama-mcp-bridge fsync vs sigma-predict buffered), BUILD-R4 wiring gap [B6+B7, 26.4.13]
 
+- [Enterprise AI Rollout — Financial Services](enterprise-ai-rollout-finserv.md) — four conditions model, SR 11-7 compliance architecture, compliance x adoption heuristic, ROI calibration (P=0.35 18mo), survivorship bias, cognitive biases in vendor selection, timeline base rates, pre-mortem taxonomy, measurement debiasing [R18, 26.4.16]
+
 ## Convention
 - One page per entity, domain, or topic that appears across reviews or warrants standalone reference
 - Page filenames: lowercase, hyphenated (e.g., `loan-admin-tech-landscape.md`, `alter-domus.md`)

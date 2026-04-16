@@ -352,3 +352,15 @@ F1[Q1 dispatch]: Python-SDK>Agent-SDK(0.x)>CLI-shell-out. !CRITICAL gap: CLI-she
 F2[Q3/H2/H6]: XVERIFY[openai:gpt-5.4]=PARTIAL. Guard gaming residual: hard-observable guards required. gate_checks.py is correct extension seam.
 F3[Q5]: Workspace-as-shared-state sufficient + buffer-merge pattern for parallel phases.
 F4[Q6/H3]: RISK-1(guard-gaming-residual), RISK-2(API-dispatch-tool-access-loss), RISK-3(AsyncRunner-private-attr-bypass elevated-to-HIGH). All-components-reusable ¬AsyncRunner-as-trust-anchor.
+R[finserv-ai-rollout-architecture-26.4.16]:
+F[TA-1]:SR-11-7-now-applies-to-genAI(GAO-25-107197) |SOC2=necessary-¬sufficient |vendors-provide-partial-artifacts-¬complete-obligations |enterprise-must-build-governance-layer |XVERIFY[gpt-5.4]:PARTIAL-confirmed-direction |T2-corroborated
+F[TA-2]:multi-vendor-data-residency-seam-cost |Claude-in-M365-exits-M365-compliance-boundary |each-seam-requires-data-flow-mapping+DLP+compliance-validation |H2-advantage-narrows-in-finserv |T2-corroborated
+F[TA-3]:leapfrog-vendor-strategy=(1)capability-floors-not-ceilings (2)integration-depth>model-quality (3)API-first-preserves-optionality (4)compliance-envelope=hard-constraint-not-preference |T2-corroborated
+F[TA-4]:agentic-infra-gaps=API-gateway+observability-stack+HITL-escalation+sandbox-staging |infra-readiness=primary-differentiator |T3-unverified
+F[TA-5]:M365-Copilot=strongest-baseline-finserv-Track-A |reuses-existing-DLP+retention+eDiscovery |Claude/ChatGPT-Enterprise=valid-alt-with-additive-compliance-cost |T2-corroborated
+F[TA-6]:H1=PARTIALLY-CONFIRMED-with-sequencing-correction |compliance-filter-first-then-change-mgmt-within-viable-set
+F[TA-7]:H2=WEAKLY-SUPPORTED |Track-A(single-vendor-M365)>Track-B(multi-vendor-API) |treat-tracks-differently
+P[compliance-first-filtering|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: in regulated industries (finserv, healthcare, legal), compliance adequacy filters vendor set BEFORE capability or CM evaluation. SR 11-7 for finserv, SOC II as floor not ceiling, enterprise must build governance layer on top of vendor artifacts.
+P[capability-floor-over-ceiling|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: in leapfrogging tool landscapes, select for capability FLOORS (minimum viable for use case) not CEILINGS (current benchmark leader). Floors are stable; ceilings change quarterly. Rank: compliance floor > integration fit > capability ceiling.
+P[data-residency-seam-cost|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: multi-vendor AI strategies generate non-linear compliance overhead at integration seams. Each vendor boundary requires separate data flow mapping + DLP enforcement + compliance validation. Single-vendor reuses existing governance. Cost scales with vendor count, not linearly.
+P[compliance-floor-x-adoption-likelihood|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: COMPLIANCE-FLOOR × ADOPTION-LIKELIHOOD > COMPLIANCE-CEILING as vendor evaluation heuristic. A compliant tool that nobody uses delivers zero compliance value. Pair compliance check with effectiveness/adoption check always.

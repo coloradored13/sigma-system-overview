@@ -1,6 +1,14 @@
+# ARCHIVED WORKSPACE — Enterprise AI Tool Rollout Strategy
+archived: 2026-04-16 | mode: ANALYZE | rounds: 2 | verdict: PASS (A-)
+original: ~/.claude/teams/sigma-review/shared/workspace.md
+agents: tech-architect, product-strategist, reference-class-analyst, cognitive-decision-scientist, devils-advocate
+directives-version: adversarial-layer v2.0 (26.3.11)
+audit: run `/sigma-audit ~/.claude/teams/sigma-review/shared/archive/2026-04-16-enterprise-ai-rollout-workspace.md` in a fresh context to verify process compliance
+process-note: promotion round executed retrospectively after agents shut down (process violation logged in corrections.md 26.4.16)
+
 # workspace
 
-## status: active
+## status: archived
 ## mode: ANALYZE
 ## tier: TIER-2 (score: 18)
 ## date: 2026-04-16
@@ -24,7 +32,7 @@ Q4: What does a detailed implementation plan look like, and what's a realistic t
 Q5: How should a company approach vendor selection when tools constantly leapfrog each other?
 Q6: What are the key security and governance requirements for financial services AI adoption?
 
-### prompt-hypotheses (extracted from prompt — agents test these, do not assume true)
+### hypotheses (extracted from prompt — agents test these, do not assume true)
 H1: Success correlates more with change management and adoption strategy than with which specific tool is chosen
 H2: Multi-vendor strategies outperform single-vendor bets in fast-moving landscapes
 H3: ROI measurement requires both productivity metrics and qualitative adoption indicators
@@ -869,52 +877,13 @@ SYCOPHANCY-CHECK: softened:none |selective-emphasis:none |dissent-reframed:none 
 
 ## promotion
 
-### Promotion Classification — 2026-04-16 Enterprise AI Rollout
-
-**Devils-Advocate (process/technique only — domain research excluded)**
-
-auto-promote: devils-advocate: prompt-anchoring detection — when all domain agents confirm all user hypotheses (0 rejections), flag as prompt-laundering risk; echo level HIGH when "sequencing correction" adds nuance without reversing direction |class:pattern
-auto-promote: devils-advocate: XVERIFY-as-challenge methodology — running XVERIFY on unanimous convergence findings specifically (not just individual claims) surfaces shared-anchoring artifacts that per-agent XVERIFY misses |class:technique
-auto-promote: devils-advocate: vendor-stats-as-independent-antipattern — agents accepting compliance documentation at face value without investigating tool adoption/effectiveness data; pattern fires when a compliance advantage is cited without effectiveness corroboration |class:pattern
-auto-promote: devils-advocate: not-discussed gap type effectiveness — "not-discussed" challenge on the highest-confidence recommendation produced the highest-impact concession (Copilot withdrawn); prioritize not-discussed targeting against unanimous Track-level recommendations |class:technique
-user-approve: devils-advocate: data-quality-as-omitted-gate pattern — Gartner 60% abandonment prediction consistently absent from enterprise AI framework reviews despite being #1 CDO barrier; add data readiness as a standard DA not-discussed check for any enterprise tech rollout review |class:pattern |reason: generalizes to any enterprise software/AI rollout review, not domain-specific
-
-**Reference-Class-Analyst (calibration updates, generalizable patterns)**
-
-auto-promote: reference-class-analyst: planning-horizon vs success-horizon distinction — "12-18 month AI rollout" figures measure planning horizon; <10% enterprises achieve company-wide scaling; applying rollout timeline base rates to success timelines creates false exit gates |class:calibration
-auto-promote: reference-class-analyst: survivorship bias correction template — named outlier (JPMorgan $15B budget) vs applicable analogue (Goldman focused use-case) as the structural format for finserv AI success-case comparison; outlier flags prevent aspirational benchmarking |class:technique
-auto-promote: reference-class-analyst: conditional ROI construction — enterprise AI ROI base rate 5-25% (all-implementations) vs 35-50% conditional (pre-defined metrics + exec sponsorship + success criteria); the three pre-conditions are the actionable levers not optimism adjustments |class:calibration
-user-approve: reference-class-analyst: enterprise AI base rates — P(measurable ROI 18mo) = 0.35 single-point, 80% CI [0.20, 0.55] for company with strong IT, dedicated PM, knowledge-work use cases, finserv constraints; drops to 0.15-0.25 without data readiness confirmed |class:calibration |reason: new specific calibration data point not in existing memory; directly applicable to future sigma-predict or sigma-review ROI questions on enterprise AI topics
-
-**Product-Strategist (generalizable adoption framework, pilot methodology)**
-
-auto-promote: product-strategist: four-condition model as necessary-conditions checklist — data readiness → use-case fit → compliance adequacy → adoption quality; conditions operate in parallel not waterfall; all four must pass; data readiness most commonly skipped |class:pattern
-auto-promote: product-strategist: open-ended pilot as second-order risk — extended pilots without published expansion calendar allow naysayer organization to form; the intervention is time-boxing (90-day max) plus published expansion calendar, not just ending the pilot |class:pattern
-auto-promote: product-strategist: adoption curve segmentation determines CM strategy — innovators/early-adopters: voluntary + champion network; late majority: mandate or workflow integration required; voluntary adoption messaging does not reach the largest group |class:pattern
-user-approve: product-strategist: comparative pilot methodology for vendor selection in leapfrogging landscapes — run 3-way pilot (incumbent + 2 alternatives) on compliance floor × adoption likelihood before committing; compliance ceiling (100% coverage at 35% adoption) loses to compliance floor × adoption floor (90% coverage at 65% adoption) |class:pattern |reason: directly applicable to any regulated-sector vendor selection review; generalizes beyond AI tools
-
-**Tech-Architect (compliance-first filtering, data residency seam analysis)**
-
-auto-promote: tech-architect: compliance-first filtering for regulated industries — tool selection in financial services is compliance-filtered (SR 11-7, data residency, DLP) BEFORE change management analysis applies; agents should sequence these domains accordingly, not treat them as parallel |class:pattern
-auto-promote: tech-architect: capability-floor specification for leapfrogging landscapes — select for minimum viable capability (floor) not benchmark leader (ceiling); floor specs are stable across quarterly benchmark updates; ceiling comparisons are not |class:technique
-auto-promote: tech-architect: data residency seam cost at multi-vendor integration boundaries — each vendor integration boundary requires independent DLP policy mapping, data flow documentation, and compliance validation; this cost scales non-linearly and is not priced in multi-vendor performance comparisons |class:pattern
-user-approve: tech-architect: compliance × adoption heuristic — COMPLIANCE-FLOOR × ADOPTION-LIKELIHOOD > COMPLIANCE-CEILING; a 100% compliant tool at 35% adoption produces worse realized compliance value than a 90% compliant tool at 65% adoption; applicable to any regulated-sector tool selection |class:pattern |reason: new analytical heuristic produced under DA pressure; not present in existing memory; generalizes to healthcare, legal, fintech contexts
-
-**Cognitive-Decision-Scientist (cognitive trap taxonomy, measurement debiasing)**
-
-auto-promote: cognitive-decision-scientist: five-bias taxonomy for vendor selection — availability (competitor announcements → false urgency), recency (latest benchmarks dominate), anchoring (first demo as reference), sunk cost (contract = lock-in), authority (brand > fit); each has a distinct structural intervention |class:pattern
-auto-promote: cognitive-decision-scientist: pre-commit exit criteria converts sunk cost to decision gate — "if pilot shows <X adoption at 90 days, we exit" must be defined before contract signing; post-signing pre-commitment is ineffective because psychological sunk cost already active |class:technique
-auto-promote: cognitive-decision-scientist: independent auditor for ROI reporting — separate the person who operates the tool from the person who measures the outcome; confirmation bias in sponsored ROI reporting is systematic, not individual failure |class:technique
-auto-promote: cognitive-decision-scientist: behavioral output indicators over usage metrics — output volume, decision quality, escalation patterns, time-to-completion on tracked tasks are harder to game than login counts/license utilization; applies wherever social desirability bias contaminates self-report data |class:pattern
-user-approve: cognitive-decision-scientist: pre-mortem as standard enterprise AI rollout step — structured 20-30 min session before tool selection finalizes; prospective hindsight increases accurate risk forecasting by 30% (Kahneman/Klein research); specific failure modes to surface: compliance blocker post-contract, middle manager passive resistance, no departmental champion, AI output over-trust compliance incident |class:technique |reason: existing memory has pre-mortem as a general tool; this adds specific failure mode taxonomy for enterprise AI/regulated-sector rollout context
-
 
 ## calibration-tracking
 
 ## Chain Evaluation
 
-Mode: ANALYZE | Status: INCOMPLETE | 11/18 items passed
-Evaluator: chain-evaluator v2.0.0 | 2026-04-16T16:06:17.971152+00:00
+Mode: ANALYZE | Status: INCOMPLETE | 10/18 items passed
+Evaluator: chain-evaluator v2.0.0 | 2026-04-16T15:56:23.508633+00:00
 
 - [PASS] A1: Agent findings
 - [FAIL] A2: Source provenance
@@ -928,7 +897,6 @@ Evaluator: chain-evaluator v2.0.0 | 2026-04-16T16:06:17.971152+00:00
   - Agent 'cqot' has no DB[] dialectical bootstrapping entries
   - Agent 'residual' has no DB[] dialectical bootstrapping entries
   - Agent 'verdict' has no DB[] dialectical bootstrapping entries
-  - Agent 'promotion' has no DB[] dialectical bootstrapping entries
   - tech-architect: DB entry missing 5 of 5 steps
   - tech-architect: DB entry missing 5 of 5 steps
   - tech-architect: DB entry missing 5 of 5 steps
@@ -980,7 +948,6 @@ Evaluator: chain-evaluator v2.0.0 | 2026-04-16T16:06:17.971152+00:00
   - Agent 'cqot' has no peer verification section
   - Agent 'residual' has no peer verification section
   - Agent 'verdict' has no peer verification section
-  - Agent 'promotion' has no peer verification section
 - [PASS] A17: Verification specificity
 - [FAIL] A18: Verification coverage matrix
   - Agent 'hypotheses' verified by only 1: {'devils-advocate'}
@@ -994,10 +961,10 @@ Evaluator: chain-evaluator v2.0.0 | 2026-04-16T16:06:17.971152+00:00
   - Agent 'cqot' verified by only 1: {'devils-advocate'}
   - Agent 'residual' verified by only 1: {'devils-advocate'}
   - Agent 'verdict' verified by only 1: {'devils-advocate'}
-  - Agent 'promotion' verified by only 1: {'devils-advocate'}
 - [PASS] A11: Synthesis artifact
   - Synthesis file missing sections: estimates
 - [FAIL] A12: Workspace archive
-- [PASS] A13: Promotion evidence
+- [FAIL] A13: Promotion evidence
+  - No promotion evidence found — neither ## promotion section with content nor auto-promote/user-approve markers. The promotion round must execute before advancing. Agents classify findings as auto-promote or user-approve.
 - [FAIL] A14: Git clean
-  - Uncommitted changes in repo: 11 files
+  - Uncommitted changes in repo: 9 files
