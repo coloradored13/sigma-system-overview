@@ -73,41 +73,105 @@ Expertise: {from agent definition}
 
 ### 3. Research round (R1)
 
-Agents work independently: analyze, research, write findings to workspace with source provenance.
-Each agent also performs dialectical bootstrapping (DB[]) on top findings.
-Monitor workspace for convergence (all agents ✓).
+Agents work independently: analyze, research, write findings to workspace with source provenance (`|source:type|` tags on all findings). Each agent also performs dialectical bootstrapping (DB[]) on top findings.
+
+**Monitor agent status** via workspace convergence section:
+- ◌ (in progress) → wait
+- ? (needs input) → surface question to user, write answer to agent inbox
+- ! (blocked) → surface blocker to user
+- ✓ (converged) → verify before accepting
+
+**Pre-accept verification** (per agent declaring ✓):
+1. Workspace findings section is NOT empty
+2. Agent persisted memory (`get_agent_memory` for that agent)
+3. If ✓ but findings empty or memory not persisted → SendMessage: "complete analysis/persist before ✓"
+
+**Stuck agents:** If agent is ◌ with no workspace updates — read their section, check inbox, draft targeted prod message.
+
+**BELIEF computation:** After all agents ✓, compute and write to workspace:
+`BELIEF[r1]: P={posterior} |→ {action}`
 
 ### 4. Circuit breaker
 
-After R1, check for zero-dissent. If all agents agree on everything, that is a herding signal.
-Write circuit breaker evidence to workspace (divergence logged OR CB[] entries).
+Scan R1 workspace findings for ANY inter-agent tension: different estimates, conflicting recommendations, challenged assumptions, different risk assessments.
+
+**If divergence found:** Log to workspace: `"R1 divergence detected: {description}"` → proceed to DA.
+
+**If zero divergence** (all agents agree on everything — herding signal):
+1. Report to user: `"Zero-dissent detected: {N} agents, {M} findings, 0 disagreements. Firing circuit breaker."`
+2. Send self-challenge to EACH agent via SendMessage:
+```
+zero-dissent circuit breaker: your R1 finding on [{highest-conviction finding}] agrees with all peers.
+(1) Name the strongest argument AGAINST your own position.
+(2) If that argument is correct, would you change your conclusion?
+(3) Identify ONE peer finding you would challenge, quantify differently, or add a caveat to.
+Respond in workspace — append to your findings section. 3 focused responses only.
+```
+3. Wait for all agents to respond. Read their additions.
+
+Write CB evidence to workspace (divergence OR CB[] entries). Chain evaluator checks A4.
 
 ### 5. DA challenge round (R2+)
 
-Spawn or message DA with R1 findings. DA generates challenges. Agents respond (concede/defend/compromise).
-Compute BELIEF state and write BELIEF[rN] to workspace. The chain evaluator checks for BELIEF presence (A6).
+**Spawn DA** (first entry only): read `~/.claude/agents/devils-advocate.md`, spawn via TeamCreate with model="opus". DA reads workspace (R1 findings + CB results).
 
-DA issues exit-gate verdict (PASS/FAIL with criteria).
+**Challenge/response cycle:** DA writes challenges to workspace → all agents respond with concede/defend/compromise. Monitor workspace for updates.
+
+**BELIEF computation:** After each round, compute and write:
+`BELIEF[rN]: P={posterior} |→ {action}`
+If |declared - computed| > 0.15 → justify divergence in workspace.
+
+**Exit-gate decision:**
+- DA PASS + belief >= 0.85 → proceed to pre-synthesis checks
+- DA FAIL + belief >= 0.6 + round < 5 → another challenge round (loop)
+- DA FAIL + belief < 0.6 → Toulmin debate (claim/grounds/warrant/backing/qualifier/rebuttal, one response round, record resolution, return to challenge)
+- Round >= 5 (hard cap) → proceed to pre-synthesis checks
+
+**Pre-synthesis checks** (before moving to synthesis):
+```
+CONTAMINATION-CHECK: session-topics-outside-scope: {list} |scan-result: clean|contaminated({terms})
+SYCOPHANCY-CHECK: softened:{list|none} |selective-emphasis:{list|none} |dissent-reframed:{list|none} |process-issues:{list|none}
+```
+Write both to workspace. Chain evaluator checks A8 + A10.
 
 ### 6. Peer verification round
 
-After agents complete their analytical work and DA challenges, each agent reads their assigned peer's workspace section and writes a `### Peer Verification:` section.
+After agents complete analytical work and DA challenges, each agent reads their assigned peer's workspace section and writes a `### Peer Verification:` section.
 
-Monitor for verification completion. If a peer verification flags gaps (FAIL on any item), route the gap back to the affected agent for remediation.
+**Monitor:** Check workspace for peer verification sections from each agent.
+**Remediation:** If a peer verification flags FAIL on any item, route the gap back to the affected agent.
+**Chain evaluator checks:** A16 (sections exist), A17 (>=3 specific artifact IDs referenced), A18 (each agent verified by >=2 others including DA).
 
 ### 7. Synthesis + chain closure
 
-**Anti-sycophancy gate:** Before synthesis, check for softened findings, selective emphasis, reframed dissent. Write SYCOPHANCY-CHECK.
-**Contamination check:** Write CONTAMINATION-CHECK.
-**Synthesis:** Spawn synthesis agent (or write synthesis yourself if simple). Save as `archive/*-synthesis.md`.
-**Promotion:** Signal promotion round to agents. Collect candidates, present to user.
-**Infrastructure sync:** Check for drift between installed and repo files.
-**Archive:** Copy workspace to `archive/{task-slug}-{date}.md`. Verify archive exists before reporting.
-**Git:** Stage and commit (after chain evaluator confirms complete).
+**7a. Synthesis** (lead MUST NOT write synthesis — provenance contamination):
+Spawn synthesis agent with workspace path only. No conversation context, no user remarks, no lead interpretations. If synthesis agent fails, deliver raw workspace findings with explicit gap flag. Save to `shared/archive/{date}-{task-slug}-synthesis.md`. Chain evaluator checks A11.
+
+**7b. Compilation** (lead MUST NOT write wiki content):
+Spawn compilation agent with: synthesis artifact path, wiki directory (`shared/wiki/`), INDEX.md. Page rules: add findings with `[R{N}, {date}]` attribution, flag contradictions (`⚠ CONFLICT`), note convergence (`✓ Confirmed`), never silently overwrite. Update INDEX.md.
+
+**7c. Promotion:**
+1. MCP health check: `recall: "health check before promotion"` — if MCP disconnected, ask user to restart
+2. SendMessage to each agent: `"promotion-round: classify+submit generalizable learnings for global memory"`
+3. Wait for all agents to respond with promotion status
+4. Read workspace `## promotion` for user-approve candidates
+5. Present candidates to user in plain English → wait for approval
+6. Store approved items to global memory. Write portfolio entry to `shared/portfolio.md`
+
+**7d. Infrastructure sync:**
+Compare installed vs repo: agents, skills, teams/shared, agent memory. Agent memory + shared MUST sync every session. Offer commit to user.
+
+**7e. Archive:**
+Copy workspace to `shared/archive/{date}-{task-slug}.md` with metadata header (date, tier, agents, rounds, exit-gate). Verify archive exists. Chain evaluator checks A12.
+
+**7f. Git:**
+Run `python3 ~/.claude/hooks/chain-evaluator.py evaluate` → address any FAIL items → stage and commit. Chain evaluator checks A14.
 
 ### 8. Report to user
 
-Translate workspace findings to plain English. Present synthesis with promotion summary, archive path, and chain evaluation status.
+**Agent shutdown:** Send `shutdown_request` to each agent. Wait for responses. Handle stragglers (auto-shutdown after 5 min timeout).
+
+**Final report** (plain English): review summary, promotion summary, sync summary, open items, chain evaluation status, archive path. Confirm A19 (chain evaluation output) written to workspace.
 
 ## Chain Evaluation
 

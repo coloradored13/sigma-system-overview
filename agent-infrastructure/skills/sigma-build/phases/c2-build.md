@@ -1,9 +1,5 @@
 # C2: BUILD (Pure Execution)
 
-> **V2 NOTE (2026-04-15):** The atomic checklist model replaces phase-based orchestrator enforcement.
-> `orchestrator-config.py` commands in this file are DEPRECATED. Use `python3 ~/.claude/hooks/chain-evaluator.py status`
-> to check chain completeness. The Stop hook runs the evaluator automatically at session end.
-
 **Every step below is mandatory. Complete them in order. No DA, no plan-track, no review. Execute the locked plan.**
 
 ## Boot

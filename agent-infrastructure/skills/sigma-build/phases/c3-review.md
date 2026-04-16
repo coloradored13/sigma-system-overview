@@ -1,9 +1,5 @@
 # Conversation 3: REVIEW
 
-> **V2 NOTE (2026-04-15):** The atomic checklist model replaces phase-based orchestrator enforcement.
-> `orchestrator-config.py` commands in this file are DEPRECATED. Use `python3 ~/.claude/hooks/chain-evaluator.py status`
-> to check chain completeness. The Stop hook runs the evaluator automatically at session end.
-
 **Every step below is mandatory. Skipping any step = process failure. This is the longest conversation because it covers both review and close-out.**
 
 **Plan file location:** skill passes `{plan_file}` path. Format: `~/.claude/teams/sigma-review/shared/builds/{date}-{task-slug}.plan.md`
@@ -127,15 +123,11 @@ Build-track agents respond to review findings:
 All findings written to scratch ## review-findings.
 
 ### Step 7: Validate Review Round
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check challenge-round --round N
-```
-Address any failures before proceeding.
+Verify all agents responded to DA challenges with concede/defend/compromise. Address any missing responses before proceeding.
 
 ### Step 8: Compute Belief State (HARD GATE)
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py compute-belief --belief-mode build-quality --round N
-```
+Compute and write BELIEF state: `BELIEF[review-rN]: P={posterior} |-> {action}`
+
 Write to scratch ## belief-tracking:
 `"BELIEF[build-r{N}]: P={posterior} |plan-compliance={score} |test-coverage={score} |design-fidelity={score} |code-quality={score} |scope={clean|creep} |DA={grade} |-> {done|another-round({issues})|escalate}"`
 
@@ -179,17 +171,11 @@ Deep disagreement resolution via structured debate on contested decisions.
    - If narrowed: what the remaining disagreement is
    - If unresolved: record both positions as open tension
 
-5. **Advance orchestrator back to review**:
-   ```bash
-   python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build
-   ```
-   Return to Step 6 for re-evaluation with debate resolution in context.
+5. Return to Step 6 for re-evaluation with debate resolution in context.
 
 ### Step 10: Pre-Synthesis Validation (only when exiting review loop)
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check pre-synthesis
-```
-This runs V13+V14+V15+V16. Address failures.
+Pre-synthesis checks: write CONTAMINATION-CHECK and SYCOPHANCY-CHECK to workspace.
+This covers V13+V14+V15+V16. Address failures.
 
 #### 10a: Anti-Contamination Check (HARD GATE)
 1. Re-read scratch ## scope-boundary
@@ -229,10 +215,7 @@ Write to plan file ## Build Review Summary:
 - Fixes applied: {N} | Tests: {pass|fail}
 ```
 
-### Step 12: Advance Orchestrator Out of Review
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --mode build --context '{"exit_gate": "PASS", "belief_state": X.XX, "round": N, "pre_synthesis_validated": true}'
-```
+### Step 12: Advance Out of Review
 
 Update plan file: `build-exit-gate: PASS`, `build-belief: P={X.XX}`, `status: closing`.
 
@@ -299,11 +282,8 @@ Required content:
 
 This is the durable reference document. Session-end validation (V23) checks it exists.
 
-#### 13g: Advance Orchestrator
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"synthesis_delivered": true}'
-```
-Confirm returned phase = `compilation`.
+#### 13g: Confirm Synthesis Complete
+Verify synthesis artifact exists at `shared/archive/{date}-{task-slug}-synthesis.md` before proceeding to compilation.
 
 ### Step 14: Compilation (wiki integration — lead MUST NOT write wiki content)
 
@@ -388,10 +368,9 @@ Read what the compilation agent wrote/updated. Quick sanity check:
 Confirm INDEX.md reflects any new pages added.
 
 #### 14f: Validate Compilation Integrity
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check compilation
-```
-This runs V24+V25+V26:
+Verify: wiki entries have `[R{N}, {date}]` attribution, no contradictions silently resolved, INDEX.md matches actual files.
+
+This covers V24+V25+V26:
 - V24: Source attribution on all wiki entries (`[R{number}, {date}]`)
 - V25: No contradiction silently resolved (multi-source pages must have CONFLICT or Confirmed flags)
 - V26: No wiki pages deleted (INDEX.md references match actual files)
@@ -401,11 +380,8 @@ If validation FAILS:
 - V25 failure: contradiction was silently merged → restore both positions with CONFLICT flag
 - V26 failure: pages were deleted → investigate and restore from prior state
 
-#### 14g: Advance Orchestrator
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"compilation_complete": true, "compilation_validated": true}'
-```
-Confirm returned phase = `promotion`.
+#### 14g: Confirm Compilation Complete
+Verify all wiki pages pass integrity checks from 14f before proceeding to promotion.
 
 ### Step 15: Promotion (agents remain alive — do NOT shut them down)
 
@@ -456,11 +432,8 @@ For each approved candidate:
 #### 15g: Portfolio Entry
 Write {project-name} record to `shared/portfolio.md` (global tier).
 
-#### 15h: Advance Orchestrator
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"promotion_complete": true}'
-```
-Confirm returned phase = `sync`.
+#### 15h: Confirm Promotion Complete
+Verify all promotion candidates have been resolved (approved/rejected/auto-promoted) before proceeding to sync.
 
 ### Step 16: Infrastructure Sync
 
@@ -504,11 +477,8 @@ Commit sync changes? I can stage and commit, or you can review first.
 ```
 Wait for user → git add + commit if approved.
 
-#### 16e: Advance Orchestrator
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"sync_complete": true}'
-```
-Confirm returned phase = `archive`.
+#### 16e: Confirm Sync Complete
+Verify all infrastructure files are synced and committed (or user declined) before proceeding to archive.
 
 ### Step 17: Archive
 
@@ -536,10 +506,9 @@ Confirm:
 - Archive is non-empty
 
 #### 17c: Session End Validation
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check session-end
-```
-This runs V22+V23:
+Verify: archive exists, synthesis artifact exists, git clean.
+
+This covers V22+V23:
 - V22: Archive exists + git repo has no uncommitted changes
 - V23: Synthesis artifact exists
 
@@ -548,11 +517,8 @@ If validation fails:
 - If synthesis artifact missing: this is a serious error — go back to Step 13f
 - Re-run validation until it passes
 
-#### 17d: Advance Orchestrator to Terminal
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py advance --context '{"archive_verified": true, "session_end_verified": true}'
-```
-Confirm returned state has `is_terminal: true`.
+#### 17d: Pre-Close Verification
+Run `python3 ~/.claude/hooks/chain-evaluator.py evaluate` as formal pre-close verification. Address any FAIL items before committing.
 
 ### Step 18: Shutdown
 
@@ -560,9 +526,9 @@ Confirm returned state has `is_terminal: true`.
 
 #### 18a: Verify Terminal State
 ```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py status
+python3 ~/.claude/hooks/chain-evaluator.py status
 ```
-Confirm `is_terminal: true`. If NOT terminal → go back and complete whatever phase is current.
+Confirm all chain components are complete. If any are incomplete, go back and complete whatever phase is current.
 
 #### 18b: Write Close Status to Plan File
 Write to plan file ## Close Status:
@@ -591,11 +557,8 @@ If any agent does not respond within reasonable time:
 - If yes: note forced shutdown in scratch convergence
 - If no: flag incomplete work to user
 
-#### 18e: Checkpoint
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py checkpoint
-```
-Save final state for audit trail.
+#### 18e: Final Chain Evaluation
+Run `python3 ~/.claude/hooks/chain-evaluator.py evaluate` -- chain must be complete before closing. Address any FAIL items before committing.
 
 #### 18f: Final Report
 Report to user in plain English. Include:
@@ -630,7 +593,7 @@ Build review complete. Plan file: {plan_file} | Status: complete | Archive: {arc
 - [ ] BUILD rubric evaluated (final round)
 - [ ] Build-track applied fixes, tests pass
 - [ ] Build Review Summary written to plan file
-- [ ] Orchestrator advanced out of review
+- [ ] Plan file updated: build-exit-gate PASS, status closing
 
 ### Part B: Close-out
 - [ ] Synthesis agent spawned (NOT lead-written)
@@ -648,10 +611,10 @@ Build review complete. Plan file: {plan_file} | Status: complete | Archive: {arc
 - [ ] Commit offered and resolved
 - [ ] Scratch workspace archived with metadata header
 - [ ] Session-end validation passed (V22+V23)
-- [ ] Orchestrator reached terminal state
+- [ ] Chain evaluator passed (all components complete)
 - [ ] Close Status written to plan file, status set to complete
 - [ ] All agents shut down (or stragglers handled)
 - [ ] Final report delivered to user
-- [ ] Checkpoint saved
+- [ ] Chain evaluator evaluate passed
 
 **All items verified → cross-check against SKILL.md C3 Deliverables. Build is complete ONLY when the C3 Deliverables checklist is fully verified.**

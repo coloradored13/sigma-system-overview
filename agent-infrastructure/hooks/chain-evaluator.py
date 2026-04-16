@@ -623,7 +623,12 @@ def write_evaluation_to_workspace(result: ChainResult,
 # ---------------------------------------------------------------------------
 
 def enforce_stop(data: dict) -> dict:
-    """Stop hook handler: evaluate chain, write to workspace, return systemMessage."""
+    """Stop hook handler: evaluate chain, write to workspace, return systemMessage.
+
+    Non-looping design: returns informational messages only, never actionable
+    demands that would cause Claude to retry and trigger the Stop hook again.
+    Idempotent: skips re-evaluation if workspace hasn't changed since last eval.
+    """
     # Only evaluate if a workspace exists (we're in a sigma session)
     if not DEFAULT_WORKSPACE.exists():
         return {}
@@ -638,19 +643,26 @@ def enforce_stop(data: dict) -> dict:
     if "## task" not in content.lower() and "## mode" not in content.lower():
         return {}
 
+    # Idempotency: skip if workspace hasn't changed since last evaluation
+    current_hash = _content_hash(content)
+    state = _load_state()
+    if state.get("last_content_hash") == current_hash and "## Chain Evaluation" in content:
+        # Already evaluated this exact workspace content — no-op
+        return {}
+
     result = evaluate_chain()
     result = check_monotonicity(result)
     write_evaluation_to_workspace(result)
 
+    # Informational messages only — do NOT phrase as demands or instructions.
+    # The lead runs chain-evaluator.py evaluate explicitly before declaring done.
     if result.complete:
-        return {"systemMessage": f"CHAIN COMPLETE: {result.passed_count}/{len(result.items)} items passed."}
+        return {"systemMessage": f"[chain-eval] {result.passed_count}/{len(result.items)} items passed. Chain complete."}
 
-    failed = [f"{i.item_id}: {i.name}" for i in result.items if not i.passed]
-    msg = (
-        f"CHAIN INCOMPLETE: {result.failed_count} items failed — "
-        + ", ".join(failed)
-    )
-    return {"systemMessage": msg}
+    return {"systemMessage": (
+        f"[chain-eval] {result.passed_count}/{len(result.items)} items passed. "
+        f"Results written to workspace ## Chain Evaluation."
+    )}
 
 
 # ---------------------------------------------------------------------------

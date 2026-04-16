@@ -1,11 +1,4 @@
 # Conversation 1: PLAN
-
-> **V2 NOTE (2026-04-15):** The atomic checklist model replaces phase-based orchestrator enforcement.
-> `orchestrator-config.py` commands in this file are DEPRECATED. Use `python3 ~/.claude/hooks/chain-evaluator.py status`
-> to check chain completeness instead. The Stop hook runs the evaluator automatically at session end.
-> The validate/advance commands below still work but are no longer the enforcement mechanism —
-> the chain evaluator is. A full rewrite of this file to remove orchestrator references is planned.
-
 **Every step below is mandatory. Complete them in order. A lead reading ONLY this file must know exactly what to do.**
 
 C1 produces a locked plan file. No code is written. The plan file is the contract between conversations.
@@ -341,8 +334,6 @@ Flag any misalignment in scratch ## open-questions for challenge phase.
 
 **All items verified → continue to PLAN CHALLENGE (C1 not complete — see SKILL.md C1 Deliverables)**
 
-> **Note — orchestrator commands:** The original monolithic build used `orchestrator-config.py start --mode build`, `validate --check plan-convergence` (V3+V4+V5+V6+V8), and `advance --mode build` between plan and challenge phases. If the orchestrator has been updated for the 3-conversation model (C1 sub-workflow: `plan → challenge_plan → plan_locked`), run those commands here. If the orchestrator update is deferred, skip — the conversation boundary is the primary gate.
-
 ---
 
 ## PLAN CHALLENGE (Steps 18-26)
@@ -387,9 +378,10 @@ After receiving first round of challenges from DA + build-track:
 **If challenges found:** Log divergence to scratch workspace, proceed to Step 21.
 
 ### Step 21: Validate Circuit Breaker
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check cb
-```
+Check workspace for divergence or CB[] entries. Verify the scratch workspace ## convergence section contains either:
+- CB[] entries documenting circuit breaker responses (if zero-dissent fired), or
+- Logged divergence from the challenge round
+
 Address failures before advancing.
 
 ### Step 22: Plan-Track Responds
@@ -400,16 +392,15 @@ Plan-track agents respond to both DA and build-track:
 Monitor scratch workspace for updates. Allow inter-agent interaction.
 
 ### Step 23: Validate Challenge Round
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check challenge-round --round N
-```
+Verify all agents responded with concede/defend/compromise for each challenge:
+- Every DA challenge has a `DA[#N]: concede|defend|compromise` response from a plan-track agent
+- Every BUILD-CHALLENGE has a `BC[#N]: concede|defend|compromise` response from a plan-track agent
+- No challenges are left unaddressed in the scratch workspace
+
 Address any failures.
 
 ### Step 24: Compute Belief State (HARD GATE — must write to scratch workspace)
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py compute-belief --belief-mode build-plan --round N
-```
-Write to scratch ## belief-tracking:
+Compute and write BELIEF state to scratch ## belief-tracking:
 `"BELIEF[plan-r{N}]: P={posterior} |builder-feasibility={score} |interface-agree={score} |design-arch={score} |conflicts={none|count} |review-coverage={score} |DA={grade} |→ {lock-plan|another-round({gaps})|Toulmin-debate}"`
 
 !gate: BELIEF[] MUST be written to scratch workspace before advancing. Not optional. DA exit-gate grades are NOT a substitute.
@@ -424,10 +415,11 @@ If |declared - computed| > 0.15: must justify divergence.
 ### Step 26: Lock Plan (only when exiting to Outcome Delivery)
 Lock ADRs, design system, interface contracts in scratch workspace.
 
-```bash
-python3 ~/.claude/teams/sigma-review/shared/orchestrator-config.py validate --check plan-lock
-```
-Plan-lock runs V17. If fails: plan-track agents complete missing output.
+Verify plan lock: confirm ADR[], IC[], SQ[] entries exist in the scratch workspace locked sections.
+- At least 1 ADR[] with alternatives + rationale
+- At least 1 IC[] with typed contract
+- At least 1 SQ[] with owner + files
+If any are missing: plan-track agents complete missing output.
 
 !rule: plan-track and build-track agents exit after plan locked.
 
@@ -500,7 +492,7 @@ The plan file is the LAST artifact written — it cannot exist until promotion, 
 Confirm:
 - plan-exit-gate: PASS (P > 0.85 + DA PASS, or round >= 5 hard cap)
 - BELIEF[] written to scratch workspace for every challenge round
-- Plan-lock validation (V17) passed
+- Plan-lock validation passed (ADR[], IC[], SQ[] entries confirmed)
 
 ### Step 33: Agent Memory Persistence (Promotion)
 **This step is PRIMARY WORK, not cleanup. Agent learnings that compound across sessions are the system's durable value.**
@@ -641,5 +633,7 @@ If any plan file section is missing: go back and fill it from scratch workspace 
 - [ ] User report delivered with outcome chain status
 
 **C1 is complete ONLY when every item above is verified. Cross-check against SKILL.md C1 Deliverables before ending this conversation.**
+
+Run `python3 ~/.claude/hooks/chain-evaluator.py status` before ending C1 to verify chain completeness.
 
 **C1 complete. Conversation ends here. C2 starts in a new conversation.**
