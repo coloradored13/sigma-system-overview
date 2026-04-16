@@ -1,4 +1,13 @@
-"""Tests for phase-compliance-enforcer.py — PreToolUse/PostToolUse/Stop hook.
+"""ARCHIVED: Tests for phase-compliance-enforcer.py — hook deleted in atomic checklist migration.
+
+phase-compliance-enforcer.py was removed in commit 79bbae5 (2026-04-15) when
+phase-based enforcement was replaced with the atomic checklist model
+(chain-evaluator.py + phase-gate.py). This test module imports the deleted
+enforcer and can no longer run.
+
+Preserved as a historical record. Excluded from pytest collection because this
+directory is not on the CI test path (see .github/workflows/integration-test.yml).
+To run, restore phase-compliance-enforcer.py to agent-infrastructure/hooks/.
 
 Tests the mechanical enforcement layer for sigma-review and sigma-build:
   1. Phase skip detection (blocks reading future phase files)

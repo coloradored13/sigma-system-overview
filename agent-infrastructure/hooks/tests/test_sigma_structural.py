@@ -3,8 +3,12 @@
 Validates:
 1. Agent definition files — required sections, boot sequence, consistency
 2. Roster-to-agent file mapping — bidirectional consistency
-3. Phase file completeness — sigma-review and sigma-build phases
-4. Cross-file reference integrity — directives, decisions, patterns, protocols
+3. Cross-file reference integrity — directives, decisions, patterns, protocols
+
+Note: Phase-file completeness tests (TestReviewPhaseFiles / TestBuildPhaseFiles)
+and _template.md step 2a tests (TestAgentTemplateBoot) were removed when the
+phase-based architecture was retired in favor of the atomic checklist model
+(commit 79bbae5, 2026-04-15). Agent boot template also changed in that refactor.
 """
 import re
 from pathlib import Path
@@ -16,8 +20,6 @@ from conftest import get_infra_dir
 CLAUDE_DIR = get_infra_dir()
 AGENTS_DIR = CLAUDE_DIR / "agents"
 REVIEW_SHARED = CLAUDE_DIR / "teams" / "sigma-review" / "shared"
-REVIEW_PHASES_DIR = CLAUDE_DIR / "skills" / "sigma-review" / "phases"
-BUILD_PHASES_DIR = CLAUDE_DIR / "skills" / "sigma-build" / "phases"
 
 # --- Agent lists ---
 
@@ -67,39 +69,6 @@ SIGMA_OPTIMIZE_AGENTS = {
     "statistical-analyst",
     "cross-model-validator",
 }
-
-# --- Phase file expectations ---
-
-REVIEW_PHASES = [
-    "00-preflight.md",
-    "01-spawn.md",
-    "02-research.md",
-    "03-circuit-breaker.md",
-    "04-challenge.md",
-    "05-debate.md",
-    "06-synthesis.md",
-    "06b-compilation.md",
-    "07-promotion.md",
-    "08-sync.md",
-    "09-archive.md",
-    "10-shutdown.md",
-]
-
-BUILD_PHASES = [
-    "00-preflight.md",
-    "01-spawn.md",
-    "02-plan.md",
-    "03-plan-challenge.md",
-    "04-build.md",
-    "05-build-review.md",
-    "05b-debate.md",
-    "06-synthesis.md",
-    "06b-compilation.md",
-    "07-promotion.md",
-    "08-sync.md",
-    "09-archive.md",
-    "10-shutdown.md",
-]
 
 # --- Directives key sections ---
 
@@ -276,75 +245,6 @@ class TestAgentDefinitions:
 
 
 # ============================================================
-# TestAgentTemplateBoot — _template.md specific checks
-# ============================================================
-
-class TestAgentTemplateBoot:
-    """Verify _template.md has the canonical boot sequence including step 2a."""
-
-    @pytest.fixture
-    def template_content(self):
-        return (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-
-    def test_template_exists(self):
-        assert (AGENTS_DIR / "_template.md").exists()
-
-    def test_has_step_2a_skill_load(self, template_content):
-        assert "2a→skill-load" in template_content, (
-            "_template.md missing step 2a→skill-load"
-        )
-
-    def test_step_2a_position(self, template_content):
-        """Step 2a must be between step 2 (memory) and step 3 (inbox)."""
-        pos_2 = template_content.find("2→memory")
-        pos_2a = template_content.find("2a→skill-load")
-        pos_3 = template_content.find("3→inbox")
-        assert pos_2 > -1, "_template.md missing step 2→memory"
-        assert pos_2a > -1, "_template.md missing step 2a→skill-load"
-        assert pos_3 > -1, "_template.md missing step 3→inbox"
-        assert pos_2 < pos_2a < pos_3, (
-            "Step 2a not positioned between step 2 (memory) and step 3 (inbox)"
-        )
-
-    def test_step_2a_mentions_skills_index(self, template_content):
-        """Step 2a should reference the Skills Index."""
-        # Find the 2a block
-        match = re.search(
-            r"2a→skill-load.*?(?=\n\d→|\n## |\Z)",
-            template_content,
-            re.DOTALL,
-        )
-        assert match, "_template.md: cannot find 2a→skill-load block"
-        block = match.group(0)
-        assert "Skills Index" in block or "skill" in block.lower(), (
-            "Step 2a should reference Skills Index or skill mapping"
-        )
-
-    def test_has_max_2_budget(self, template_content):
-        assert "max 2 skill routers" in template_content, (
-            "_template.md missing boot budget constraint (max 2 skill routers)"
-        )
-
-    def test_has_role_section(self, template_content):
-        assert "## Role" in template_content
-
-    def test_has_expertise_section(self, template_content):
-        assert "## Expertise" in template_content
-
-    def test_has_boot_section(self, template_content):
-        assert "## Boot (FIRST)" in template_content
-
-    def test_has_persistence_section(self, template_content):
-        assert "## Persistence" in template_content
-
-    def test_has_promotion_section(self, template_content):
-        assert "## Promotion" in template_content
-
-    def test_has_weight_section(self, template_content):
-        assert "## Weight" in template_content
-
-
-# ============================================================
 # TestRosterConsistency
 # ============================================================
 
@@ -437,152 +337,6 @@ class TestRosterConsistency:
         """Roster should have at least the 8 core + DA + domain agents."""
         assert len(roster) >= 15, (
             f"Roster has {len(roster)} agents, expected >= 15"
-        )
-
-
-# ============================================================
-# TestReviewPhaseFiles
-# ============================================================
-
-class TestReviewPhaseFiles:
-    """Validate sigma-review phase file completeness and structure."""
-
-    def test_phases_directory_exists(self):
-        assert REVIEW_PHASES_DIR.is_dir(), (
-            "sigma-review phases directory missing"
-        )
-
-    @pytest.fixture(params=sorted(REVIEW_PHASES))
-    def review_phase(self, request):
-        return request.param
-
-    def test_expected_phase_exists(self, review_phase):
-        path = REVIEW_PHASES_DIR / review_phase
-        assert path.exists(), f"Missing review phase: {review_phase}"
-
-    def test_phase_not_empty(self, review_phase):
-        path = REVIEW_PHASES_DIR / review_phase
-        content = path.read_text(encoding="utf-8")
-        assert len(content.strip()) > 20, (
-            f"Review phase {review_phase} is empty or trivially short"
-        )
-
-    def test_phase_has_markdown_header(self, review_phase):
-        path = REVIEW_PHASES_DIR / review_phase
-        content = path.read_text(encoding="utf-8")
-        assert re.search(r"^#+ ", content, re.MULTILINE), (
-            f"Review phase {review_phase} has no markdown header"
-        )
-
-    def test_no_unexpected_review_phases(self):
-        """No stray phase files beyond the expected set."""
-        actual = {
-            f.name for f in REVIEW_PHASES_DIR.iterdir()
-            if f.is_file() and f.suffix == ".md"
-        }
-        expected = set(REVIEW_PHASES)
-        unexpected = actual - expected
-        assert not unexpected, (
-            f"Unexpected review phase files: {unexpected}"
-        )
-
-    def test_preflight_has_exit_checklist(self):
-        content = (REVIEW_PHASES_DIR / "00-preflight.md").read_text(
-            encoding="utf-8"
-        )
-        assert "Exit Checklist" in content, (
-            "00-preflight.md missing 'Exit Checklist' section"
-        )
-
-    def test_shutdown_exists(self):
-        assert (REVIEW_PHASES_DIR / "10-shutdown.md").exists(), (
-            "Terminal phase 10-shutdown.md missing"
-        )
-
-    def test_shutdown_is_terminal(self):
-        content = (REVIEW_PHASES_DIR / "10-shutdown.md").read_text(
-            encoding="utf-8"
-        )
-        assert "shutdown" in content.lower() or "terminal" in content.lower(), (
-            "10-shutdown.md does not reference terminal/shutdown behavior"
-        )
-
-
-# ============================================================
-# TestBuildPhaseFiles
-# ============================================================
-
-class TestBuildPhaseFiles:
-    """Validate sigma-build phase file completeness and structure."""
-
-    def test_phases_directory_exists(self):
-        assert BUILD_PHASES_DIR.is_dir(), (
-            "sigma-build phases directory missing"
-        )
-
-    @pytest.fixture(params=sorted(BUILD_PHASES))
-    def build_phase(self, request):
-        return request.param
-
-    def test_expected_phase_exists(self, build_phase):
-        path = BUILD_PHASES_DIR / build_phase
-        assert path.exists(), f"Missing build phase: {build_phase}"
-
-    def test_phase_not_empty(self, build_phase):
-        path = BUILD_PHASES_DIR / build_phase
-        content = path.read_text(encoding="utf-8")
-        assert len(content.strip()) > 20, (
-            f"Build phase {build_phase} is empty or trivially short"
-        )
-
-    def test_phase_has_markdown_header(self, build_phase):
-        path = BUILD_PHASES_DIR / build_phase
-        content = path.read_text(encoding="utf-8")
-        assert re.search(r"^#+ ", content, re.MULTILINE), (
-            f"Build phase {build_phase} has no markdown header"
-        )
-
-    def test_no_unexpected_build_phases(self):
-        """No stray phase files beyond the expected set."""
-        actual = {
-            f.name for f in BUILD_PHASES_DIR.iterdir()
-            if f.is_file() and f.suffix == ".md"
-        }
-        expected = set(BUILD_PHASES)
-        unexpected = actual - expected
-        assert not unexpected, (
-            f"Unexpected build phase files: {unexpected}"
-        )
-
-    def test_preflight_has_exit_checklist(self):
-        content = (BUILD_PHASES_DIR / "00-preflight.md").read_text(
-            encoding="utf-8"
-        )
-        assert "Exit Checklist" in content, (
-            "00-preflight.md missing 'Exit Checklist' section"
-        )
-
-    def test_shutdown_exists(self):
-        assert (BUILD_PHASES_DIR / "10-shutdown.md").exists(), (
-            "Terminal phase 10-shutdown.md missing"
-        )
-
-    def test_shutdown_is_terminal(self):
-        content = (BUILD_PHASES_DIR / "10-shutdown.md").read_text(
-            encoding="utf-8"
-        )
-        assert "shutdown" in content.lower() or "terminal" in content.lower(), (
-            "10-shutdown.md does not reference terminal/shutdown behavior"
-        )
-
-    def test_build_has_plan_phase(self):
-        assert (BUILD_PHASES_DIR / "02-plan.md").exists(), (
-            "sigma-build missing 02-plan.md phase"
-        )
-
-    def test_build_has_build_review_phase(self):
-        assert (BUILD_PHASES_DIR / "05-build-review.md").exists(), (
-            "sigma-build missing 05-build-review.md phase"
         )
 
 

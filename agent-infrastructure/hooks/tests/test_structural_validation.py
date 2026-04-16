@@ -2,11 +2,13 @@
 
 Verify the entire installed structure is consistent:
 - All skills have valid SKILL.md with frontmatter
-- INDEX.md categories reference actual skill dirs
-- _template.md has step 2a in correct boot position
-- 00-preflight.md has socratic-session conditional
 - settings.json hooks reference real executable scripts
 - Agent-skill mappings reference real skills
+
+Note: TestIndexMd, TestTemplateBootUpdate, and TestPreflightSocraticConditional
+were removed when INDEX.md was retired (commit fd00a9d, 2026-04-15) and
+phase-based sigma-review was retired in favor of the atomic checklist model
+(commit 79bbae5, 2026-04-15).
 """
 import json
 import os
@@ -138,114 +140,6 @@ class TestLoanAgencyTieredRefs:
         refs = SKILLS_DIR / "loan-agency" / "references"
         op_files = list(refs.glob("loan-agency-*.md"))
         assert len(op_files) >= 5, f"Expected ≥5 operational files, got {len(op_files)}"
-
-
-class TestIndexMd:
-    def test_index_exists(self):
-        assert (SKILLS_DIR / "INDEX.md").exists()
-
-    def test_has_capability_section(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "## Capability Skills" in content
-
-    def test_has_domain_section(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "## Domain Skills" in content
-
-    def test_has_orchestrator_section(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "## Orchestrator Skills" in content
-
-    def test_has_passive_section(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "## Passive Skills" in content
-
-    def test_has_behavioral_section(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "## Behavioral Skills" in content
-
-    def test_has_agent_boot_integration(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "## Agent Boot Integration" in content
-
-    def test_has_agent_skill_mapping(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        assert "loan-ops-tech-specialist" in content
-        assert "product-strategist" in content
-        assert "tech-architect" in content
-
-    def test_all_new_skills_in_index(self):
-        content = (SKILLS_DIR / "INDEX.md").read_text(encoding="utf-8")
-        for skill in EXPECTED_SKILLS:
-            assert skill in content, f"Skill {skill} not found in INDEX.md"
-
-
-class TestTemplateBootUpdate:
-    def test_template_exists(self):
-        assert (AGENTS_DIR / "_template.md").exists()
-
-    def test_has_step_2a(self):
-        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-        assert "2a→skill-load" in content
-
-    def test_step_2a_between_memory_and_inbox(self):
-        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-        pos_2 = content.find("2→memory.md")
-        pos_2a = content.find("2a→skill-load")
-        pos_3 = content.find("3→inbox")
-        assert pos_2 < pos_2a < pos_3, "Step 2a not between step 2 (memory) and step 3 (inbox)"
-
-    def test_has_progressive_disclosure_rules(self):
-        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-        assert "## Skill Progressive Disclosure" in content
-        assert "Tier 1" in content or "Tier 2" in content
-
-    def test_has_skill_source_tagging(self):
-        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-        assert "|source:skill(" in content
-
-    def test_has_max_2_budget(self):
-        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-        assert "max 2 skill routers" in content
-
-    def test_has_conflict_rule(self):
-        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
-        assert "CONFLICT" in content
-
-
-class TestPreflightSocraticConditional:
-    def test_preflight_exists(self):
-        preflight = SKILLS_DIR / "sigma-review" / "phases" / "00-preflight.md"
-        assert preflight.exists()
-
-    def test_has_socratic_conditional(self):
-        preflight = SKILLS_DIR / "sigma-review" / "phases" / "00-preflight.md"
-        content = preflight.read_text(encoding="utf-8")
-        assert "socratic-session" in content
-
-    def test_has_warm_decomposition_path(self):
-        preflight = SKILLS_DIR / "sigma-review" / "phases" / "00-preflight.md"
-        content = preflight.read_text(encoding="utf-8")
-        assert "socratic-warm" in content
-
-    def test_has_cold_extraction_fallback(self):
-        preflight = SKILLS_DIR / "sigma-review" / "phases" / "00-preflight.md"
-        content = preflight.read_text(encoding="utf-8")
-        assert "IF no socratic-session" in content
-
-    def test_still_hard_gate(self):
-        preflight = SKILLS_DIR / "sigma-review" / "phases" / "00-preflight.md"
-        content = preflight.read_text(encoding="utf-8")
-        assert "HARD GATE" in content
-
-    def test_original_steps_preserved(self):
-        """Original preflight steps should still exist."""
-        preflight = SKILLS_DIR / "sigma-review" / "phases" / "00-preflight.md"
-        content = preflight.read_text(encoding="utf-8")
-        assert "### Step 1: Memory Recall" in content
-        assert "### Step 5: Complexity Assessment" in content
-        assert "### Step 9: Cost Estimate" in content
-        assert "## Exit Checklist" in content
 
 
 class TestSettingsJsonHooks:

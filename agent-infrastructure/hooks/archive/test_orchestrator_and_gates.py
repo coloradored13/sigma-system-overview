@@ -1,4 +1,13 @@
-"""Tests for orchestrator-config.py workflow state machines and gate_checks.py edge cases.
+"""ARCHIVED: Orchestrator-dependent tests from agent-infrastructure/hooks/tests/.
+
+These tests were written for orchestrator-config.py which was deleted in the
+atomic checklist migration (2026-04-15, commit 79bbae5). They test phase
+transition guards, checkpoint persistence, and workflow advancement — none of
+which exist in the checklist model.
+
+Preserved as a historical record. Excluded from pytest collection because this
+directory is not on the CI test path (see .github/workflows/integration-test.yml).
+To run, restore orchestrator-config.py to agent-infrastructure/teams/sigma-review/shared/.
 
 Covers:
   - ANALYZE workflow structure, phases, transitions, guards
