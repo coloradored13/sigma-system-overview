@@ -199,9 +199,16 @@ class TestSettingsJsonHooks:
                     # Extract script path from command
                     parts = cmd.split()
                     if len(parts) >= 2:
-                        script_path = Path(os.path.expanduser(parts[-1]))
+                        raw = parts[-1]
+                        # settings.json uses ~/.claude/... paths that resolve via
+                        # symlink on the user's machine. For CI (or any machine
+                        # without the symlink), rewrite to the in-repo location.
+                        if raw.startswith("~/.claude/"):
+                            script_path = CLAUDE_DIR / raw[len("~/.claude/"):]
+                        else:
+                            script_path = Path(os.path.expanduser(raw))
                         assert script_path.exists(), \
-                            f"Hook command references missing script: {cmd}"
+                            f"Hook command references missing script: {cmd} (resolved: {script_path})"
 
     def test_existing_settings_preserved(self):
         """Original settings should still be present."""
