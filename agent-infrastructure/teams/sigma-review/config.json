@@ -40,6 +40,34 @@
       "planModeRequired": false,
       "cwd": "/Users/bjgilbert",
       "backendType": "in-process"
+    },
+    {
+      "agentId": "explore-hooks@sigma-review",
+      "name": "explore-hooks",
+      "color": "green",
+      "joinedAt": 1776356410100,
+      "tmuxPaneId": "in-process",
+      "subscriptions": [],
+      "agentType": "Explore",
+      "model": "haiku",
+      "prompt": "Explore the sigma-review hook and gate infrastructure to understand how chain closure steps are enforced. Thoroughness: very thorough.\n\nI need to understand:\n\n1. **phase-gate.py** at ~/.claude/hooks/phase-gate.py — Read the full file. It has two HARD BLOCKs (code write auth, git commit gate) and one WARN (context firewall). I need to know: does it have ANY check that fires before SendMessage shutdown_request? Does it check the workspace ## promotion section before allowing shutdown? How does it interact with .chain-status.json?\n\n2. **chain-evaluator.py** at ~/.claude/hooks/chain-evaluator.py — Read the full file. It checks A1-A19 chain items. I need to understand:\n   - How does it detect agent sections in the workspace? (it's treating `### hypotheses` as an agent section — parser bug)\n   - How does A2 (source provenance) check work? (it flags findings as untagged even when they have |source:| tags)\n   - How does A14 (git clean) interact with the git-commit gate in phase-gate.py? (circular dependency: can't commit until chain complete, chain fails because uncommitted)\n   - Why does `evaluate` produce no output and exit 0 silently?\n   - How does it compute the content hash for caching?\n\n3. **gate_checks.py** — The chain evaluator imports this. Find it and read the relevant check functions for A2 (source provenance), A3 (DB[]), A16 (peer verification), to understand why they might produce false positives.\n\n4. **settings.json** at ~/.claude/settings.json — Check which hooks fire on which tool calls. Specifically: what hook fires on SendMessage? Is there any pre-SendMessage hook that could gate shutdown requests?\n\nReport: file paths, relevant code sections, the specific mechanism gaps that allow promotion to be skipped before shutdown, the parser logic causing false positives, and the A14 circular dependency.\", \"mode\": \"plan",
+      "planModeRequired": false,
+      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "explore-agent-failures@sigma-review",
+      "name": "explore-agent-failures",
+      "color": "yellow",
+      "joinedAt": 1776356423588,
+      "tmuxPaneId": "in-process",
+      "subscriptions": [],
+      "agentType": "Explore",
+      "model": "haiku",
+      "prompt": "Explore the sigma-review team agent infrastructure to understand why spawned agents might fail to write to workspace. Thoroughness: medium.\n\nContext: In a sigma-review session, 4 agents were spawned via TeamCreate. 2 agents (tech-architect, product-strategist) successfully wrote findings to the workspace file at ~/.claude/teams/sigma-review/shared/workspace.md. 2 agents (reference-class-analyst, cognitive-decision-scientist) went idle TWICE without writing anything to workspace, despite being prodded. They were respawned fresh and the second instances succeeded.\n\nI need to understand:\n1. What mechanism do team agents use to write to workspace? Is it Edit tool on the workspace.md file? Are there any permissions or hook restrictions that could silently prevent writes?\n2. Check the phase-gate.py at ~/.claude/hooks/phase-gate.py — does the code-write-authorization BLOCK apply to workspace writes? The INFRASTRUCTURE_PATH_MARKERS list includes '/.claude/teams/' so it should be excluded, but verify.\n3. Check settings.json at ~/.claude/settings.json for any hooks on Edit/Write that might affect team agents differently.\n4. Is there anything about the agent spawn mechanism (Agent tool with team_name) that could cause agents to lose tool access or context?\n\nReport: any mechanism that could explain silent write failures to workspace, and whether the infrastructure path exclusion is working correctly.",
+      "planModeRequired": false,
+      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
+      "backendType": "in-process"
     }
   ]
 }

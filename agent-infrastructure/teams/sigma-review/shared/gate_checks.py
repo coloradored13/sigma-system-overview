@@ -167,19 +167,48 @@ def parse_agent_subsections(findings_text: str) -> dict[str, str]:
     return agents
 
 
+def _load_roster_agents() -> set[str]:
+    """Load known agent names from the team roster file.
+
+    Returns a set of lowercase agent names. Falls back to empty set if
+    roster is not found (in which case extract_agents_from_workspace uses
+    the exclusion-list approach as a fallback).
+    """
+    roster_path = Path(__file__).resolve().parent / "roster.md"
+    if not roster_path.exists():
+        return set()
+    try:
+        content = roster_path.read_text(encoding="utf-8")
+        # Roster format: "agent-name |domain: ..." — one per line
+        agents = set()
+        for line in content.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            # Extract agent name (everything before first |)
+            name = line.split("|")[0].strip().lower()
+            if name:
+                agents.add(name)
+        return agents
+    except OSError:
+        return set()
+
+
 def extract_agents_from_workspace(content: str) -> list[str]:
     """Extract agent names from workspace ### subsections.
 
-    Scans the full workspace for ### headers between ## findings and ## convergence
-    because workspaces may have interleaved ## sections (e.g. ## DA R2 RESPONSES)
-    that break the ## findings boundary.
+    Uses roster-based allowlist when available (robust). Falls back to
+    exclusion-list approach if roster is not found.
+
+    Scans the region between ## agents (or ## findings) and ## convergence
+    for ### headers that match known agent names.
     """
-    # Find the region between ## findings and ## convergence/## promotion
-    findings_start = re.search(r"^## findings", content, re.MULTILINE | re.IGNORECASE)
+    # Find the agent findings region — workspace uses ## agents or ## findings
+    agents_start = re.search(r"^## (?:agents|findings)", content, re.MULTILINE | re.IGNORECASE)
     convergence_start = re.search(r"^## (?:convergence|promotion|open-questions)", content, re.MULTILINE | re.IGNORECASE)
 
-    if findings_start:
-        start = findings_start.start()
+    if agents_start:
+        start = agents_start.start()
         end = convergence_start.start() if convergence_start else len(content)
         region = content[start:end]
     else:
@@ -188,8 +217,28 @@ def extract_agents_from_workspace(content: str) -> list[str]:
     # Extract all ### headers in that region
     agent_headers = re.findall(r"^### ([\w-]+)", region, re.MULTILINE)
 
-    # Known non-agent headers to exclude
-    exclude = {"questions", "constraints", "claims", "auto-promoted", "user-approve", "synthesis-agent"}
+    # Try roster-based allowlist first (robust)
+    roster_agents = _load_roster_agents()
+    if roster_agents:
+        # Also include "devils-advocate" which is always valid but handled
+        # separately in some checks — include it in extraction
+        agents = []
+        seen = set()
+        for name in agent_headers:
+            key = name.lower()
+            if key in roster_agents and key not in seen:
+                agents.append(key)
+                seen.add(key)
+        return agents
+
+    # Fallback: exclusion-list approach (when roster not available)
+    exclude = {
+        "questions", "constraints", "claims", "auto-promoted", "user-approve",
+        "synthesis-agent", "hypotheses", "prompt-hypotheses", "peer-verification",
+        "verification", "da-responses", "analytical-hygiene", "findings",
+        "superforecasting-decomposition", "reference-classes", "analogues",
+        "calibration", "pre-mortem", "disconfirmation",
+    }
     agents = []
     seen = set()
     for name in agent_headers:
@@ -244,12 +293,12 @@ def get_mode(content: str) -> str:
 
 
 def _get_findings_region(content: str) -> str:
-    """Extract the full findings region (## findings through ## convergence).
+    """Extract the full findings region (## agents/findings through ## convergence).
 
-    Handles workspaces with interleaved ## sections (e.g. ## DA R2 RESPONSES)
-    by using the broader region, not just the first ## findings section.
+    Handles workspaces that use ## agents (current) or ## findings (legacy),
+    and interleaved ## sections (e.g. ## DA R2 RESPONSES).
     """
-    findings_start = re.search(r"^## findings", content, re.MULTILINE | re.IGNORECASE)
+    findings_start = re.search(r"^## (?:agents|findings)", content, re.MULTILINE | re.IGNORECASE)
     convergence_start = re.search(r"^## (?:convergence|promotion|open-questions)", content, re.MULTILINE | re.IGNORECASE)
 
     if findings_start:

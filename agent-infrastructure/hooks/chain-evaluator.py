@@ -683,8 +683,17 @@ def enforce_stop(data: dict) -> dict:
 
 def main():
     """CLI and hook dispatch."""
-    # Check if running as a hook (stdin has JSON)
-    if not sys.stdin.isatty():
+    # Check CLI args FIRST — they take priority over stdin detection.
+    # When run via Claude Code's Bash tool, stdin is piped (not a tty)
+    # even for CLI invocations, so stdin-first detection misroutes CLI
+    # calls to the hook path where they silently exit 0.
+    args = sys.argv[1:]
+
+    if args:
+        # Explicit CLI invocation — skip stdin detection entirely
+        pass
+    elif not sys.stdin.isatty():
+        # No CLI args + stdin is piped → likely a hook invocation
         try:
             data = json.loads(sys.stdin.read())
         except (json.JSONDecodeError, EOFError):
@@ -699,12 +708,13 @@ def main():
         else:
             # Not a Stop event — chain-evaluator only runs on Stop
             sys.exit(0)
-
-    # CLI mode
-    args = sys.argv[1:]
-    if not args:
+    else:
+        # No args, stdin is a tty — show usage
         print("Usage: chain-evaluator.py [evaluate|status|item <ID>]", file=sys.stderr)
         sys.exit(1)
+
+    if not args:
+        sys.exit(0)
 
     cmd = args[0].lower()
     workspace = args[1] if len(args) > 1 and cmd == "item" else None

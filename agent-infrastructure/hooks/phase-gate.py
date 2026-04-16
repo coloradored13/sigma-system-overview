@@ -88,11 +88,36 @@ def _workspace_has_plan_lock() -> bool:
 
 
 def _chain_is_complete() -> bool:
-    """Check if the chain-evaluator last reported complete."""
+    """Check if the chain-evaluator last reported complete.
+
+    Also returns True if the ONLY failing item is A14 (git clean) —
+    since the commit IS the action that satisfies A14, blocking commit
+    on A14 creates a circular dependency.
+    """
     try:
         data = json.loads(CHAIN_STATUS_FILE.read_text())
-        return data.get("last_complete", False)
+        if data.get("last_complete", False):
+            return True
+        # A14-only exception: if the only failure is git clean, allow commit
+        failed = data.get("failed_items", {})
+        if failed and all(k == "A14" for k in failed):
+            return True
+        return False
     except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return False
+
+
+def _workspace_section_has_content(section_name: str) -> bool:
+    """Check if a workspace ## section has non-empty content."""
+    try:
+        content = DEFAULT_WORKSPACE.read_text(encoding="utf-8")
+        pattern = rf"^## {re.escape(section_name)}\s*\n(.*?)(?=^## |\Z)"
+        m = re.search(pattern, content, re.MULTILINE | re.DOTALL)
+        if not m:
+            return False
+        section_content = m.group(1).strip()
+        return len(section_content) > 0
+    except (FileNotFoundError, OSError):
         return False
 
 
@@ -157,7 +182,51 @@ def check_premature_git_operation(command: str) -> tuple[bool, str]:
 
 
 # ---------------------------------------------------------------------------
-# WARN 3: Context firewall
+# BLOCK 3: Pre-shutdown promotion gate
+# ---------------------------------------------------------------------------
+
+def check_premature_shutdown(tool_input: dict) -> tuple[bool, str]:
+    """BLOCK SendMessage shutdown_request unless promotion round is complete.
+
+    Prevents the recipe skip where lead sends shutdown before chain closure
+    (promotion, compilation, sync) is done. The visible deliverable (synthesis)
+    is not the full deliverable — the completed chain is.
+    """
+    # Only check SendMessage with shutdown_request
+    message = tool_input.get("message", "")
+    if isinstance(message, str):
+        return False, ""  # Plain text message, not a shutdown request
+    if not isinstance(message, dict):
+        return False, ""
+    if message.get("type") != "shutdown_request":
+        return False, ""  # Not a shutdown request
+
+    # Only enforce during active sigma sessions
+    if not _is_sigma_session():
+        return False, ""
+
+    missing = []
+    if not _workspace_section_has_content("promotion"):
+        missing.append("## promotion (run promotion round)")
+    if not _workspace_section_has_content("contamination-check"):
+        missing.append("## contamination-check (run pre-synthesis checks)")
+    if not _workspace_section_has_content("sycophancy-check"):
+        missing.append("## sycophancy-check (run pre-synthesis checks)")
+
+    if missing:
+        return True, (
+            "SHUTDOWN BLOCKED: Chain closure incomplete. "
+            f"Missing sections: {', '.join(missing)}. "
+            "Complete the full recipe (promotion, pre-synthesis checks) "
+            "before sending shutdown requests. The synthesis document is "
+            "one step in the recipe, not the deliverable."
+        )
+
+    return False, ""
+
+
+# ---------------------------------------------------------------------------
+# WARN 4: Context firewall
 # ---------------------------------------------------------------------------
 
 def detect_context_firewall_leak(file_path: str, content: str) -> str | None:
@@ -194,6 +263,11 @@ def enforce_pre_tool_use(data: dict) -> tuple[int, dict]:
     elif tool_name == "Bash":
         command = tool_input.get("command", "")
         should_block, reason = check_premature_git_operation(command)
+        if should_block:
+            return 2, {"reason": reason}
+
+    elif tool_name == "SendMessage":
+        should_block, reason = check_premature_shutdown(tool_input)
         if should_block:
             return 2, {"reason": reason}
 

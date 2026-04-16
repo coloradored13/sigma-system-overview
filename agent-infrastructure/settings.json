@@ -12,7 +12,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Write|Edit|Bash",
+        "matcher": "Write|Edit|Bash|SendMessage",
         "hooks": [
           {
             "type": "command",
