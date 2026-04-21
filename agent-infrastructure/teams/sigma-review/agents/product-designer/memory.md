@@ -49,3 +49,21 @@ P[write-stagger-sleep-placement:sleep-AFTER-write-inside-semaphore-context,¬bef
 P[dispatch-stagger-vs-write-stagger:different-timing-points-different-purposes |dispatch-start-stagger=API-rate-limit-protection+load-distribution |write-path-stagger=burst-convergence-mitigation-for-polling-consumers |fast-models-start-500ms-apart-¬complete-500ms-apart→dispatch-stagger-¬satisfies-write-stagger-contract |both-needed-separate-implementation-points |generalizes-to:any-multi-agent-parallel-dispatch+shared-state-polling-consumer |src:sigma-ui-build|26.3.28|class:pattern|promoted:product-designer]
 
 P[typed-gate-shapes-in-state-store:TypedDicts-must-exist-in-Phase-A-state-store-even-when-gates-never-fire |Phase-B-imports-from-state-store-module,¬defines-own |absent-TypedDict=Phase-B-defines-its-own=contract-purpose-defeated |safety-critical-shapes(GateAction.role-prevents-destructive-as-primary)=highest-priority-to-define-early |generalizes-to:any-phased-build-where-Phase-A-builds-state-store+Phase-B-builds-UI |src:sigma-ui-build|26.3.28|class:pattern|promoted:product-designer]
+
+## findings — multi-model-chatroom C1 (26.4.16)
+
+F6:Streamlit-viability-for-multi-speaker-chat |conditional-go-P=0.65 |3-conditions:(1)fragment-isolation-¬full-page-rerun (2)sequential-turn-model-not-simultaneous-streaming (3)mixed-type-generator-for-tool-badge-inline |key-risk:O(n)-transcript-render-at-80+-turns-unmeasured |fallback:Textual-TUI(asyncio-native,120FPS,worker-pool) |src:independent-research(docs.streamlit.io:T1)+agent-inference |calibration: P=0.35 fallback-probability-after-M1b-prototype
+
+F7:multi-speaker-identity |name-badge-EVERY-message-not-speaker-change-only |DB-correction:hue-alone-insufficient-for-fast-scan-at-13-models |dual-cue(hue+text)=pre-attentive+verification |13-step-perceptual-HSL-palette(S=75%,L=45%) |color-blind-safe(¬red-green-adjacent) |src:independent-research(WebSearch:T2)+agent-inference
+
+F8:preamble-as-study-variable |"Session Variables"(¬"Experimental")-section-label |persistent-badge-in-session-header |JSONL-header-on-start-click-¬on-init |verbatim-custom-capture |H9+H10-observable-via-this-UX |cosmetic-toggle-treatment-destroys-observability |src:H9/H10-analysis
+
+F9:tool-call-badge-inline |novel-Streamlit-pattern(T3-no-production-precedent-found) |3-states(invoked=amber,succeeded=green,errored=red) |st.expander-within-chat_message |H8-backend-required-for-3-state-to-work(raw_events_only=UI-design-precondition-¬optional) |DA-challenge-needed |F6-prototype-gates |src:agent-inference+sigma-ui-expander-pattern
+
+F10:transcript-render-100-turn-cap |DB-correction:50ms-sigma-ui-estimate-¬applicable-to-chat-streaming-render-shape |benchmark-required-at-50/80/120-turns-in-prototype |if->300ms-at-80-turns→windowed-render-30-turns |src:cross-agent(sigma-ui-B3)+agent-inference
+
+## calibration updates (26.4.16)
+
+C[Streamlit-viable-for-multi-speaker-not-simultaneous:sequential-turn-model-is-the-load-bearing-constraint |researcher-observes-completed-turns-not-parallel-token-streams |IF-simultaneous-parallel-streaming-required→Streamlit-needs-custom-HTML-component-or-replacement |calibration:monitoring-grade-Streamlit-precedent(sigma-ui)¬applicable-to-chat-streaming-without-rerun-cost-benchmark |src:chatroom-C1|26.4.16]
+
+C[tool-badge-backend-precondition:H8-raw_events_only-is-UI-design-precondition-not-optional-feature |3-state-badge-silently-fails-if-backend-swallows-malformed-tool_call |PM[D2]=highest-cross-track-risk-item |flag-to-implementation-engineer |src:chatroom-C1|26.4.16]

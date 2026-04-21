@@ -17,3 +17,4 @@
 | 2026-03-25 | hateoas-agent-improvement | ANALYZE | 2 | TA,CQA,UXR,TW,PS,RCA,DA | PASS | workspace-hateoas-agent-improvement-2026-03-25.md |
 | 2026-04-15 | sigma-v2-architecture | BUILD-C1 | 2 | TA,PS,IE,CQA,DA | PASS | 2026-04-15-sigma-v2-architecture-workspace.md |
 | 2026-04-16 | enterprise-ai-rollout | ANALYZE | 2 | TA,PS,RCA,CDS,DA | PASS (A-) | 2026-04-16-enterprise-ai-rollout-workspace.md |
+| 2026-04-20 | sigma-chatroom-m1ab | BUILD-C1 | 2 | TA,UX,IE,CQA,DA | PASS (A-, P=0.87, XVERIFY-infra-gap-doc) | 2026-04-20-sigma-chatroom-m1ab-workspace.md |

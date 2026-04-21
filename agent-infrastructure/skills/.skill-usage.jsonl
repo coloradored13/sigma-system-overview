@@ -235,3 +235,9 @@
 {"timestamp": "2026-04-16T00:36:06.846247", "skill": "sigma-build", "file": "phases/c2-build.md", "tier": "router", "context": "standalone"}
 {"timestamp": "2026-04-16T00:36:06.888163", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "standalone"}
 {"timestamp": "2026-04-16T00:36:07.132918", "skill": "sigma-build", "file": "phases/c3-review.md", "tier": "router", "context": "standalone"}
+{"timestamp": "2026-04-16T23:02:21.878096", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "standalone"}
+{"timestamp": "2026-04-16T23:23:47.430643", "skill": "sigma-build", "file": "SKILL.md", "tier": "router", "context": "standalone"}
+{"timestamp": "2026-04-16T23:23:50.748563", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "standalone"}
+{"timestamp": "2026-04-20T11:32:08.805588", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "standalone"}
+{"timestamp": "2026-04-20T12:59:20.021087", "skill": "engineering", "file": "references/code-review.md", "tier": "T2", "context": "standalone"}
+{"timestamp": "2026-04-20T12:59:23.980752", "skill": "engineering", "file": "references/testing-strategy.md", "tier": "T2", "context": "standalone"}
