@@ -1,11 +1,12 @@
 # sigma-evaluate report: sigma-chatroom-m1ab
 
 ## Meta
-- rounds evaluated: R2 (initial), R3 (after R3 revisions)
+- rounds evaluated: R2 (initial), R3 (after R3 revisions), R4 (after R4 revisions)
 - target: `~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab.plan.md`
 - pipeline: 3 parallel haiku evaluators → sonnet judge (no anchoring)
 - **R2 grade: C (2.50 / 4.0)** — evaluated 2026-04-21 (548-line plan)
 - **R3 grade: B− (2.86 / 4.0)** — evaluated 2026-04-21 post-R3 (609-line plan), +0.36 crossing B threshold
+- **R4 grade: C+ (2.57 / 4.0)** — evaluated 2026-04-21 post-R4 (611-line plan), −0.29 from R3 (regression)
 
 ---
 
@@ -179,3 +180,74 @@ B− is a legitimate upgrade. R3 fixed the three most critical R2 findings (Olla
 - **Summary entry** → `conv.md` in sigma-mem (R3 delta notation).
 - **Cross-evaluator pattern** → sigma-review team memory as `R3-surfaces-R2-masked-tensions`:
   > Revision rounds that fix flagged issues can LOWER scores on orthogonal criteria by making previously-implicit reasoning explicit. Score drops post-revision aren't regression signals — read delta analysis, not raw deltas. Mitigation: judge prompts should explicitly instruct "evaluate current plan on current state; do not penalize for uncovering new issues."
+
+---
+
+# R4 Re-evaluation (C+ 2.57/4.0, −0.29 vs R3 — REGRESSION)
+
+## R4 Scores & Delta
+
+| Criterion | R2 | R3 | R4 | Δ R3→R4 |
+|---|---|---|---|---|
+| Accuracy | 2 | 3 | **2** | **−1** |
+| Completeness | 2 | 3 | **3** | 0 |
+| Logic | 3 | 2 | **2** | 0 |
+| Evidence | 2 | 2 | **1** | **−1** |
+| Calibration | 2.5 | 3 | **3** | 0 |
+| Actionability | 3 | 3 | **3** | 0 |
+| Scope Integrity | 3 | 4 | **4** | 0 |
+
+**R4 average:** 18 / 7 = **2.57** → **Grade C+**
+
+Trajectory: R2 C (2.50) → R3 B− (2.86) → **R4 C+ (2.57)**, net +0.07 over R2, −0.29 from R3.
+
+## R4 Regression — The Anti-Pattern
+
+R4 attempted to fix R3's self-referential citation problem by adding unverified external-looking citations. Three factual errors introduced:
+
+1. **PM[7] Opus-4 pricing:** "$0.15/call" cited; actual at $25/M output tokens = **$0.0512** (3× error).
+2. **PM[6] OWASP ASVS V11.1.3:** Requirement number not confirmed in ASVS 4.0.
+3. **ADR[7] "OpenTelemetry + Jaeger pattern"** for per-record schema versioning: contradicted by search — OT versioning is stream-level, not per-record.
+
+Plus **ADR[3] LangChain AgentExecutor** cited as defending N>3 SDK separation, but LangChain only establishes N=1. Accurate citation, but doesn't support the claim it's attached to.
+
+**The anti-pattern:** "Self-referential citations" is a transparency problem. The correct fix is either (a) verified primary sources with URLs that survive a search check, or (b) declare "no external evidence; prior-free reasoning at lowered BELIEF." R4 chose a third path — unverified external-looking citations — which is worse than either correct option. A plan saying *"no external source; BELIEF 0.60"* is more trustworthy than a plan citing a contradicted OT pattern at *BELIEF 0.80-0.85*.
+
+## What R4 Did Well
+
+1. **Scope Integrity held at 4/4** — M2-M4 hard-stops enforced, no contamination.
+2. **ADR[2] thesis decomposition** — separating core-thesis BELIEF (0.80-0.85) from M1b-channel BELIEF (0.70-0.75) is structurally sound.
+3. **Carry-forward flags remain specific** — env var + $5 default, uuid7 RFC 9562, validator REQUIRED.
+
+## What R4 Didn't Move (despite R3 recommendations)
+
+1. **H2-H5 still qualitative** — "expansion," "infeasible," "expensive" undefined.
+2. **UD#3 ≥95% still unanchored** — no derivation, no pre-written acceptance test.
+3. **ADR[3] BELIEF still 0.75-0.85** on non-independent evidence. Logic evaluator says honest range is 0.55-0.70.
+
+## Expectation Gap
+
+Sigma-build team expected **B+** (≥3.35). Actual **C+ (2.57)** — gap of ~0.86 points. Why:
+
+- R4 made a category error on Evidence: unverified externals replaced honest self-references → 2→1, not 2→3.
+- Three criteria R3 flagged as fixable (Logic, Calibration, Actionability) did not move.
+- No path to B+ without improving Evidence and Logic; R4 regressed both.
+
+## R5 Recommendations
+
+**Evidence is the load-bearing fix.** Every citation survives a 30-second search check before inclusion.
+
+- **Correct Opus-4 pricing** to $25/M output tokens (≈$0.0512/call) or remove the numerical claim.
+- **Remove or fix OWASP ASVS V11.1.3.**
+- **Remove or reclassify the OpenTelemetry/Jaeger citation** — stream-level, not per-record.
+- **Decouple the ADR[3] LangChain citation** from the N>3 claim it doesn't support.
+- **Set ADR[3] BELIEF to 0.55-0.70** to reflect "reasoned but unverified" with XVERIFY gap declared.
+- **Pre-register UD#3 ≥95% as executable assertion**, not prose.
+- **Quantify H2-H5** with dollar amounts, latency ms, specific error counts.
+- **Address F1 fallback BELIEF** — if both Ollama channels fail, thesis is half-verified.
+
+## R4 Persistence
+
+- **Summary entry** → `conv.md` in sigma-mem (R4 regression notation).
+- **Cross-evaluator pattern** → sigma-review team memory as `unverified-citation-anti-pattern`:
+  > When eval critique flags "self-referential citations," the temptation is to ADD external-looking citations without verification. This produces worse outcomes than either verified primary sources OR declared prior-free reasoning. Every citation must survive a 30-second search check before inclusion. Plans with declared gaps at lowered BELIEF are more trustworthy than plans with contradicted citations at high BELIEF.

@@ -15,6 +15,9 @@ IE-F3: Anthropic Python SDK(messages.create)=correct |Agent SDK=DISQUALIFIED(HAT
 IE-F4: FastAPI+SSE feasible |asyncio.gather()+Semaphore(5)=canonical pattern |!blocking-call-discipline: all sync calls MUST use asyncio.to_thread() (convention-only,no type-system enforcement)
 IE-F5: strangler fig 4-phase migration |orchestrator-config.py wrapped not replaced |current system never broken
 H3: CONFIRMED-with-condition (explicit wiring required, ¬automatic) |H5: CONFIRMED (FastAPI+uvicorn+requirements.txt=clone-and-run)
+!sigma-evaluate 26.4.21: 2026-04-20-sigma-chatroom-m1ab.plan.md → C(2.5/4.0) | Acc=2 Comp=2 Log=3 Evi=2 Cal=2.5 Act=3 SI=3 | critical: Ollama /v1 streaming+tool_calls docs contradict plan ADR[2](PM[5] 0.45 vs known-broken GH#12557) | PM[3] gaps: security+cost+async-debug | UD#3 circular dep | revision offered, re-eval pending
+!sigma-evaluate R3 26.4.21: 2026-04-20-sigma-chatroom-m1ab.plan.md → B-(2.86/4.0) | R2→R3: Acc+1, Comp+1, Log-1*, Evi0, Cal+0.5, Act0, SI+1 | *Logic regression surfaced, not deterioration: R3 made previously-masked tensions legible (self-reference in ADR[3] compensating factors, PM[3]/C5 contradiction, affirming-consequent in PM[2]) | R3 landed: Ollama /v1 reframed, PM[6/7/8] added, UD#3 pinned conditional | remaining: ≥95% threshold unanchored, H2-H5 undefined, F1/F2 untested
+!sigma-evaluate R4 26.4.21: 2026-04-20-sigma-chatroom-m1ab.plan.md → C+(2.57/4.0) | trajectory R2(2.50)→R3(2.86)→R4(2.57) REGRESSION | Acc 3→2 (3× pricing error $0.15 vs $0.0512, OWASP V11.1.3 unverified, OT/Jaeger misattribution), Evi 2→1 (LangChain citation doesn't support N>3 claim, unverified externals replaced self-refs) | Log/Cal/Act/SI unchanged (H2-H5 still qualitative, ≥95% still unanchored, ADR[3] BELIEF still 0.75-0.85 on non-independent evidence) | sigma-build team expected B+(3.35+), got C+(2.57), 0.86-point gap
 
 → actions:
 → user references something from a past session → check ^decisions.md for choices made
