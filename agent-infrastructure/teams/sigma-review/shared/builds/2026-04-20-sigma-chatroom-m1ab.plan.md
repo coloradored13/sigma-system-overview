@@ -3,20 +3,26 @@
 ## Meta
 - created: 2026-04-20
 - locked: 2026-04-21
+- r3-revised: 2026-04-21
 - build-id: 2026-04-20-sigma-chatroom-m1ab
 - tier: BUILD TIER-2
-- status: plan-locked
-- plan-exit-gate: PASS
-- plan-belief: P=0.87
-- plan-engagement-grade: A-
-- plan-rounds-used: 2/5 (budget preserved)
+- status: plan-locked-r3
+- plan-exit-gate: PASS (R3)
+- plan-belief: **P=0.80-0.85** (R3 range; R2 was 0.87 point-estimate — honest downward recalibration per eval findings)
+- plan-engagement-grade: A- (R2) / PASS substantive (R3 per DA-r3 anti-sycophancy self-audit)
+- plan-rounds-used: 3/5 (budget preserved)
 - build-exit-gate: PENDING
 - build-belief: P=0.00
-- output-label: M1a (two-model streaming) + M1b (native tool-use + tool-exec loop), + preliminary Q3 forward plan for M1c→M4 with empirical revision hooks
+- output-label: M1a (two-model streaming) + M1b (native tool-use + tool-exec loop; SQ6c-PASS/F1/F2 pre-computed branches) + preliminary Q3 forward plan for M1c→M4 with empirical revision hooks
 - source-plan: ~/.claude/plans/look-for-the-plan-snazzy-giraffe.md
-- scratch-workspace: ~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab/c1-scratch.md
+- r1-r2-scratch: ~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab/c1-scratch.md (archived-c1)
+- r3-scratch: ~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab/c1-r3-scratch.md
 - archive: ~/.claude/teams/sigma-review/shared/archive/2026-04-20-sigma-chatroom-m1ab-workspace.md
-- infrastructure-known-gap: sigma-verify cross_verify hung 3x this session (DA-r1, TA-r1, TA-r2). XVERIFY[ADR3] documented as §2h infra-gap with compensating factors. Post-C1 troubleshoot queued.
+- audit-report: ~/.claude/teams/sigma-review/shared/archive/2026-04-20-sigma-chatroom-m1ab-audit.md (GREEN verdict)
+- eval-report: ~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab.eval.md (R2 was C 2.5/4.0; R3 revisions address all 3 high-leverage findings)
+- r3-revisions: ADR[2]/PM[5] documented-to-fail reframe; PM[6/7/8] security+cost+DX risks added; UD#3 option-b pinned; all ADR BELIEFs converted to ranges; autogen/crewai precedent dropped from ADR[3]; SQ29-32 test additions (~3.5h)
+- infrastructure-known-gap: sigma-verify cross_verify hung 3x this session (DA-r1, TA-r1, TA-r2). XVERIFY[ADR3] documented as §2h infra-gap with compensating factors (narrowed in R3 to 4-agent consensus + DB re-run only). Post-C1 troubleshoot queued.
+- meta-calibration-rule (post-C1): any ADR with BELIEF range upper-bound ≥0.85 must NOT have an SQ-level smoke test in the decomposition that could falsify it (else BELIEF cap by smoke-test outcome uncertainty). Promote to chain-evaluator check.
 
 ---
 
@@ -113,24 +119,25 @@ Build M1a + M1b of sigma-chatroom — a local Streamlit web app (later M2+) wher
 - **Rationale:** sync/async mismatch — `clients.py.call()` sync returns tuple; chatroom `Provider.stream()` async yields StreamEvent. <20 LOC real reuse vs ~900 LOC divergent surface. Coupling to sigma-verify Apache-2.0 evolution = silent-break risk.
 - **Mitigation:** copy-with-attribution of `_extract_content` + env-var naming convention
 - **Prompted-by:** H1, C3
-- **BELIEF:** 0.92
+- **BELIEF:** **0.85-0.95** (R3 range; R2 was 0.92 point — range reflects <20 LOC reuse estimate + sigma-verify evolution coupling)
 - **Source:** `[code-read sigma-verify/clients.py:266-288,247-264,221-236]`, `[agent-inference]`, `[source-plan]`
 
-### ADR[2] — Native per-SDK tool-use; no text-convention, no ollama-mcp-bridge
+### ADR[2] — Native per-SDK tool-use; no text-convention, no ollama-mcp-bridge **[R3 — reframed from unconditional confidence]**
 - **Alternatives:** ALT1 text-convention regex, ALT2 ollama-mcp-bridge, ALT3 hybrid native+text-fallback
-- **Rationale:** Anthropic SDK ≥0.40 emits `content_block_start/delta type="tool_use"` (structured, first-class). Ollama /v1 OpenAI-compat emits `tool_calls` when instruction-tuned. Text-convention strictly worse when structure available. `tool_use_reliability` taxonomy only meaningful on native SDK behaviors.
-- **Gap:** Ollama /v1 streaming + tool_calls unverified → SQ6c smoke test pre-SQ14b
+- **Rationale:** Anthropic SDK emits `content_block_start/delta type="tool_use"` (structured, first-class). Ollama `/v1` OpenAI-compat emits `tool_calls` when instruction-tuned AND streaming-tool-calls works on the `/v1` path. Text-convention strictly worse WHERE native structure is actually delivered; where native structure is silently dropped, text-convention becomes a fallback rather than strictly inferior.
+- **Gap (LOAD-BEARING):** Ollama `/v1` streaming + tool_calls is documented-to-fail per Ollama docs + GitHub #12557 (issue scope was `/api/chat`, but the documentation pattern applies to the `/v1` OpenAI-compat layer). SQ6c smoke test is a VERIFICATION ATTEMPT, not exploratory discovery. Plan pre-computes SQ6c-FAIL branches (F1 fallback to ollama pypi AsyncClient on `/api/chat`; F2 emergency scope-contract to Anthropic-only).
+- **BELIEF:** **0.70-0.75 (CONDITIONAL on SQ6c PASS)**; drops to **0.55 on SQ6c FAIL** with fallback to `ollama` pypi AsyncClient per impl-eng-R3 F1 branch, OR M1b Anthropic-only scope contraction per F2. R2 was unconditional 0.95 — eval-flagged (empirical-gap-as-planning-assumption) and corrected in R3.
+- **BELIEF dependency (explicit, in-ADR not separate-section):** this ADR's confidence is gated by SQ6c outcome, not ADR reasoning-strength alone.
 - **Prompted-by:** H2, C4
-- **BELIEF:** 0.95
-- **Source:** `[source-plan C4]`, `[independent-research Anthropic+Ollama]`, `[code-read ollama-mcp-bridge warning]`
+- **Source:** `[source-plan C4]`, `[independent-research Anthropic content-block streaming — verified]`, `[primary-source-contradiction Ollama docs + GitHub #12557 on /v1+streaming+tool_calls — see PM[5]]`, `[code-read ollama-mcp-bridge warning]`
 
 ### ADR[3] — Tool-exec loop lives in TurnEngine; Provider.stream() = exactly one SDK call
 - **Alternatives:** ALT1 tool-exec inside Provider.stream (Provider-owned), ALT2 separate ToolExecutor service, ALT3 hybrid Provider-for-agent-mode + TurnEngine-cross-SDK
-- **Rationale:** separation-of-concerns (Provider=wire, TurnEngine=policy) + ToolCallRecord needs conversation-level state Provider doesn't have + 5-call cap is chatroom policy not SDK feature. R2 DB re-run: LangChain AgentExecutor counter (Provider-owned loop industry mode for N=1 SDK) acknowledged; ADR defended on N>3 + observability grounds. Single-SDK case would flip decision. autogen/crewai N>1 location-separation precedent.
+- **Rationale:** separation-of-concerns (Provider=wire, TurnEngine=policy) + ToolCallRecord needs conversation-level state Provider doesn't have + 5-call cap is chatroom policy not SDK feature. R2 DB re-run: LangChain AgentExecutor counter (Provider-owned loop industry mode for N=1 SDK) acknowledged; ADR defended on N>3 chatroom use-case + observability grounds. Single-SDK case would flip decision. **[R3: autogen/crewai N>1 location-separation precedent DROPPED — could not primary-source within search budget; rather than cite unverified precedent, honest posture accepts narrower compensating-factors set: 4-agent cross-agent consensus + DB re-run with LangChain AgentExecutor counter only.]**
 - **Prompted-by:** H3
-- **BELIEF:** 0.88 → **0.84 R2** (DB re-run with stronger counter)
-- **XVERIFY:** FAIL[infra-gap-documented — sigma-verify cross_verify hang x3; compensated by 4-agent consensus + DB re-run + industry precedent]
-- **Source:** `[source-plan H3]`, `[agent-inference]`, `[industry-pattern autogen+crewai+LangChain]`
+- **BELIEF:** **0.75-0.85** (R3 range; R2 was 0.84 point — compensating-factors narrowed per SEC[3])
+- **XVERIFY:** FAIL[infra-gap-documented — sigma-verify cross_verify hang x3; compensated by 4-agent consensus + DB re-run (narrower set post-R3)]
+- **Source:** `[source-plan H3]`, `[agent-inference]`, `[industry-pattern LangChain AgentExecutor — acknowledged counter, ADR defended on N>3 grounds]`
 
 ### ADR[4] — OpenAI-shaped canonical Message; message_mapping.py owns translation; escape-hatches LOCKED in ADR; 3-tier hand-golden MERGE GATE
 - **Alternatives:** ALT1 Anthropic-shaped canonical, ALT2 per-provider subclasses, ALT3 union-type (zero-loss but N^2 adapters)
@@ -140,7 +147,7 @@ Build M1a + M1b of sigma-chatroom — a local Streamlit web app (later M2+) wher
   - `Message.content_blocks: list[dict] | None` — Anthropic fidelity for edge cases (cache_control, tool_result with image)
 - **3-tier MERGE GATE:** Tier 1 hand-golden outbound + Tier 2 hand-golden inbound + Tier 3 round-trip smoke (derivative)
 - **Prompted-by:** H4, H7
-- **BELIEF:** 0.80 → **0.70 R2** (honest drop after escape-hatch lock; Gemini M1c+ uncertainty remains)
+- **BELIEF:** **0.60-0.75** (R3 range; R2 was 0.70 point — wider range honest about Gemini M1c+ fidelity uncertainty)
 - **Source:** `[source-plan H4+H7]`, `[independent-research Anthropic+Gemini+OpenAI]`, `[cqa BC-cqa-1 F1-F8]`, `[impl-eng BC#14]`, `[DA[#2]+DA[#6]]`
 
 ### ADR[5] — Context budget = 60% `ProviderSpec.max_context_tokens`; estimator `len(text)//4`; per-model calibration deferred to M3 with revision hook
@@ -148,31 +155,33 @@ Build M1a + M1b of sigma-chatroom — a local Streamlit web app (later M2+) wher
 - **Rationale:** `len//4` ≈ 4 chars/token English; drift ≤15% absorbed by 60% buffer. M1 seed pair far exceeds 5-turn session.
 - **Revision hook H1:** if M1a empirical shows `reported_input_tokens` diverges >15%, M3 calibration shifts LEFT to M1c
 - **Prompted-by:** H5, source-plan risk-table
-- **BELIEF:** 0.85 (load-bearing: no, config)
+- **BELIEF:** **0.75-0.90** (R3 range; R2 was 0.85 point — per-model drift unknown until M3 calibration; load-bearing: no, config)
 
 ### ADR[6] — Raw SDK event capture default-on when `tool_use_reliability != "reliable"`; env override `CHATROOM_CAPTURE_RAW={0,1}`
 - **Alternatives:** ALT1 always-on all providers, ALT2 opt-in only via env, ALT3 on M1a-learning + off M3+ except unreliable
 - **Rationale:** "0 invocations ambiguity" distinguishes declined/malformed/SDK-swallowed. devstral-2:123b reliability=`"unknown"` → default-on captures first-run evidence.
 - **Prompted-by:** H6, risk-table
-- **BELIEF:** 0.90 (load-bearing: no)
+- **BELIEF:** **0.85-0.95** (R3 range; R2 was 0.90 point — low-stakes config choice)
 
 ### ADR[7] — Per-record `schema_version="1"` on every JSONL line + replay invariants
 - **Alternatives:** ALT1 version in session_header only, ALT2 sidecar metadata file, ALT3 semver `"1.0.0"`
 - **Rationale:** per-record = each line self-describing → replay tools version-check individual records. Critical for M3+ schema v2. OpenTelemetry + Jaeger pattern.
-- **Replay invariants (R2-added):**
+- **Replay invariants (R2-added, R3-extended):**
   - INV-replay-1: skip malformed trailing lines with warning log (partial-flush graceful)
   - INV-replay-2: partial turn records (`stop_reason="error"`) ARE INCLUDED in replayed state
   - INV-replay-3: session_header MUST be valid first line; if missing, raise `CorruptedSessionError`
   - INV-replay-4: `schema_version` forward-compat — v2 reader encountering "1" raises `SchemaVersionMismatch` with actionable message
+  - **INV-replay-5 (R3 per cqa-r4):** replay exposed as `AsyncIterator[StreamEvent | Turn]` — enables `scripts/replay_session.py` harness (SQ32) + M3 metrics panel streaming visualizations
+  - **INV-replay-6 (R3 per cqa-r4):** cost_summary record type added (flushed on session close, or immediately on `cost_cap_exceeded` abort per PM[7])
 - **Prompted-by:** C8
-- **BELIEF:** 0.95
+- **BELIEF:** **0.90-0.98** (R3 range; R2 was 0.95 point — OpenTelemetry/Jaeger pattern well-validated)
 
 ### ADR[8] — Streaming from day 1 (M1a baseline); Provider.stream() required; complete() REMOVED per DA GP2
 - **Alternatives:** ALT1 defer streaming to M2, ALT2 streaming optional gated-by-flag
 - **Rationale:** TTFT metric requires streaming; defer = force M2 Streamlit shim to integrate async + new-interface together.
 - **R2 GP2:** `complete()` REMOVED from IC[1] Protocol for M1a/b (zero callers). `CompleteResult` dataclass retained for future.
 - **Prompted-by:** C5, design-decision-2
-- **BELIEF:** 0.92 (load-bearing: no)
+- **BELIEF:** **0.85-0.95** (R3 range; R2 was 0.92 point — TTFT + INV4/5 state-management solid; load-bearing: no)
 - **Source:** `[source-plan C5]`, `[DA[#4] GP[2]+cqa BC-cqa-8 D1]`
 
 ---
@@ -223,11 +232,12 @@ class StreamEvent:
 
 **Invariants:**
 - INV1: errors ALWAYS emerge as `StreamEvent(kind="error", error=exc)`
-- INV2: stop_reason taxonomy = `end_turn | max_tokens | tool_use | max_tool_calls | error | stop`
+- INV2 **[R3 — 7-member]**: stop_reason taxonomy = `end_turn | max_tokens | tool_use | max_tool_calls | error | stop | cost_cap_exceeded`
 - INV3 (R2): multiple `kind="tool_call"` events MAY be emitted per stream when model requests parallel tools
 - INV4 (R2): when `stop_reason="tool_use"`, Provider MUST populate `final_message` with reconstructed canonical assistant Message
 - INV5 (R2): `kind="tool_result"` events emitted ONLY BY TurnEngine (never by Provider); after each tool execution, before re-invoking `Provider.stream()`. `tool_call_record.tool_call_id` correlates with prior `kind="tool_call"`
 - INV6 (R2): orphan `kind="tool_result"` (no matching prior tool_call) is contract violation; TurnEngine MUST raise
+- INV-MC-1 **[R3 — on MetricsCollector]**: `MetricsCollector.record_tool_call` MUST emit running-cost estimate on every call. TurnEngine subscribes to running-cost event, aborts with `stop_reason="cost_cap_exceeded"` when threshold crossed (push-based, not poll-based — prevents race where N parallel tool_calls each individually below cap but cumulatively far over)
 
 ### IC[3] — ToolSchema + ToolCallRecord
 ```python
@@ -241,16 +251,20 @@ class ToolSchema:
 class ToolCallRecord:
     tool_call_id: str
     tool_name: str
-    arguments: dict
+    arguments: dict                    # R3: capped at 4KB per INV-TCR-2 for rejected records
     ts_started: str                    # ISO-8601
     ts_completed: str | None           # None if crashed pre-completion (replay-compat)
     latency_ms: int                    # monotonic_ns-derived
     result: str                        # string-coerced tool return
     result_chars: int
-    error: str | None                  # error-class name if tool raised
+    error: str | None                  # R3: closed-set taxonomy per INV-TCR-1
     position_in_turn: int              # 0-indexed within this Turn
     preceding_text: str                # last 50 chars of text preceding this tool_call
 ```
+
+**Invariants (R3-added):**
+- INV-TCR-1 **[R3]**: `error` field uses closed-set taxonomy for rejection cases: `{unknown_tool, args_too_large, depth_exceeded, non_utf8, schema_violation, exec_exception, timeout}`. Free-text fallback allowed ONLY for unanticipated categories (prefix `"uncategorized:"`).
+- INV-TCR-2 **[R3]**: `arguments` field in rejected ToolCallRecord contains the RAW (invalid) args as received, capped at 4KB for post-hoc analysis. Oversized args replaced with `{"__truncated__": true, "__original_size__": N}`.
 
 ### IC[4] — Canonical Message shape (R2-expanded)
 ```python
@@ -296,6 +310,7 @@ class TurnEngine:
 - INV2 (R2): on `tool_count == max_tool_calls`, after executing Nth tool and yielding its tool_result, TurnEngine re-invokes `provider.stream(messages=updated, tools=None)` ONE FINAL TIME for text explanation. Overrides final `stop_reason="max_tool_calls"`
 - INV3: ToolCallRecord populated between `ts_started` (pre-exec) and `ts_completed` (post-exec). `monotonic_ns()` for latency_ms
 - INV4 (R2): phase sequencing — (1) provider.stream yields `tokens+tool_calls+stop(tool_use,final_message)`; (2) append final_message to state.messages; (3) for each tool_call: execute, build ToolCallRecord, yield `StreamEvent(kind="tool_result")`; (4) append tool_result Messages; (5) loop to (1) or hit max_tool_calls INV2
+- INV-TE-5 **[R3]**: `tool_arg_validator` callable MUST be invoked before tool-dispatch for every tool_call when tools list is non-empty. If `None`, TurnEngine uses a default-noop that records `reason_validated="noop-default"` (M1b contract; M3 retrofits strict validator). Null validator ≠ absent validation — audit trail mandatory. **Per carry-forward flag #3: M1b ships with default validator = jsonschema + size/name pre-checks, NOT None.**
 
 ### IC[6] — TurnPolicy protocol + concrete policies
 ```python
@@ -320,19 +335,30 @@ Replay invariants: see ADR[7].
 
 ## Sub-task Decomposition
 
-Full 28-SQ decomposition with owners, estimates, files, dependencies is in the archived scratch workspace under `## sub-task-decomposition` (line 2643+). Summary:
+Full 32-SQ decomposition (R1 27 → R2 28 → R3 32; +4 R3 additions in cluster G) with owners, estimates, files, dependencies is in archived scratches: R1+R2 `## sub-task-decomposition` at `c1-scratch.md` line 2643+; R3 additions at `c1-r3-scratch.md` `### code-quality-analyst-R3` section. Summary:
 
 - **M1a cluster A** (foundation): SQ1-SQ5 — pyproject, base types, roster, errors (~2.5h)
 - **M1a cluster B** (clients, parallelizable): SQ6a (anthropic) + SQ6b (ollama) + SQ6c (Ollama /v1 smoke, BLOCKS SQ14b) + SQ7 (message_mapping streaming) (~4.25h)
 - **M1a cluster C** (orchestration): SQ8a-b (conversation + preamble), SQ9 (TurnEngine RoundRobin), SQ10 (persistence + replay), SQ10b (replay robustness tests), SQ11 (cli), SQ11b (context truncation) (~5.75h)
-- **M1a cluster D** (tests): SQ12a-k — mock provider, streaming, message_mapping 3-tier gate, turn engine, conversation, persistence, cli, live smoke m1a, error convention, context truncation (~13h; absorbs most of the +28% R2 delta)
-- **M1b cluster E** (tool-schema + providers tool-use): SQ13, SQ14a, SQ14b, SQ15 (~9.5-10h)
+- **M1a cluster D** (tests): SQ12a-k — mock provider, streaming, message_mapping 3-tier gate, turn engine, conversation, persistence, cli, live smoke m1a, error convention, context truncation (~13h)
+- **M1b cluster E** (tool-schema + providers tool-use): SQ13, SQ14a, SQ14b, SQ15 (~9.5-10h; SQ6c-FAIL-F1 branch adds +0.5-1.5h to SQ14b)
 - **M1b cluster F** (TurnEngine tool-exec + policies): SQ16-SQ21 — tool-exec loop, YieldNext, Random, echo fixture, MetricsCollector, raw capture (~6.75h)
-- **M1b cluster G** (tests): SQ22-SQ28 — per-SDK tool-use, message_mapping 3-tier, turn engine tools + EG1-EG5, metrics, raw sidecar, yield-next, random, live smoke m1b (~10.5h)
+- **M1b cluster G** (tests): SQ22-SQ28 + **R3 additions SQ29-32** — per-SDK tool-use, message_mapping 3-tier, turn engine tools + EG1-EG5, metrics, raw sidecar, yield-next, random, live smoke m1b, **SQ29 injection ~1.5h, SQ30 cost-cap ~0.5h, SQ31 stream-logging ~0.5h, SQ32 replay-harness ~1h** (R3 cluster-G total ~14h)
 
 **Parallel build opportunities:** SQ6a/SQ6b (2 impl-engs, cluster B) + SQ14a/SQ14b (2 impl-engs, cluster E) per `feedback_parallel-build-engineers` memory pattern. User confirmed for C2.
 
-**Grand total:** ~41h parallelized (R1 32h + R2 delta +28%).
+**Grand total (R3 ranges — replace R2 point estimate):**
+- M1a: **~16-20h** (coord range)
+- M1b-PASS (SQ6c passes): **~22-26h**
+- M1b-FAIL-F1 (SQ6c fails /v1, pivot to ollama pypi `/api/chat`): **~23-28h**
+- M1b-FAIL-F2 (F1 also fails, Anthropic-only scope): **~21-22h**
+- **Grand parallelized PASS: ~38-46h coord / 46-58h stop-start** (R2 was ~41h point estimate — honest range reflects coordination overhead)
+
+**R3 IC delta additions (from cqa-r4 — see IC sections above for full context):**
+- IC[2] stop_reason taxonomy += `cost_cap_exceeded` (7-member enum)
+- IC[3] ToolCallRecord += INV-TCR-1 (closed-set `error` taxonomy: `{unknown_tool, args_too_large, depth_exceeded, non_utf8, schema_violation, exec_exception, timeout}`) + INV-TCR-2 (rejected `arguments` capped at 4KB with `__truncated__` marker)
+- IC[5] TurnEngine += INV-TE-5 (`tool_arg_validator` MUST be invoked before tool-dispatch; default-noop records `reason_validated="noop-default"`)
+- ADR[7] replay += INV-replay-5 (replay as `AsyncIterator[StreamEvent | Turn]` for replay harness SQ32) + INV-replay-6 (`cost_summary` record type)
 
 ---
 
@@ -370,12 +396,46 @@ Full 28-SQ decomposition with owners, estimates, files, dependencies is in the a
 - **Mitigation:** (a) XVERIFY[ADR3] marked NOT-ATTEMPTED with infra-gap doc in gate-log (not silently skipped per §2h); (b) compensating evidence via 4-agent cross-agent consensus + DB re-run + industry-pattern audit; (c) BELIEF[ADR3] dropped 0.88→0.84 to reflect XVERIFY miss honestly
 - **Escalation trigger:** post-C1 troubleshoot session — fix `mcp__sigma-verify` cross_verify timeout + per-provider partial-result return; retry XVERIFY[ADR3] before M1b commits first line of tool-exec code
 
-### PM[5] — Ollama /v1 streaming + tool_calls broken, blocks M1b
-- **Likelihood:** M (~0.45)
-- **Reasoning:** ollama-mcp-bridge inline warning on /v1 + GitHub issue #12557 closed (about `/api/chat` not `/v1`) + XVERIFY[openai:gpt-5.4] uncertain-low. Plan bets M1b on unverified SDK behavior.
-- **Detection:** SQ6c 15-min smoke test BEFORE SQ14b commits 2h
-- **Mitigation:** (a) SQ6c runs pre-SQ14b; if passes, proceed with openai SDK AsyncStream; if fails, pivot to `ollama` pypi AsyncClient (+0.5h SQ14b) OR constrain M1b tool-use to Anthropic-only; (b) Raw capture surfaces WHICH failure mode
-- **Escalation trigger:** if SQ6c fails for BOTH devstral-2:123b AND deepseek-v3.2:cloud, M1b tool-use scope contracts to Anthropic-only; Ollama tool-use becomes M1c deliverable
+### PM[5] — Ollama /v1 streaming + tool_calls documented-to-fail; blocks M1b Ollama tool-use unless SQ6c verification overrides docs **[R3 — reframed from exploratory risk]**
+- **Likelihood:** **H (0.60-0.75)** — documentation pattern applies but devstral-specific `/v1` behavior in recent Ollama releases could surprise in either direction. Range is honest about verification-attempt uncertainty rather than the earlier false ~0.45 "exploratory" framing.
+- **Reasoning:** Ollama documentation + GitHub #12557 indicate `tool_calls` silently dropped when streaming is enabled on the OpenAI-compat layer. **Documented-to-fail, NOT exploratory.** SQ6c is a verification attempt — if it passes, we accept that devstral-specific `/v1` behavior streams tool_calls despite documented pattern; if it fails, documented behavior confirmed.
+- **Detection:** SQ6c 15-min smoke test BEFORE SQ14b commits. Run against BOTH devstral-2:123b AND deepseek-v3.2:cloud.
+- **Mitigation (pre-computed FAIL branches; estimate deltas per impl-eng-r4 R3):**
+  - **Primary (SQ6c PASS either model on /v1):** proceed with `openai` SDK AsyncStream + tool_calls; ADR[2] BELIEF 0.70-0.75; M1b **~22-26h** (range)
+  - **Secondary (SQ6c FAIL all /v1 paths; pivot to F1 — `ollama` pypi `AsyncClient` on `/api/chat`):** SQ14b +0.5-1.5h rework; M1b **~23-28h**; ADR[2] BELIEF 0.55 under conditional, arguably *stronger* at 0.80-0.85 under F1 (two-path confirmation); scope preserved
+  - **Tertiary (F1 also fails — F2 emergency contraction):** M1b tool-use contracts to Anthropic-only; Ollama tool-use becomes M1c deliverable; M1b **~21-22h** (−1.5-2h net); ADR[2] BELIEF 0.55 (scope-contracted, core thesis unverified until M1c)
+- **Escalation trigger:** SQ6c results posted to plan file before SQ14b line-of-code; branch selection explicit in C2 build log.
+
+### PM[6] — Tool-exec injection / argument smuggling attack surface **[R3 — new]**
+- **Likelihood:** **L-M (0.20-0.35)** for M1a/b research-instrument scope; **H (0.55+)** if ever routed to untrusted input at M4+ (when `web_search`, `calculator`, `code_exec` tools materialize)
+- **Reasoning:** Tool-exec loop accepts `tool_name` (string) and `arguments` (dict) from SDK-parsed model output. Attack vectors: (a) malformed tool names — path traversal (`../../etc/passwd`), shell metacharacters, null bytes; (b) malformed JSON arguments — nested-depth bombs, unicode homoglyphs, duplicate keys; (c) oversized arguments — 10MB string exhausts memory/log; (d) nested-object serialization exploits — pydantic model-loading edge cases; (e) unicode-normalization collision in tool_name (NFC/NFD visual homoglyph bypass)
+- **Detection:** SQ29 `test_tool_exec_injection.py` ~1.5h with 8 test cases (I1-I8) covering T_INJ1-T_INJ5. INV-TCR-1/2 on ToolCallRecord (closed-set error taxonomy). INV-TE-5 on IC[5] (validator MUST be invoked).
+- **Mitigation:**
+  - IC[5] `tool_arg_validator` seam — **LOAD-BEARING, must default to real validator in M1b, NOT `None`.**
+  - **REVISION to carry-forward flag #3:** M1b ships with DEFAULT validator = `jsonschema.validate(arguments, schema=tool.parameters)` + `len(tool_name) <= 64` + `tool_name.isidentifier()` pre-check + `len(json.dumps(arguments)) <= 65536` size cap + max-depth=32 limit. Add `jsonschema ~= 4.0` to pyproject.
+  - Tool name whitelist: registered tools only; no dynamic dispatch from model-provided name without registry lookup.
+- **Escalation trigger:** any SQ29 I1-I8 test fails → pause M1b, fix validator default, re-run suite before integration tests.
+
+### PM[7] — Operational cost envelope for live tests **[R3 — new]**
+- **Likelihood:** **M (0.30-0.45)** — moderate for budget incidents during C2/C3 build; rises with M1b tool-exec loops that can spiral on unbounded generation
+- **Reasoning:** `tests/live/test_live_smoke_*.py` call Anthropic + Ollama cloud APIs. Without a session cap, an unbounded tool-exec loop (fencepost bug in max=5, max_tokens=2048 generation spiral, or flaky-test rerun cycle) could run up API cost silently. Opus-4 at 2048 output tokens ≈ $0.15/call; 100 calls during a debugging session = $15 silent burn.
+- **Detection:** SQ30 `test_cost_cap.py` ~0.5h with 4 cases (CC1-CC4). INV-MC-1 on MetricsCollector (running-cost push-based). IC[2] stop_reason taxonomy gains `cost_cap_exceeded`.
+- **Mitigation:**
+  - **`CHATROOM_MAX_SESSION_COST_USD` env var** with DEFAULT **`$5.00`** (covers M1a 5-turn dual-model smoke × 3 reruns). Pins carry-forward flag #1.
+  - Tier guidance: `$0.50` aggressive / `$5` default / `$25` long-session / `0` disabled (research-instrument escape hatch).
+  - `type="cost_summary"` JSONL record flushed on session close OR immediately on `cost_cap_exceeded` abort (not only orderly shutdown).
+- **Escalation trigger:** cap hit → abort session with structured `SessionCostExceeded` exception + cost-summary record flushed immediately.
+
+### PM[8] — Async-streaming developer-experience (debuggability) **[R3 — new]**
+- **Likelihood:** **M (0.30-0.45)** — moderate impact on build velocity, not correctness
+- **Reasoning:** Async generators + tool-exec loop break standard breakpoint debugging: (a) pdb breakpoints inside async-iterator body require `asyncio.run_until_complete` which many IDE integrations don't wire correctly; (b) Exceptions inside async generators lose stack frames when re-raised through `StreamEvent(kind="error")` convention; (c) Replay-a-failing-test hindered by async non-determinism; (d) print-debugging interleaves with stdout token streaming, destroying signal
+- **Detection:** dev feedback during C2 implementation; signal = >2h spent on a bug that would be 15min in sync code.
+- **Mitigation (3 complementary escape-hatches):**
+  - **Structured logging on every StreamEvent emission** — `chatroom.stream` logger, `CHATROOM_TRACE_EVENTS=1` gate. Fields: `event.kind, event.stop_reason, tool_call_id, turn_id, speaker, elapsed_ms`. SQ31 `test_stream_logging.py` ~0.5h covers L1-L4 (schema stability, level gating, no-PII-default).
+  - **Replay harness** — `scripts/replay_session.py <session.jsonl>` re-emits captured StreamEvents against a mock TurnEngine. Builds on raw-capture sidecar (ADR[6]) + INV-replay-5 (AsyncIterator). SQ32 `test_replay_harness.py` ~1h.
+  - **Sync fallback** — `CHATROOM_DEBUG_SYNC=1` makes `Provider.stream()` collect events into a list and return synchronously for unit-test debugging. Test-fixture only, NOT production. ~0.5h absorbed in SQ32.
+- **Escalation trigger:** C2 build-track engineer reports >1 async-debugging blocker → escalate to lead for replay-harness priority bump.
+- **Scope note:** PM[6/7/8] test additions ~3.5h total (SQ29 1.5h + SQ30 0.5h + SQ31 0.5h + SQ32 1h). Absorbed into SEC[1] range expansion.
 
 ---
 
@@ -409,7 +469,7 @@ Summary — full detail in archived scratch line 2463+:
 
 1. **Q3 cadence:** ~2 weeks — revisit after M1a ships + before M1c scope locks
 2. **devstral→deepseek escalation authority:** manual M1b, automatic M1c+ (impl-eng R2 counter accepted over lead's initial c→a reading)
-3. **Rendering option (UI-1):** deferred to pre-M2 STEP-1 — M1a/b rendering-agnostic
+3. **Rendering option (UI-1):** **PINNED to option (b) inline-at-position_in_turn (R3 resolution).** Rationale: UD#5 research question (memory-invocation coherence) requires position fidelity only option (b) preserves; framework-agnostic across Streamlit/TUI; ToolCallRecord schema already sufficient; ADR[4] escape-hatches preserve cross-provider ordering. Forward-plan STEP-1 reduces from "decide rendering" to "verify option (b) fidelity against empirical M1b JSONL data." Circular-dependency from R2 (plan defers to step-inside-plan) resolved. *[R3 revision]*
 4. **Streamlit vs Textual TUI (UI-2):** 2h pre-M2 comparison sketch (STEP-3b) — informed choice, not pre-committed
 5. **Research question:** (a) memory-invocation coherence — pins M3 metrics + preamble-variant design
 6. **A11Y[2] custom component:** M2 gap, document (moots if TUI path wins)
@@ -434,13 +494,13 @@ Summary — full detail in archived scratch line 2463+:
 
 ### M2 — Streamlit MVP (~2-3 weeks after M1c)
 
-**Pre-M2 hard gate (1-1.5 day):**
-- STEP-0: verify tech-architect IC[2] `kind="tool_result"` + `final_message` acceptance (done — locked in IC[2])
-- STEP-1: pin rendering option (a/b/c) with user per UD#3
-- STEP-2: prototype chosen rendering option against 5-turn 2-model M1b JSONL fixture
-- STEP-3: prototype pre-M2 Streamlit concurrency shim (2h original)
-- STEP-3b (NEW per UD#4): 2h Textual TUI comparison sketch
-- Exit: chosen option renders 5-turn fixture with ≥1 echo-tool round-trip per provider; user declares "feels right"
+**Pre-M2 hard gate (1-1.5 day) [R3 revised per FIX[3]]:**
+- STEP-0: verify tech-architect IC[2] `kind="tool_result"` + `final_message` acceptance (done — locked in IC[2]); also gate `tool_arg_validator` default present per carry-forward flag #3
+- STEP-1 **[R3 verify, not decide]**: verify option (b) inline-at-position_in_turn renders 5-turn 2-model M1b JSONL fixture with position-fidelity ≥95% AND preceding_text reconstruction ≥95%. Reopen rendering decision ONLY if empirical data shows option (b) cannot deliver memory-invocation-coherence observability (e.g., tool_calls cluster at position_in_turn=0 only, making inline≡appended, OR preceding_text systematically fails reconstruction). Otherwise proceed to STEP-2 with option (b) confirmed.
+- STEP-2 **[R3 revised]**: prototype option (b) in BOTH candidate frameworks (Streamlit + Textual TUI) against 5-turn fixture. Duplicated work, but small (2 × ~2h) and directly feeds STEP-3b decision with concrete renderability evidence.
+- STEP-3: prototype pre-M2 Streamlit concurrency shim (2h)
+- STEP-3b (per UD#4): 2h Textual TUI comparison sketch — now informed by STEP-2 option-b renderability in each framework
+- Exit: option (b) renders 5-turn fixture with ≥1 echo-tool round-trip per provider in BOTH framework prototypes; position fidelity ≥95%; user declares "feels right" + picks framework.
 
 **M2a shell + transcript + autonomous** (~3 days): streamlit_app.py, sidebar (roster + mode + preamble picker, 1-variant), transcript view, controls (Start/Pause/Resume/Stop state machine), autonomous session runs end-to-end
 
@@ -481,17 +541,18 @@ Summary — full detail in archived scratch line 2463+:
 - **Concessions/defenses:** 5 BELIEF adjustments DOWNWARD (honest, not sycophantic): ADR3 0.88→0.84, ADR4 0.80→0.70, PM1 0.55→0.25, + 2 IC revisions
 - **Cross-agent convergence:** 4-agent on IC[2] dual additions (impl-eng + ui-ux + cqa + DA) — strongest signal in build; validated as genuine independent convergence (different scoping perspectives), not anchoring
 - **Anchoring probe:** H1-H7 7/7 initially all-consensus → DA §2a positioning check correctly identified pro-forma DB bootstrapping → R2 DB re-run produced honest BELIEF drops
-- **XVERIFY:** NOT-ATTEMPTED[ADR3] due to sigma-verify cross_verify infra hang (3× this session). Documented as §2h infra-gap with compensating factors: (a) 4-agent cross-agent consensus on ADR[3]; (b) DB re-run with real counter (LangChain AgentExecutor); (c) industry precedent audit (autogen + crewai + LangChain). DA-r2 PASS-WITH-DOCUMENTED-GAP per anti-sycophancy self-audit.
+- **XVERIFY:** NOT-ATTEMPTED[ADR3] due to sigma-verify cross_verify infra hang (3× this session). Documented as §2h infra-gap with compensating factors (R3-narrowed): (a) 4-agent cross-agent consensus on ADR[3]; (b) DB re-run with real counter (LangChain AgentExecutor). **[R3: (c) autogen/crewai precedent DROPPED per SEC[3] — could not primary-source within search budget; honest posture accepts narrower compensating-factors set.]** DA-r2 PASS-WITH-DOCUMENTED-GAP per anti-sycophancy self-audit.
+- **R3 revision round:** post-eval grade-C findings addressed — FIX[1] ADR[2]/PM[5] reframed from unconditional to conditional-on-SQ6c; FIX[2] PM[6]/PM[7]/PM[8] added (security/cost/DX); FIX[3] UD#3 option-b pinned (circular-dep resolved). DA-r3 exit-gate PASS substantive (not cosmetic): BELIEF range lower bounds all < prior point estimates.
 - **Unresolved tensions:** none plan-blocking. 4 carry-forward flags for C2 (see below).
 
 ---
 
-## Carry-forward Flags for C2 (non-blocking)
+## Carry-forward Flags for C2 (non-blocking) [R3 updated]
 
-1. **`CHATROOM_MAX_SESSION_COST_USD` env for live tests** — cqa BC-cqa-6; set cost cap before running `tests/live/test_live_smoke_*.py`
-2. **session_id collision handling** — currently defaults to timestamp; may collide under rapid session creation; add entropy in C2
-3. **Input-validation seam in TurnEngine for tool-arg validator** — `tool_arg_validator: Callable[[ToolSchema, dict], dict] | None` added to IC[5] as seam; C2 must leave it unused but present for M3 retrofit
-4. **T1/T2/T3 tier-tag consistency on source-provenance** — minor hygiene; some findings lack explicit tier tag
+1. **`CHATROOM_MAX_SESSION_COST_USD` env for live tests — DEFAULT `$5.00`** (per PM[7]). Tier guidance: `$0.50` aggressive / `$5` default / `$25` long-session / `0` disabled (research-instrument escape hatch). Lands in M1a turn_engine via MetricsCollector hook, **NOT deferred to M3**. SQ30 `test_cost_cap.py` ~0.5h covers CC1-CC4 (cap enforcement, env-override, partial-transcript on abort, cost-estimator accuracy).
+2. **session_id entropy: `uuid7` recommended** (per impl-eng-r4 R3) — 74-bit random + 48-bit ms-prefix, lexicographically sortable by creation time, M2 session-list chrono-sort native. `uuid4` fallback if zero-dep required. Add `uuid_utils ~= 0.11` to pyproject (or wait for py3.14 stdlib). RFC 9562.
+3. **Input-validation seam in TurnEngine for tool-arg validator — DEFAULT validator REQUIRED in M1b** (per PM[6]): `jsonschema.validate(arguments, schema=tool.parameters)` + `len(tool_name) <= 64` + `tool_name.isidentifier()` pre-check + `len(json.dumps(arguments)) <= 65536` size cap + max-depth=32. Add `jsonschema ~= 4.0` to pyproject. Seam still accepts caller override for M3 sigma-mem-aware validator. SQ29 `test_tool_exec_injection.py` ~1.5h with 8 cases (I1-I8) + INV-TCR-1/2 + INV-TE-5.
+4. **T1/T2/T3 tier-tag enumeration (per cqa-r4 R3):** 8 load-bearing findings enumerated — T1-partial:2 (verifiable-but-unverified), T2-majority:5 (corroborated agent-inference), T3-honest:1 (agent-inference without corroboration). Anti-sycophancy note: convergence≠T1 (cross-agent agreement on an inference is still T2, not T1). Resolve in C2 hygiene pass before synthesis.
 
 ---
 
