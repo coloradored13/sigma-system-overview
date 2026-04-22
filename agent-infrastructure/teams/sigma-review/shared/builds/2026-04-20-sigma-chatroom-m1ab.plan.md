@@ -7,7 +7,9 @@
 - build-id: 2026-04-20-sigma-chatroom-m1ab
 - tier: BUILD TIER-2
 - status: plan-locked-r3
-- plan-exit-gate: **PASS (R3)** — DA-r3-v1 closure-check PASS + DA-r3-v2 full exit-gate PASS-with-non-blocking-gaps (4 carry-forwards all resolved in plan file before lock). 0 unresolved carry-forwards at lock time.
+- plan-exit-gate: **PASS (R3 internal) / C+ (external eval R4)** — internal DA-r3-v1+v2 exit-gate PASS; external `/sigma-evaluate` R4 graded C+ (2.57/4.0) flagging 4 unverified-citation errors I propagated during distillation (Opus-4 pricing, OWASP ASVS V11.1.3, OpenTelemetry+Jaeger per-record attribution, LangChain N>3 framing) + 4 unaddressed R3 items (H2-H5 qualitative, UD#3 95% unanchored, ADR[3] BELIEF 0.55-0.70 per evaluator logic, PM[2] affirming-consequent). User elected to ship to C2 with honest C+ grade rather than re-open; revision queued for separate session.
+- r4-eval-report: ~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab.eval-r4.md
+- r4-carry-forwards (separate session, pre-C2-commit recommended): verify/fix the 4 cited errors + quantify H2-H5 triggers + anchor UD#3 95% + recalibrate ADR[3] BELIEF to 0.55-0.70 + tighten PM[2] small-sample framing.
 - plan-belief: **P=0.78-0.83** (R3-v2 range; R3-v1 was 0.80-0.85; R2 was 0.87 point — DA-r3-v2 surfaced 4 additional gaps (F1 scope-drift, UD#3 data-vs-rendering layer conflation, SEC[3] framing, tier-tag propagation), all resolved but honestly counted as slight additional BELIEF drag; lower-bound 0.78 > 0.75 lock threshold)
 - plan-engagement-grade: A- (R2) / R3 PASS (DA-r3-v1 closure-check + DA-r3-v2 full exit-gate including CQoT-6/7/8, named anti-sycophancy spot-checks, T1/T2/T3 tier-tag audit); v2 surfaced 4 non-blocking gaps, all resolved in plan before lock
 - plan-rounds-used: 3/5 (budget preserved)
