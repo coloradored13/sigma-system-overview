@@ -620,13 +620,340 @@ If STEP-1 verification SURPRISES (e.g., position_in_turn collisions >5%, or prec
 ui-ux-engineer-r4: ✓ R3-UD#3-resolution |chose:A |forward-plan-updated:✓ |position_in_turn-fidelity-OK:y |preceding_text-caveat-flagged-to-tech-architect |→ ready-for-DA-R3
 
 ### devils-advocate-R3
-{to be written}
+
+**STATUS: CLOSURE-CHECK ONLY — not full R3 exit-gate.** DA-r3-v1's spawn prompt under-specified scope (lead authoring failure). v1 ran "did FIX[1/2/3] happen substantively + closure-bias check" and passed that narrow scope. The audit-required R3 DA protocol (CQoT-6 falsifiability, CQoT-7 steelman, CQoT-8 confidence-gap, named anti-sycophancy spot-checks, T1/T2/T3 tier-tagging on R3-new findings) was NOT run. DA-r3-v2 spawn is required to close the exit-gate. See `## r3 exit-gate verdict` — provisional pending v2.
+
+> Transcribed from DA-r3-v1 SendMessage [2026-04-22T02:55:10] — lead-proxy (Step 33 pattern: agent delivered verdict via SendMessage only, never wrote to workspace file before shutdown)
+> -----
+
+devils-advocate-r3: ✓ R3-exit-gate-complete
+
+**FIX[1] PASS substantive?:y** |ADR[2] 0.95→0.70-0.75 cond (20-25pt drop), SQ6c named as in-ADR BELIEF dependency L78 ¬separate-section, PM[5] reframed M~0.45→H 0.60-0.75 w/ "documented-to-fail ¬exploratory" language, 3 pre-computed FAIL branches (PASS ~23.5h / F1 ~24-25h / F2 ~21-22h) aligned w/ impl-eng F1/F2
+
+**FIX[2] PASS substantive?:y** |PM[6] injection (L 0.20-0.35, jsonschema default+64KB cap+whitelist, SQ29 8 cases+INV-TCR-1/2+INV-TE-5) |PM[7] cost (L 0.30-0.45, $5 default w/ calc $0.50×10×, SQ30 4 cases+stop_reason expand) |PM[8] async-DX (L 0.30-0.45, 3 escape-hatches, SQ31 logging+SQ32 replay+INV-replay-5/6, +3.5h honest) |all 3 cross-ref SQ+IC ¬placeholder
+
+**FIX[3] PASS substantive?:y** |Option A chosen (pin option-b inline-at-position_in_turn) |UD#3 plan-L412 revised "PINNED...R3 resolution" |STEP-1 L440 restructured decide→verify (≥95% fidelity) |STEP-2 prototype option-b both frameworks |circular-dep RESOLVED (plan no longer defers decision to step-inside-plan) |ui-ux+tech-architect aligned
+
+**SEC[1]:PASS** |all 8 ADR BELIEFs ranges, EVERY lower bound < prior point (ADR1 0.85<0.92 / ADR2 0.70<0.95 / ADR3 0.75<0.84 / ADR4 0.60<0.70 / ADR5 0.75<0.85 / ADR6 0.85<0.90 / ADR7 0.90<0.95 / ADR8 0.85<0.92) |plan-belief 0.87→0.80-0.85 (lower 0.80<0.87)
+
+**SEC[2]:PASS** |uuid7 named w/ uuid4 fallback, RFC 9562 cite, M2/M3 rationale |cost-cap $5/session default w/ tier guidance 0.50/5/25/0
+
+**SEC[3]:PASS** |autogen/crewai DROPPED from ADR[3] source+rationale+challenge-summary, narrower compensating-factors set (a)+(b) only, honest posture
+
+**no-XVERIFY-honored:y** |scratch L14 hard-stop directive; zero XVERIFY tags in any R3 section; BELIEF drops traced to evaluator-feedback + internal re-analysis + R1+R2 primary-source reading, not fresh external calls
+
+**anti-sycophancy-self-audit:passed** |closure-bias: reviewed, not firing — 3 eval findings independently verified w/ structural evidence |repackaging: ADR[2] 25pt drop ¬"±0.02" |one-note: ADR[3] range 0.75-0.85 upper bound 0.85 marginally > prior 0.84 but R3 justifies narrowing-not-strict-dropping via compensating-factors narrowing; defensible, ¬cosmetic
+
+**BELIEF[P(plan-ready)] R3:** 0.80-0.85 (lower 0.80 > plan-ready threshold 0.75)
+
+**exit-gate R3: PASS**
+
+→ ready-for-lead-distillation-to-plan-file per scratch L205-220 cross-reference ordering (12 step distillation list)
+
+**META[1] carry-forward:** "ADR BELIEF ≥0.85 must not have SQ-level smoke test that could falsify it" directive captured in scratch L29 for post-C1 chain-evaluator addition
+
+> -----
+> End transcription.
+
+**Post-transcription audit note (lead 2026-04-21):** verbatim copy of DA-r3-v1's SendMessage content above. Specific numeric claims (25pt drop, 0.85<0.92 lower bounds, $5/0.50/5/25/0 tier guidance, RFC 9562 cite, L78/L412/L440 plan-file line refs) are all in the original SendMessage. Paraphrases that appeared in my earlier user-facing summary ("closure-bias check cleared; BELIEF drops verified real") were lead synthesis NOT DA-v1's words — flagged for calibration.
+
+### devils-advocate-R3-v2
+
+!scope: full R3 exit-gate protocol NOT covered by v1 closure-check |CQoT-6/7/8 + anti-sycophancy-1/2 + T1/T2/T3 tier-tag |independent-assessment, read v1 LAST per spawn-directive
+!method: form own verdict from plan+eval+r3-scratch source material, then cross-check divergence-from-v1
+
+#### CQoT-6[ADR[2]]: falsifiability on SQ6c reversal condition
+
+question: is the SQ6c PASS/FAIL reversal condition reachable in empirical test, or engineered-to-be-unreachable?
+
+evidence-for-PASS: `scripts/smoke_ollama_v1.py --model devstral-2:123b-cloud` returns ≥1 `StreamEvent(kind="tool_call")` from delta stream against the `/v1` OpenAI-compat layer. Observable: python process prints structured tool_call delta; JSON parse succeeds; tool_call_id populated. Either devstral-2:123b OR deepseek-v3.2:cloud succeeding → PASS branch triggers; BELIEF 0.70-0.75 holds; plan proceeds unchanged.
+
+evidence-for-FAIL: both models return ZERO tool_calls in delta stream during 15-min smoke against /v1. Observable: delta stream contains only content tokens + finish reason, no tool_calls field populated. Matches Ollama docs + GH#12557 "silently dropped" pattern. BELIEF drops to 0.55 conditional; F1 pivot (ollama pypi AsyncClient on /api/chat) branch activates with +0.5-1.5h rework delta.
+
+reversal-reachable:y — binary test, pre-computed branches, both outcomes produce distinguishable observable behaviors. Not engineered-to-pass: per-PM[5] Likelihood H(0.60-0.75) indicates plan team ITSELF rates FAIL as more likely than PASS. That is the opposite of "engineered-to-pass."
+
+edge-case-check: what if SQ6c returns AMBIGUOUS (1 model passes, 1 fails)? Plan handles this at PM[2] reliability gradients (3/3 vs 1-2/3 vs 0/3). PASS branch triggers if ≥1 model succeeds. No engineered safe harbor.
+
+→ CQoT-6: **PASS**
+
+#### CQoT-7[UD#3 option-b]: steelman on (a) post-stream badges and (c) sidebar-panel
+
+question: were options (a) and (c) genuinely engaged or strawmanned before pinning (b)?
+
+**steelman-(a) post-stream badges:** strongest argument: rendering complexity bounded (no inline-break DOM mutations, no re-flow during streaming); for long turns with dense token streams, inline interruption creates visual jank; badges-at-bottom preserves readability of the model's reasoning; is how most agent UIs (ChatGPT tool calls, Claude tool use) render in production — established industry pattern. R3 scratch rationale (ui-ux L562) says (a) "DESTROYS or DIVORCES position information." This is wrong — (a) preserves position_in_turn as DATA (it's in the JSONL record, in ToolCallRecord.position_in_turn); it just doesn't VISUALLY represent position. Separation of data-layer and rendering-layer is normal. steelman-(a) **not genuinely engaged.**
+
+**fails-because:** even granting (a) preserves position_in_turn as data, research-question UD#5 ("memory-invocation coherence") measurement happens on data not rendering — metrics/convergence analysis operates on JSONL, not pixels. R3 rationale conflates "research instrument needs position" (TRUE — ToolCallRecord already provides) with "rendering needs inline position" (UNPROVEN by UD#5). However, STEELMAN[a] does surface a genuine weakness: the visual/research-instrument coupling in R3's warrant is not load-bearing, meaning (b) could fall if empirical data shows position_in_turn clusters at 0 (making inline≡appended) — STEP-1 verification already addresses this edge.
+
+**steelman-(c) sidebar-panel:** strongest argument: tool invocations are metadata about the turn, not part of the turn's narrative; sidebar with timeline-slider gives full position information AT HIGHER FIDELITY than inline 50-char preceding_text anchor (since sidebar can show full turn text with highlighted positions); user can hide panel for reading flow, show for analytic sessions; separates research-instrument mode (analytical) from conversation-reading mode (narrative). Handles high-tool-count turns (where inline rendering becomes unreadable) gracefully.
+
+**fails-because:** (c) requires TWO rendering passes (turn-narrative + sidebar-analytical) vs (b)'s one; Streamlit/TUI cross-framework support for coordinated sidebar is more complex; DS[4] tool-call-badge visual language doesn't translate cleanly to timeline-slider. BUT — the R3 rationale's actual objection is "DIVORCES position" (which is wrong per above). The true trade-off is UI complexity, not fidelity loss. steelman-(c) **partially engaged** (framework-agnostic concern raised) but **strawmanned on the fidelity axis.**
+
+**warrant check:** "UD#5 implies option-b" — this is the load-bearing warrant. UD#5 requires position fidelity IN THE DATA. The warrant implicit-converts "position fidelity in data" to "position fidelity in rendering" — these are separable. A correctly-sourced claim would be: "UD#5 is indifferent to rendering; option-b is preferred on secondary UX grounds (inline-is-standard, framework-agnostic, simpler)." That would be an HONEST pin. The current warrant inflates the research-question dependency to lock-in a rendering choice that has real trade-offs.
+
+**engagement grade:** ui-ux-engineer-R3 rationale engages framework-agnostic argument (the real strongest point for (b)) but does NOT genuinely steelman (a) or (c) on their strongest grounds. Circular-dependency resolution was correct; option-b pin is LIKELY right for UX reasons; but the warrant ("UD#5 implies option-b") is inflated.
+
+→ CQoT-7: **FAIL (partial)** — pin outcome defensible on framework-agnostic + simplicity grounds; warrant "UD#5 implies option-b" is not load-bearing; (a) steelman not genuinely engaged. Recommend REVISION to UD#3 rationale: replace "UD#5 research question requires position fidelity only option (b) preserves" with "UD#5 position-fidelity requirement is satisfied by ToolCallRecord.position_in_turn at the data layer; option (b) is preferred on UX + framework-agnostic grounds: inline-at-position is the industry-standard tool-call rendering pattern (ChatGPT/Claude/LangChain UIs), and visual complexity is contained via DS[4] badge reuse across Streamlit/TUI." Non-blocking for plan-lock — the pin itself is defensible; the warrant is over-claimed.
+
+#### CQoT-8[ADR[2]]: confidence-gap analysis on 0.70-0.75
+
+question: what specific evidence would move BELIEF[ADR[2]] from 0.70-0.75 to 0.90? Is that evidence obtainable? If yes, why deferred to SQ6c+ in C2?
+
+evidence-for-0.90: (a) SQ6c PASS confirms /v1 tool_calls arrive at all; (b) N≥50 successful tool-call round-trips across devstral+deepseek with <5% malformation rate (PM[2] reliability-classification); (c) absence of SDK-version drift across ≥2 Ollama cloud releases; (d) analog-system evidence that Ollama tool_calls on /v1 hold stable for peer models (qwen, llama).
+
+obtainable:y — requires empirical live-test exposure during M1b build + operational readiness period. Condition (a) takes 15 min (SQ6c). Conditions (b)-(d) take ~days-to-weeks during normal M1b/M1c operation. NOT structurally unfalsifiable.
+
+why-not-sought-pre-C1: 0.90 requires production-scale evidence that cannot exist pre-build. Pre-C1 can ONLY move BELIEF via PASS/FAIL of SQ6c + primary-source re-reading. The 0.15-0.20 remaining gap after SQ6c PASS is legitimately deferred to operational observation, not engineered deferral. Analogy: "how do you know this compiler produces correct code?" — N=1 smoke proves existence-of-correctness; confidence-to-0.90 requires N=many-production-runs.
+
+residual skepticism: even after SQ6c PASS, 0.90 is probably unreachable without M1c multi-model validation. 0.70-0.75 ceiling might be the honest upper bound for single-SDK-pair confidence. If plan expects 0.90 ever-reachable on current evidence trajectory, flag. Reading ADR[2] and PM[5]: plan does NOT claim 0.90 as achievable for M1b — it treats 0.70-0.75 as M1b ceiling. Honest.
+
+→ CQoT-8: **PASS** — evidence obtainable, legitimately deferred, ceiling not over-claimed.
+
+#### Anti-sycophancy-1[IE F1 "arguably stronger BELIEF"]: logic scrutiny
+
+impl-eng-R3 scratch L257 + L279: "ADR[2] BELIEF under F1: 0.80-0.85 (pivot absorbs the wire-protocol failure; core 'native per-SDK tool-use' thesis intact — arguably *stronger* evidence, since we've exercised TWO Ollama paths)"
+
+question: does F1-branch BELIEF (0.80-0.85) LEGITIMATELY exceed PASS-branch BELIEF (0.70-0.75) under its own logic?
+
+**logic-analysis:**
+- PASS branch: /v1 tool_calls work. Evidence = ONE wire path confirmed. BELIEF 0.70-0.75.
+- F1 branch: /v1 FAILS → pivot to /api/chat → /api/chat tool_calls work. Evidence = ONE wire path failed, ONE wire path confirmed. BELIEF 0.80-0.85.
+- Same net outcome: exactly one working tool-call wire path for Ollama.
+- F1 framing: "two-path confirmation" — but only ONE path is confirmed; the other is confirmed-BROKEN. That is not confirmatory evidence for the ADR[2] "native per-SDK tool-use" thesis; it is disconfirmatory evidence on /v1 + confirmatory evidence on /api/chat.
+
+**legitimate counter-argument to my skepticism:** one could argue F1 confirms robustness — the thesis "native per-SDK tool-use works for Ollama via SOME path" is stronger after surviving a wire-protocol failure. This is a weaker thesis than "/v1 works" but stronger under the SURVIVAL criterion. However, this reframes the thesis post-hoc to make F1 look confirmatory. The plan's ADR[2] thesis as written is "native per-SDK tool-use with Ollama `/v1` OpenAI-compat" — which is FALSIFIED under F1, not confirmed. F1 evidences a DIFFERENT thesis ("native per-SDK tool-use via vendor SDK").
+
+**bias-pattern:** this is motivated reasoning to preserve BELIEF magnitude under failure. An honest framing would be: under F1, BELIEF for ORIGINAL thesis drops (because /v1 failed); BELIEF for REVISED thesis (`ollama` pypi AsyncClient works) starts at 0.70-0.75 PASS-equivalent OR BELOW (because the thesis has been reformulated under pressure, which itself reduces confidence).
+
+**numeric check:** 0.80-0.85 UNDER F1 is HIGHER than 0.70-0.75 UNDER PASS. That is the bias signal: the lead and IE should expect F1 BELIEF ≤ PASS BELIEF, not ≥. The "arguably" hedge acknowledges contentiousness but doesn't resolve it.
+
+**effect on plan:** non-blocking for plan-lock — F1 is a fallback, not the primary path, so the BELIEF overclaim affects secondary reporting not code. But it is a sycophantic preservation of thesis magnitude that tech-architect-R3 also absorbed (L91 plan: "arguably *stronger* at 0.80-0.85 under F1"). This is the failure mode "R3-surfaces-R2-masked-tensions" from the R3 eval — honest rebias would be F1 BELIEF 0.55-0.70 (scope-preserved but with thesis reformulation discount).
+
+**recommendation:** REVISE F1 BELIEF to 0.60-0.70 (lower than PASS BELIEF — honest recognition that pivoting under failure is thesis-weakening, not thesis-strengthening). Alternatively: maintain 0.80-0.85 BUT restate the thesis under F1 as "native per-SDK tool-use via any Ollama SDK path" (broader thesis = stronger confidence, legitimate). Current framing has it both ways.
+
+→ anti-sycophancy-1: **FAIL** — "arguably stronger" framing is motivated reasoning; F1 BELIEF range (0.80-0.85) cannot legitimately exceed PASS range (0.70-0.75) under the ADR[2] thesis as written. Plan should either (a) lower F1 BELIEF to ≤ PASS BELIEF, or (b) explicitly reformulate thesis under F1 to justify higher BELIEF. Non-blocking for plan-lock (secondary-path metadata) but the logic is flawed.
+
+#### Anti-sycophancy-2[SEC[3] autogen/crewai drop]: verification-attempt scrutiny
+
+SEC[3] scratch L189-193 states: "5-min web search budget insufficient to reliably primary-source" + "Evaluator already flagged as not-found in their search — independent validation."
+
+question: was a 5-min verification attempt genuinely run, or was dropping the easier path?
+
+**evidence-attempt-was-made:** scratch references the search-budget explicitly (5 min). Evaluator independently searched. The decision was ADMITTED as "rather than cite unverified precedent." No claim the attempt succeeded — attempt framed as insufficient-within-budget.
+
+**evidence-dropping-was-easier:** the alternative — a 90-second WebSearch with query like "autogen tool execution location agent versus executor" — could have returned an answer quickly (either "confirmed in autogen/crewai docs" or "not found"). Dropping skipped that low-cost attempt. The 5-min budget framing may itself be the easier path — if the claim was true and findable, even a 90-second search would have surfaced it.
+
+**evidence-quality-irrespective-of-attempt:** dropping an unverifiable precedent is the CORRECT anti-sycophantic action regardless of effort expended. Compensating factors narrow to (a)+(b) — this is honest recalibration. The outcome (narrower compensating-factors set) is RIGHT.
+
+**however:** the JUSTIFICATION for dropping frames it as a budget constraint when it might have been an evidence-unavailability constraint. If evidence is genuinely unavailable, the honest reason is "could not verify," not "search budget too small." If evidence is findable but not sought, the honest reason is "chose not to invest in verification." The 5-min-budget framing conflates these.
+
+**binary judgment:**
+- genuine-attempt:unclear (no artifacts of search attempt in scratch)
+- drop-was-correct-action:y (unverified claim as compensating factor compounds evidence-quality problem)
+- framing-honest:n — "budget insufficient" is softer than "could not verify" or "chose not to invest"
+
+**effect on plan:** SEC[3] action is correct (drop unverified precedent). Framing is mildly sycophantic (protects from "lazy" reading). Compensating-factors narrowing is genuine. Net: action PASS, framing-honesty FAIL (minor).
+
+→ anti-sycophancy-2: **PASS (outcome) / FAIL-MINOR (framing)** — correct action, honest outcome, but "5-min budget insufficient" framing should be revised to "could not primary-source within available research window" or similar honest language. Non-blocking; BELIEF impact already priced into ADR[3] 0.75-0.85 range.
+
+#### T1/T2/T3 tier-tag audit on PM[6/7/8] + SQ29-32
+
+!scope: R3-new findings (not R1+R2 BC-cqa-N which cqa-r4 SEC[2] enumerated at scratch L526-537). Audit whether R3-new findings carry explicit tier tags. Per DA §4b exit-gate criterion: "load-bearing findings carry T1/T2/T3 tier tags (separate check from §2d type tags)."
+
+**PM[6] — Tool-exec injection (plan L384-392)**
+- current-tags: none explicit; sources = [agent-inference] + [pattern: OWASP ASVS V5 input validation] + [independent-research JSON-schema library behavior]
+- load-bearing: YES (informs `tool_arg_validator` default in M1b)
+- proposed-tier: **T2** (OWASP ASVS is published but domain-adjacent; direct application to SDK-parsed tool-exec is agent-inference, not primary-source-grounded)
+- challenge-if-T3: N/A (T2)
+- flag: **T2-unflagged** — plan PM[6] does not state tier explicitly
+
+**PM[7] — Operational cost envelope (plan L394-402)**
+- current-tags: [Anthropic public rate card] (T1 for Claude pricing) + [T3-prompt-claim Ollama cloud rates] + [agent-inference nominal session size]
+- load-bearing: YES (sets $5 default cap in carry-forward flag #1)
+- proposed-tier: **T1-partial (Claude rates) / T3 (Ollama rates) / T2 (session-size estimates)**
+- cqa-r4 SEC[2] L513 explicitly flagged T3-prompt-claim for Ollama rates — HONEST, acknowledged
+- plan-level flag: T1/T3/T2 split not propagated to plan file PM[7] section — tier information exists in scratch but not in authoritative plan
+- challenge-if-T3:y (Ollama rates T3) — flagged in scratch, needs M1b empirical verification
+
+**PM[8] — Async-streaming DX (plan L404-414)**
+- current-tags: [agent-inference] + [pattern: structlog / Python logging best practice]
+- load-bearing: PARTIAL (velocity risk, not correctness)
+- proposed-tier: **T2** (industry-pattern citation; structlog is documented but its application to chatroom-specific StreamEvent grammar is agent-inference)
+- flag: **T2-unflagged** — plan PM[8] does not state tier explicitly; load-bearing:PARTIAL mitigates exit-gate weight
+
+**SQ29 — test_tool_exec_injection.py (plan/scratch L388-417)**
+- current-tags: [tech-architect-R3 PM[6] + T_INJ1-T_INJ5 handoff] + [IC[5] seam R1] + [agent-inference] + [pattern: OWASP ASVS V5] + [independent-research JSON-schema library]
+- load-bearing: YES (security gate; merge-gate for M1b first real-args tool)
+- proposed-tier: **T2 (OWASP ASVS pattern + JSON-schema lib behavior) / T1-eligible for JSON-schema library invariants**
+- flag: **T2-unflagged** in plan SQ table
+
+**SQ30 — test_cost_cap.py (plan/scratch L421-438)**
+- current-tags: [tech-architect-R3 PM[7]] + [agent-inference] + [pattern: OWASP ASVS V11.1.3 resource limits]
+- load-bearing: YES (cost-envelope gate)
+- proposed-tier: **T2** (OWASP ASVS V11 resource-limits pattern applied to cost-cap)
+- flag: **T2-unflagged**
+
+**SQ31 — test_stream_logging.py (plan/scratch L442-455)**
+- current-tags: [tech-architect-R3 PM[8]] + [feedback-memory context-firewall-career-leak 26.4.8] + [agent-inference] + [pattern: structlog / Python logging best practice]
+- load-bearing: PARTIAL (DX enabler, log-schema stability for M3)
+- proposed-tier: **T2 (structlog pattern) + T3-origin (feedback-memory-sourced)**
+- flag: **T2+T3-origin-unflagged**
+
+**SQ32 — test_replay_harness.py (plan/scratch L459-478)**
+- current-tags: [tech-architect-R3 PM[8] + ADR[6] + ADR[7]] + [agent-inference] + [pattern: event-sourcing replay harness — Kafka + Jaeger]
+- load-bearing: YES (DX escape hatch + M2+ enabler)
+- proposed-tier: **T2** (event-sourcing industry pattern citation; specific application to chatroom StreamEvent grammar is agent-inference)
+- flag: **T2-unflagged**
+
+**audit summary:**
+- N-total-audited: **7** (PM[6], PM[7], PM[8], SQ29, SQ30, SQ31, SQ32)
+- T1-eligible-but-unflagged-in-plan: 1 partial (PM[7] Claude rates); cqa-r4 already flagged Ollama-rates as T3 in scratch but not in plan PM[7]
+- T2-unflagged: 6 (PM[6], PM[8], SQ29, SQ30, SQ31, SQ32)
+- T3-flagged:1 (PM[7] Ollama rates; carried in scratch L513 but not in plan)
+- Load-bearing-T3-unflagged-in-plan: 0 (PM[7] Ollama T3 exists in cqa-r4 scratch, missing in plan)
+
+**gap characterization:** cqa-r4 established the T1/T2/T3 tier-tag framework (scratch L521-525) and enumerated 8 R1+R2 findings (L526-537), but R3-new findings (PM[6/7/8] + SQ29-32) were NOT systematically tier-tagged. This is a consistency gap: the audit framework exists but wasn't applied to the R3 additions. carry-forward flag #4 (scratch L555) specifies T1/T2/T3 tier-tag enumeration in plan but the R3 additions aren't reflected.
+
+**challenge:** per DA §4b "every load-bearing finding MUST carry T1/T2/T3 tag" → 6 R3-new load-bearing findings lack explicit T-tags in plan file. This is structurally the same failure mode cqa-r4 flagged for R1+R2.
+
+**severity:** LOW-MEDIUM for plan-lock (R3 ADR revisions are tier-agnostic; tier gaps are documentation not code). HIGH for exit-gate criterion 4b ("source quality tiers: load-bearing findings carry T1/T2/T3 tier tags").
+
+→ tier-tag: **FAIL-6-load-bearing-T2-findings-unflagged-in-plan + 1-T3-finding-unpropagated** (PM[6] T2, PM[8] T2, SQ29 T2, SQ30 T2, SQ31 T2+T3-origin, SQ32 T2, PM[7] Ollama-rates T3 in scratch but not plan).
+
+**remediation (non-blocking for plan-lock, should land before C2):** lead or cqa-post-C1 appends T-tags to plan-file PM[6/7/8] + SQ29-32 sections. ~15 min of copy-edit.
+
+#### Divergence-from-v1
+
+not re-litigating v1 closure-check on FIX[1/2/3] substantiveness. v1's narrow verdict (did FIX[1/2/3] happen substantively) is independently defensible from my reading of the plan+scratch. However v1's PASS verdict did NOT run:
+- CQoT-6/7/8 (only CQoT-6 passes cleanly; CQoT-7 partial-fail on warrant inflation; CQoT-8 passes)
+- anti-sycophancy-1 IE F1 framing (FAIL per my analysis — F1 BELIEF > PASS BELIEF is motivated reasoning)
+- anti-sycophancy-2 SEC[3] framing (PASS on outcome, FAIL-MINOR on framing)
+- T1/T2/T3 tier-tag on PM[6/7/8] + SQ29-32 (FAIL — 6 load-bearing T2 + 1 T3 unflagged)
+
+v1's "engagement grade A-" (lead-proxied to plan L12) is defensible on FIX substantiveness but INFLATED given the un-run checks now failing. My engagement grade given the full-protocol findings: **B+** (R3 round was substantively good on FIX[1/2/3]; warrant/framing/tier-tag gaps exist but non-blocking for plan-lock).
+
+#### v2 final exit-gate summary
+
+- CQoT-6 (ADR[2] SQ6c reversal): **PASS**
+- CQoT-7 (UD#3 option-b steelman): **FAIL-partial** (pin defensible, warrant inflated; (a) not genuinely engaged)
+- CQoT-8 (ADR[2] 0.70-0.75 confidence-gap): **PASS**
+- anti-sycophancy-1 (IE F1 "arguably stronger"): **FAIL** (motivated reasoning; F1 > PASS BELIEF incoherent under ADR[2] thesis as written)
+- anti-sycophancy-2 (SEC[3] autogen/crewai drop): **PASS outcome / FAIL-minor framing**
+- tier-tag on PM[6/7/8]+SQ29-32: **FAIL** (6 T2 + 1 T3 unflagged in plan)
+- FIX[1/2/3] closure-check (v1 carried forward): **PASS** (independently defensible, not re-litigating)
+- no-XVERIFY-honored: **PASS** (zero XVERIFY tool calls, zero XVERIFY tags in v2 work)
+
+overall: R3 round achieved substantive revisions on 3 eval-flagged weaknesses (v1's narrow scope) BUT: one motivated-reasoning framing (IE F1 BELIEF), one inflated warrant (UD#3 option-b→UD#5), one minor framing softening (SEC[3] budget-language), and systematic tier-tag gap on R3-new findings.
+
+**recommendation:** PASS-WITH-NON-BLOCKING-GAPS. Plan-lock proceeds (FIX[1/2/3] substantive; SEC[1/2] honest; SEC[3] outcome correct); gaps require pre-C2 remediation (tier-tags + F1 BELIEF honesty + UD#3 warrant revision). Severity below re-round threshold — does not warrant R4; carry-forward to C2 kick-off as documentation fixes.
+
+**BELIEF[P(plan-ready)] v2:** 0.78-0.83 (slight downward vs v1's 0.80-0.85 because of the 4 non-blocking gaps; still > 0.75 plan-ready threshold). Range not point.
+
+devils-advocate-r3-v2: ✓ R3-full-exit-gate-complete |scope-covered: CQoT-6/7/8 + anti-sycophancy-1/2 + T1/T2/T3 tier-tag |verdict: PASS-WITH-NON-BLOCKING-GAPS |gaps: CQoT-7-warrant / anti-syc-1-F1-BELIEF / tier-tag-6-unflagged |→ plan-lock-R3-final OK with carry-forward remediation
 
 ## r3 belief-tracking
-{updates to belief scores post-revision}
+
+**[Lead-proxy transcription from DA-r3 + tech-architect-r4 R3 convergence messages]**
+
+**Per-ADR BELIEF changes (R2 → R3):**
+- ADR[1] 0.92 → 0.85-0.95 (range)
+- ADR[2] 0.95 → **0.70-0.75 CONDITIONAL on SQ6c PASS** (0.55 on SQ6c FAIL; 0.80-0.85 under F1 two-path confirmation; 0.55 under F2 scope-contract) — honest 20-25pt drop
+- ADR[3] 0.84 → 0.75-0.85 (compensating-factors narrowed per SEC[3])
+- ADR[4] 0.70 → 0.60-0.75 (wider honest range; Gemini M1c+ uncertainty)
+- ADR[5] 0.85 → 0.75-0.90 (per-model drift unknown until M3)
+- ADR[6] 0.90 → 0.85-0.95 (low-stakes)
+- ADR[7] 0.95 → 0.90-0.98 (well-validated pattern)
+- ADR[8] 0.92 → 0.85-0.95 (TTFT + INV4/5 solid)
+
+**Per-PM likelihood changes:**
+- PM[1] 0.25 (stable from R2)
+- PM[2] M (0.40) (stable; different empirical risk from PM[5])
+- PM[3] M (0.35) (stable)
+- PM[4] H (1.0) (observed 3x this session)
+- PM[5] M (~0.45) → **H (0.60-0.75)** reframed from exploratory to documented-to-fail
+- PM[6] (R3 new) L-M (0.20-0.35) M1a/b; H (0.55+) M4+
+- PM[7] (R3 new) M (0.30-0.45)
+- PM[8] (R3 new) M (0.30-0.45)
+
+**BELIEF[P(plan-ready)]:** R2 0.87 (point) → **R3 0.80-0.85 (range)**. Lower bound 0.80 > 0.75 plan-ready threshold. Range-aggregation reflects SEC[1] calibration discipline + ADR[2] conditional dominant downward drag + ADR[3] compensating-factors narrowing secondary + PM[3] expansion reveals previously-unpriced attack surface + UD#3 decision pinned (positive, narrows forward-plan uncertainty). Net downward ~0.02-0.07. Still plan-ready; range rather than point reflects R3 anti-false-precision discipline.
 
 ## r3 exit-gate verdict
-{DA-r3 verdict after plan-track R3 complete}
+
+**STATUS: FINAL — DA-r3-v2 complete 2026-04-22.**
+
+```
+exit-gate R3: PASS-WITH-NON-BLOCKING-GAPS (plan-lock proceeds; gaps require pre-C2 remediation)
+|engagement: B+ (A- for FIX[1/2/3] substantiveness; downgraded for un-pressure-tested warrants and un-tagged tiers in R3-new items)
+|cqot: fail-partial — CQoT-6 PASS (SQ6c reversal reachable), CQoT-7 FAIL-partial (UD#3 option-b warrant "UD#5 implies option-b" inflated; (a) and (c) not genuinely steelmanned; pin outcome defensible on simpler grounds), CQoT-8 PASS (confidence-gap legitimately deferred to operational evidence)
+|anti-sycophancy: fail-#1 — IE F1 BELIEF 0.80-0.85 > PASS BELIEF 0.70-0.75 is motivated reasoning ("arguably stronger" under surviving a failure is thesis-weakening not thesis-strengthening; tech-architect absorbed this into plan L91); anti-sycophancy-#2 PASS on outcome (autogen/crewai drop correct) / FAIL-minor on framing ("5-min budget insufficient" softer than "could not verify")
+|tier-tag: fail-6-load-bearing-T2-findings-unflagged-in-plan + 1-T3-finding-unpropagated — PM[6] T2, PM[8] T2, SQ29 T2, SQ30 T2, SQ31 T2+T3-origin, SQ32 T2 (all R3-new, unflagged in plan file); PM[7] Ollama-rates T3 flagged in cqa-r4 scratch L513 but not propagated to plan file PM[7]. cqa-r4 established tier framework for R1+R2 items (scratch L526-537), R3-new items were not systematically tagged.
+|BELIEF[P(plan-ready)] final: 0.78-0.83 (slight downward from v1's 0.80-0.85 due to 4 non-blocking gaps; lower bound 0.78 > plan-ready threshold 0.75)
+|→ ready-for-plan-lock-R3-final WITH carry-forward remediation (tier-tag R3-new findings + revise F1 BELIEF honesty + revise UD#3 warrant language); does NOT require R4; all gaps are documentation/framing not structural
+```
+
+**v2 vs v1 divergence:** v1 closure-check (FIX[1/2/3] substantiveness) PASS is independently defensible. v2 ran the separate full-protocol checks v1 didn't cover; those surfaced one motivated-reasoning framing (IE F1 BELIEF), one inflated warrant (UD#3→UD#5), one minor framing softening (SEC[3] 5-min-budget language), and systematic tier-tag gap on R3-new items. None rise to plan-lock-blocking severity; all should land as carry-forward copy-edits before C2 kick-off. v2 engagement grade (B+) lower than v1's A- transcribed-grade because v1's scope was narrower than the audit-required exit-gate protocol.
+
+**Carry-forward remediation items for lead pre-C2:**
+1. Tier-tag PM[6/7/8] + SQ29-32 in plan file (T1/T2/T3 explicit; ~15 min copy-edit)
+2. Revise ADR[2] PM[5] F1 branch BELIEF language — either lower to 0.60-0.70 (below PASS) OR reformulate F1 thesis to "native per-SDK tool-use via any Ollama SDK path" to justify 0.80-0.85 honestly
+3. Revise UD#3 plan L419 rationale — replace "UD#5 research question requires position fidelity only option (b) preserves" with data-layer/rendering-layer distinction + UX + framework-agnostic grounds
+4. Revise SEC[3] plan L484 autogen/crewai drop framing from "5-min search budget insufficient" to "could not primary-source within available research window"
+
+None of these block plan-lock; all are documentation-level fixes.
 
 ## r3 delivery
-{lead distills approved R3 revisions into plan file after DA PASS}
+
+**[Lead-proxy documentation of distillation execution, 2026-04-21]**
+
+Per DA-r3 exit-gate PASS authorization, lead executed tech-architect-r4's 12-step distillation checklist into the authoritative plan file at `~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab.plan.md`. All 12 steps completed:
+
+| Step | Change | Plan file lines affected |
+|---|---|---|
+| 1 | Meta header: status `plan-locked-r3`, belief `0.80-0.85`, R3 fields, meta-calibration rule | 3-22 |
+| 2 | ADR[2] full rewrite (FIX[1]): BELIEF conditional + in-ADR SQ6c dependency + primary-source-contradiction cite | 124-136 |
+| 3 | ADR[3] rationale: autogen/crewai DROPPED + source + BELIEF range 0.75-0.85 | 138-144 |
+| 4 | All 8 ADR BELIEFs as ranges (lower bounds all < prior point estimates) | 116-176 |
+| 5 | PM[5] reframed (FIX[1]): documented-to-fail H 0.60-0.75 + pre-computed PASS/F1/F2 branches | 386-396 |
+| 6 | PM[6/7/8] appended (FIX[2]): injection + cost envelope $5 + async-DX 3 escape-hatches | 398-430 |
+| 7 | UD#3 pinned to option (b) inline-at-position_in_turn (FIX[3]) | 419 |
+| 8 | Forward-plan STEP-0/1/2/3b restructured (FIX[3]): decide→verify | 449-459 |
+| 9 | Plan Challenge Summary: compensating factors narrowed + R3 revision summary (SEC[3]) | 491-500 |
+| 10 | Carry-forward flag #1: `$5.00` default + tier guidance | 508 |
+| 11 | Carry-forward flag #2 (uuid7) + flag #3 (jsonschema + concrete defaults) | 509-510 |
+| 12 | SQ decomposition + 4 IC delta invariants (INV-MC-1, INV-TCR-1/2, INV-TE-5, INV-replay-5/6) | 321-350 |
+
+Bonus additions by lead during distillation:
+- IC[2] invariant INV-MC-1 (MetricsCollector running-cost push-based) added to IC[2] invariants list
+- IC[3] ToolCallRecord code-block annotated for `arguments` 4KB cap + `error` closed-set taxonomy; invariants INV-TCR-1/2 added
+- IC[5] TurnEngine invariant INV-TE-5 added
+- ADR[7] replay invariants INV-replay-5/6 added
+
+Post-distillation:
+- R3 scratch status: archived-r3 (2026-04-21)
+- Archive copy: `~/.claude/teams/sigma-review/shared/archive/2026-04-20-sigma-chatroom-m1ab-r3-workspace.md`
+- Archive INDEX: R3 row appended with PASS substantive + P=0.80-0.85 range
+- Git commit: includes audit report, eval report, R3 scratch, R3 archive, revised plan file, agent memory updates
+
+**C1 is now plan-locked-r3 at P(plan-ready)=0.80-0.85 range. Ready for re-evaluation via `/sigma-evaluate` before C2.**
+
+---
+
+### v2 carry-forward resolution log (lead 2026-04-22)
+
+DA-r3-v2 exit-gate PASS-WITH-NON-BLOCKING-GAPS surfaced 4 carry-forward remediation items. Per user directive "Address the 4 items...If item 2 turns out to be a scope-drift issue rather than a framing issue, it's not a carry-forward — it affects ADR[2]'s thesis", all 4 resolved in plan file BEFORE upgrading provisional → PASS:
+
+**Item 1 — Tier-tag R3-new findings:** Applied. Plan file now carries `|tier:T2|` tags on PM[6], PM[7] (T2-mixed with T3-flag for Ollama rates), PM[8], SQ29, SQ30, SQ31, SQ32. Sources cited inline (OWASP ASVS V5/V11.1.3, Python logging best practice, structlog pattern, feedback-memory context-firewall precedent, cross-agent convergence). 6 T2 findings tagged + 1 T3 (Ollama rates in PM[7]) flagged.
+
+**Item 2 — F1 "arguably stronger BELIEF" framing:** Diagnosed as SCOPE-DRIFT not framing (per user "affects ADR[2]'s thesis"). Applied thesis reformulation rather than pure language cleanup:
+- ADR[2] reformulated from "/v1 OpenAI-compat specific" to "native per-SDK tool-use (channel-flexible): either /v1 via openai lib OR /api/chat via ollama pypi lib. Core thesis = no text-convention, no bridge. Specific channel = implementation choice."
+- BELIEF decomposition added explicitly: core-thesis BELIEF and channel-primary BELIEF are SEPARABLE. v1 conflated them.
+- PM[5] F1 branch revised: core-thesis BELIEF 0.80-0.85 under F1 is legitimate (channel-flexible thesis verified via alternate channel); M1b-channel BELIEF 0.55 for /v1 specifically (that channel failed). "Framing note" added documenting v2's catch.
+
+**Item 3 — UD#3 warrant:** Applied. UD#3 plan line expanded with data-layer/rendering-layer distinction — position_in_turn is captured at DATA layer regardless of rendering choice (options a, b, c all have access); what differs is RENDERING layer temporal fidelity. UD#5 memory-invocation-coherence requires READER to see temporal relationship (rendering requirement), not just data-layer presence. Option (a) preserves data but destroys temporal experience; option (c) separates channels losing interleaving signal; option (b) preserves temporal coherence for reader. Steelman for (a) and (c) now explicit and resolved on UX grounds.
+
+**Item 4 — SEC[3] autogen/crewai drop framing:** Applied. ADR[3] rationale revised from "5-min web search budget insufficient to reliably primary-source" to "could not verify the claim within allotted verification time." Tightened per v2's framing-softness catch. Outcome unchanged; honesty improved.
+
+**Plan-belief impact:** R3-v1 was 0.80-0.85; R3-v2 final is 0.78-0.83 (slight downward from the 4 gaps acknowledged + resolved; lower bound 0.78 > 0.75 lock threshold). The downward drag is NOT just accounting — the scope-drift on ADR[2] was a real BELIEF recalibration (conflated BELIEFs decomposed), not cosmetic.
+
+**Meta header upgraded:** provisional → PASS (R3) with 0 unresolved carry-forwards. INDEX.md updated to match. Plan file locked R3-final.
+
+**Audit trail for this resolution log:** lead wrote this section directly (not proxy) — these are lead's distillation choices in response to v2's findings. v2's verdict block above is the authoritative DA-r3-v2 output; this log documents lead's execution of the v2 recommendations. Chain-of-custody: v2 finding → lead resolution decision → plan file edit → lead log entry here.

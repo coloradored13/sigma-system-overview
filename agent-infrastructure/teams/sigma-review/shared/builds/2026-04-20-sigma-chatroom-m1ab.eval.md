@@ -1,11 +1,15 @@
 # sigma-evaluate report: sigma-chatroom-m1ab
 
 ## Meta
-- evaluated: 2026-04-21
+- rounds evaluated: R2 (initial), R3 (after R3 revisions)
 - target: `~/.claude/teams/sigma-review/shared/builds/2026-04-20-sigma-chatroom-m1ab.plan.md`
-- target-status: plan-locked (2026-04-21)
 - pipeline: 3 parallel haiku evaluators → sonnet judge (no anchoring)
-- grade: **C (2.5 / 4.0)**
+- **R2 grade: C (2.50 / 4.0)** — evaluated 2026-04-21 (548-line plan)
+- **R3 grade: B− (2.86 / 4.0)** — evaluated 2026-04-21 post-R3 (609-line plan), +0.36 crossing B threshold
+
+---
+
+# R2 Evaluation (initial, C 2.50/4.0)
 
 ---
 
@@ -105,9 +109,73 @@ Re-run `/sigma-evaluate <path>` against the updated plan.
 
 ---
 
-## Persistence
+## R2 Persistence
 
 - **Summary entry** → `conv.md` in sigma-mem.
 - **Cross-evaluator pattern** → sigma-review team memory as `empirical-gap-as-planning-assumption`:
   > Plan treats documented external failure as exploratory PM risk → BELIEF on unverified behavior held high (0.95) while anti-sycophancy claimed. Detection: cross-evaluator convergence. Mitigation: require primary-source citation for ADR BELIEF ≥0.85 + pre-compute FAIL branch for any gate-blocked estimate.
 - Per-evaluator agent memories skipped (evaluators are ad-hoc pipeline agents, not persistent sigma-review roster members).
+
+---
+
+# R3 Re-evaluation (B− 2.86/4.0, +0.36 vs R2)
+
+## R3 Scores & Delta
+
+| Criterion | R2 | R3 | Δ | Evaluator Notes |
+|---|---|---|---|---|
+| Accuracy | 2 | **3** | **+1** | Ollama /v1 framing fixed (GH#12557 cited correctly, "documented-to-fail" acknowledged), autogen/crewai precedent dropped honestly. Remaining: mild conflation of official docs with empirically-observed GH issue. |
+| Completeness | 2 | **3** | **+1** | PM[6/7/8] added (security/cost/async-debug). Gaps remain: independent security review, M1c+ adapter maintenance ownership, dependency supply-chain risk, JSONL data-privacy. |
+| Logic | 3 | **2** | **−1*** | *Not regression — R3 surfaced previously-masked tensions. See analysis below. |
+| Evidence | 2 | **2** | 0 | PM[2/5/7] lack base rates, F1/F2 fallback viability untested, 4-agent consensus substituted for XVERIFY. |
+| Calibration | 2.5 | **3** | +0.5 | ADR[2]/PM[5] reframed conditional on SQ6c (0.70-0.75 PASS / 0.55 FAIL). Remaining: ≥95% fidelity threshold unanchored. |
+| Actionability | 3 | **3** | 0 | PM[5] F1/F2 branch selection manual handoff; STEP-1 gate lacks pre-written test; H2-H5 undefined. |
+| Scope Integrity | 3 | **4** | **+1** | Hard-stops verified, UD#3 pin conditional on STEP-1 verification, no M2 bleed. |
+
+**R3 average:** 20 / 7 = **2.86** → **Grade B−**
+
+## R3 Improvements (what worked)
+
+1. **Conditional calibration on SQ6c.** ADR[2] / PM[5] reframed from unconditional 0.95 to conditional ranges. Substantive, not cosmetic.
+2. **Scope boundary hardened.** UD#3 resolution preserved as *conditional* on STEP-1 JSONL verification. Scope-Integrity 4/4 earned, not granted.
+3. **PM-track expansion without contamination.** Security (PM[6]), cost (PM[7]), async-debug (PM[8]) added with SQ29-32 tests staying in M1a/b scope.
+
+## Logic Regression Analysis (3 → 2)
+
+This is not deterioration of the underlying plan. R3 revisions surfaced tensions that were previously masked:
+
+- R2 relied on autogen/crewai precedent (ADR[3]) which provided apparent support for agent-owned loops. R3 honestly drops that unverified precedent — but narrowed compensating factors now include self-reference (DB re-run conducted by the same design team defending the decision). Prior Logic evaluator didn't scrutinize this because the broader precedent absorbed attention.
+- R3's conditional reframing of ADR[2] required articulating the "documented-to-fail-but-proceeds-as-primary" logic explicitly. Equivocation becomes visible where it was previously implicit.
+- Two new fallacies spotted in R3 that weren't in R2 framing:
+  - PM[3] escalation "simplify to sync" contradicts C5 ("streaming from day 1") — false dilemma.
+  - PM[2] reliability classification from 3 runs affirms-the-consequent (0/3 fail in 3 runs → `reliable`).
+
+Core theses (native per-SDK tool-use, tool-exec in TurnEngine, OpenAI-shaped canonical Message, schema-versioned JSONL) remain sound.
+
+## R3 Remaining Weaknesses
+
+1. **Evidence circularity.** PM[2/5/7] have no reference datasets. 4-agent consensus is not external evidence. F1/F2 fallback viability untested.
+2. **Logic premise gaps in ADR[3-5].** ADR[4] 61% majority-provider thin; ADR[5] drift math defers empirical validation to M1a; PM[3] sync fallback contradicts C5 unresolved.
+3. **Undefined thresholds blocking mechanical enforcement.** H2-H5 use qualitative triggers ("expansion," "infeasible," "expensive"). STEP-1 ≥95% fidelity has no derivation and no pre-written test. PM[8] ">1 async-debugging blocker" subjective. Gates that cannot be evaluated mechanically drift under delivery pressure.
+
+## R4 Recommendations
+
+- **Anchor the ≥95% fidelity threshold** with a source, error-budget derivation, or justified alternative. Write the acceptance test spec *before* M2 begins.
+- **Quantify H2-H5** with measurable criteria (line-count delta, hours, dollar threshold).
+- **Attempt external validation for PM[2/5/7]** — a single analogous-system measurement breaks the self-referential citation chain. If none exists, declare prior-free and widen BELIEF.
+- **Resolve PM[3] / C5 tension explicitly** — either permit sync fallback as a scoped C5 exception with documented conditions, or remove "simplify to sync" as an escalation path.
+- **Pre-register F1/F2 fallback viability** — minimal smoke test of `ollama` pypi AsyncClient against `/api/chat` before C2 begins.
+
+## R3 Evaluator Disagreements
+
+- **Scope Integrity 4/4 vs Logic's UD#3 concern** — not a contradiction. Logic lens: "claimed resolved but deferred." Scope lens: "deferral is structurally correct." Both right about different things.
+
+## R3 Verdict
+
+B− is a legitimate upgrade. R3 fixed the three most critical R2 findings (Ollama framing, PM[3] coverage, UD#3 resolution) without introducing scope contamination. The Logic drop reflects honest scrutiny of newly-legible reasoning, not new errors. If R4 addresses the three remaining weaknesses (especially the undefined thresholds), this crosses into B+ / A− territory.
+
+## R3 Persistence
+
+- **Summary entry** → `conv.md` in sigma-mem (R3 delta notation).
+- **Cross-evaluator pattern** → sigma-review team memory as `R3-surfaces-R2-masked-tensions`:
+  > Revision rounds that fix flagged issues can LOWER scores on orthogonal criteria by making previously-implicit reasoning explicit. Score drops post-revision aren't regression signals — read delta analysis, not raw deltas. Mitigation: judge prompts should explicitly instruct "evaluate current plan on current state; do not penalize for uncovering new issues."

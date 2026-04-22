@@ -18,4 +18,4 @@
 | 2026-04-15 | sigma-v2-architecture | BUILD-C1 | 2 | TA,PS,IE,CQA,DA | PASS | 2026-04-15-sigma-v2-architecture-workspace.md |
 | 2026-04-16 | enterprise-ai-rollout | ANALYZE | 2 | TA,PS,RCA,CDS,DA | PASS (A-) | 2026-04-16-enterprise-ai-rollout-workspace.md |
 | 2026-04-20 | sigma-chatroom-m1ab | BUILD-C1 | 2 | TA,UX,IE,CQA,DA | PASS (A-, P=0.87, XVERIFY-infra-gap-doc) | 2026-04-20-sigma-chatroom-m1ab-workspace.md |
-| 2026-04-21 | sigma-chatroom-m1ab-R3 | BUILD-C1-R3 | 3 | TA-r4,UX-r4,IE-r4,CQA-r4,DA-r3 | PASS substantive (P=0.80-0.85 range; post-eval revision; FIX[1+2+3] + SEC[1+2+3] all verified non-cosmetic) | 2026-04-20-sigma-chatroom-m1ab-r3-workspace.md |
+| 2026-04-21 | sigma-chatroom-m1ab-R3 | BUILD-C1-R3 | 3 | TA-r4,UX-r4,IE-r4,CQA-r4,DA-r3-v1,DA-r3-v2 | PASS (DA-r3-v1 closure-check + DA-r3-v2 full exit-gate — CQoT-6/7/8 + named anti-sycophancy + T1/T2/T3 tier-tag; 4 v2-surfaced gaps resolved in plan before lock; P=0.78-0.83 range) | 2026-04-20-sigma-chatroom-m1ab-r3-workspace.md |
