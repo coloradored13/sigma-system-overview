@@ -33,3 +33,26 @@ coverage: BOTH (financial services roadmap + B2B SaaS phased workbook + both add
 ### Process notes
 - XVERIFY-FAIL is systematic in agent context (not loadable via ToolSearch) — use T1/T2 source compensating analysis; findings retain full weight per workspace infrastructure note
 - Peer verification of RLS: PASS on 5 artifacts (F[RL-F1], F[RL-F9], F[RL-F4], F[RL-F7], E[RL-9]+F[RL-F10])
+
+## R19-remediation C1 [26.4.23] — plan-track
+
+### H1 disposition: CONFIRMED
+sigma-verify IS under user control at /Users/bjgilbert/Projects/sigma-verify/. Sub-tools absent from spawned agent contexts because HATEOAS StateMachine (machine.py:24 `gateway_name="init"`) gates them behind `ready` state — intentional state-gating, not a deferred-tool registry bug. Correct in-scope fix: spawn-prompt init instruction + agent-def update. Architecturally correct fix (hateoas-agent auto-init on connection) is separate build, medium priority.
+
+### ADR[1] sed-i — XVERIFY PARTIAL
+Decision: PreToolUse Bash BLOCK 3, workspace-path scope (/.claude/teams/|workspace.md), no bypass.
+XVERIFY REFINEMENT (openai/gpt-5.4 PARTIAL): use shlex.split() argv tokenization NOT raw string regex. Evasion forms: `sed -e 's/x/y/' -i file`, `env sed -i`, `xargs sed -i`. Test matrix must cover env/xargs wrapping forms.
+
+### STRIDE findings (generalizable)
+- T (Tampering): XVERIFY tag presence does not equal authenticity — fabricated results not caught by A15. Known gap.
+- D (DoS): sigma-verify has no programmatic rate limiting on cross_verify across 13 providers. Anthropic 1K RPM is only bound.
+- E (EoP): bypassing HATEOAS state to register all tools stateless creates EoP risk for future state-gated write tools. Never do this.
+
+### Audit-trail design (#22/#23)
+No separate tamper-resistant log needed for internal framework. Workspace gate-log + A12 archive = sufficient. Escalate if framework becomes multi-user or compliance-audited.
+
+### XVERIFY provider calibration update
+openai/gpt-5.4 catches implementation-specific evasion paths that llama3.1:8b misses. Weight openai PARTIAL over llama AGREE on security implementation specifics. Google 503s during daytime demand spikes — use as third provider not primary.
+
+### XVERIFY now working in this agent context
+XVERIFY is NOT systematically broken in spawned agent contexts — it requires calling mcp__sigma-verify__init first. This is the R19 #3 root cause confirmed. After init call, verify_finding and cross_verify work correctly. Update spawn prompts accordingly.

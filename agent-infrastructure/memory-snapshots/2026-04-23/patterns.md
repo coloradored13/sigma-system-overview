@@ -160,6 +160,235 @@ Any 2026+ AI-rollout playbook covering multi-agent topologies MUST name A2A prot
 !sigma-eval 26.4.23 AI-agent-rollout playbook vet (workspace.md, 2255L) | GRADE:B (3.14/4) | Acc:3|Comp:3|Log:3|Evid:3|Cal:3|Act:3|Scope:4 | top-weakness: frame-anchoring — H1-H12 tested but premises beneath (tier-structure necessity, firm-size floor, data-readiness, adoption-likelihood) accepted as frame; false precision — F[TA-C2] FTE range withdrawn under DA pressure; gov-actionability-gap — HIGH severity CDS findings stop at gap-ID, no templates | top-strength: systematic uncertainty docs (XVERIFY-FAIL+BELIEF), DA counter-engagement depth, clean scope (0 contamination) | eval_run_by: 3 haiku evaluators + sonnet judge, parallel w/ run_in_background
 UP[RA-26.4.22-C] GDPR Art 22 B2B SaaS design fork: For any B2B SaaS firm with EU customer base deploying AI that makes or materially influences decisions about individual workers (performance scores, task allocation, compensation-affecting activity), GDPR Art 22 grants workers rights of explanation, human review, and contestation — running to individual workers directly, NOT fulfilled via the B2B processor agreement with enterprise customer. Forces a binary design choice at Phase 0: either (a) design agents as recommendation-only so "solely automated processing" threshold is not met (requires human-in-loop confirmation on every decision impacting worker), OR (b) implement data-subject-rights fulfillment mechanism — SaaS firm provides enterprise customer with tooling to respond to worker Art 22 requests (explanation of logic, data subject access, contest pathway). Neither option is addressed in most playbooks. Source: GDPR Art 22 T1, EDPB Dec 2024 automated-decision-making opinion T1. Severity varies by firm type — MEDIUM for WMS/labor-performance AI, LOW for pure inventory/advisory agents. |src:ai-agent-rollout-playbook-vet-26.4.22 |agent:regulatory-analyst |user-approved-promotion |originally-failed-sigma-mem-write-contention |class:principle
 UP[RA-26.4.22-B] SOC 2 TSC-to-AI-control mapping template: Big 4 AI audit practices in 2026 expect firms to PROPOSE the mapping between SOC 2 Trust Services Criteria and AI-specific controls — auditors are not drafting this. Draft mapping for B2B SaaS firms with AI features: CC6.1 (logical access) + CC6.7 (data transmission) -> AI vendor identity scoping and egress logging; CC7.2 (security incident monitoring) -> AI incident log and kill-switch telemetry; CC9.2 (vendor management) -> foundation-model provider TPRM; A1.2 (availability) -> kill-switch and fallback behavior; C1.1/C1.2 (confidentiality commitments) -> ZDR + no-training contractual terms + tenant isolation in retrieval/embeddings; PI1.4 (processing integrity) -> eval set, judge calibration, drift monitoring. T2 sourcing (Big 4 AI audit frameworks circa 2026 are T2 until formal TSC guidance published). Priority ordering differs by firm type: pure B2B SaaS -> SOC 2 TSC mapping is primary; bank subject to direct examination -> SR 11-7 vocabulary takes priority, TSC mapping becomes vendor-evaluation checklist for their own AI vendors. User should validate draft mapping with their auditor before relying on it. |src:ai-agent-rollout-playbook-vet-26.4.22 |agent:regulatory-analyst |user-approved-promotion |originally-failed-sigma-mem-write-contention |class:pattern |caveat:T2-until-formal-guidance
+## technical-writer r19-remediation C1 DOC-CHANGE-MAP (26.4.23)
+
+role: technical-writer build-track feasibility challenge | build: 2026-04-23-r19-remediation
+
+Key propagation findings:
+- #1 sed-i ban requires 28-file propagation to be effective (directive-only is cosmetic per R19 evidence)
+- #5+#14 peer-verify fix is a 3-file atomic set: c1-plan spawn template + sigma-lead spawn block + chain-evaluator regex — partial deploy reproduces R19 failure
+- §8e recovery template requires ΣComm conversion before placement in directives.md (agent-facing boundary rule)
+- #22 §2i enforcement tier (DA-enforced-only vs chain-evaluator-mechanical) changes directive text — must decide before C2 doc writes
+- 6 BUILD-CHALLENGEs issued to lead, 4 open questions for plan-track (OQ-TW1-4)
+- SCRATCH location: ~/.claude/teams/sigma-review/shared/builds/2026-04-23-r19-remediation/c1-scratch.md ## build-track-feasibility ### technical-writer
+P[hateoas-deferred-tool-state-gating|src:r19-remediation-c1|promoted:26.4.23|class:pattern]
+sigma-verify verify_finding/cross_verify/challenge use from_states=["ready"] in StateMachine — they only appear in MCP tool list AFTER init() triggers state transition. Spawned Agent subprocesses do NOT reinitialize deferred tool registry from tools/list_changed notification. Fix: (B) call init before ToolSearch in spawn prompts (zero-code, immediate); (D) remove from_states restriction + add runtime guard in handlers.py (~15-20 LOC, structural). Both complementary. B fixes immediately; D prevents footgun permanently. Confirmed via code-read: machine.py:17-128, hateoas-agent/mcp_server.py:100-141. |source:[code-read sigma-verify/machine.py:17-128]
+
+P[peer-verify-regex-section-boundary-coupling|src:r19-remediation-c1|promoted:26.4.23|class:calibration]
+chain-evaluator.py _PEER_VERIFY_HEADER regex (line 277) and section-boundary stop-pattern (line 293-298) are COUPLED. If regex is relaxed to accept #### headers (from current ^###), the stop-pattern (which stops at ^#{2,3}) misses ####, causing _extract_peer_verifications to over-capture text from the next agent's content. A17 specificity check then counts artifacts from wrong section. Fix options: (a) spawn-template-only (safe, zero risk); (b) regex relaxation (requires simultaneous stop-pattern fix at line 293-298 — must be atomic). Option (a) alone is correct and sufficient. |source:[code-read chain-evaluator.py:277-306]
+
+P[a3-db-step-marker-regex-variants|src:r19-remediation-c1|promoted:26.4.23|class:calibration]
+check_a3 in chain-evaluator.py uses re.search(marker, entry) where markers are treated as regexes. "assume.wrong" matches "assumeXwrong" but NOT "assume wrong" (space). "re.estimate" fails for "re-estimate". Agents write natural language variants → false negatives. Fix: expand markers to alternations: r"assume.?wrong|assume wrong", r"re.?estimate|re-estimate". Also fix section boundary from (?=DB[|Z|###) to stop at #{3,} to handle #### subheadings. |source:[code-read chain-evaluator.py:163-183]
+P[§2i-precision-gate-CONDITION1-calibration|src:r19-remediation-c1-CDS|promoted:26.4.23|class:calibration]: precision gate CONDITION 1 must be "quantitative claim without uncertainty justification" (point estimate OR range lacking driver breakdown, CI/RC, or qualitative qualifier) — NOT "point estimate without range." The narrower formulation would miss 3/4 R19 failures which were unsupported ranges. XVERIFY[openai:gpt-5.4]+XVERIFY[deepseek:deepseek-v3.2:cloud] both independently surfaced this gap. Applies to any analytical precision gate design. Gate fires on BOTH: CONDITION 1 (any numeric claim without uncertainty justification) AND CONDITION 2 (>70% confidence OR HIGH-severity OR cited in primary recommendation). |confidence-delta:initial-draft→XVERIFY-revised
+P[premise-audit-sequence-constraint|src:r19-remediation-c1-CDS|promoted:26.4.23|class:pattern]: premise-audit pre-dispatch (§2p) must specify that lead answers PA[1-4] INDEPENDENTLY before re-reading user's proposed H-space. Sequence is the anti-anchoring mechanism — FORMAT-level intervention that transfers at 70-85% to LLMs. Without sequence constraint, lead reads prompt → anchors → then answers PA[1-4] with same anchoring as agents. DB[H3] self-challenge surfaced this. PA[1]: tier-necessity | PA[2]: firm-size-floor | PA[3]: data-readiness | PA[4]: adoption-baseline. Structural premises only (domain-depth → §2e+DA).
+## security-specialist R19-remediation C1 [26.4.23] — plan-track findings
+
+### H1 disposition: CONFIRMED
+sigma-verify IS under user control at /Users/bjgilbert/Projects/sigma-verify/. Sub-tools absent from spawned agent contexts because HATEOAS StateMachine (machine.py:24 `gateway_name="init"`) gates them behind `ready` state — intentional state-gating, not a deferred-tool registry bug. Correct in-scope fix: spawn-prompt init instruction + agent-def update. Architecturally correct fix (hateoas-agent auto-init on connection) is separate build, medium priority.
+
+### sed-i enforcement (ADR[1]) — XVERIFY PARTIAL
+Decision: PreToolUse Bash BLOCK 3, workspace-path scope (/.claude/teams/|workspace.md), no bypass.
+XVERIFY REFINEMENT (openai/gpt-5.4 PARTIAL): use shlex.split() argv tokenization NOT raw string regex. Raw regex evades on: `sed -e 's/x/y/' -i file`, `env sed -i`, `xargs sed -i`, unusual quoting/spacing. Test matrix must cover env/xargs wrapping forms.
+
+### STRIDE findings (generalizable)
+T (Tampering): XVERIFY tag presence ≠ authenticity — agent could write fake XVERIFY verdict to workspace. A15 does not detect fabrication. Known gap.
+D (DoS): sigma-verify has no programmatic rate limiting on cross_verify across 13 providers. Anthropic 1K RPM is the only bound.
+E (EoP): bypassing HATEOAS state to register all tools stateless creates future EoP risk when state-gated write tools are added. Never do this.
+
+### Audit-trail design (#22/#23)
+No separate tamper-resistant log needed for internal agent framework. Workspace gate-log + A12 archive = sufficient. Promote to separate log only if framework becomes multi-user or compliance-audited.
+
+### XVERIFY provider calibration (updated)
+openai/gpt-5.4 catches implementation-specific evasion paths that llama3.1:8b AGREE misses. Weight openai PARTIAL > llama AGREE on security implementation specifics. Google Gemini 503s during daytime demand spikes — use as third provider, not primary.
+## r19-remediation-c1 tech-architect ADRs | 2026-04-23
+
+### ADR[1]: sigma-verify HATEOAS tool visibility (#3)
+Root cause: MCP server exposes tools dynamically by state. Spawned agents get fresh connections starting in unconfigured state. Fix: auto-transition to ready at build_machine() startup when any provider API key present. Registry._last_state is process-scope (shared across all MCP connections). Source-confirmed: handle_init() does ONLY key check, no external HTTP at startup. XVERIFY: openai(partial/medium-resolved) + nemotron(agree/high) + google(503-gap).
+
+### ADR[2]: chain-evaluator A12 key mismatch (#4)
+chain-evaluator.py:241 reads 'archive_exists'; gate_checks.py:1517 returns 'archive_file_found'. Fix: rename at chain-evaluator.py:241 (leaf consumer), NOT in gate_checks.py:1517 (source-of-truth API). One-line fix.
+
+### ADR[3]: A12 archive timing window (#20)
+24h grace-window (auditor suggestion) rejected as too coarse — masks absent-archive scenarios. Signal-driven re-run with 30s timeout fallback: add check_a12_post_archive() called from Stop hook after detecting synthesis_delivered signal in workspace. If archive dir mtime within 60s of Stop hook fire, A12 gets second-chance evaluation.
+
+### ADR[4]: premise-audit architecture (#21)
+New agent role rejected (no findings at pre-dispatch, adds cost). DA framework extension fires too late (Step 18). Lead workflow step at Step 7a (before spawn) is correct: output to workspace ## premise-audit, 3-5 frame assumptions tested as distinct from H-hypotheses. Highest failure risk (PM[3] likelihood 35%): CDS should add chain-evaluator check for ## premise-audit presence.
+
+### Key code locations confirmed
+- chain-evaluator.py:241 — A12 archive key bug
+- chain-evaluator.py:277-280 — peer-verify regex (CORRECT, spawn template was wrong)
+- chain-evaluator.py:173-176 — A3 DB step markers (needs expansion)
+- gate_checks.py:1517 — archive_file_found key
+- sigma-verify/src/sigma_verify/machine.py:17-128 — build_machine() (auto-ready fix location)
+- sigma-verify/src/sigma_verify/handlers.py — handle_init() (key-check only, safe to call at startup)
+- hateoas-agent/src/hateoas_agent/mcp_server.py:102 — Registry instantiated once per serve() call
+## SS-PROMO[1]: sed-i enforcement pattern — workspace + hooks scope (26.4.23)
+|source: R19-remediation C1 plan-lock
+|finding: PreToolUse Bash BLOCK for `sed -i` without backup extension must scope to BOTH workspace paths (/.claude/teams/) AND hook files (/.claude/hooks/) — not workspace-only. Hook files are edited in C2 build phases and face the same silent-truncation risk. Pattern: `re.search(r'sed\s+-i(?!\s+[\'"])', command) AND re.search(r'\.claude/teams/|workspace\.md|\.claude/hooks/', command)`.
+|implementation: shlex.split() argv tokenization (not raw string regex) per XVERIFY openai PARTIAL — handles env wrappers, xargs, unusual quoting. Backup-extension forms always pass.
+|calibration: XVERIFY openai/gpt-5.4 PARTIAL caught raw-regex evasion paths that llama3.1:8b AGREE missed. Weight openai PARTIAL over small-model AGREE on implementation-specific security claims.
+## empirical-baseline-verification pattern (26.4.23)
+
+When a build plan references a test baseline count as a constraint or gate (e.g., "¬regress to 154-test baseline"), code-quality-analyst MUST run live pytest --collect-only before accepting the claim. Memory-recorded counts decay immediately — infrastructure changes (orchestrator deletion, roster addition, fixture updates) silently change test counts without updating the memory record.
+
+R19 remediation C1 case: project_gate-infrastructure.md claimed 154 tests (written 26.4.16, 7 days old). Live pytest showed 92 tests and 11 pre-existing failures. The plan was built on a number that was 40% wrong. H5 was untestable as stated.
+
+Protocol:
+1. Run `pytest --collect-only -q` on all test files BEFORE accepting any test-count claim in a build plan.
+2. Run `pytest -q` (full execution) to identify pre-existing failures before attributing failures to changes.
+3. If claim diverges from live count: flag as CRITICAL before plan-lock. Do not accept H[] or SQ[] that reference the stale count.
+4. Revised baseline = currently-passing count (not total collected). Pre-existing failures are not part of the regression floor.
+
+Applies to: any sigma-build C1 where H[] or C[] references test counts, regression baselines, or coverage percentages. |source:[code-read live-pytest r19-remediation-c1 26.4.23]
+## SS-PROMO[2]: ΣVerify HATEOAS state-gating — root cause + fix (26.4.23)
+|source: R19-remediation C1 plan-lock, H1 CONFIRMED
+|finding: sigma-verify sub-tools absent in spawned agent contexts because HATEOAS StateMachine (machine.py `gateway_name="init"`) gates them behind `ready` state. NOT a deferred-tool registry gap. Each spawned agent has independent MCP connection; init in parent does NOT transition sub-agent to ready. Fix: call handle_init() in build_machine() at startup (auto-ready) — transitions state permanently for all connections when provider keys present. ~5 lines in machine.py. init remains callable as idempotent diagnostic.
+|security: DA[#2] compromise — future state-gated tools requiring explicit consent MUST NOT rely on unconfigured→ready gateway alone; must add own call-time authorization check. Document in machine.py.
+|XVERIFY-operational: mcp__sigma-verify__init must be called before ToolSearch in spawned agent contexts (current state). After init, verify_finding and cross_verify work. This IS the R19 #3 root cause confirmed in practice.
+P[audit-calibration-gate|src:r19-remediation-c1-CDS-β+|promoted:26.4.23|class:pattern]: when a gate must be WARN-first (C4/C5 tension: no legitimate override exists but false-positive rate unknown), emit structured calibration records per WARN firing (CAL-EMIT schema) and implement a standalone cross-session gate that reads them. Self-reported "N-review window" = same failure mode as directives — gets ignored under pressure. Empirical tracking is the only C5-compatible path through C4. Promotion threshold: ≥3 distinct reviews with fires AND ≤20% false-positive rate AND ≥5 DA-verdicted fires. not-reviewed DA verdicts = missing data (not legitimate) — prevents count-inflation. Audit-calibration-gate is standalone script (not chain-evaluator A-check — chain-evaluator is per-session, gate needs cross-session data). BLOCK-promotion remains deliberate lead action on PROMOTE signal. Applies to any analytical gate added WARN-first: §2i precision, §2-governance, §2d-severity, and any future calibration-uncertain gate.
+P[CAL-EMIT-schema|src:r19-remediation-c1-CDS-β+|promoted:26.4.23|class:pattern]: calibration record format for WARN-firing analytical gates. Per-firing record: CAL-EMIT[{gate-id}]: review-id:{session-date-slug} |finding-ref:{F[agent-id]} |fire-reason:{trigger-condition-matched} |workspace-context:{agent}:{50-char-excerpt} |da-verdict:PENDING. DA appends post-r2: da-verdict:{legitimate|false-positive|not-reviewed}. Persist to append-only calibration-log.md (not sigma-mem — write-contention risk; not archive — immutable post-session). Add to backup-memory.sh. False-positive classification authority: DA exit-gate verdict, not agent self-report. Promotion threshold uses DA-verdicted fires only.
+## SS-PROMO[3]: MCP trust boundary patterns — generalizable (26.4.23)
+|source: R19-remediation C1 STRIDE[1] analysis
+|T (Tampering): XVERIFY tag presence does NOT equal authenticity. A15 chain-evaluator checks presence of XVERIFY tags in workspace, not whether sigma-verify was actually called. A compromised or non-compliant agent could write a fabricated XVERIFY verdict. Known gap — document explicitly in A15 check description. Future mitigation: MCP call audit log or chain-evaluator checking XVERIFY tags only in post-init sections.
+|D (DoS): sigma-verify cross_verify has no programmatic rate limiting across 13 providers. Anthropic 1K RPM is the only practical bound on agent action frequency. Document as known gap; call-count tracking is future enhancement.
+|E (EoP): Never bypass HATEOAS state to register all tools as stateless. If future state-gated write tools are added (e.g. "commit findings to external system"), bypassing the unconfigured→ready gate becomes privilege escalation. Future tool authors MUST add own call-time authorization — not rely on gateway state alone (DA[#2] compromise requirement).
+|audit-trail design: for internal agent frameworks (not multi-user, not compliance-audited), workspace gate-log + chain-evaluator A-series + session archive (A12) is sufficient. Separate tamper-resistant log is overkill until scope expands.
+## test-map-methodology pattern (26.4.23)
+
+In sigma-build C1, code-quality-analyst should produce a TEST-MAP before issuing feasibility challenges. The TEST-MAP structure:
+
+1. Baseline survey: run live pytest, count collected vs passing vs failing. Identify which existing tests cover which checks/modules.
+2. Coverage gaps: enumerate which plan-track ADR targets have ZERO existing tests (these need new test surface, not just regression guarding).
+3. Per-issue coverage map: for each build issue, state — existing tests that would regress, new tests needed (count + complexity), flakiness risk, and any prerequisite fixes required before new tests are reliable.
+4. H5/regression-floor revision: state the empirically verified floor, not the memory-claimed floor.
+
+Value: transforms generic "test coverage" concern into specific, actionable challenge format. Enables plan-track to understand true C2 test burden before locking estimates. Prevents SQ[] underestimates that compress C2 without matching scope.
+
+R19 remediation C1: TEST-MAP surfaced A16/A17/A18 zero-coverage (entire peer-verification ring untested), 11 pre-existing failures, and check_a3 duplication — all of which were unknown to plan-track when estimates were written. |source:[code-read r19-remediation-c1 26.4.23]
+P[chain-evaluator-stop-hook-non-looping|src:r19-remediation-c1|promoted:26.4.23|class:calibration]
+chain-evaluator.py Stop hook fires once and exits — it is explicitly non-looping by design. Any A12 timing fix that adds a wait/poll loop inside Stop hook violates this invariant and adds latency to all session ends. Correct approach: synchronous mtime delta check (compare archive dir mtime to hook invocation time) with no polling. Signal-driven re-run with timeout is the wrong architecture for a Stop hook. Confirmed via code-read chain-evaluator.py enforce_stop path. DA-confirmed (ADR[3] revised from signal-driven to 24h grace). |source:[code-read chain-evaluator.py:625-640]
+
+P[check-a3-two-layer-depth-check|src:r19-remediation-c1|promoted:26.4.23|class:calibration]
+chain-evaluator.py check_a3 (lines 162-183) calls gc.check_dialectical_bootstrapping() then appends its OWN shallow_db entries to result.issues — creating a second uncoordinated depth check. This produces A3 passed=True (from gc V6 check) with non-empty issues (from chain-evaluator enhancement). After R19 remediation, layered authority was formalized: gc=presence check (has DB[] at all), chain-evaluator=depth check (are 3-of-5 markers present). Sequential, not conflicting. When modifying A3 in C2, DO NOT add a third layer — operate within the two-layer model. |source:[code-read chain-evaluator.py:162-183]
+
+P[peer-verify-regex-section-boundary-coupling|src:r19-remediation-c1|promoted:26.4.23|class:calibration]
+UPDATED: _PEER_VERIFY_HEADER regex (chain-evaluator.py:277) and section-boundary stop (chain-evaluator.py:293-298) are coupled. Regex relaxation to ^#{3,4} without simultaneously fixing the stop-pattern (which uses ^#{2,3}) causes _extract_peer_verifications to over-capture text across agent sections. A17 then counts artifacts from the wrong section. Correct fix: spawn-template-only (option a) — canonical 3-hash format, no regex change. Confirmed and adopted in TA IC[5]. |source:[code-read chain-evaluator.py:277-306]
+P[code-directive-split-for-partial-detection|src:r19-remediation-c1-CDS|promoted:26.4.23|class:pattern]: when a gate has two conditions where one is mechanically detectable and one requires semantic judgment, split enforcement by layer. Code enforces the observable condition (WARN on fire). Directive requires the semantic condition (agent must comply). DA enforces semantic condition in r2 challenge. Do NOT attempt semantic detection in code as a "DA-adjudication stub" — chain-evaluator A-checks have no defer-to-DA state, and DA runs before Stop hook (timing mismatch makes defer-to-DA architecturally incoherent). The split is: code=structural-signal, directive=behavioral-requirement, DA=semantic-judgment. Discovered via DA[#5] triple-convergence (IE+CQA+DA independently reached same conclusion).
+P[DOC-CHANGE-MAP as C1 build-track deliverable|in sigma-build C1, build-track technical-writer produces a DOC-CHANGE-MAP table: per top-ROI issue, which files need text changes, what change type (insertion/edit/replacement), and which cross-references must update simultaneously. This is the documentation equivalent of implementation-engineer's codebase survey — grounded in reading actual files, not assumed from issue descriptions. Produces propagation counts (N files affected) and atomicity constraints (sets of files that must change in same commit). Consumed by plan-track to validate SQ[] decomposition completeness. Without it, SQ[] items bundle directive updates without counting the real file surface, leading to underestimated C2 scope.|src:r19-remediation-c1|promoted:26.4.23|class:pattern]
+P[DB-rerun-strengthens-thesis|src:r19-remediation-c1-CDS|promoted:26.4.23|class:calibration]: when DA flags a DB[] as pro-forma (strongest counter absent), running the rerun with the genuinely stronger counter and then defending the original position produces a more robust conclusion than the original. DA[#8] on DB[ADR[2]]: "net-negative-ROI" counter surfaced that R19 DA catch rate on false-precision was 100% (4/4) — a genuinely strong counter. Defense showed the counter was valid for the full dual-condition gate (now deferred) but not for the scoped CONDITION 2-only implementation. Result: §2i maintained on stronger evidentiary basis than before the rerun. Pattern: concession-that-clarifies-scope is a form of defense, not retreat. The rerun that produces a more precise claim is a better outcome than the original claim.
+P[atomicity-constraint naming for multi-file coordinated changes|when a fix requires N files to change together (partial deploy = broken state), name the atomic set explicitly in the plan as an atomicity constraint: "A1: files X+Y+Z must change in same commit — X-without-Y reproduces the original failure." Observed: #5+#14 peer-verify fix required chain-evaluator regex + spawn template + sigma-lead spawn block as 3-file atomic set. Regex-without-template = agents write correct format but evaluator rejects. Template-without-regex = evaluator accepts format agents don't know to produce. Either partial deploy reproduces the R19 failure. Naming the constraint in planning prevents C2 from splitting the changes across commits.|src:r19-remediation-c1|promoted:26.4.23|class:pattern]
+## live-pytest-as-prereq-to-claim-accept pattern (26.4.23)
+
+Before any sigma-build C1 plan-lock, code-quality-analyst must run the test suite live — not rely on memory, project notes, or plan-track agent claims — before accepting any test-count or coverage claim as a constraint.
+
+Specific failure mode this prevents: plan-track agent confirms H[] using stale memory count — count becomes plan-locked constraint — C2 implementation-engineer targets wrong floor — regression detection fails or test scope is wrong.
+
+The roster-fixture bug discovered in R19 remediation C1 is a second failure mode: a test that passes in isolation can fail systematically after infrastructure changes (roster.md addition broke MINIMAL_WORKSPACE fixture). Pre-existing failures discovered only by running the suite, not by reading the code.
+
+Protocol trigger: any H[], C[], or SQ[] in SCRATCH that references a test count ("154 tests", "N-test baseline"), a coverage percentage, or a "no regressions" guarantee — run pytest before accepting.
+
+Does not apply to: code review builds where no test suite exists, or builds where test-writing is the primary deliverable (floor is 0, nothing to verify). |source:[code-read r19-remediation-c1 live-pytest-run 26.4.23]
+## r19-remediation-c1 tech-architect: locked ADRs + calibration | 2026-04-23
+
+### Pattern: sigma-verify HATEOAS tool visibility fix (#3)
+Root cause confirmed: MCP server _last_state is process-scope. Spawned agents get fresh connections starting in unconfigured state. Registry instantiated once in serve() — all connections share same registry instance.
+Fix: call handle_init() in build_machine() at startup; if any provider key present, registry transitions to 'ready' before first MCP client connects.
+GATEWAY SEMANTIC CONTRACT (per DA[#2] compromise): (a) init remains callable idempotent post-startup for explicit re-check. (b) Future state-gated tools requiring explicit user consent MUST add own call-time authorization check — must NOT rely on unconfigured→ready gateway transition alone. (c) Gateway re-documented as "optional diagnostic + future-tool state-boundary" not "mandatory agent handshake."
+Security: auto-ready does NOT reduce security — tools are provider-gated at call time, not gateway-gated for authorization. handle_init() does ONLY key-check (no external HTTP, confirmed handlers.py:1-60).
+Files: ~/Projects/sigma-verify/src/sigma_verify/machine.py:17-128 (build_machine fix location)
+
+### Pattern: chain-evaluator A12 leaf-consumer key fix (#4)
+gate_checks.check_session_end() returns details['archive_file_found']. chain-evaluator.check_a12() was reading details.get('archive_exists', False) — key never present, always False.
+Fix: rename at chain-evaluator.py:241 ONLY (leaf consumer). Do NOT rename in gate_checks.py:1517 (source-of-truth API, has multiple callers).
+Rule: when a chain-evaluator check reads a key from gc.check_*() result, the correct key is whatever gate_checks returns — check gate_checks source before writing chain-evaluator consumer.
+
+### Pattern: chain-evaluator timing-sensitive checks — 24h grace approach (#20)
+Stop hook (enforce_stop at chain-evaluator.py:625-640) is explicitly non-looping by design. Never add poll/wait/sleep inside enforce_stop. Any check that depends on an async post-session event (archive write, synthesis file) must use grace-window not signal-driven approach.
+Fix: check_a12 uses 24h grace — if session start within 24h and archive_file_found is False, result is advisory WARN not hard FAIL. ~20 LOC, testable with datetime mock.
+
+### Pattern: DB[] exercise detection — correct algorithm (#19)
+BUG (confirmed empirically): re.findall(r"DB\[.*?\].*?(?=DB\[|\Z|###)", text, re.DOTALL) extracts non-exercise tokens (finding refs DB[F[X]], inline mentions DB[], summary notes) alongside genuine exercises, scoring them 0 markers.
+WRONG FIX: expanding marker variants (assume.wrong → assume_wrong etc). '.' is already Python regex wildcard — assume.wrong already matches assume-wrong, assume_wrong, assume space wrong. Only assumewrong (no separator) fails, which is not a real agent failure mode.
+CORRECT FIX: split text by r"(?=DB\[)" boundaries; for each segment starting with DB[, check whether segment contains \(1\).*\(2\).*\(3\) via re.search with DOTALL; only segments with numbered structure qualify as DB exercises.
+Lesson: test regex empirically against non-exercise tokens before claiming a fix. DA[#1] caught this; should have been caught pre-lock.
+
+### Pattern: workspace concurrent-write — atomic Python replace (#2)
+Root cause of concurrent-write failures: anchor-text moved between agent's Read call and Edit call as other agents wrote concurrently. Edit tool is OS-atomic but anchor identification is not — line numbers and relative positions shift.
+Correct fix: content = open(path).read(); new = content.replace(old_anchor, new_content, 1); if new == content: raise AnchorNotFound; open(path,'w').write(new). Content-based match not line-based — anchor found regardless of what other agents wrote above it.
+Section-isolation convention: agents write ONLY to their own ### section; lead writes to ## sections (convergence, gate-log, open-questions). Two agents writing to different sections cannot collide on anchor text.
+Residual risk: true simultaneous write → last-write-wins (data loss, not corruption). Acceptable for sigma sessions given section-isolation.
+Options rejected: Edit-tool-only (already required, doesn't fix anchor-movement), advisory .lock (soft control, bypass risk), lead-proxy queue (correct but overkill — lead bottleneck).
+
+### Pattern: premise-audit as lead pre-spawn workflow step (#21)
+Correct insertion point: AFTER prompt-decomposition §7, BEFORE H-level agent spawning (CDS: Step 8.5; TA: Step 7a — CDS placement wins per DA[#3] adjudication).
+NOT: new agent role (agent has no findings at pre-dispatch), NOT: DA framework extension (fires at Step 18, too late, after anchoring has occurred).
+Anti-anchoring mechanism: lead answers PA[1-4] BEFORE re-reading user's H-space. Sequence is critical.
+Format: PREMISE-AUDIT[pre-dispatch] with PA[1-4] structural tests (tier-necessity, firm-size-floor, data-readiness, adoption-baseline).
+Highest failure risk (PM[3], 35% likelihood): lead skips under delivery pressure. Needs chain-evaluator check for presence of ## premise-audit section to be mechanical.
+
+### Calibration: r19-remediation-c1 test baseline (26.4.23)
+Three files: test_chain_evaluator.py + test_phase_gate.py + test_gate_checks.py
+Collected: 154 tests | Passing: 143 | Pre-existing failures: 11
+Fixture prerequisite (SQ[0]): fix MINIMAL_WORKSPACE roster alignment — blocks A3/A16/A17/A18 tests.
+Must run SQ[0] before any test work on A3/A16-A18 checks.
+CQA reported "92/81" — appears to be count from a different test run scope (not the three-file canonical set).
+
+### Calibration: TA effort estimate accuracy (r19-remediation-c1)
+SQ[2] est 3h → conceded to 1h (correct: 24h grace is ~20 LOC not signal-driven 3h). Overestimated by 3x on complexity.
+SQ[3] est 1h → revised to 2h (correct: split-then-check extraction more complex than single-regex). Underestimated by 2x.
+SQ[13] est 5h → revised to 10-13h (correct: full test surface not mapped before estimating). Underestimated by 2-2.6x.
+CAL lesson: pre-map full test surface before estimating; estimate after knowing what ALL new checks need, not just the first one designed.
+## USER-APPROVED: sigma-verify gateway semantic contract | 26.4.23
+
+UP[TA-B1] — ratified by user 26.4.23
+
+Future state-gated sigma-verify tools requiring explicit user consent MUST add their own call-time authorization check. They must NOT rely on the unconfigured→ready gateway transition alone for authorization.
+
+Gateway is now formally: "optional diagnostic + future-tool state-boundary" — NOT "mandatory agent handshake."
+
+Implementation requirements:
+- machine.py: add code comment in build_machine() documenting this contract at the auto-ready transition
+- ADR doc: record this as an architectural constraint for future sigma-verify tool additions
+- init remains callable idempotent post-startup for explicit re-check/diagnostic use
+
+Why: DA[#2] compromise — auto-ready at startup solves the agent-context tool-visibility problem; gateway semantic documentation prevents a future failure mode where a new state-gated tool (e.g., one requiring explicit user consent before use) could be bypassed because the gateway gate was removed. |source:[DA[#2]+openai-XVERIFY-PARTIAL+user-approval-26.4.23]
+## USER-APPROVED: section-isolation write convention (all future sigma sessions) | 26.4.23
+
+UP[TA-B2] — ratified by user 26.4.23 | scope: BROAD — all future sigma-review and sigma-build sessions
+
+### Rule: workspace write section ownership
+
+Agents write ONLY to their own ### named section in workspace files (workspace.md, builds/*/*.md).
+Lead writes ONLY to ## sections: convergence, gate-log, open-questions, peer-verification-index, promotion.
+Cross-section writes require explicit lead authorization before execution.
+
+### Canonical write method: atomic Python replace
+
+content = open(path).read()
+new_content = content.replace(old_anchor, new_text, 1)
+if new_content == content:
+    log("ANCHOR-NOT-FOUND: " + repr(old_anchor[:60]))  # flag to lead, do not silently fail
+    # retry with broader anchor or request lead coordination
+open(path, 'w').write(new_content)
+
+Anchor selection rule: section header line + first unique content line of the section. Anchor must be unique in the file. If not unique, extend anchor until unique.
+
+### Why this convention
+
+Root cause of R19 #2 concurrent-write failures: anchor-text moved between agent's Read call and Edit call as other agents wrote to the same file concurrently. Edit tool is OS-atomic but anchor identification is not — line numbers and relative positions shift under concurrent writes. Content-based match (str.replace on full file string) eliminates anchor-movement failure regardless of what other agents wrote above the target section.
+
+Section-isolation ensures two agents never race on the same anchor text: agents in different ### sections have distinct anchors; lead ## sections are single-writer.
+
+### Propagation requirements (C2 + beyond)
+
+- Add workspace_write() helper function (SQ[14], owner: implementation-engineer)
+- Add section-isolation rule to directives.md §workspace-rules
+- Add to all agent spawn templates (canonical write pattern)
+- Add to c1-plan.md and c2-build.md agent boot instructions
+
+|source:[R19-#2-empirical-4x-manifestations + DA[#6]-meta-observation + user-approval-26.4.23]
+P[ΣComm-boundary-check as C1 feasibility gate|in sigma-build C1, technical-writer must verify ΣComm compliance for every directive/template change targeting agent-facing content before C2 writes it. Plain-English prose inserted into directives.md = boundary violation (directives.md is agent-facing). Rules: (1) plan-track agents authoring new §2 directive text should write in ΣComm or explicitly flag for TW ΣComm conversion in their SQ[]; (2) TW reads received directive text and checks notation pattern matches existing §2 sections (!rules, →notation, ¬prohibitions, [bracket] source types) before accepting; (3) human-readable companion doc + agent-facing ΣComm pointer is acceptable alternative for complex multi-step procedures (e.g. §8e recovery template). Observed: CDS authored §2p spec correctly in ΣComm — correct approach. §8e recovery template was 7-step plain-English prose in R19 source — requires ΣComm conversion before insertion into directives.md. This check now runs on every sigma-build touching directives.md or agent-defs.|src:r19-remediation-c1|promoted:26.4.23|class:principle]
+P[directive-propagation split by risk tier|when rules must propagate to agent definitions, scope the update by risk tier not uniformly. SAFETY-CRITICAL (data-loss risk, process corruption risk — e.g. sed-i ban): update ALL N existing agent .md files immediately. Rationale: high-frequency operations, recurrence risk proven, directive-only propagation is cosmetic (R19 proved). CALIBRATION/QUALITY (low-frequency application, future-facing — e.g. severity-provenance tag, precision gate checklist item): update _template.md only. Existing agents inherit at next re-spawn. Rationale: these rules affect edge-case finding types that current agent sessions are unlikely to encounter before re-spawn. Applying uniformly burdens C2 with 22 Edit calls for rules that carry no immediate recurrence risk. Decision test: "If an active session produces the finding type THIS WEEK without the rule, does material harm occur?" Yes → all 22 agents. No → template-only. R19 examples: #1 sed-i ban = all 22 (data loss, high-frequency bash use); #24 severity-provenance = template-only (cross-domain severity extrapolation is rare).|src:r19-remediation-c1|promoted:26.4.23|class:calibration]
 
 → actions:
 → pattern confirmed in new conversation → remove ~ marker, increment count

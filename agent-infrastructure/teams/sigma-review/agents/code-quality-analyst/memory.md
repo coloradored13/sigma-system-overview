@@ -113,3 +113,32 @@ R[DRY/SOLID: SRP via naming+size, OCP via Protocol/ABC, DIP via injection|checkl
 - hypothesis: property-based tests for data-heavy modules (serialization, state machines)
 - ruff B rules: bugbear catches common Python pitfalls I should flag in review
 P[event-grammar-conformance-tests-EG|src:sigma-chatroom-m1ab-C1|promoted:26.4.21|class:pattern]: for streaming event APIs with tool-exec loops, test state-machine conformance explicitly. Grammar: token* → (tool_call+ → stop(tool_use, final_message) → tool_result+)* → token* → stop. Test categories: EG1 event-grammar conformance, EG2 parallel tool_call accumulation (INV4), EG3 final_message reconstruction fidelity, EG4 tool_result correlation, EG5 max_tool_calls final-text boundary. Independent tests for separable additions (EG2 and EG3 are orthogonal); integrated tests for combined state machine. Complements round-trip tests — round-trips verify correctness within phases, EG verifies phase sequencing. |source:[lead-proxy from scratch cqa BC-cqa-11 + R2 EG1-EG5 + cqa R2 delta]
+
+## r19-remediation C1 COMPLETE — 26.4.23
+BELIEF[r1]=0.88, DA PASS@A-, plan LOCKED.
+Promoted to patterns.md: empirical-baseline-verification, test-map-methodology, live-pytest-as-prereq-to-claim-accept.
+
+## r19-remediation C1 — 26.4.23
+
+### Baseline survey (gate_checks + chain-evaluator test suite)
+- Claimed baseline: 154 tests (project_gate-infrastructure.md, 26.4.16). Actual: 92 tests. Gap: 62 (20=orchestrator-archive commented-out; 42=unexplained).
+- Pre-existing failures: 11/92 BEFORE any R19 changes. Root: MINIMAL_WORKSPACE uses `agent-alpha`/`agent-beta` not in roster.md → roster-based extraction returns only `devils-advocate`. Written before roster was added.
+- Regression floor for C2: 81 currently-passing tests (¬154, ¬92).
+- A16/A17/A18 (peer-verification ring): ZERO existing tests — largest untested surface.
+- check_a3 chain-evaluator-level depth check (chain-evaluator.py:162-183): ZERO tests. Separate from gate_checks DB tests.
+- chain-evaluator A12 unit tests: ZERO. Existing session-end tests are gate_checks level only.
+
+### H5 revision
+H5 ("¬regress to 154-test baseline") untestable as stated. Revised: keep 81 passing + add 30-46 new tests.
+
+### Highest-risk new gate: #22 precision gate
+Calibration flakiness risk HIGH. Must test against archived workspaces (R19: known-bad F[TA-C2] FTE range, known-good breakdowns) BEFORE C2 ships. Plan-track must specify detection algorithm before C2 estimates complexity.
+
+### Prerequisite for C2
+Fix MINIMAL_WORKSPACE fixture before writing any regression tests. Options: (a) use real roster agent names, (b) add test-agent names to roster, (c) restructure tests. Without fix, new regression tests give unreliable signal.
+
+### Error-handling pattern constraint
+New chain-evaluator gates must follow _wrap_gc() pattern. NOT mutate-after-wrap (check_a3 lines 162-183 is the anti-pattern).
+
+### check_a3 duplication bug
+chain-evaluator check_a3 has SECOND DB-depth check on top of gc.check_dialectical_bootstrapping. Uncoordinated — can produce passed=True with non-empty issues. R19 #19 fix must reconcile, not add third layer.

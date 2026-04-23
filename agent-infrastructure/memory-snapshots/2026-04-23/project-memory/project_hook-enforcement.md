@@ -1,6 +1,6 @@
 ---
 name: Hook enforcement architecture
-description: Minimal hook enforcement — chain-evaluator (Stop) + phase-gate (2 BLOCKs + 1 WARN), 154 tests, non-looping
+description: Minimal hook enforcement — chain-evaluator (Stop) + phase-gate (2 BLOCKs + 1 WARN), 92 tests live (was 154 claim — test files lost in refactor), 11 pre-existing failures, non-looping
 type: project
 originSessionId: 76c5468f-a7a0-451e-b3c3-63637a10d184
 ---
@@ -25,4 +25,7 @@ Hook enforcement simplified from 8 scripts/8 BLOCKs to 2 scripts/2 BLOCKs (26.4.
 ## Infrastructure
 - hooks/ symlinked: ~/.claude/hooks → sigma-system-overview/agent-infrastructure/hooks
 - settings.json: PreToolUse(Write|Edit|Bash → phase-gate), PostToolUse(Write|Edit → phase-gate), Stop(sigma-retrospective + chain-evaluator)
-- 154 tests: test_chain_evaluator.py (41), test_phase_gate.py (45), test_gate_checks.py (68)
+- LIVE TEST COUNT (verified 26.4.23 during R19 remediation C1): 92 tests, 81 passing, 11 failing
+  - test_gate_checks.py: 68 tests (57 passing, 11 failing — MINIMAL_WORKSPACE fixture uses agent-alpha/agent-beta not in roster.md, broken since roster.md was added)
+  - test_hooks.py (~/.claude/hooks/): 24 tests, all passing
+- WAS 154 (per 26.4.16 entry): test_chain_evaluator.py(41) + test_phase_gate.py(45) + test_gate_checks.py(68) — test_chain_evaluator.py and test_phase_gate.py NO LONGER EXIST. Lost in unknown refactor between 26.4.16 and 26.4.23. Investigate before claiming chain-evaluator/phase-gate are tested.

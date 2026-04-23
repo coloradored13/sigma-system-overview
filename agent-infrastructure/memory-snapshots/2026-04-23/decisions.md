@@ -38,6 +38,75 @@ AUDIT[26.4.21|sigma-chatroom-m1ab-R3]: verdict=RED |mode=BUILD-C1-R3 |rounds=3 |
 AUDIT-REVISE[26.4.21|sigma-chatroom-m1ab-R3-v2]: verdict=YELLOW (up from RED) |v1→audit→v2→polish loop executed correctly |3/4 v2 fixes substantive (tier-tags, ADR[2] channel-flexible thesis, UD#3 warrant with data-layer/rendering-layer distinction) |1 partial (Fix 3 L546 word-swap miss) |ADR[2] re-scoping verified honest not gerrymandered |attribution markers exemplary |remaining: L546 fix + wiki INDEX decision (now 4 rounds open) + R3-specific memory entries |GREEN achievable in ~15min |source:sigma-audit re-audit
 AUDIT-FINAL[26.4.21|sigma-chatroom-m1ab-R3-v2]: verdict=GREEN-with-minor-notes (supersedes YELLOW draft from earlier this session) |recalibrated to match R1+R2 audit bar — same class of minor gaps, same verdict |v1→audit→v2→polish loop worked as designed |3 follow-ups: plan.md L546 word-swap propagation, wiki INDEX decision (4 rounds open), R3-specific memory entries |directive discussion (separate): should audit criteria tighten after evaluate-C? if yes, document explicitly rather than silent shift |full audit file: archive/2026-04-21-sigma-chatroom-m1ab-R3-audit.md |source:sigma-audit final
 AUDIT-VERDICT[26.4.23|ai-agent-rollout-playbook-vet]: GREEN |mode:ANALYZE |tier:3(20/25) |agents:7+DA |workspace:/Users/bjgilbert/.claude/teams/sigma-review/shared/archive/2026-04-22-ai-agent-rollout-playbook-vet.md |highlights: all 9 exit-gate criteria substantively evaluated; 5 HIGH→graduated-severity revisions + 2 quantifications withdrawn under DA pressure; 2 new findings from DA[#6] not-discussed probe; provenance 100% tagged with [prompt-claim]<3%; corruption-recovery handled transparently; DA caught and corrected lead grep error at L1652. |chain-eval-fails: A12 archive + A14 git-clean are stale timing artifacts (archive completed Apr 23 08:29, after chain-evaluator ran); A3 DB-step flags are parser false-negatives, steps present on inspection. |not-assessed: finding correctness (that is /sigma-evaluate scope). |source:sigma-audit
+D[r19-remediation-c1-adrs|date:26.4.23|class:decision]
+r19-remediation C1 plan-locked ADRs (BELIEF[r1]=0.88, DA PASS@A-):
+ADR[1-TA]: sigma-verify auto-ready at build_machine() startup when API keys present (~5 LOC machine.py). Eliminates HATEOAS state-gating as XVERIFY failure root cause. handle_init() confirmed key-check-only, no side effects. SS spawn-prompt (SQ[SS-3]) ships as belt-and-suspenders only.
+ADR[2-TA]: chain-evaluator.py:241 rename archive_exists→archive_file_found (leaf consumer fix, not gate_checks API change).
+ADR[3-TA]: 24h grace window for A12 timing (~20 LOC check_a12). Signal-driven approach rejected — violates Stop hook non-looping design.
+ADR[4-TA/CDS]: #21 premise-audit as Step 7a workflow step (pre-H-space, anti-anchoring sequence). DIV[2] resolved to TA Step 7a; CDS sequence constraint retained as sub-requirement.
+IC[4]: A3 DB depth — gc=presence, chain-evaluator=depth. Layered, sequential, not conflicting. Expanded marker set (assume.?wrong, re.?estimate variants).
+IC[5]: #5+#14 — spawn-template-only, canonical ### Peer Verification: X verifying Y. No regex change.
+SQ[CDS-6]: A20 precision gate — CONDITION 2 marker detection (code) + uncertainty-qualifier suppression (keyword heuristic) → WARN. CONDITION 1 DA-delegated. 6-8 tests.
+SQ[13]: split SQ[13a-g], 11-15h total. Baseline floor 143 passing (TA live run). Fixture fix (roster agent mismatch) is prerequisite to reliable C2 regression testing.
+## r19-remediation-c1 plan-track decisions | tech-architect | 2026-04-23
+
+### Decision: sigma-verify gateway semantic contract
+Choice: auto-ready at startup (primary) + gateway re-documented as optional diagnostic + future-tool state-boundary.
+Rationale: DA[#2] compromise — auto-ready solves immediate agent-context problem; gateway semantic documentation prevents future-tool failure mode (future state-gated tools requiring explicit consent must add call-time authorization check, not rely on gateway transition alone).
+Alternatives: spawn-prompt only (rejected: soft control, R19 had 5 XVERIFY-FAIL), expose all tools from unconfigured (rejected: breaks semantic contract).
+XVERIFY: openai PARTIAL (concern: gateway semantic weakening — addressed by documentation requirement), nemotron AGREE/high.
+
+### Decision: DB[] extraction algorithm for chain-evaluator A3
+Choice: split-by-DB[-boundary then require (1)(2)(3) numbered structure within segment.
+Rationale: re.findall(r"DB\[.*?\]...") regex extracts non-exercise tokens (finding refs, inline mentions, summary notes) alongside genuine exercises. Marker-variant expansion was wrong fix — '.' is already Python regex wildcard. Correct fix targets extraction not marker recognition.
+Evidence: live Python test confirmed empirically 26.4.23. DA[#1] 3/3 XVERIFY agree.
+Lesson: test regex empirically against non-exercise tokens before committing to fix.
+
+### Decision: workspace write contract — atomic Python replace canonical
+Choice: content-based str.replace() in memory + section-isolation convention.
+Rationale: observed failure was anchor-movement between Read and Edit calls — Edit tool is OS-atomic but anchor identification is not. Content-based match eliminates anchor-movement failure. Section-isolation eliminates same-anchor collision.
+Options rejected: advisory .lock (soft/bypassable), lead-proxy queue (correct but lead-bottleneck overkill), Edit-tool-only (already required, doesn't address anchor-movement).
+
+### Decision: chain-evaluator A12 timing — 24h grace window
+Choice: 24h grace window (not signal-driven re-run with timeout).
+Rationale: enforce_stop() is explicitly non-looping by design (chain-evaluator.py:625-640). Signal-driven approach requires poll/wait in Stop hook, violating non-looping invariant. 24h grace correctly handles the race without adding Stop hook state.
+Prior error: TA initially rejected 24h as "too coarse" claiming it masks absent-archive. Wrong — grace window only affects timing; archive_file_found must still be True for A12 to pass.
+
+### Decision: IC[4] layered DB detection authority
+Choice: gate_checks = presence check (has any DB[] entry); chain-evaluator = depth check (does entry have 3-of-5 step markers via numbered structure).
+Rationale: two checks are NOT alternatives — they are layered. gc detects presence; chain-evaluator detects depth. Fix: expand extraction algorithm in chain-evaluator only; gate_checks not modified.
+D[audit-calibration-gate-approved|src:r19-remediation-c1|date:2026-04-23|status:user-approved]: DECISION: implement audit-monitored calibration gate pattern for all WARN-first analytical gates (#22 §2i, #23 governance, #24 severity provenance) in sigma-review. Introduces two new files to ~/.claude/teams/sigma-review/shared/: (1) calibration-log.md — append-only CAL-EMIT records per WARN firing, survives across sessions; (2) audit-calibration-gate.py — standalone script reads log, evaluates promotion threshold, outputs PROMOTE/RECALIBRATE/CALIBRATING. Promotion threshold: ≥3 distinct reviews with fires AND ≤20% false-positive rate AND ≥5 DA-verdicted fires. BLOCK-promotion is deliberate lead action on PROMOTE signal — not automatic. User approved 26.4.23 as part of C1 plan-lock batch. File creation happens in C2 BUILD phase. |alternatives-rejected: self-reported 3-review window (same failure mode as directives, gets ignored under pressure); time-boxed WARN with fixed expiry date (no empirical grounding). |rationale: C4/C5 tension (no legitimate override exists but FP rate unknown) — empirical tracking is the only path that satisfies both constraints simultaneously.
+## USER-APPROVED: A-check ID assignment A20-A23 | 26.4.23
+
+UP[TA-B3] — ratified by user 26.4.23 | STABLE — do not reassign these IDs
+
+Chain-evaluator A-check ID assignments for r19-remediation-c1 new checks:
+- A20: precision gate (#22, §2i) — owner: CDS design, IE implementation
+- A21: sigma-verify pre-flight init check (#3 belt-and-suspenders) — owner: SS/IE implementation
+- A22: HIGH-severity governance minimum artifact gate (#23) — owner: CDS design, IE implementation
+- A23: source-tag severity provenance (#24, §2d extension) — owner: TW directive + IE chain-evaluator check
+
+These IDs are stable for C2 implementation and all directive cross-references. TW must use these IDs when adding chain-evaluator cross-references to directives.md §2i/#23/#24 text.
+
+Why stable: A-check IDs are referenced across chain-evaluator code, directives, spawn templates, and audit reports. ID drift between C1 plan and C2 implementation requires global search-and-replace across all files. Locking IDs in C1 prevents this.
+
+C2 blocker note: no implementation-engineer work on A20-A23 checks should begin until IDs are confirmed stable and TW has updated directive cross-references. |source:[DA[#4]+DA[#11]+user-approval-26.4.23]
+## USER-APPROVED: SQ[0] fixture-fix prerequisite ordering | 26.4.23
+
+UP[TA-B4] — ratified by user 26.4.23
+
+SQ[0] (fix MINIMAL_WORKSPACE roster alignment + resolve 11 pre-existing test failures) is a C2 DAY-1 GATE.
+
+Dependency chain:
+- SQ[0] must complete BEFORE: SQ[3] (A3 DB extraction fix), SQ[13b] (A12/A16-A18 tests), SQ[13c] (A3 chain-evaluator tests)
+- IE holds on A3/A16/A17/A18 test work until CQA confirms SQ[0] complete
+- All other SQ items (SQ[1], SQ[2], SQ[5], SQ[7], SQ[8], SQ[9], SQ[14]) are NOT blocked by SQ[0]
+
+Owner: code-quality-analyst | Est: 1-2h | Files: test_gate_checks.py + test_chain_evaluator.py fixture definitions
+
+Why: 11 pre-existing test failures include MINIMAL_WORKSPACE roster alignment fixture that is a prerequisite for A3/A16-A18 test infrastructure. Running new tests against broken fixture produces false failures and masks true regressions. SQ[0] establishes the clean 143-passing baseline from which all new tests extend.
+
+Test baseline after SQ[0]: 154 collected, target 143+ passing (all currently-passing tests preserved), 0 pre-existing failures remaining. New tests built on top of this floor. |source:[CQA-empirical+DA[#7]+live-pytest-26.4.23+user-approval-26.4.23]
 
 → actions:
 → about to make architectural choice → log here with rationale + alternatives

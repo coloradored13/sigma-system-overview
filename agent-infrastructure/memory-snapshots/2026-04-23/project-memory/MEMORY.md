@@ -39,7 +39,7 @@ DeepMind hackathon, $200K, cognitive benchmarks, deadline 26.4.16, status: revie
 
 ## skills + hooks
 - [Skills integration v3](project_skills-integration-v3.md) — 42 skills installed, native Claude Code routing, opt-in skill access for agents during Work phase (26.4.15)
-- [Hook enforcement](project_hook-enforcement.md) — chain-evaluator.py (Stop hook, non-looping) + phase-gate.py (2 BLOCKs: code-write-auth + git-commit-gate, 1 WARN: context-firewall), 154 tests (26.4.16)
+- [Hook enforcement](project_hook-enforcement.md) — chain-evaluator.py (Stop, non-looping) + phase-gate.py (2 BLOCKs + 1 WARN). LIVE 26.4.23: 92 tests / 81 pass / 11 fail (was 154 — test_chain_evaluator.py + test_phase_gate.py LOST in refactor, only test_gate_checks.py(68) + test_hooks.py(24) remain)
 - [Skills architecture expansion](project_skills-architecture.md) — dual-use skills (single-instance + team), marketplace port planned, routing at ~15+ skills (26.4.8)
 
 ## repos
@@ -80,12 +80,14 @@ coloradored13/{hateoas-agent(public),sigma-mem(public),ollama-mcp-bridge(public)
 - [Plan-mode workflow](feedback_plan-mode-workflow.md) — plans stay in plan-mode as handoff to sigma-build, not immediate ExitPlanMode approval; deferred memory writes noted in Session Handoff section (26.4.16)
 - [Schema drift check](feedback_schema-drift-check.md) — when shipping features, either wire or delete every schema field; don't advertise functionality the app doesn't deliver (26.4.20)
 - [Accountable rigor over permissiveness](feedback_accountable-rigor-over-permissiveness.md) — when a rule over-fires, require the system to defend each invocation rather than adding exceptions; rigor stays default, edges self-correct (26.4.20)
+- [XVERIFY excludes Anthropic](feedback_xverify-anthropic-excluded.md) — sigma-verify cross-model checks must exclude anthropic provider; Claude verifying Claude is not cross-model; enforce in spawn prompts until sigma-verify default-excludes (26.4.23)
 
 ## references
 - [Anthropic rate limits](reference_anthropic-rate-limits.md) — 1K RPM, 90K output tok/min (binding constraint), all Claude models (26.4.2)
 - [API budget recovery](reference_api-budget-recovery.md) — 3 steps: add credits + increase limit + reset API key (26.4.2)
 - [Gemini daily quota](reference_gemini-daily-quota.md) — 250 req/day per model even on paid tier (26.4.3)
 - [Experiment execution pattern](reference_experiment-execution-pattern.md) — concurrent eval, checkpointing, budget pause, nohup (26.4.3)
+- [Subscription vs per-token cost model](reference_subscription-vs-pertoken.md) — agents+lead are subscription, only XVERIFY paid providers (openai+google) bill per-token; full sigma-build ~$1-5 not $10-15 (26.4.23)
 
 ## user profile
 - [LLM internals interest](user_llm-internals-interest.md) — embeddings, hidden states, superposition, AI philosophy, convergence theory (26.4.2)

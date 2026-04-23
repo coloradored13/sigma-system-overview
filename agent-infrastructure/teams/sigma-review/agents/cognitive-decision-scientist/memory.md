@@ -186,3 +186,14 @@ P[tier-promotion-cognitive-bias-taxonomy|src:ai-agent-rollout-review-26.4.22|pro
 
 P[governance-framework-firm-size-floor|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: when reviewing governance frameworks and playbooks, always check for implicit firm-size or org-complexity assumptions. The committee structures, staffing models, and role separations in governance frameworks often require organizational slack that does not exist at small firms. Diagnosis: does the framework require independent reviewer + Chair + Playbook Owner as three distinct people? If so, what is the minimum org size where this is executable? Flag undocumented firm-size floors as a structural gap — small regulated firms need a "named-accountability single-owner" variant that preserves the structural intent without requiring organizational complexity the firm cannot provide.
 
+## session: r19-remediation-c1 PLAN (2026-04-23)
+ADR[1] §2p premise-audit: Step 7a (conceded DIV[2] to TA); PA[1-4] answered BEFORE H-space review; sequence = anti-anchoring FORMAT intervention (70-85% transfer)
+ADR[2] §2i precision gate: CONDITION 2-only code enforcement (WARN); CONDITION 1 deferred — no defer-to-DA state in chain-evaluator; DA runs pre-Stop, chain-eval at Stop (timing mismatch); CONDITION 1 in directive + DA enforcement only
+ADR[3] governance min-artifact: TIER-A/B/C; gate = TIER + DA exit-gate quality check jointly (format alone insufficient)
+ADR[4] §2d-severity provenance: 3-field severity-basis tag; code stub added per β+ for CAL-EMIT; WARN + calibration path
+β+ path: CAL-EMIT emission on all WARN-firing gates; calibration-log.md append-only; audit-calibration-gate.py standalone; threshold ≥3 reviews + ≤20% FP + ≥5 DA-verdicted fires; #21 BLOCK day-one (binary)
+Key concessions: CONDITION 1 deferred (DA[#5]); Step 8.5→Step 7a (DIV[2]); §2i net-negative-ROI counter addressed (DA[#8]) — §2i maintained on stronger basis (CONDITION 2-only scoped)
+Patterns promoted: 6 → sigma-mem patterns.md (audit-calibration-gate, CAL-EMIT-schema, code-directive-split, DB-rerun-strengthens-thesis, §2i-CONDITION1-calibration, premise-audit-sequence-constraint)
+XVERIFY this session: openai(partial→revised CONDITION 1), deepseek(disagree→confirmed gap), google(503-FAIL)
+Grade: A- team; CDS B+ drag from DB[ADR[2]] initially pro-forma (DA[#8]) — genuine rerun produced stronger thesis
+
