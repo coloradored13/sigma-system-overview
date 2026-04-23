@@ -107,6 +107,7 @@ Owner: code-quality-analyst | Est: 1-2h | Files: test_gate_checks.py + test_chai
 Why: 11 pre-existing test failures include MINIMAL_WORKSPACE roster alignment fixture that is a prerequisite for A3/A16-A18 test infrastructure. Running new tests against broken fixture produces false failures and masks true regressions. SQ[0] establishes the clean 143-passing baseline from which all new tests extend.
 
 Test baseline after SQ[0]: 154 collected, target 143+ passing (all currently-passing tests preserved), 0 pre-existing failures remaining. New tests built on top of this floor. |source:[CQA-empirical+DA[#7]+live-pytest-26.4.23+user-approval-26.4.23]
+AUDIT[26.4.23|r19-remediation-c1]: VERDICT YELLOW |target: r19-remediation BUILD c1 PLAN phase (build-id 2026-04-23-r19-remediation, team r19-remediation-c1) |strengths: 14 DA entries A-, 20 BUILD-CHALLENGEs, C8 anthropic-exclusion honored across XVERIFY, path β+ user-decision properly in-scope, source provenance clean (174 tags), genuine dissent + concession-strengthens-thesis pattern replicated |gaps: premise-audit not self-applied (build remediates the gate it didn't run on itself), workspace canonical sections L1250-1275 unfilled, CONTAMINATION-CHECK section missing standalone header, test baseline 154/92 unreconciled (routed to C2), SS IC[1-3]→IC[7-9] admin renumber pending |c2-precondition: 5 open AUDIT-FLAG items (4 of 5 resolvable by lead; test-baseline already routed to CQA/IE first C2 task) |source:sigma-audit
 
 → actions:
 → about to make architectural choice → log here with rationale + alternatives

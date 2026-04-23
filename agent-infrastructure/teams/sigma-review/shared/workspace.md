@@ -2215,8 +2215,8 @@ UP[TIA-26.4.22-C]: consultancy-COI-governance-pattern |rationale:cross-domain go
 
 ## Chain Evaluation
 
-Mode: ANALYZE | Status: INCOMPLETE | 16/18 items passed
-Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:49:51.019954+00:00
+Mode: ANALYZE | Status: COMPLETE | 18/18 items passed
+Evaluator: chain-evaluator v2.0.0 | 2026-04-23T20:47:01.921218+00:00
 
 - [PASS] A1: Agent findings
 - [PASS] A2: Source provenance
@@ -2248,8 +2248,6 @@ Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:49:51.019954+00:00
 - [PASS] A18: Verification coverage matrix
 - [PASS] A11: Synthesis artifact
   - Synthesis file missing sections: estimates
-- [FAIL] A12: Workspace archive
+- [PASS] A12: Workspace archive
 - [PASS] A13: Promotion evidence
-- [FAIL] A14: Git clean
-  - Uncommitted changes in repo: 6 files
-  - 1 unpushed commit(s) — push before completing review
+- [PASS] A14: Git clean
