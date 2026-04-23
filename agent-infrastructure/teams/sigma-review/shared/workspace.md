@@ -1970,6 +1970,16 @@ DA exit-gate PASS. Synthesis agent may be spawned. Per §Lead Role Boundaries + 
 
 ## pre-synthesis-checks
 
+## contamination-check
+
+result: clean — full audit below under CONTAMINATION-CHECK heading (no off-scope hits across 4 dimensions: non-scope projects, personal-context leak, prior-review herding, temporal leak)
+
+## sycophancy-check
+
+result: clean — full audit below under SYCOPHANCY-CHECK heading (dissent preserved, playbook correctness errors flagged, severity downgraded under DA pressure, DA-caught-lead-error preserves anti-sycophancy on lead role, process deviations logged not hidden, structural premises challenged)
+
+---
+
 CONTAMINATION-CHECK: session-topics-outside-scope: {user's other projects (chatroom/daycare/thriveapp/etc.), prior unrelated reviews, Kaggle competition, SVB/warehouse/loan-admin prior-review history, personal context beyond loan-agency firm positioning} |scan-result: clean
 
 **Scan method:** grep workspace for contamination markers on 4 dimensions: (1) non-scope project keywords (career, warehouse, kaggle, SVB, daycare, thriveapp, recharge, updraft, chatroom) — 0 off-topic hits (2 hits on "career" at L1409/1423 are legitimate analytical usage in CDS committee-design context discussing personal stakes in launch decisions); (2) personal context leak (user's Loan Agency career positioning, future-career plans, seniority markers) — 0 hits beyond scope-legitimate references to "loan-agency firm" as domain context per user's explicit prompt; (3) prior-review herding (specific findings from past sigma-review topics appearing as anchors) — 0 hits (DA memory scoped to process patterns only per agent definition role-boundary; domain findings not promoted cross-review); (4) temporal leak — 15 hits on post-2026-04-23 dates all legitimate regulatory references (EU AI Act Aug 2026, Colorado AI Act Jun 2026, CCPA ADMT Jan 2027, FinCEN RIA AML Jan 2028) not hindsight-anchoring events.
@@ -2206,7 +2216,7 @@ UP[TIA-26.4.22-C]: consultancy-COI-governance-pattern |rationale:cross-domain go
 ## Chain Evaluation
 
 Mode: ANALYZE | Status: INCOMPLETE | 16/18 items passed
-Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:34:56.186222+00:00
+Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:49:51.019954+00:00
 
 - [PASS] A1: Agent findings
 - [PASS] A2: Source provenance
@@ -2241,4 +2251,5 @@ Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:34:56.186222+00:00
 - [FAIL] A12: Workspace archive
 - [PASS] A13: Promotion evidence
 - [FAIL] A14: Git clean
-  - Uncommitted changes in repo: 19 files
+  - Uncommitted changes in repo: 6 files
+  - 1 unpushed commit(s) — push before completing review
