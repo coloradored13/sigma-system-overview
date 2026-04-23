@@ -223,10 +223,11 @@ Remaining issues (#2, #6, #7, #8, #10-18) bundled into follow-up passes: chain-e
 
 ---
 
-## Pending artifacts from R19 (recoverable in future session)
+## Pending artifacts from R19 — RESOLVED 2026-04-23
 
-- **RA UP[RA-B]** SOC 2 TSC→AI control draft mapping — workspace archive `2026-04-22-ai-agent-rollout-playbook-vet.md` `## promotion → ### regulatory-analyst` section. Needs manual promotion to global sigma-mem.
-- **RA UP[RA-C]** GDPR Art 22 B2B SaaS design fork — same location. Needs manual promotion.
+- **RA UP[RA-B]** SOC 2 TSC→AI control draft mapping — stored to global sigma-mem patterns.md via store_memory fallback (commit e442669). Retrievable.
+- **RA UP[RA-C]** GDPR Art 22 B2B SaaS design fork — stored to global sigma-mem patterns.md via store_memory fallback (commit e442669). Retrievable.
+- **MITRE ATLAS citation fix** — `AML.T0051.002` → `AML.T0051` across archive + synthesis with post-audit caveat note appended (commit 11d1c73).
 
 ## Session reference
 
