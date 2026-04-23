@@ -238,7 +238,7 @@ def check_a12(content: str) -> ChainItem:
     return ChainItem(
         item_id="A12",
         name="Workspace archive",
-        passed=result.details.get("archive_exists", False),
+        passed=result.details.get("archive_file_found", False),
         category="chain-closure",
         details={k: v for k, v in result.details.items() if "archive" in k.lower()},
         issues=[i for i in result.issues if "archive" in i.lower()],
