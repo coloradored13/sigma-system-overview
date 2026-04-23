@@ -298,16 +298,6 @@ DA's framing is correct: the financial doc's premise is right for mid-large fina
 
 Also accepting DA[#2] prompt-anchoring challenge on tier structure: my analysis operated within the tier-based framing without testing tier-less continuous-monitoring alternatives. This is a genuine frame acceptance. The financial doc's tier structure became the analytical unit rather than being tested. My findings on trajectory eval (F[TA-C1]) implicitly assumed tier-gated deployment as the right pattern; continuous per-query-class monitoring with dynamic capability adjustment was not considered. I flag this as a blind spot, not a finding reversal — the tier structure remains defensible for most firms — but the framing was accepted not tested. |source:[agent-inference:T2]|DA[#7]:compromise|DA[#2]:partial-accept
 
-#### Promotion classification (tech-architect-2)
-
-Auto-promoted to agent memory (8 items, stored): CAL[pgvector-2026-threshold] | CAL[CaMeL-severity-split] | CAL[H11-multi-agent-severity] | P[OTel-full-fidelity-trace-storage-cost] | P[ANN-pre-filter-vs-post-filter-tenant-isolation] | R[agent-auth-standards-2026] | R[MITRE-ATLAS-AML.T0051.002] | R[LangGraph-multi-agent-credential-inheritance] — class: calibration-confirms + pattern-confirms + research-supplement.
-
-P-candidate[TA-1]: governance-first-premise-is-firm-type-specific |class:new-principle |user-approve-required
-Financial doc premise ("primarily an autonomy governance problem, not a model selection problem") is correct for mid-large institutions with internal-only first use cases. WRONG for trust-company / loan-agency / regulated-ops firms where lethal trifecta is structurally present across most customer-proximate workflows — use-case selection is co-equal with governance design at Phase 0, not downstream. Requires user-approve: modifies cross-cutting behavioral assumption for all finserv AI architecture reviews.
-
-P-candidate[TA-2]: tier-structure-as-frame-not-hypothesis |class:new-principle |user-approve-required
-Tier-based autonomy sequencing (Tier 0/1/2/3) was frame-accepted not hypothesis-tested in this review. Alternative — continuous per-query-class risk monitoring with dynamic capability adjustment — was never evaluated. For action-capable agents where risk shifts per-query-class not per-tier, the tier abstraction may be the wrong governance unit. Requires user-approve: would change how future reviews assess agent deployment architecture. Qualifier: tier structure remains defensible default for most firms — boundary-condition qualifier not a reversal.
-
 ### security-specialist
 
 #### scope-confirmation
@@ -2112,101 +2102,10 @@ DA responses filed: DA[#1] COMPROMISE (F[SS-4] split into 4a/4b; parameter-prove
 
 Revised severity summary: F[SS-1] HIGH (unchanged — CoT audit gap; T1 source uncontested) | F[SS-2] MEDIUM-HIGH (revised from HIGH) | F[SS-4b] MEDIUM-HIGH (narrowed to parameter-provenance taint gap specifically) | F[SS-3] MEDIUM-HIGH (unchanged) | F[SS-4a] MEDIUM (classifier-only documentation gap) | F[SS-5] MEDIUM (unchanged) | F[SS-6] MEDIUM (unchanged) | F[SS-7] MEDIUM (unchanged) | F[SS-8] LOW-MEDIUM (unchanged) | F[SS-9] LOW (unchanged).
 
-## promotion
-
-### regulatory-licensing-specialist — user-approve items
-
-The following findings from regulatory-licensing-specialist are candidates for promotion to global sigma-mem patterns but require user judgment before storing, because they involve calibration decisions or playbook scope determinations where the user's specific context and risk appetite materially affect whether the pattern generalizes.
-
----
-
-**PROMOTE-RL-1: Playbook scope boundary — should exam-crosswalk be in-scope for AI agent playbooks?**
-
-auto-promoted (P[exam-crosswalk-gap-is-universal]) captures the pattern that the gap exists universally. The user-approve question is whether the *recommendation* to include a regulator crosswalk appendix in the playbook should be a standard deliverable component in future sigma-reviews of compliance or regulatory playbooks.
-
-Candidate pattern: "When reviewing any compliance or regulatory playbook, always check whether the playbook provides a capability→regulator→exam-question→evidence→artifact crosswalk. If absent, flag as executability gap (Q5) regardless of whether the playbook explicitly commits to covering exam preparation — any playbook positioned as 'take and run with' for a regulated firm implicitly includes examination readiness."
-
-User judgment needed: Does the user want this as a standing sigma-review check for all future regulatory playbook reviews, or only for financial services?
-
----
-
-**PROMOTE-RL-2: Trust-company AI fiduciary-duty exposure — graduated severity framework**
-
-auto-promoted (P[trust-company-lethal-trifecta-severity-graduated]) captures the four-tier severity split. The user-approve question is whether the specific calibration (HIGH=autonomous-interpretive, MEDIUM-HIGH=human-supervised-interpretive, MEDIUM=rule-based-deterministic, LOW=advisory-only) should be promoted as a standing loan-agency skill pattern.
-
-Candidate pattern: "In loan-agency/trust-company AI deployments, always classify the deployment architecture against the four-tier fiduciary-exposure ladder before assigning severity to lethal-trifecta findings. The ladder (autonomous-interpretive HIGH → human-supervised-interpretive MEDIUM-HIGH → rule-based-deterministic MEDIUM → advisory-only LOW) should be the default risk-classification framework for institutional loan-admin AI."
-
-User judgment needed: The user's firm likely has a specific target architecture in mind. Does the four-tier ladder match the intended deployment pattern, and should it be stored as a loan-agency skill pattern rather than a sigma-review pattern?
-
----
-
-**PROMOTE-RL-3: H6 defend position — playbook's "without worrying about gaps" language as commitment to exam-readiness**
-
-The DA[#2] challenge and defend position established that "without worrying about gaps" (workspace task line 8) is the operative commitment that puts examination readiness in scope. This is a calibration position that may or may not generalize to other playbook reviews.
-
-Candidate pattern: "When a playbook positions itself as 'take and run with' or 'without worrying about gaps' for a regulated firm, examination-facing artifact readiness is implicitly in scope regardless of explicit scope declarations. The phrase commits the playbook to the full operational consequence of deployment in a regulated environment."
-
-User judgment needed: This is a borderline call — the DA challenge raised a legitimate counter (exam prep could be delegated to the compliance function). The user may prefer a softer formulation: "flag as completeness gap (Q2) rather than executability gap (Q5/HIGH) when exam-facing translation is absent." Either formulation is defensible; the user's view on scope determines which is promoted.
-
----
-
-regulatory-licensing-specialist promotion-round: COMPLETE
-auto-promoted to agent memory: 9 patterns (P[exam-crosswalk-gap-is-universal], P[FS-AI-RMF-de-facto-standard], P[NAIC-exam-instrument-shift-2026], P[trust-company-lethal-trifecta-severity-graduated], P[SR-11-7-vocabulary-translation-required], P[NYDFS-Oct-2025-TPSP-letter-operationalizes-AI-vendor-mgmt], P[FINRA-25-07-17a4b4-open-question], P[ISO-42001-triple-function], P[CFPB-statutory-posture-distinction])
-user-approve items: 3 (scope calibration decisions above)
-
-
-## promotion
-
-### cognitive-decision-scientist — auto-promoted (stored to agent memory)
-
-7 findings auto-promoted to sigma-mem agent memory (26.4.22). Generalizable across future reviews:
-
-- P[governance-committee-groupthink-risk]: 4 structural interventions required (pre-commitment, independent challenger, pre-mortem, recusal) — applies to any phased rollout with committee oversight. T1.
-- P[exit-gate-falsifiability]: principle-level vs specification-level gate distinction — reusable lens for any playbook/framework vetting.
-- P[reviewer-pool-scale-calibration]: outputs/week math + Anthropic 3K-hour reference anchor — reusable calibration check.
-- P[detection-without-revision-is-measurement-without-feedback]: 4-component test for operational monitoring design — applies to eval, calibration, ECE, dashboards.
-- P[human-ai-overreliance-behavioral-markers]: edit-distance + time-to-accept + disagreement-rate-trend — instrument for any human-in-the-loop oversight system. T1.
-- P[tier-promotion-cognitive-bias-taxonomy]: 5-bias taxonomy + 4 structural interventions — applies to any staged rollout promotion decision.
-- P[governance-framework-firm-size-floor]: always check for implicit firm-size assumptions in governance frameworks — reusable structural gap diagnostic.
-
-### cognitive-decision-scientist — user-approve required
-
-**UA[CDS-1]: F[CDS-A5] — ECE threshold drift monitoring as a standard AI eval control**
-Claim: ECE (Expected Calibration Error) should be instrumented as a monitored control with defined thresholds, recomputation cadence, and intervention logic — not just a diagnostic metric. Both docs name ECE but specify no operational control. Proposed global pattern: "ECE without intervention logic = measuring calibration without managing it." Promote to global memory?
-Reason for user-approve: domain-specific to AI eval methodology; may be too narrow for global patterns.md.
-
-**UA[CDS-2]: F[CDS-C2] — Adoption-oversight-overhead tradeoff**
-Claim: cumulative cognitive load of governance requirements (reviewer workflows, approval gates, calibration sessions) may exceed the agent's workflow savings at low query volumes, making rational adoption under-performance a predictable outcome neither doc addresses. Proposed global pattern: "governance-first playbooks should include adoption-economics analysis — what is the overhead-to-benefit ratio at minimum viable deployment volume?"
-Reason for user-approve: agent-inference T2 only; interesting but lower evidence confidence than auto-promoted items.
-
-
-## promotion
-_(agents submit generalizable learnings here for lead classification: auto-promote → team patterns/decisions | user-approve → global sigma-mem)_
-
-### tech-industry-analyst promotion submissions
-
-**AUTO-PROMOTE → team patterns (sigma-review shared):**
-
-TP[TIA-26.4.22-1]: guardrails-data-sovereignty-split |agents:tech-industry-analyst |pattern: When reviewing AI infrastructure vendor lists, classify by data-handling class BEFORE by function. API-exfiltrating guardrails (Lakera Guard, Azure AI Content Safety, Bedrock Guardrails) vs. self-hosted zero-exfil (LLM Guard) are categorically different compliance decisions for NYDFS/GDPR/HIPAA-constrained firms. Same split applies to eval platforms (Langfuse self-hosted vs. Braintrust cloud), observability backends, and any tool processing prompt content. Neither reviewed playbook made this distinction. |scope:AI-infra-reviews
-
-TP[TIA-26.4.22-2]: framework-maturity-vs-governance-elapsed-time |agents:tech-industry-analyst,reference-class-analyst-2 |pattern: Distinguish two structurally different timeline constraints in AI platform buildouts — (a) engineering build time: compressible with mature SDKs (6-8 weeks savings); (b) governance elapsed time: SME eval construction, vendor agreement negotiation, shadow mode stabilization — non-compressible regardless of framework choice. Conflating these produces both false urgency (pressure to skip governance) and false caution (discouraging mature frameworks). Apply whenever reviewing timeline-compression claims. |scope:AI-infra-reviews,timeline-analysis
-
-TP[TIA-26.4.22-3]: MCP-build-cost-hidden |agents:tech-industry-analyst |pattern: Standard AI infrastructure cost models omit internal MCP server build cost. Firms following production-grade MCP posture (no community servers; SAST/SCA + version-pinning + allowlist proxy per internal server) must budget 3-6 weeks per server × 3-8 servers typical = $75-400K unbudgeted engineering effort. Flag in every AI infra cost-model review. |scope:AI-infra-reviews,cost-modeling
-
-TP[TIA-26.4.22-4]: pushback-doc-split-discipline |agents:tech-industry-analyst |pattern: When a finding applies to "both docs" in a multi-document review, verify per-document with source line numbers before asserting. DA[#3] revealed this session that SaaS addendum Pushback #9 already endorsed the exact frameworks claimed absent — the gap existed only in the financial addendum Pushback #5. Per-doc verification is mandatory before broad-scope claims. |scope:multi-doc-reviews
-
-**USER-APPROVE → global sigma-mem (significant enough to inform future sessions):**
-
-UP[TIA-26.4.22-A]: 2026-AI-talent-market-calibration |rationale:time-sensitive calibration, decays; user should approve before storing globally | content: Senior AI Platform Engineer US major markets 2026 = $280-380K total comp; Senior AI Application Engineer = $220-300K total comp; time-to-hire = 14-18 weeks median. Standard AI infrastructure playbook assumptions (Week-6 hire, $200-600K for 1-3 hires) are optimistic by 20-30% on comp and 8-12 weeks on timeline. |recommend:store-to-sigma-mem-with-2026-date-tag
-
-UP[TIA-26.4.22-B]: gateway-EU-residency-2026 |rationale:vendor-specific and may change; user should approve | content: Bedrock and Azure AI Foundry route to US by default for Anthropic models as of April 2026 (Azure OpenAI has EU option; Anthropic on Azure = US East only). Self-hosted LiteLLM in EU VPC is currently the only clean path for GDPR Art. 44 compliance on model API calls without SCCs. Applies to any review touching EU customer data + Anthropic model deployment. |recommend:store-to-sigma-mem-with-2026-date-tag
-
-UP[TIA-26.4.22-C]: consultancy-COI-governance-pattern |rationale:cross-domain governance insight | content: AI infrastructure consultancies engaged to build systems then asked to validate readiness create an authority-bias vector at governance committee tier-promotion meetings — equivalent to auditor independence problem. Neither reviewed playbook identified this. Add to governance-design checklist for any AI build review involving external consultancy. |recommend:store-to-sigma-mem
-
 ## Chain Evaluation
 
 Mode: ANALYZE | Status: INCOMPLETE | 16/18 items passed
-Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:34:56.186222+00:00
+Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:21:06.930989+00:00
 
 - [PASS] A1: Agent findings
 - [PASS] A2: Source provenance
@@ -2241,4 +2140,4 @@ Evaluator: chain-evaluator v2.0.0 | 2026-04-23T14:34:56.186222+00:00
 - [FAIL] A12: Workspace archive
 - [PASS] A13: Promotion evidence
 - [FAIL] A14: Git clean
-  - Uncommitted changes in repo: 19 files
+  - Uncommitted changes in repo: 15 files

@@ -119,3 +119,70 @@ P[pre-commit-exit-criteria|src:enterprise-ai-rollout-review|promoted:26.4.16|cla
 P[independent-ROI-auditor|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: separate the person who operates the AI tool from the person who measures the outcome. Sponsors selectively surface confirming evidence. Systematic failure not individual — requires structural separation.
 P[behavioral-output-over-usage-metrics|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: usage metrics (login counts, license utilization) are gameable under organizational pressure. Behavioral output indicators (output volume, decision quality, escalation patterns, time-to-completion) are harder to game. Use behavioral for adoption measurement in high-stakes environments.
 P[regulated-sector-pre-mortem-taxonomy|src:enterprise-ai-rollout-review|promoted:26.4.16|class:pattern]: five failure modes for regulated-sector tech rollouts: (1) compliance paralysis 30%, (2) middle-management naysayer org 35%, (3) ROI measurement failure → sponsorship withdrawal 25%, (4) track budget competition 20%, (5) tool leapfrog erodes champion confidence 40%. Reusable template — adjust probabilities per context.
+## R1 findings: ai-agent-rollout-playbook-vet (26.4.22)
+
+### key findings
+F[CDS-A1]: AI Risk Committee — governance artifact risk HIGH |Janis-1982+Sunstein&Hastie-2015+Lovallo&Kahneman-2003 |4 structural gaps: no pre-commitment, no independent challenger, no pre-mortem, no recusal |H1:PARTIALLY-CONFIRMED |weight:H |T1
+F[CDS-A2]: Exit-gate falsifiability — financial roadmap gates principle-level not specification-level |no minimum eval set size, shadow duration, agreement stat, red-team coverage |Q5:CONFIRMED |weight:H
+F[CDS-A3]: Reviewer calibration — 6-20 hrs/week pool covers ~80 outputs/week; at 5K+ daily queries = 0.1-1% sampling |H3:PARTIALLY-CONFIRMED |weight:M-H |T2
+F[CDS-A4]: Criteria drift — principle cited, revision process absent |Shankar-2024-UIST |detection without revision = measurement without feedback |weight:M |T1
+F[CDS-A5]: ECE threshold drift — metric named, monitored control absent |LLM ECE 0.12-0.40 systematic |weight:M
+F[CDS-A6]: Over-reliance — named risk, no behavioral measurement |edit-distance+time-to-accept+disagreement-rate-trend absent |Parasuraman&Manzey-2010 |weight:M |T1
+F[CDS-B1]: Tier promotion cognitive bias — 5 biases unaddressed |optimism+sunk-cost+social-proof+authority+framing |pre-mortem+anon-vote+outside-view interventions absent |weight:H |T1
+
+### hypothesis dispositions
+H1-governance-first: sequencing CONFIRMED correct; committee design HIGH-gap
+H3-reviewer-adequacy: PARTIALLY-CONFIRMED early shadow mode; NOT confirmed at scale
+H11-multi-agent: confirmed by TA (F[TA-A9]); CDS angle: operator cognitive load + reviewer training gap for multi-agent trace review
+
+### XVERIFY
+XVERIFY-FAIL[tool-not-found:verify_finding-schema-not-loadable] |F[CDS-A1] |T1 compensates
+
+### peer-verify assignment (ring-corrected)
+cognitive-decision-scientist-2 → verifies tech-architect-2 |PENDING: TA-2 not yet in workspace
+
+### pre-mortem probabilities
+PM[CDS-1]: committee premature promotion |40%
+PM[CDS-2]: reviewer automation bias + ADMT rubber-stamp |35%
+PM[CDS-3]: criteria drift on silent vendor update |30%
+
+### calibration updates
+CAL[AI-committee-as-governance-theatre]: 65% probability at modal regulated firm without structural interventions |T1
+CAL[reviewer-pool-at-scale]: 6-20 hrs/week adequate at shadow mode (low volume), inadequate at 5K+ daily queries
+## R1 complete: ai-agent-rollout-playbook-vet (26.4.22) — workspace write confirmed
+
+workspace section: ### cognitive-decision-scientist | lines 233-340 | written via cat-heredoc (safe append)
+convergence declared: line 335
+
+key findings confirmed in workspace:
+F[CDS-A1]: AI Risk Committee groupthink risk HIGH |Janis-1982+Sunstein&Hastie-2015+Lovallo&Kahneman-2003 |T1 |4 structural gaps
+F[CDS-A2]: Exit-gate falsifiability gap — financial roadmap principle-level not specification-level |HIGH
+F[CDS-A3]: Reviewer pool ~80 outputs/week; inadequate at production scale |T2 |H3:PARTIAL
+F[CDS-A4]: Criteria drift principle cited, revision process absent |T1
+F[CDS-A5]: ECE metric named, monitored control absent
+F[CDS-A6]: Over-reliance named risk, no behavioral measurement |T1
+F[CDS-B1]: Tier promotion 5 cognitive biases unaddressed |T1 |HIGH
+
+cross-agent consistency noted:
+F[CDS-A1]↔RCA2-PM[R1-3] | F[CDS-A3]↔RCA2-F[R1-A3] | F[CDS-A4]↔RCA2-PM[R1-4] | F[CDS-A6]↔RCA2-PM[R1-4]
+
+XVERIFY-FAIL: tool-schema-unavailable | T1 compensates on load-bearing finding
+PEER-VERIFY[tech-architect-2]: PENDING
+
+NOTE: workspace corruption incident — sed -i without backup truncated file to 0 bytes. Recovery: other agents rewrote from context. Lesson: use cat-heredoc append for workspace writes; never use sed -i on macOS without '' suffix.
+## promoted patterns: ai-agent-rollout-playbook-vet (26.4.22)
+
+P[governance-committee-groupthink-risk|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: governance committees without 4 structural interventions function as governance artifacts not governance functions. Required: (1) pre-commitment to tier/phase promotion criteria BEFORE build begins — prevents anchoring to observed performance; (2) standing independent challenger not on the build team at every promotion meeting; (3) required written pre-mortem at each promotion ("what would have to be true for this to fail within 6 months?"); (4) explicit recusal protocol when members have personal stakes in timeline. Applies to any phased rollout with committee oversight. T1: Janis 1982, Sunstein & Hastie 2015 *Wiser*, Lovallo & Kahneman 2003 HBR.
+
+P[exit-gate-falsifiability|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: when evaluating any playbook or framework, distinguish principle-level gates ("observability maturity") from specification-level gates (binary, checkable, with thresholds). Principle-level gates allow a sophisticated ship-it coalition to satisfy them without meeting the implied standard. Falsifiability test: can a skeptical reviewer reject a specific team's claim to have met the gate? If the answer requires judgment, the gate is principle-level. Corrective: specify minimum eval set size, minimum shadow duration, minimum agreement statistic, minimum coverage before advancement is permitted.
+
+P[reviewer-pool-scale-calibration|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:calibration]: reviewer pool capacity math: N reviewers × H hrs/week ÷ T min/review = outputs/week coverage. At 15 min/review: 3 reviewers × 2hrs = ~24/week; 5 reviewers × 4hrs = ~80/week. Reference anchor: Anthropic Constitutional Classifiers required 3,000+ person-hours for rigorous AI evaluation calibration. At 80 outputs/week, 3,000 hours = 37 weeks of steady operation to match that calibration investment. Use this when assessing whether a proposed reviewer pool is adequate for the stated quality bar.
+
+P[detection-without-revision-is-measurement-without-feedback|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: criteria drift detection without a criteria revision protocol = measuring the problem without fixing it. Any monitoring system that identifies drift but lacks a specified (a) trigger for action, (b) process for revision, (c) authority to revise mid-cycle, and (d) output artifact of the revision is measurement theatre. Applies to eval set maintenance, reviewer calibration, ECE monitoring, performance dashboards. Check for all four components when evaluating operational monitoring design.
+
+P[human-ai-overreliance-behavioral-markers|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: three validated behavioral markers for detecting over-reliance on AI output in human-oversight systems (Parasuraman & Manzey 2010, Lee & See 2004): (1) edit-distance between agent output and final human output — trending toward zero signals rubber-stamping; (2) time-to-accept as verification-effort proxy — declining time signals reduced scrutiny; (3) disagreement-with-judge rate trend — declining rate without corresponding quality improvement signals automation bias. Standard observability metrics (latency, token count, cost) do not capture these. Instrument behavioral metrics alongside technical metrics for any human-in-the-loop system claiming "meaningful human involvement."
+
+P[tier-promotion-cognitive-bias-taxonomy|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: five cognitive biases systematically face any staged-rollout promotion committee: (1) optimism bias — build teams overestimate readiness (Lovallo & Kahneman 2003); (2) sunk-cost — prior phase investment creates pressure to promote; (3) social proof — "other firms are at this tier" anchors even when contexts differ; (4) authority bias — external consultancy "ready" signal carries disproportionate weight; (5) framing effect — "95% pass" vs "5% fail" produce different decisions on identical evidence. Pre-emption interventions: outside-view reference class ("what fraction of comparable systems at this tier had a material incident within 6 months?"), anonymous pre-vote before deliberation, "what would it take to delay?" before "should we promote?"
+
+P[governance-framework-firm-size-floor|src:ai-agent-rollout-review-26.4.22|promoted:26.4.22|class:pattern]: when reviewing governance frameworks and playbooks, always check for implicit firm-size or org-complexity assumptions. The committee structures, staffing models, and role separations in governance frameworks often require organizational slack that does not exist at small firms. Diagnosis: does the framework require independent reviewer + Chair + Playbook Owner as three distinct people? If so, what is the minimum org size where this is executable? Flag undocumented firm-size floors as a structural gap — small regulated firms need a "named-accountability single-owner" variant that preserves the structural intent without requiring organizational complexity the firm cannot provide.
+

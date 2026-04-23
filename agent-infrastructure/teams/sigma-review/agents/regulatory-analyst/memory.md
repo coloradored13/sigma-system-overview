@@ -97,3 +97,90 @@ src:fpf.org,quinnemanuel.com,insidetechlaw.com,artificialintelligenceact.eu,eyre
 R[post-market-surveillance:
 Art72:providers-must-establish-post-market-monitoring-system(active+systematic-data-collection-throughout-AI-lifetime)|monitoring-plan-required-as-part-of-technical-documentation(Annex-IV)|Art73:serious-incident-reporting(15d-max,10d-if-death,immediately-if-possible)|MSAs-powers:investigate,audit,order-corrective-measures,restrict/prohibit-market-access,impose-fines|becomes-enforceable-Aug-2026|Digital-Omnibus-may-defer-if-enacted|interaction-with-other-AI-systems-must-be-analyzed|sensitive-law-enforcement-data-exempted
 src:artificialintelligenceact.eu,ai-act-service-desk.ec.europa.eu,naaia.ai,axis-intelligence.com|refreshed:2026-03-22|next:2026-04-22]
+R[AI-agent-playbook-review-2026-04-22:
+REVIEW: B2B SaaS AI Agent Rollout Playbook (+ addendum) — regulatory-analyst coverage (SAAS ONLY)
+KEY-GAPS-FOUND:
+1. Art25(1)(b)-fine-tuning-hook-ABSENT: EU AI Act Art 25(1)(b)+Art83+Recital23 create provider-obligation hook for fine-tuning deployers (conformity-assessment+CE-marking+EU-DB-registration+post-market-monitoring). Playbook does NOT distinguish fine-tuning from pure-RAG deployment. HIGH severity for fine-tuning SaaS firms. Pure-RAG below threshold per HLEG (non-binding).
+2. AnnexIII-para2-employment-monitoring: WMS AI tracking worker efficiency/performance/task-allocation affecting compensation may qualify as high-risk AI under Annex III para 2 "employment workers management." Playbook's blanket "WMS not in Annex III" is PARTIALLY WRONG. HIGH severity for labor-performance-facing WMS AI.
+3. California-ADMT-operationalization-absent: CPPA ADMT §§7030-7045 (finalized Sep 2025, effective Jan 1, 2027) requires pre-use notice, opt-out, access right, risk assessment for ADMT influencing California-resident consumers (including workers). Addendum wrongly frames as future-state — most WMS firms already have California employees as end-users. HIGH operational gap.
+4. Digital-Omnibus-monitoring-trigger-absent: Aug 2026 date is CORRECT (Regulation EU 2024/1689 Art 85(2)) but playbook provides no monitoring instruction. Firms need Phase 1 exit gate checkpoint for Omnibus trilogue status. MEDIUM gap.
+5. Colorado-June-30-2026-not-June-2026: operative date precision + amendment uncertainty (Polis working group rework consensus Mar 17, 2026 — scope may change). Employment-consequence pathway through WMS labor performance features is the specific Colorado risk pathway not flagged. MEDIUM.
+6. ISO-42001-dual-function: ISO 42001 = procurement signal AND Colorado §6-1-1703(3) reasonable-care safe-harbor evidence. Dual function absent from both docs. MEDIUM.
+7. SOC2-TSC-mapping-absent: Big 4 AI audit practices 2026 expect firms to propose TSC→AI-control mapping. Emerging consensus: CC6.1/CC6.7/CC7.2/CC9.2/A1.2/C1.1/C1.2/PI1.4. Playbook says "engage auditors early" without a draft mapping. MEDIUM executability gap.
+8. GDPR-Art22-worker-gap: Art 22 automated decision-making rights run to individual workers (data subjects), not enterprise customers (controllers). B2B processor agreement does not surface worker Art 22 rights to SaaS firm. WMS labor performance AI must be designed as recommendation-only OR data-subject-rights fulfillment mechanism must be implemented. MEDIUM.
+9. 21-CFR-Part-11-AI-records: FDA Part 11 guidance was drafted for deterministic systems. AI-generated records feeding into Part 11-controlled systems create new integrity questions (who signs? is model config part of audit trail?). Playbook's audit store is capable but neither doc flags the explicit Part 11 mapping requirement. MEDIUM for life sciences WMS customers.
+HYPOTHESES: H1-CONFIRMED(regulatory-lens-0-negatives) | H2-UNDERSTATED(3-negatives) | H10-CONFIRMED | H11-CONFIRMED(GDPR-Art22-worker-chain) | H12-PARTIALLY-CONFIRMED(sector-variants-load-bearing)
+XVERIFY: FAIL (sub-action-not-callable) — compensated T1 sourcing on F[RA-A2]
+PEER-VERIFICATION: regulatory-licensing-specialist 3/3 artifacts confirmed (F[RL-F1]|F[RL-F7]|F[RL-F9])
+|refreshed:2026-04-22|next-review:on-next-AI-agent-playbook-review]
+P[EU-AI-Act-Art25(1)(b)-fine-tuning-hook:
+PATTERN: Deployers who fine-tune or LoRA-adapt a foundation model on domain/customer data for EU-customer-facing high-risk-category outputs may become providers under Art 25(1)(b) + Art 83, triggering conformity assessment, CE marking, EU database registration (Art 71), post-market monitoring (Art 72-73).
+THRESHOLD: "Substantial modification" requires change-of-intended-purpose OR Chapter III compliance impact — NOT mere parameter update. RAG + system-prompt customization is generally below threshold per HLEG informal Q&A (non-binding). Fine-tuning targeting an Annex III high-risk intended purpose (e.g., employment-monitoring, creditworthiness) is likely above threshold.
+ACTION: Any AI governance review covering EU-customer-facing B2B SaaS should check whether deployment involves fine-tuning. If yes, flag Art 25(1)(b) assessment as mandatory Phase 0 task.
+SOURCE: Regulation (EU) 2024/1689, Arts 25(1)(b), 83, Recital 23 (T1); Baker McKenzie/Linklaters Apr 2026 (T2); HLEG informal Q&A (T2)
+SEVERITY-SPLIT: MEDIUM for fine-tuning-generally (assessment gap); HIGH for fine-tuning toward Annex III high-risk intended purposes
+XVERIFY-CALIBRATION: Gemini-3.1-pro-preview returned vulnerability:MEDIUM on HIGH-generally — correct; threshold interpretive uncertainty is real; split severity is calibrated response
+|promoted:2026-04-22|next-check:on-Commission-Art25-guidance-publication]
+P[EU-AI-Act-AnnexIII-para2-employment-monitoring:
+PATTERN: EU AI Act Annex III paragraph 2 covers AI systems for "employment, workers management and access to self-employment" — explicitly including "monitoring and evaluating performance and behavior of persons in the working relationship." B2B SaaS products that produce worker performance scores, efficiency metrics, task allocation affecting compensation, or productivity data feeding HR decisions may fall under Annex III para 2, triggering full high-risk AI obligations (Arts 8-25).
+COMMON-ERROR: Playbooks and compliance checklists often state "WMS is not in Annex III" — this is PARTIALLY WRONG for any WMS with labor performance AI features.
+SCOPE-TEST: Does any AI feature assess, score, or feed HR/performance decisions about individual workers? If yes → Annex III para 2 assessment required for EU deployments.
+SOURCE: Regulation (EU) 2024/1689, Annex III para 2; Arts 8-25 (T1)
+|promoted:2026-04-22|stable:yes]
+P[California-ADMT-B2B-SaaS-operationalization:
+PATTERN: CPPA ADMT regulations (finalized Sep 2025, effective Jan 1, 2027) apply to AI systems that make "automated decisions" materially influencing California-resident consumers — including employees of enterprise customers in B2B SaaS deployments. "Consumer" in CCPA/ADMT includes employees of the customer organization.
+OPERATIONAL REQUIREMENTS by Jan 1, 2027: pre-use notice before ADMT applied (§7030(b)); opt-out right (§7032); access right to ADMT logic and data (§7031); risk assessment for significant ADMT decisions (§7045).
+B2B-CONTEXT NUANCE: Notice and opt-out must reach the individual worker (data subject), not just the enterprise customer (controller). The B2B contract alone does not satisfy worker-facing ADMT obligations.
+SCOPE MISTAKE: "Defer ADMT until California customer-facing activity meets threshold" — this framing is wrong for most WMS/HR-adjacent SaaS firms. California is the largest US logistics market; most WMS firms already have California-resident employees as end-users.
+SOURCE: Title 11, California Code of Regulations §§7030-7045 (T1); CPPA Sep 2025 rulemaking (T1)
+|promoted:2026-04-22|next-check:2027-01-01-enforcement-start]
+P[ISO-42001-Colorado-dual-function:
+PATTERN: ISO 42001:2023 certification serves two distinct functions that are almost never co-articulated: (1) customer procurement signal — "AI management system attestation" increasingly expected by enterprise buyers; (2) Colorado SB 24-205 §6-1-1703(3) reasonable-care safe-harbor evidence — maintaining an AI risk management system "consistent with a nationally or internationally recognized risk management framework" is statutory evidence of reasonable care for consequential-decision AI.
+ISO 42001 is the primary internationally recognized AI management system standard. Certification provides documentary evidence for Colorado's reasonable-care defense.
+APPLY-WHEN: Any AI governance review involving US-based SaaS with potential consequential-decision AI (employment, credit, housing, healthcare) should flag this dual function explicitly rather than treating ISO 42001 as procurement-only.
+SOURCE: Colorado SB 24-205 §6-1-1703(3) (T1); ISO 42001:2023 (T1)
+|promoted:2026-04-22|stable:yes]
+P[GDPR-Art26-multi-agent-joint-controller:
+PATTERN: When two agents from different legal entities coordinate to jointly process EU personal data — e.g., Orchestrator Agent A (SaaS firm) calls Subagent B (third-party API/plugin) and both process EU workers' personal data — GDPR Article 26 joint controller provisions may apply. Each party is independently accountable for the processing within its scope.
+ENFORCEMENT PRECEDENT: CJEU C-210/16 (Wirtschaftsakademie, 2018) and C-40/17 (Fashion ID, 2019) established that coordinated processing = joint controllership even without a formal agreement. Wirtschaftsakademie resulted in a €50K DPA fine.
+PRODUCTION RELEVANCE: This is NOT a lab scenario or future risk. Any multi-agent pipeline in production that coordinates on EU personal data is potentially in scope NOW under live statutory law.
+WHY-IT-MATTERS-FOR-H11: Non-A2A, non-lab evidence that multi-agent gap has current regulatory liability. Sustained H11 at MEDIUM severity with T1 basis even after DA challenge eliminated A2A as the primary evidence.
+SOURCE: GDPR Art 26 (T1); CJEU C-210/16 (T1); CJEU C-40/17 (T1)
+APPLY-WHEN: Any sigma-review covering multi-agent AI deployments touching EU personal data.
+|promoted:2026-04-22|stable:yes]
+P[EU-AI-Act-Art6-governance-first-framing:
+PATTERN: "Governance-first" and "use-case-selection-first" are not in tension in EU AI Act compliance — the governance committee's first substantive act IS the Art 6 scope-determination (classification of whether a system is high-risk under Annex III). Art 6 classification logically precedes Art 9 risk management, but performing Art 6 requires the governance committee to exist and have authority (Arts 16/26 accountability).
+FRAMING CORRECTION: When playbooks or reviews state "governance-first," they should clarify: "The AI Risk Committee's first substantive regulatory act is the Art 6 classification determination. This is the single most consequential governance act — an incorrect classification (e.g., failing to identify Annex III para 2 employment-monitoring exposure) means the entire subsequent program is built on a wrong foundation."
+SYNTHESIS IMPLICATION: Phase 0 compliance scope determination should be reframed as the Art 6 classification exercise, not just a checklist item. Equal billing to governance structure setup.
+SOURCE: Regulation (EU) 2024/1689, Arts 6, 9, 16, 26, Annex III (T1)
+|promoted:2026-04-22|stable:yes]
+P[SOC2-AI-TSC-mapping-2026:
+PATTERN: As of 2026, Big 4 AI audit practices (Deloitte, PwC, KPMG, EY) expect firms to propose AI control mappings to Trust Services Criteria — auditors are NOT driving the mapping. Firms arriving at "early engagement" without a draft mapping will have an unproductive conversation.
+EMERGING CONSENSUS TSC→AI-CONTROL MAPPING:
+- CC6.1/CC6.7: Access controls to AI features and model APIs
+- CC7.2: AI anomaly monitoring (drift, refusal spikes, cost anomalies)
+- CC9.2: AI vendor risk management (TPRM for model providers, eval platforms, guardrails)
+- A1.2: AI system availability and fallback mechanisms
+- C1.1/C1.2: Confidentiality of prompts and retrieved context
+- PI1.4: Accuracy of AI outputs used in decision-making — most frequently raised criterion in 2025-2026 audits
+APPLY-WHEN: Any sigma-review or compliance assessment involving SOC 2 Type II for AI-enabled products.
+SOURCE: independent-research:T2 (Big 4 AI audit frameworks Q1 2026)
+NOTE: This mapping will evolve; PI1.4 accuracy criterion is the currently most contested one.
+|promoted:2026-04-22|next-check:2026-10-01]
+P[Digital-Omnibus-Apr2026-status:
+CALIBRATION: As of April 22, 2026 — EU AI Act Digital Omnibus (Commission proposal Nov 19, 2025; Council mandate Mar 13, 2026) proposes deferring high-risk AI obligations from Aug 2, 2026 to standards-readiness dates (potentially Dec 2027/Aug 2028). However: NOT ENACTED. EP trilogue vote targeted Apr/May 2026 has not occurred. Council mandate ≠ enacted law.
+BINDING DEADLINE: Aug 2, 2026 remains the statutory enforcement date for high-risk AI obligations (Chapters III-V), transparency (Chapter VI), post-market monitoring (Chapter VII) per Regulation (EU) 2024/1689 Art 85(2).
+OPPOSITION: EDPB/EDPS joint opinion (Jan 20, 2026) raised safeguard-weakening concerns; S&D, Greens, Left oppose; EPP/Renew/ECR generally supportive. Outcome uncertain.
+CORRECT PLANNING POSTURE: Plan to Aug 2026 (current binding law); add monitoring trigger for Omnibus trilogue outcome; if enacted before Aug 2026, reassess.
+MONITORING TRIGGER FOR REVIEWS: If a firm's Phase 3 launch is post-Aug 2026, flag Omnibus outcome as a variable that could change the compliance workstream.
+SOURCE: Regulation (EU) 2024/1689 Art 85(2) (T1); consilium.europa.eu Mar 13, 2026 (T1)
+|promoted:2026-04-22|expires:2026-09-01-or-on-Omnibus-enactment]
+P[playbook-phase0-fine-tuning-branch:APPROVED-GLOBAL-2026-04-22:
+CHECKLIST ADDITION — Phase 0 Workstream A compliance scope determination:
+"Does your deployment involve fine-tuning or LoRA adaptation of the base model?
+IF YES: (1) Assess EU AI Act Art 25(1)(b) provider obligations. If fine-tuning targets an Annex III high-risk intended purpose (employment monitoring/performance assessment, creditworthiness, access to essential services), full provider obligations apply: conformity assessment (Art 43), CE marking, EU database registration (Art 71), technical documentation (Annex IV), post-market monitoring (Art 72). (2) If EU customers in scope, engage EU legal counsel before Phase 1 build begins — conformity documentation takes 4-8 weeks minimum. (3) Fine-tuning that changes the AI system's intended purpose or demonstrably affects Chapter III compliance = HIGH-confidence provider-obligation trigger. (4) RAG-only plus system-prompt customization is generally below the 'substantial modification' threshold per HLEG informal guidance (non-binding; Commission guidance on Art 25 missed Feb 2026 deadline — monitor for publication).
+IF NO (pure-RAG-plus-system-prompt): Art 25(1)(b) generally does not apply; standard deployer obligations (Art 26) govern."
+SEVERITY: HIGH for fine-tuning toward Annex III high-risk intended purposes; MEDIUM for fine-tuning-generally (mandatory assessment trigger regardless of outcome — playbook must prompt the question).
+SOURCE: Regulation (EU) 2024/1689 Arts 25(1)(b), 83, Recital 23 (T1); HLEG informal Q&A (T2)
+XVERIFY-NOTE: Gemini-3.1-pro-preview returned vulnerability:MEDIUM on HIGH-generally — conceded; severity split is calibrated response.
+|user-approved:2026-04-22|next-check:on-Commission-Art25-guidance-publication]

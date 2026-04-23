@@ -19,3 +19,4 @@
 | 2026-04-16 | enterprise-ai-rollout | ANALYZE | 2 | TA,PS,RCA,CDS,DA | PASS (A-) | 2026-04-16-enterprise-ai-rollout-workspace.md |
 | 2026-04-20 | sigma-chatroom-m1ab | BUILD-C1 | 2 | TA,UX,IE,CQA,DA | PASS (A-, P=0.87, XVERIFY-infra-gap-doc) | 2026-04-20-sigma-chatroom-m1ab-workspace.md |
 | 2026-04-21 | sigma-chatroom-m1ab-R3 | BUILD-C1-R3 | 3 | TA-r4,UX-r4,IE-r4,CQA-r4,DA-r3-v1,DA-r3-v2 | PASS-internal / C+ external-eval-r4 (internal DA exit-gate PASS; `/sigma-evaluate` R4 C+ 2.57 flagged 4 unverified-citation errors from lead distillation + 4 unaddressed R3 items; user elected to ship with honest C+ grade, revision queued for separate session; P=0.78-0.83 internal) | 2026-04-20-sigma-chatroom-m1ab-r3-workspace.md |
+| 2026-04-22 | ai-agent-rollout-playbook-vet | ANALYZE | 2 | TA,SS,RLS,RA,RCA,TIA,CDS,DA | PASS (A-avg engagement, corruption-recovered-transparently, severity-graduated via 3-provider XVERIFY) | 2026-04-22-ai-agent-rollout-playbook-vet.md |
