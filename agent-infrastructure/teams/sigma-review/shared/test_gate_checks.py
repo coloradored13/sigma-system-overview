@@ -46,17 +46,17 @@ C1: Senior PM role
 C2: 5-year horizon
 
 ## findings
-### agent-alpha
+### tech-architect
 status: ✓ R1 complete | XVERIFY: F1=PARTIAL
-F[A-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)
-F[A-2] Finding two — more analysis |source:[agent-inference]
-DB[F[A-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final
+F[TA-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)
+F[TA-2] Finding two — more analysis |source:[agent-inference]
+DB[F[TA-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final
 
-### agent-beta
+### implementation-engineer
 status: ✓ R1 complete | XVERIFY: F1=AGREE(gpt-5.4)
-F[B-1] Finding beta one — research based |source:[independent-research] T2(McKinsey)
-F[B-2] LOAD-BEARING finding — critical conclusion |source:[independent-research] T1(Federal Reserve)
-DB[F[B-2]]: (1) initial: A (2) assume-wrong: B (3) strongest-counter: C (4) re-estimate: D (5) reconciled: E
+F[IE-1] Finding beta one — research based |source:[independent-research] T2(McKinsey)
+F[IE-2] LOAD-BEARING finding — critical conclusion |source:[independent-research] T1(Federal Reserve)
+DB[F[IE-2]]: (1) initial: A (2) assume-wrong: B (3) strongest-counter: C (4) re-estimate: D (5) reconciled: E
 
 ### devils-advocate
 status: ✓ R2 complete
@@ -78,8 +78,8 @@ CH[2] TOPIC TWO — RESOLVED
 exit-gate: PASS |engagement:A |unresolved:none |untested-consensus:none |hygiene:pass
 
 ## convergence
-agent-alpha: ✓ R1 complete | 2 findings
-agent-beta: ✓ R1 complete | 2 findings
+tech-architect: ✓ R1 complete | 2 findings
+implementation-engineer: ✓ R1 complete | 2 findings
 
 ## open-questions
 """
@@ -88,16 +88,16 @@ WORKSPACE_WITH_CB = MINIMAL_WORKSPACE.replace(
     "## convergence",
     """## circuit-breaker
 Zero-dissent detected: 2 agents, 4 findings, 0 disagreements. Circuit breaker fired.
-CB[1]: agent-alpha — strongest counter to F[A-1]: counter argument |would-change: no
-CB[2]: agent-alpha — peer challenge: agent-beta:F[B-1] — different quantification
-CB[3]: agent-alpha — blind spot: may be missing regulatory dimension
+CB[1]: tech-architect — strongest counter to F[TA-1]: counter argument |would-change: no
+CB[2]: tech-architect — peer challenge: implementation-engineer:F[IE-1] — different quantification
+CB[3]: tech-architect — blind spot: may be missing regulatory dimension
 
 ## convergence""",
 )
 
 WORKSPACE_WITH_DIVERGENCE = MINIMAL_WORKSPACE.replace(
     "## convergence",
-    "R1 divergence detected: agent-alpha estimates 40% while agent-beta estimates 65%\n\n## convergence",
+    "R1 divergence detected: tech-architect estimates 40% while implementation-engineer estimates 65%\n\n## convergence",
 )
 
 WORKSPACE_WITH_CONTAMINATION = MINIMAL_WORKSPACE.replace(
@@ -188,8 +188,10 @@ class TestWorkspaceParsing:
 
     def test_extract_agents(self):
         agents = gate_checks.extract_agents_from_workspace(MINIMAL_WORKSPACE)
-        assert "agent-alpha" in agents
-        assert "agent-beta" in agents
+        assert "tech-architect" in agents
+        assert "implementation-engineer" in agents
+        # devils-advocate is roster-valid but excluded from agent extraction —
+        # see gate_checks.py:223-228. DA produces challenges, not F[]/DB[]/XVERIFY.
         assert "devils-advocate" not in agents
         assert len(agents) == 2
 
@@ -208,9 +210,9 @@ class TestWorkspaceParsing:
         assert gate_checks.get_mode(BUILD_WORKSPACE) == "BUILD"
 
     def test_get_agent_section(self):
-        section = gate_checks._get_agent_section(MINIMAL_WORKSPACE, "agent-alpha")
-        assert "F[A-1]" in section
-        assert "F[A-2]" in section
+        section = gate_checks._get_agent_section(MINIMAL_WORKSPACE, "tech-architect")
+        assert "F[TA-1]" in section
+        assert "F[TA-2]" in section
 
     def test_get_agent_section_missing(self):
         section = gate_checks._get_agent_section(MINIMAL_WORKSPACE, "nonexistent")
@@ -230,12 +232,12 @@ class TestV3AgentOutputNonEmpty:
 
     def test_fail_empty_section(self):
         ws = MINIMAL_WORKSPACE.replace(
-            "F[A-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\nF[A-2] Finding two — more analysis |source:[agent-inference]\nDB[F[A-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final",
+            "F[TA-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\nF[TA-2] Finding two — more analysis |source:[agent-inference]\nDB[F[TA-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final",
             "",
         )
         result = gate_checks.check_agent_output_non_empty(ws)
         assert result.passed is False
-        assert "agent-alpha" in result.details["empty"]
+        assert "tech-architect" in result.details["empty"]
 
 
 class TestV4SourceProvenance:
@@ -311,11 +313,11 @@ class TestV10CrossTrackParticipation:
     def test_pass(self):
         # Add DA response lines to agent sections
         ws = MINIMAL_WORKSPACE.replace(
-            "DB[F[A-1]]:",
-            "DA[#1] K-SHAPE — concede: label dropped\nDA[#2] WAGE — defend with evidence\nDB[F[A-1]]:",
+            "DB[F[TA-1]]:",
+            "DA[#1] K-SHAPE — concede: label dropped\nDA[#2] WAGE — defend with evidence\nDB[F[TA-1]]:",
         ).replace(
-            "DB[F[B-2]]:",
-            "DA[#3] TIMING — compromise: timeline adjusted\nDB[F[B-2]]:",
+            "DB[F[IE-2]]:",
+            "DA[#3] TIMING — compromise: timeline adjusted\nDB[F[IE-2]]:",
         )
         result = gate_checks.check_cross_track_participation(ws)
         assert result.passed is True
@@ -654,10 +656,10 @@ class TestV23SynthesisArtifact:
 # ---------------------------------------------------------------------------
 
 WORKSPACE_FINDING_FORMAT = MINIMAL_WORKSPACE.replace(
-    "F[A-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\n"
-    "F[A-2] Finding two — more analysis |source:[agent-inference]",
-    "FINDING[TA-1]: Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\n"
-    "FINDING[TA-2]: Finding two — more analysis |source:[agent-inference]",
+    "F[TA-1] Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\n"
+    "F[TA-2] Finding two — more analysis |source:[agent-inference]",
+    "FINDING[PRO-1]: Finding one — detailed analysis here with evidence |source:[independent-research] T1(BLS)\n"
+    "FINDING[PRO-2]: Finding two — more analysis |source:[agent-inference]",
 )
 
 WORKSPACE_XVERIFY_PARTIAL = MINIMAL_WORKSPACE.replace(
@@ -669,11 +671,11 @@ WORKSPACE_XVERIFY_PARTIAL = MINIMAL_WORKSPACE.replace(
 )
 
 WORKSPACE_DB_RECONCILED = MINIMAL_WORKSPACE.replace(
-    "DB[F[A-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final",
-    "DB-reconciled: F[A-1] (1) initial: X (2) assume-wrong: Y → reconciled: final",
+    "DB[F[TA-1]]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z (4) re-estimate: W (5) reconciled: final",
+    "DB-reconciled: F[TA-1] (1) initial: X (2) assume-wrong: Y → reconciled: final",
 ).replace(
-    "DB[F[B-2]]: (1) initial: A (2) assume-wrong: B (3) strongest-counter: C (4) re-estimate: D (5) reconciled: E",
-    "DISCONFIRM[F[B-2]]: tested and rejected alternative hypothesis",
+    "DB[F[IE-2]]: (1) initial: A (2) assume-wrong: B (3) strongest-counter: C (4) re-estimate: D (5) reconciled: E",
+    "DISCONFIRM[F[IE-2]]: tested and rejected alternative hypothesis",
 )
 
 WORKSPACE_DA_C_FORMAT = MINIMAL_WORKSPACE.replace(

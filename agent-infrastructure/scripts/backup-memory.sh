@@ -11,6 +11,7 @@ SNAPSHOT_DIR="$REPO_DIR/agent-infrastructure/memory-snapshots/$(date +%Y-%m-%d)"
 MEMORY_DIR="$HOME/.claude/memory"
 LOCAL_SETTINGS="$HOME/.claude/settings.local.json"
 PROJECT_MEMORY="$HOME/.claude/projects/-Users-$(whoami)/memory"
+CALIBRATION_LOG="$HOME/.claude/teams/sigma-review/shared/calibration-log.md"
 
 # Create snapshot directory
 mkdir -p "$SNAPSHOT_DIR"
@@ -29,6 +30,12 @@ if [ -f "$LOCAL_SETTINGS" ]; then
     echo "Backed up settings.local.json"
 else
     echo "WARNING: $LOCAL_SETTINGS not found" >&2
+fi
+
+# Backup β+ calibration-log (append-only audit record for WARN-first gates)
+if [ -f "$CALIBRATION_LOG" ]; then
+    cp "$CALIBRATION_LOG" "$SNAPSHOT_DIR/calibration-log.md"
+    echo "Backed up calibration-log.md"
 fi
 
 # Backup project-scoped auto-memory (MEMORY.md only — the rest is ephemeral)

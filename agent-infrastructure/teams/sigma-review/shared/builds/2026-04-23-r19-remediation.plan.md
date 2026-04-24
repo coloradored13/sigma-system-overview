@@ -4,13 +4,15 @@
 - created: 2026-04-23
 - build-id: 2026-04-23-r19-remediation
 - tier: BUILD TIER-3 (score 19)
-- status: plan-locked
+- status: built
 - plan-exit-gate: PASS
 - plan-belief: P=0.88
 - DA-grade: A-
-- build-exit-gate: PENDING
-- build-belief: P=0.00
+- build-exit-gate: PASS-PENDING-C3
+- build-belief: P=0.00 (C3 computes)
 - team-name: r19-remediation-c1
+- c2-team-name: r19-remediation-c2
+- c2-completed: 2026-04-24
 
 ## Context
 Remediate the top-10 ROI infrastructure + protocol-layer issues surfaced in the R19 sigma-review post-mortem (2026-04-22 ai-agent-rollout-playbook-vet review — audit GREEN, eval B 3.14). Both code (chain-evaluator.py, phase-gate.py, sigma-verify MCP) and directives/spawn-templates/agent-defs are in scope. Memory source: `~/.claude/projects/-Users-bjgilbert/memory/project_sigma-review-infrastructure-issues.md`.
@@ -183,8 +185,93 @@ Total: 30 SQs across 3 plan-track-owner scopes + 1 prerequisite + parallel-engin
 - **Unresolved tensions:** none blocking at r1. Pre-C2 items: DA[#10] C4-vs-C5 resolved by user (path β+ audit-monitored); DA[#11] A24 rename; DIV[3] IC namespace reconciled.
 - **Process patterns promoted this session (sigma-mem ~30 entries):** P[team-self-correction-before-DA-pressure], P[concession-strengthens-thesis-via-DB-rerun], P[live-empirical-test-as-ADR-prerequisite], P[regex-empirical-verification-before-ADR-lock], P[build-meta-observation-validates-challenge], P[DOC-CHANGE-MAP as C1 build-track deliverable], P[atomicity-constraint naming], P[ΣComm-boundary-check as C1 feasibility gate], P[directive-propagation split by risk tier], P[workspace atomic Python replace + section-isolation], P[audit-calibration-gate], P[CAL-EMIT-schema], P[premise-audit-sequence-constraint], and more.
 
-## Build Status
-*(empty — written by C2)*
+## Build Status (written by C2, 2026-04-24)
+
+### Test Results
+- total: 240 | passed: 240 | failed: 0 | new: +80 (cluster-C: 61 cycle-1 + 19 cycle-2)
+- regressions: 0 (against 143/143 post-SQ[0] baseline; 11 SQ[0] pre-existing failures cleared)
+- surface breakdown:
+  - test_chain_evaluator.py: 82/82 (was 42 pre-session)
+  - test_phase_gate.py: 59/59 (was 50 pre-session)
+  - test_gate_checks.py: 68/68 (was 57 passing + 11 pre-existing fails)
+  - test_audit_calibration_gate.py: 31/31 (new file, SQ[CDS-10])
+- sigma-verify repo: 300/300 (ie-1 SQ[1] machine.py, coverage 90%)
+- MERGE-VERIFIED: 240/240 post-merge (no worktrees used; file-ownership coordination, zero cluster overlap)
+
+### Checkpoints
+CHECKPOINT[ie-1] (final, post-extension): 5 files modified / 1 new file / 2 repos | 7 plan SQs + 3 extension SQs + 1 plan-amendment + 1 hygiene fix | interfaces-matched: yes (IC[1-6] all honored) | drift: none | surprises: 2 (ADR[1] interpretation gap via BUILD-CONCERN, BLOCK 3→4 renumber via C5) — both resolved clean
+CHECKPOINT[tw] (final): 29 files modified / +686 TW-owned LOC | 10 plan SQs | interfaces-matched: yes (IC[5] peer-verify atomic set + CAL[9] 4-file, CAL-EMIT schema match, CAL[7] risk-tier split 23 agents) | drift: none (22→23 count-correction applied in-place) | surprises: none
+CHECKPOINT[cqa] (final, cycle-2): 3 files modified + 3 new files / +80 tests | 12 cqa-owned SQs (incl SQ[0] gating) | interfaces-matched: yes (CAL-EMIT schema asserted, details.cal_emit_records consumed from ie-1 helper) | drift: none | surprises: 1 (xargs stdin bypass flagged as BUILD-CONCERN, resolved via option (a) docstring narrow + positive-contract test)
+
+### Cross-Model Code Review
+SKIPPED at C2 per c2-build.md Step 6 (advisory, ¬blocking C2 exit). Deferred to C3 where XREVIEW is structural. Rationale in c2-scratch ## cross-model-code-review.
+
+### SQ Status (32 SQs total)
+Cluster A (IE-1, 7 plan + 3 extension + 1 amendment + 1 hygiene):
+- SQ[1] sigma-verify auto-ready: DONE — interpretation A (~8 LOC machine.py + docstring + forward-compat hint; 300/300 sigma-verify)
+- SQ[2] A12 24h grace: DONE — synchronous mtime delta per CAL[1], both branches smoke-tested
+- SQ[3] A3 DB extraction: DONE — split-by-DB + (1)(2)(3) requirement, IC[4] layered authority preserved
+- SQ[6] sigma-verify test scope: DONE — read-only investigation, SQ[1] tests in sigma-verify repo per PF[5]
+- SQ[7]+SS-1 sed-i BLOCK 4: DONE — renumbered from BLOCK 3 per C5 (existing code drift), 22/22 evasion matrix pass
+- SQ[14] workspace_write helper: DONE — IC[6] exact signature, dogfooded in-production, WorkspaceAnchorNotFound raises on no-op
+- SQ[CDS-6] A20 precision gate: DONE (scope-extension) — §2i CONDITION 2 + suppression heuristic, ~20 LOC
+- SQ[CDS-7] A22 governance artifact: DONE (scope-extension) — TIER-A/B/C + ARTIFACT-GAP detection, ~20 LOC
+- SQ[CDS-8 IE-portion] A23 severity provenance: DONE (scope-extension) — 3-field tag detection, native-domain no-fire, ~15 LOC
+- PLAN-AMENDMENT gate_checks.py DA-filter: DONE — 1-line exclusion in _load_roster_agents:233 (user-ratified option C)
+- HYGIENE xargs docstring narrow: DONE — phase-gate.py:300 KNOWN LIMITATION block + ADR[SS-1] cross-ref
+
+Cluster B (TW, 10 plan SQs):
+- SQ[4] #5+#14 peer-verify atomic: DONE — c1-plan Step 11 + sigma-lead §2 + c2-build + _template.md (4-file atomic per CAL[9])
+- SQ[5]+SS-3 ΣVerify init belt-and-suspenders: DONE — spawn templates + _template boot step
+- SQ[8] #1 sed-i ban propagation: DONE — 23 SAFETY-CRITICAL agents + _template (count corrected from 22 per CAL[7] risk-tier rule)
+- SQ[9]+CDS-5 Step 7a premise-audit: DONE — c1-plan Step 7a + ## premise-audit-results template + preflight checklist
+- SQ[10]+CDS-2+CDS-11 §2i precision gate: DONE — directives.md + build-directives.md BUILD variant, CONDITION 2 code + CONDITION 1 directive + β+ calibration + CAL-EMIT
+- SQ[11]+CDS-4 §2j governance artifact: DONE — directives.md + TIER-A/B/C + DA ARTIFACT-REVIEW
+- SQ[12]+CDS-3 §2d-severity provenance: DONE — directives.md + build-directives + _template checkbox (template-only per CAL[7])
+- SQ[CDS-1] §2p premise-audit directive: DONE — directives.md non-sequential per CDS BC[TW-#5]
+- SQ[CDS-12] DA CAL-EMIT verdict protocol: DONE — DA enforcement extension + PENDING handling
+- §8e corruption recovery template: DONE — 7-step ΣComm conversion + sigma-lead cross-ref
+
+Cluster C (CQA, 12 SQs incl gating):
+- PF[1] baseline reconciliation: DONE — 154/143/11 authoritative, C1 "92" falsified, memory updated
+- SQ[0] MINIMAL_WORKSPACE fixture fix: DONE — roster-valid names + combined with gate_checks DA-exclusion cleared all 11 pre-existing
+- SQ[13b] A12 parser tests: DONE — 2 tests, TestA12ArchiveFileFoundKeyRename
+- SQ[13c] A16/A17/A18 peer-verify: DONE — 10 tests, TestPeerVerifyRegexContract (IC[5] lock)
+- SQ[13d] A3 DB extraction: DONE — 6 tests, TestA3DBGenuineVsReference (R19 #19 regression lock)
+- SQ[13e] A12 24h grace: DONE — 3 tests, os.utime determinism (no datetime mocking)
+- SQ[13f] A20 §2i precision CONDITION 2: DONE (cycle-2) — 6 tests, triggers + suppressors
+- SQ[13g]+SS-2 sed-i evasion matrix: DONE — 9 tests (6 BLOCK 4 direct + 3 evasion) + 1 xargs positive-contract
+- SQ[CDS-6] A20 WARN+CAL-EMIT: DONE (cycle-2) — 4 tests, schema compliance + no-fire + multi-fire + review-id fallback
+- SQ[CDS-7] A22 governance TIER: DONE (cycle-2) — 4 tests, TIER/GAP/MEDIUM/non-gov
+- SQ[CDS-8] A23 severity provenance: DONE (cycle-2) — 3 tests, native/extrapolated/tag-present
+- SQ[CDS-9] calibration-log + backup: DONE — calibration-log.md created + backup-memory.sh $CALIBRATION_LOG block
+- SQ[CDS-10] audit-calibration-gate.py: DONE — 240 LOC standalone script + 31 fixture-isolated tests
+
+### Build Deltas
+- 40 files in sigma-system-overview (+2683 insertions, -65 deletions)
+- 1 file in sigma-verify (+31 LOC)
+- 5 new files created: workspace_write.py, audit-calibration-gate.py, test_audit_calibration_gate.py, calibration-log.md, c2-scratch.md
+
+### sigma-mem Persistence
+19 patterns + 1 correction persisted across cluster agents:
+- IE-1: 8 patterns (workspace_write, BLOCK renumber, shlex evasion matrix, BUILD-CONCERN flag, plan-scope amendment via user-ratification, auto-ready probe, DB split-by-marker, path β+ WARN-first)
+- TW: 4 patterns (TW-C2 execution, ΣComm-conversion-not-label-swap, count-drift-spec-vs-filesystem, dogfood-new-IC-at-first-use)
+- CQA: 6 patterns (dataclass py3.14 importlib, fenced-code-block parser-exclusion, positive-contract for known limitations, ask-before-route-on-analysis-ack, SQ effort budget recon+triage floor, WARN-gate test pattern details.cal_records) + 1 correction (lead-ack ≠ lead-ruling)
+
+### Process Notes for C3 Review
+- **ADR[1] semantic clarification**: ADR[1] ships probe + forward-compat hint (not literal auto-ready in MCP list_tools sense). Behavioral unlock pairs with SS spawn-prompt (SQ[SS-3]) as real primary today. Documented during C2 execution, flagged for C3 synthesis.
+- **Plan-scope amendment (gate_checks.py)**: user-ratified option C added 1-line DA exclusion in _load_roster_agents. "Preserve | no edit" directive was scoped to ADR[2] A12 key-rename, not a blanket. Pre-existing latent bug (comment at 223 documented filter-intent never implemented, test at 189-194 asserted exclusion, roster.md addition 2026-04-11 broke it) surfaced only when SQ[0] fixture removed the synthetic-name cover. Not an ADR[2] violation.
+- **BLOCK 3→4 renumber**: phase-gate.py had pre-shutdown BLOCK 3 from code drift post plan-authorship. IE-1 renumbered sed-i to BLOCK 4 to preserve existing semantics. Defended via C5 "defend the invocation". In-scope C2 hygiene, not plan amendment.
+- **3 BUILD-CONCERNs surfaced + resolved**: SQ[1] ADR[1] interpretation gap (user ratified A), gate_checks.py DA-filter latent bug (user ratified C), xargs sed-i argv-vs-stdin bypass (lead ratified option a docstring narrow). All 3 used proper "flag + wait for ratification" protocol.
+- **Process-integrity correction**: CQA initial overreach routed gate_checks fix to ie-1 before user ratification. Lead issued STOP + intervention, CQA engaged cleanly, persisted P[ask-before-route-on-analysis-ack] to sigma-mem. Subsequent xargs BUILD-CONCERN escalation handled correctly per learned mechanical check.
+- **Scope extension mid-build**: SQ[CDS-6..8 IE-portion] chain-evaluator emissions (~55 LOC) + their tests (~19) were not in initial cluster-A assignment (lead's miss). User ratified extension mid-C2. Added 2h wall-time; calibration data captured as P[sq-effort-budget-recon-plus-triage-floor].
+- **Count correction**: "22 SAFETY-CRITICAL agents" in CAL[7] was C1 DOC-CHANGE-MAP accounting error; actual count 23. TW flagged + applied correction in-place per rule-semantics over spec-number.
+
+### Known Gaps (documented, not open for C2)
+- xargs stdin-piped paths bypass phase-gate sed-i BLOCK 4 (documented in phase-gate.py KNOWN LIMITATION block + positive-contract test + scratch; scope expansion rejected, future SQ if incident surfaces)
+- ADR[1] gateway-semantic contract requires future state-gated tools to add call-time authorization (documented in machine.py docstring per DA[#2] compromise)
+- §2i CONDITION 1 full-semantic detection deferred per ADR[CDS-2]+DA[#5] (suppression heuristic same-line only in code)
+- β+ calibration gate promotion remains deliberate lead action on PROMOTE signal (documented in audit-calibration-gate.py output handling)
 
 ## Build Review Summary
 *(empty — written by C3)*

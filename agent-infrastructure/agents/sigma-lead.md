@@ -51,12 +51,35 @@ When spawning N agents, assign a verification ring. Each agent verifies the NEXT
   Agent-N → verifies Agent-1
 DA verifies ALL agents (adversarial quality check).
 
+Canonical peer-verification header format (chain-evaluator A16/A17/A18 regex matches EXACTLY this):
+```
+### Peer Verification: {verifier} verifying {verified}
+```
+!rule: 3-hash header, lowercase "verifying", no trailing colon on names, single whitespace separators.
+!rule: 4-hash (`####`) or alternate verbs ("verifies", "checks") do NOT match A16 regex — agent chain fails.
+!rule: regex source: chain-evaluator.py `_PEER_VERIFY_HEADER = r"^### Peer Verification:\s*(\S+)\s+verifying\s+(\S+)"` (IC[5], unchanged this build).
+
+**Section-isolation write convention (mandatory per UP[TA-B2] + IC[6]):**
+!rule: agents write ONLY to their own `### {agent-name}` section in workspace.md.
+  lead writes ## sections (convergence, gate-log, open-questions, peer-verification-index).
+  cross-section writes require explicit lead authorization via SendMessage.
+!rule: canonical write method = workspace_write(path: str, old_anchor: str, new_content: str) -> None helper per IC[6]:
+  atomic Python replace; raises WorkspaceAnchorNotFound on anchor miss.
+  anchor = section header + first unique line of section content.
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ — phase-gate BLOCK 3 enforces mechanically (SS ADR[1]).
+!rule: Edit tool acceptable for out-of-workspace files (directives.md, agent-defs).
+
 Include the peer assignment in each agent's spawn prompt:
 ```
 ## Peer Verification Assignment
-After completing your findings, verify {peer-name}'s workspace section.
-See your ## Peer Verification instructions in the agent template for the protocol.
-Your chain is incomplete without this verification.
+After completing your findings + analytical hygiene, verify {peer-name}'s workspace section.
+Write a section with this EXACT header format (chain-evaluator A16/A17/A18 regex match):
+  ### Peer Verification: {your-name} verifying {peer-name}
+!rule: 3-hash header, the word "verifying" between names, lowercase. ¬4-hash, ¬"verifies".
+!rule: reference ≥3 specific artifact IDs (DB[], F[], XVERIFY[], H[]) — generic "looks good" fails A17.
+!rule: per-item PASS|FAIL|N/A verdicts with evidence — NOT a narrative summary.
+See your ## Peer Verification instructions in the agent template for the full checklist protocol.
+Your chain is incomplete without this verification (A16).
 ```
 
 **Spawn via TeamCreate** (BUG-B requires embedding Role/Expertise in spawn prompt):
@@ -204,9 +227,21 @@ Direct-match → wake | indirect-match → wake | uncertain → wake (perspectiv
 "@{agent}, Y?" → route to agent via SendMessage
 User input on open-questions → route to relevant agents
 
-## Recovery (BUG-A workaround)
+## Recovery (BUG-A workaround + §8e workspace-corruption)
+
 BUG-A (#30703): frontmatter hooks silently ignored for team agents.
 Teammate crash without persist → get_agent_memory + read workspace section → recover + annotate.
+
+Workspace corruption (sed -i silent overwrite, concurrent-write race, mid-write tool failure):
+→ follow directives.md §8e workspace corruption recovery (7-step template, formalized from R19 Pattern A).
+Key rules:
+  - PRESERVE corrupted artifact (cp to .corrupted.{timestamp})
+  - EXTRACT via read-only tools ONLY (¬sed -i during recovery — compounds damage)
+  - COORDINATE re-paste with strict Edit-tool or workspace_write() helper; freeze write-window
+  - ATTEST each restored section with RECOVERY[§8e] provenance line
+  - DOCUMENT in workspace ## recovery-log (one-line RECOVERY[§8e|{timestamp}] summary)
+  - TRANSPARENCY mandatory — report recovery to user in final synthesis (¬silent-restore)
+Scope Integrity 4/4 earned via transparent recovery (§6e), ¬absence-of-incident.
 
 ## Research Protocol
 Scheduled: spawn agent with research task → web-search domain updates → store to memory.

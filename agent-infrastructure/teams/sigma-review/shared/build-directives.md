@@ -127,6 +127,35 @@ BUILD-specific focus:
   DB[{decision}]: (1) initial: {chosen approach} (2) assume-wrong: {what fails?} (3) strongest-counter: {best alternative and why} (4) re-estimate: {would you still choose this?} (5) reconciled: {final with acknowledged tradeoffs}
 !purpose: reduces anchoring on first-considered architecture. Forces explicit tradeoff acknowledgment before plan submission.
 
+### §2i BUILD: precision gate (26.4.23)
+
+All §2i rules from directives.md §2i apply equally to BUILD.
+BUILD-specific applicability: effort estimates (CAL[] ranges), timeline predictions, performance claims, scale projections, resource counts.
+BUILD-specific examples that MUST carry justification:
+  - CAL[{task}]: point=5h (without driver breakdown OR precedent cite OR "approximate" qualifier) → §2i fires if load-bearing
+  - "handles 10K concurrent users" (without benchmark OR similar-system reference) → §2i fires if architecture-decision-driving
+  - "3x faster than X" (without measurement methodology) → §2i fires if primary recommendation
+BUILD-specific suppression: CAL[] entries that already carry |80%=[lo,hi]| + |breaks-if:{condition}| satisfy CONDITION 1 automatically.
+chain-evaluator A20 fires identically on ANALYZE and BUILD workspace content. CAL-EMIT records distinguish mode via review-id slug prefix.
+
+### §2p BUILD: premise-audit pre-dispatch (26.4.23)
+
+All §2p rules from directives.md §2p apply to BUILD with workflow-step location difference.
+BUILD-specific placement: c1-plan.md Step 7a (between Step 7 semantic-route and Step 8 prompt-understanding-gate).
+BUILD-specific premise tests (override PA[1-4] from ANALYZE with BUILD-scoped variants):
+  PA[1]: tech-tier-necessity — is proposed architecture tier NECESSARY or is simpler stack adequate? (monolith vs microservices vs serverless)
+  PA[2]: scale-floor — minimum viable user/request volume? (state explicitly, ¬assume 10K+)
+  PA[3]: data-readiness — what integration points must exist for build to deploy? (gap? yes/no)
+  PA[4]: precedent-baseline — RC[{similar-build-in-stack}]={typical-duration} | above/at/below base-rate?
+!rule: CHALLENGED/GAP on PA[1] or PA[2] → revise scope-boundary + Q[] BEFORE plan-track spawn
+!rule: c1-plan.md Step 7a workspace template MUST include `## premise-audit-results` section with PREMISE-AUDIT[pre-dispatch] populated before Step 12 spawn.
+
+### §2d-severity BUILD: severity provenance (26.4.23)
+
+All §2d-severity rules from directives.md apply equally to BUILD.
+BUILD-specific applicability: severity ratings on security findings (CVE severity extrapolated from different-sector context), performance findings (bottleneck severity extrapolated from different-scale precedent), test-gap findings (criticality extrapolated from different-stack test-pyramid).
+BUILD example: security-specialist rates HIGH-severity on BUILD input-validation gap based on OWASP top-10 reference — if OWASP stats are from different application class (e.g. public-facing web vs internal API), |severity-basis:[extrapolation:OWASP-public-web→internal-API |assumption:exposure-model-comparable |confidence-delta:T1→agent-inference]| required.
+
 ### DA enforcement of hygiene checks (BUILD)
 
 Same grade modifiers and challenge format as ANALYZE mode:

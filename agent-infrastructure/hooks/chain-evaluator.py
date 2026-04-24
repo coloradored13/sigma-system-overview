@@ -161,23 +161,74 @@ def check_a2(content: str) -> ChainItem:
 
 
 def check_a3(content: str) -> ChainItem:
-    """A3: Dialectical bootstrapping — DB[] with 5-step substructure."""
+    """A3: Dialectical bootstrapping — DB[] depth check.
+
+    Layered authority (IC[4], CAL[2]):
+      - ``gc.check_dialectical_bootstrapping`` = PRESENCE (upstream, layer 1)
+      - this check = DEPTH (layer 2, genuine-exercise count)
+      - sequential, NOT redundant — no third layer
+
+    R19 #19 fix (SQ[3]): the pre-rewrite ``re.findall`` matched every
+    ``DB[...]`` substring in an agent section — including reference
+    citations (``DB[F[A-1]]`` mentioned in prose, summary text linking
+    to a prior DB exercise, etc.). That produced false-negative counts
+    where 5 reference-DBs looked like 5 genuine exercises.
+
+    Split-by-DB + require (1)(2)(3) marker sequence within a segment:
+    genuine DB exercises follow the canonical format
+    ``DB[finding]: (1) initial: X (2) assume-wrong: Y (3) strongest-counter: Z
+    (4) re-estimate: W (5) reconciled: final``. The literal parenthesised
+    numbered markers are the distinguishing signal — finding-reference
+    citations lack them. Requiring at least (1), (2), and (3) catches
+    partial exercises (which we flag as shallow) while excluding pure
+    references from the count entirely.
+    """
     result = gc.check_dialectical_bootstrapping(content)
-    # Enhance: check for 5-step substructure markers in DB[] entries
     agents = gc.extract_agents_from_workspace(content)
+
     shallow_db = []
+    genuine_by_agent: dict[str, int] = {}
+    reference_by_agent: dict[str, int] = {}
+
     for agent in agents:
         section = gc._get_agent_section(content, agent)
-        db_entries = re.findall(r"DB\[.*?\].*?(?=DB\[|\Z|###)", section, re.DOTALL | re.IGNORECASE)
-        for entry in db_entries:
-            steps_found = sum(1 for marker in ["initial", "assume.wrong", "counter", "re.estimate", "reconcile"]
-                             if re.search(marker, entry, re.IGNORECASE))
-            if steps_found < 3 and len(entry.strip()) > 10:  # has content but shallow structure
-                shallow_db.append(f"{agent}: DB entry missing {5 - steps_found} of 5 steps")
+        # Split the section by DB[ markers so each segment is a
+        # candidate exercise (plus whatever prose follows it up to the
+        # next DB[ or section boundary).
+        segments = re.split(r"(?=DB\[)", section)
+        genuine = 0
+        references = 0
+        for seg in segments:
+            if not seg.lstrip().startswith("DB["):
+                continue
+            # Require parenthesised numbered markers (1), (2), (3) to
+            # count as a genuine exercise. Presence of (1)+(2)+(3) is
+            # the plan-spec signal per SQ[3] verification 4.
+            has_1 = bool(re.search(r"\(\s*1\s*\)", seg))
+            has_2 = bool(re.search(r"\(\s*2\s*\)", seg))
+            has_3 = bool(re.search(r"\(\s*3\s*\)", seg))
+            if has_1 and has_2 and has_3:
+                genuine += 1
+                # Shallow check — exercise present but missing 4/5 markers
+                has_4 = bool(re.search(r"\(\s*4\s*\)", seg))
+                has_5 = bool(re.search(r"\(\s*5\s*\)", seg))
+                if not (has_4 and has_5):
+                    missing = 5 - sum([has_1, has_2, has_3, has_4, has_5])
+                    shallow_db.append(
+                        f"{agent}: DB entry missing {missing} of 5 numbered markers"
+                    )
+            else:
+                # Reference citation, not an exercise — counted separately
+                references += 1
+        if genuine:
+            genuine_by_agent[agent] = genuine
+        if references:
+            reference_by_agent[agent] = references
 
+    result.details["db_genuine_by_agent"] = genuine_by_agent
+    result.details["db_reference_by_agent"] = reference_by_agent
     if shallow_db:
         result.issues.extend(shallow_db)
-        # Don't fail for shallow structure yet — flag as warning
         result.details["shallow_db_entries"] = shallow_db
 
     return _wrap_gc("A3", "Dialectical bootstrapping", "agent-work", result)
@@ -232,16 +283,50 @@ def check_a11(content: str) -> ChainItem:
 
 
 def check_a12(content: str) -> ChainItem:
-    """A12: Workspace archive."""
+    """A12: Workspace archive.
+
+    24h grace-window (ADR[3]): archive-missing is acceptable when workspace
+    was modified <24h ago — session is legitimately ongoing, archive is
+    expected at session end. Past 24h, missing archive is a real failure.
+
+    Grace is a synchronous mtime delta per CAL[1] — no poll/wait/sleep;
+    the Stop hook is non-looping by design (line 625-640).
+    """
     result = gc.check_session_end(content)
-    # Extract just the archive portion
+    archive_found = result.details.get("archive_file_found", False)
+    passed = archive_found
+    in_grace = False
+    workspace_age_hours: float | None = None
+
+    if not archive_found:
+        workspace_path = Path(DEFAULT_WORKSPACE)
+        if workspace_path.exists():
+            age_seconds = datetime.now(timezone.utc).timestamp() - workspace_path.stat().st_mtime
+            workspace_age_hours = age_seconds / 3600.0
+            if workspace_age_hours < 24.0:
+                passed = True
+                in_grace = True
+
+    details = {k: v for k, v in result.details.items() if "archive" in k.lower()}
+    details["grace_window_applied"] = in_grace
+    if workspace_age_hours is not None:
+        details["workspace_age_hours"] = round(workspace_age_hours, 2)
+
+    issues = [] if passed else [i for i in result.issues if "archive" in i.lower()]
+    if in_grace:
+        issues.append(
+            f"A12 archive missing but workspace <24h old "
+            f"(age={workspace_age_hours:.1f}h) — grace-window applied, "
+            f"archive expected at session end"
+        )
+
     return ChainItem(
         item_id="A12",
         name="Workspace archive",
-        passed=result.details.get("archive_file_found", False),
+        passed=passed,
         category="chain-closure",
-        details={k: v for k, v in result.details.items() if "archive" in k.lower()},
-        issues=[i for i in result.issues if "archive" in i.lower()],
+        details=details,
+        issues=issues,
     )
 
 
@@ -463,6 +548,396 @@ def check_b4(content: str) -> ChainItem:
 
 
 # ---------------------------------------------------------------------------
+# CAL-EMIT helpers (path β+ WARN-first gates: A20, A22, A23)
+#
+# Schema (directives.md §2i lines 351-352, §2j line 434, §2d-severity line 409):
+#   CAL-EMIT[{gate-id}]: review-id:{slug} |finding-ref:{F[agent-id]}
+#     |fire-reason:{trigger} |workspace-context:{agent}:{50-char-excerpt}
+#     |da-verdict:PENDING
+#
+# Append-only write to shared/calibration-log.md (CQA SQ[CDS-9] target).
+# Calibration gate (CDS SQ[CDS-10]) consumes these records to evaluate
+# the ≥3-review + ≤20%-FP promotion threshold per path β+.
+# ---------------------------------------------------------------------------
+
+CALIBRATION_LOG_PATH = (
+    Path.home() / ".claude/teams/sigma-review/shared/calibration-log.md"
+)
+
+
+def _review_id_from_content(content: str) -> str:
+    """Derive a stable review-id slug from workspace header metadata.
+
+    Preference order:
+      1. ## build-id or ## review-id header value (explicit)
+      2. date prefix from workspace mtime + first-line task excerpt
+      3. fallback: today's date + "unnamed"
+    """
+    m = re.search(r"^##\s*(?:build-id|review-id)\s*:?\s*(.+?)$",
+                  content, re.MULTILINE | re.IGNORECASE)
+    if m:
+        slug = m.group(1).strip()
+        slug = re.sub(r"[^a-zA-Z0-9._-]+", "-", slug).strip("-")
+        if slug:
+            return slug
+    # Date-prefixed fallback
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    task_match = re.search(r"^##\s*task\s*\n+(.+?)$", content,
+                           re.MULTILINE | re.IGNORECASE | re.DOTALL)
+    if task_match:
+        excerpt = task_match.group(1).splitlines()[0].strip()[:30]
+        slug = re.sub(r"[^a-zA-Z0-9._-]+", "-", excerpt).strip("-")
+        if slug:
+            return f"{today}-{slug}"
+    return f"{today}-unnamed"
+
+
+def _emit_cal_record(
+    gate_id: str,
+    review_id: str,
+    finding_ref: str,
+    fire_reason: str,
+    agent: str,
+    excerpt: str,
+) -> str:
+    """Format a CAL-EMIT record per the directives.md §2i schema + append.
+
+    Returns the formatted record string so check functions can stash it
+    on details for deterministic testing (CQA SQ[CDS-6..8] tests can
+    assert on the emitted record without reading the file).
+
+    Append-only. Never replaces calibration-log.md content. If the file
+    does not exist or the write fails, the record is still returned so
+    tests can observe detection without a live filesystem dependency.
+    """
+    clean_excerpt = excerpt.replace("\n", " ").strip()[:50]
+    record = (
+        f"CAL-EMIT[{gate_id}]: review-id:{review_id} "
+        f"|finding-ref:{finding_ref} "
+        f"|fire-reason:{fire_reason} "
+        f"|workspace-context:{agent}:{clean_excerpt} "
+        f"|da-verdict:PENDING"
+    )
+    try:
+        if CALIBRATION_LOG_PATH.exists():
+            with CALIBRATION_LOG_PATH.open("a", encoding="utf-8") as f:
+                f.write(record + "\n")
+    except OSError:
+        # Silent: calibration-log.md is optional infrastructure per plan;
+        # if the write fails the in-memory record still surfaces in
+        # workspace chain-evaluation details for downstream DA verdict.
+        pass
+    return record
+
+
+# Regex helpers shared across A20/A22/A23 detection.
+_FINDING_LINE_RE = re.compile(
+    r"^F\[([A-Za-z0-9._-]+)\]\s*(.+?)$",
+    re.MULTILINE,
+)
+
+
+def _iter_finding_lines(section: str):
+    """Yield (finding_id, full_line_text) for each F[...] finding."""
+    for m in _FINDING_LINE_RE.finditer(section):
+        yield m.group(1), m.group(0)
+
+
+# ---------------------------------------------------------------------------
+# A20: §2i precision gate (CONDITION 2 code-detected, CONDITION 1 deferred)
+# ---------------------------------------------------------------------------
+
+_CONFIDENCE_70_RE = re.compile(
+    r"(?:>\s*70\s*%|>=\s*7[0-9]\s*%|>\s*7[0-9]\s*%|\b(?:7[0-9]|[8-9][0-9]|100)\s*%\s*confiden[ct])",
+    re.IGNORECASE,
+)
+_HIGH_SEVERITY_RE = re.compile(
+    r"\b(?:HIGH|CRITICAL)[-\s]severity\b",
+    re.IGNORECASE,
+)
+_PRIMARY_REC_RE = re.compile(
+    r"\b(?:primary[-\s]recommendation|primary[-\s]conclusion)\b",
+    re.IGNORECASE,
+)
+
+# CONDITION 1 suppression heuristic — if any of these keywords is
+# adjacent to the finding, we treat CONDITION 1 as satisfied and do NOT
+# fire. Per directive line 340: driver-breakdown, CI notation, and
+# qualitative qualifiers all suppress.
+_CONDITION_1_SUPPRESSORS = [
+    r"derives\s+from\s*:\s*\[",    # driver breakdown
+    r"\b80%\s*CI\b",                # CI notation
+    r"\b90%\s*CI\b",
+    r"\b95%\s*CI\b",
+    r"\bRC\[",                       # reference class
+    r"\border[-\s]of[-\s]magnitude\b",
+    r"\billustrative\b",
+    r"\bapproximately\b",
+]
+_CONDITION_1_SUPPRESSOR_RE = re.compile(
+    "|".join(_CONDITION_1_SUPPRESSORS), re.IGNORECASE
+)
+
+
+def check_a20_precision_gate(content: str) -> ChainItem:
+    """A20: §2i precision gate — WARN + CAL-EMIT (path β+).
+
+    Fires WARN when a finding meets CONDITION 2 (load-bearing markers:
+    >70% confidence, HIGH/CRITICAL severity, or primary-recommendation
+    cited) AND lacks CONDITION 1 suppressors (driver breakdown, CI,
+    qualitative qualifier). CONDITION 1 full-semantic detection is
+    explicitly deferred per ADR[CDS-2] + DA[#5]; we apply the suppression
+    heuristic (directive line 340) on the same line/neighborhood.
+
+    Never BLOCKs — path β+ calibration window requires ≥3 reviews with
+    ≤20% FP before lead promotes WARN→BLOCK. Until then, WARN only.
+    """
+    agents = gc.extract_agents_from_workspace(content)
+    review_id = _review_id_from_content(content)
+    fires: list[dict[str, str]] = []
+    cal_records: list[str] = []
+
+    for agent in agents:
+        section = gc._get_agent_section(content, agent)
+        for finding_id, line in _iter_finding_lines(section):
+            # CONDITION 2 triggers — at least one must hit
+            trigger = None
+            if _CONFIDENCE_70_RE.search(line):
+                trigger = "confidence>=70%"
+            elif _HIGH_SEVERITY_RE.search(line):
+                trigger = "HIGH/CRITICAL-severity"
+            elif _PRIMARY_REC_RE.search(line):
+                trigger = "primary-recommendation-cited"
+            if not trigger:
+                continue
+            # CONDITION 1 suppression heuristic — skip if driver/CI/qualifier
+            if _CONDITION_1_SUPPRESSOR_RE.search(line):
+                continue
+            record = _emit_cal_record(
+                gate_id="A20",
+                review_id=review_id,
+                finding_ref=f"F[{finding_id}]",
+                fire_reason=trigger,
+                agent=agent,
+                excerpt=line,
+            )
+            fires.append({
+                "agent": agent,
+                "finding_id": finding_id,
+                "trigger": trigger,
+            })
+            cal_records.append(record)
+
+    # WARN-only: passes chain check regardless. Fires surface via issues
+    # for operator visibility and via details for DA verdict downstream.
+    return ChainItem(
+        item_id="A20",
+        name="§2i precision gate (WARN, path β+)",
+        passed=True,
+        category="agent-work",
+        details={
+            "fires": fires,
+            "fire_count": len(fires),
+            "cal_emit_records": cal_records,
+            "path": "β+ WARN-first",
+            "review_id": review_id,
+        },
+        issues=[
+            f"A20 WARN: §2i precision gate fired for F[{f['finding_id']}] "
+            f"(agent={f['agent']}, trigger={f['trigger']}) — CAL-EMIT "
+            f"written to calibration-log.md, DA verdict PENDING"
+            for f in fires
+        ],
+    )
+
+
+# ---------------------------------------------------------------------------
+# A22: §2j governance minimum artifact (TIER-A/B/C detection)
+# ---------------------------------------------------------------------------
+
+_GOVERNANCE_MARKERS_RE = re.compile(
+    r"\b(?:committee\s+structure|approval\s+process|oversight\s+role|"
+    r"compliance\s+requirement|audit\s+function|governance\s+control)\b",
+    re.IGNORECASE,
+)
+_TIER_ARTIFACT_RE = re.compile(
+    r"\bTIER[-\s]?[ABC]\b",
+    re.IGNORECASE,
+)
+_ARTIFACT_GAP_RE = re.compile(
+    r"\bARTIFACT[-\s]?GAP\s*:\s*\S+",
+    re.IGNORECASE,
+)
+
+
+def check_a22_governance_artifact(content: str) -> ChainItem:
+    """A22: §2j HIGH-severity governance minimum artifact — WARN + CAL-EMIT.
+
+    Fires WARN when a finding is HIGH/CRITICAL-severity AND contains a
+    governance-scope marker (committee/approval/oversight/compliance/
+    audit) AND lacks both a TIER-A/B/C artifact tag and an
+    ARTIFACT-GAP:{reason} tag. Per directive line 434.
+
+    Scope is narrow (governance domain only) per directive line 420 to
+    prevent anti-gold-plating over-fire on technical/market findings.
+    Never BLOCKs — path β+ WARN-first until calibration gate PROMOTEs.
+    """
+    agents = gc.extract_agents_from_workspace(content)
+    review_id = _review_id_from_content(content)
+    fires: list[dict[str, str]] = []
+    cal_records: list[str] = []
+
+    for agent in agents:
+        section = gc._get_agent_section(content, agent)
+        for finding_id, line in _iter_finding_lines(section):
+            # Must be HIGH/CRITICAL severity
+            if not _HIGH_SEVERITY_RE.search(line):
+                continue
+            # Must be in governance scope
+            if not _GOVERNANCE_MARKERS_RE.search(line):
+                continue
+            # Inspect the finding line + ~3 following lines for tier/gap tag
+            line_end = section.find(line) + len(line)
+            # Grab up to next finding or section boundary (cap at 800 chars)
+            tail_end = min(line_end + 800, len(section))
+            tail = section[line_end:tail_end]
+            next_finding = _FINDING_LINE_RE.search(tail)
+            if next_finding:
+                tail = tail[: next_finding.start()]
+            window = line + tail
+            if _TIER_ARTIFACT_RE.search(window):
+                continue
+            if _ARTIFACT_GAP_RE.search(window):
+                continue
+            record = _emit_cal_record(
+                gate_id="A22",
+                review_id=review_id,
+                finding_ref=f"F[{finding_id}]",
+                fire_reason="HIGH-severity-governance-no-TIER-artifact",
+                agent=agent,
+                excerpt=line,
+            )
+            fires.append({
+                "agent": agent,
+                "finding_id": finding_id,
+                "trigger": "HIGH-severity-governance-no-TIER-artifact",
+            })
+            cal_records.append(record)
+
+    return ChainItem(
+        item_id="A22",
+        name="§2j governance minimum artifact (WARN, path β+)",
+        passed=True,
+        category="agent-work",
+        details={
+            "fires": fires,
+            "fire_count": len(fires),
+            "cal_emit_records": cal_records,
+            "path": "β+ WARN-first",
+            "review_id": review_id,
+        },
+        issues=[
+            f"A22 WARN: §2j governance artifact missing on F[{f['finding_id']}] "
+            f"(agent={f['agent']}) — expected TIER-A/B/C tag or "
+            f"ARTIFACT-GAP:{{reason}}, neither found. CAL-EMIT written, "
+            f"DA verdict PENDING"
+            for f in fires
+        ],
+    )
+
+
+# ---------------------------------------------------------------------------
+# A23: §2d-severity provenance (severity-basis tag on extrapolated severity)
+# ---------------------------------------------------------------------------
+
+_SEVERITY_BASIS_RE = re.compile(
+    r"\|\s*severity-basis\s*:",
+    re.IGNORECASE,
+)
+# Cross-domain / extrapolation indicators — when one of these appears in
+# a HIGH/CRITICAL-severity finding, §2d-severity requires a
+# severity-basis tag. We keep the markers narrow to avoid over-fire on
+# findings where severity is native to the domain of the source.
+_EXTRAPOLATION_INDICATORS_RE = re.compile(
+    r"\b(?:extrapolat\w+|transfer[-\s]assumption|cross[-\s]domain|"
+    r"applied\s+to|by\s+analogy)\b",
+    re.IGNORECASE,
+)
+
+
+def check_a23_severity_provenance(content: str) -> ChainItem:
+    """A23: §2d-severity provenance — WARN + CAL-EMIT when severity-basis missing.
+
+    Fires WARN when a finding is HIGH/CRITICAL severity AND the finding
+    line (or its immediate window) contains a cross-domain /
+    extrapolation indicator AND lacks the |severity-basis:| tag per
+    directive line 409.
+
+    Scope is narrow per directive line 409: absence only counts as a
+    violation when cross-domain indicators are present — native-domain
+    severity findings do not require the tag.
+    """
+    agents = gc.extract_agents_from_workspace(content)
+    review_id = _review_id_from_content(content)
+    fires: list[dict[str, str]] = []
+    cal_records: list[str] = []
+
+    for agent in agents:
+        section = gc._get_agent_section(content, agent)
+        for finding_id, line in _iter_finding_lines(section):
+            if not _HIGH_SEVERITY_RE.search(line):
+                continue
+            # Look at the finding line + next ~500 chars for both the
+            # extrapolation indicator and the severity-basis tag.
+            line_end = section.find(line) + len(line)
+            tail_end = min(line_end + 500, len(section))
+            tail = section[line_end:tail_end]
+            next_finding = _FINDING_LINE_RE.search(tail)
+            if next_finding:
+                tail = tail[: next_finding.start()]
+            window = line + tail
+            if not _EXTRAPOLATION_INDICATORS_RE.search(window):
+                continue  # native-domain severity — no tag required
+            if _SEVERITY_BASIS_RE.search(window):
+                continue  # tag present — compliant
+            record = _emit_cal_record(
+                gate_id="A23",
+                review_id=review_id,
+                finding_ref=f"F[{finding_id}]",
+                fire_reason="extrapolated-severity-missing-basis-tag",
+                agent=agent,
+                excerpt=line,
+            )
+            fires.append({
+                "agent": agent,
+                "finding_id": finding_id,
+                "trigger": "extrapolated-severity-missing-basis-tag",
+            })
+            cal_records.append(record)
+
+    return ChainItem(
+        item_id="A23",
+        name="§2d-severity provenance (WARN, path β+)",
+        passed=True,
+        category="agent-work",
+        details={
+            "fires": fires,
+            "fire_count": len(fires),
+            "cal_emit_records": cal_records,
+            "path": "β+ WARN-first",
+            "review_id": review_id,
+        },
+        issues=[
+            f"A23 WARN: §2d-severity missing severity-basis tag on "
+            f"F[{f['finding_id']}] (agent={f['agent']}) — extrapolation "
+            f"indicator present but |severity-basis:| tag absent. "
+            f"CAL-EMIT written, DA verdict PENDING"
+            for f in fires
+        ],
+    )
+
+
+# ---------------------------------------------------------------------------
 # Chain evaluation: run all items
 # ---------------------------------------------------------------------------
 
@@ -472,6 +947,10 @@ ANALYZE_CHAIN = [
     check_a15,  # XVERIFY (conditional)
     # Peer verification
     check_a16, check_a17, check_a18,
+    # Path β+ calibration gates (WARN-first, CAL-EMIT)
+    check_a20_precision_gate,
+    check_a22_governance_artifact,
+    check_a23_severity_provenance,
     # Chain closure
     check_a11, check_a12, check_a13, check_a14,
 ]

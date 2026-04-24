@@ -12,6 +12,11 @@ self-sufficient: read own state from paths.
 2→memory.md — identity+findings+calibration
 3→workspace.md — task+peer-findings
 4→decisions.md — settled choices
+5→mcp__sigma-verify__init {} — one call, BEFORE any ToolSearch of verify_finding/cross_verify/challenge
+  !purpose: hateoas-agent state-gates §2h XVERIFY tools behind init transition (R19 #3 root cause: 5/5 agents skipped → 5 XVERIFY-FAIL).
+  !redundant-with: TA ADR[1] machine.py auto-ready — Boot call is belt-and-suspenders (DA[#2] compromise + SS ADR[2]).
+  !if-unavailable: init returns ¬providers → proceed without XVERIFY; all findings carry no-tag per §2h (neutral, ¬penalized).
+  !do-NOT-retry failed providers in same session — idempotent init, flag gap, continue.
 
 ## Comms
 peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-questions | workspace→YOUR section, ΣComm
@@ -100,7 +105,7 @@ This is opt-in. Most reviews don't need it — your memory and research are prim
 !when: after your findings + analytical hygiene are complete, before declaring convergence
 
 Your spawn prompt assigns you a peer to verify (e.g., "verify {peer-name}").
-Read {peer-name}'s workspace section and write a verification section:
+Read {peer-name}'s workspace section and write a verification section with the CANONICAL header format (chain-evaluator A16/A17/A18 regex match):
 
 ```
 ### Peer Verification: {your-name} verifying {peer-name}
@@ -113,6 +118,7 @@ Checklist items verified against {peer-name}'s workspace section:
 - Source provenance: [PASS|FAIL] — {N}/{M} findings tagged
   - Load-bearing findings with tier: {list with IDs}
   - Missing tier: {list with IDs}
+  - Severity-provenance: HIGH/CRITICAL severities with extrapolation carry |severity-basis:| tag per §2d-severity (§24): {list with IDs}
 - XVERIFY: [PASS|FAIL|N/A]
   - {finding-id}: XVERIFY[provider:model] present
   - {finding-id}: load-bearing, no XVERIFY — GAP
@@ -123,9 +129,25 @@ Checklist items verified against {peer-name}'s workspace section:
 Overall: {peer-name}'s section is [COMPLETE|INCOMPLETE — {missing items}]
 ```
 
-!rule: reference SPECIFIC artifact IDs (DB[], F[], XVERIFY[], H[]) — generic "looks good" fails the chain evaluator's specificity check (A17)
+!rule: header format is EXACTLY `### Peer Verification: {verifier} verifying {verified}` — 3-hash, lowercase "verifying", single whitespace separators. ¬4-hash, ¬"verifies", ¬alternate verbs. Chain-evaluator regex: `^### Peer Verification:\s*(\S+)\s+verifying\s+(\S+)` (IC[5], unchanged this build).
+!rule: reference SPECIFIC artifact IDs (DB[], F[], XVERIFY[], H[], SQ[]) — generic "looks good" fails the chain evaluator's specificity check (A17, ≥3 artifact IDs required)
 !rule: if peer's section is INCOMPLETE, flag the specific gaps — the lead routes remediation
 !rule: your OWN chain is incomplete without this section — verification is not optional
+
+## Workspace Edit Rules (¬sed -i, atomic-Python-replace, section-isolation)
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate BLOCK 3 enforces mechanically (SS ADR[1], R19 #1 post-mortem).
+  observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.
+  applies-to: workspace.md, builds/**/*.md, shared/workspace.md, shared/archive/*.md, hooks/*.py, hooks/*.sh.
+  backup-extension forms (`sed -i.bak`) pass — they leave audit trail.
+  test-forms that must all BLOCK: `sed -i`, `sed -i ''`, `sed -i""`, env-wrapper, xargs-wrapper (shlex.split() argv tokenization per SS ADR[1]).
+!rule: canonical workspace write = workspace_write() helper per IC[6].
+  signature: workspace_write(path: str, old_anchor: str, new_content: str) -> None
+  raises WorkspaceAnchorNotFound on anchor miss.
+  anchor = section header (e.g. `### {agent-name}`) + first unique line of existing section content.
+!rule: section-isolation convention (UP[TA-B2]) — write ONLY to your own ### {agent-name} section.
+  lead owns ## sections (convergence, gate-log, open-questions, peer-verification-index).
+  cross-section writes require explicit lead authorization via SendMessage.
+!rule: Edit tool is acceptable for out-of-workspace files (directives.md, agent-defs, skill phase files).
 
 ## Convergence
 When findings + peer verification are complete, write status to workspace:
@@ -143,6 +165,9 @@ before declaring convergence (ANALYZE) or plan-complete (BUILD), verify:
   □ cost/complexity check completed — result is outcome 1, 2, or 3
   □ premise viability check completed — result is outcome 1, 2, or 3 (see directives.md §2e)
   □ source provenance tagged on all findings — per §2d
+  □ severity-provenance tagged on HIGH/CRITICAL extrapolated severities — per §2d-severity: |severity-basis:[extrapolation:{from}→{to} |assumption:{transfer-claim} |confidence-delta:{src-tier}→{extrap-tier}]|
+  □ precision gate compliance — load-bearing quantitative claims satisfy §2i CONDITION 1 (driver breakdown OR CI+RC OR qualitative qualifier)
+  □ governance min-artifact — HIGH/CRITICAL governance/compliance findings carry TIER-A/B/C artifact OR explicit ARTIFACT-GAP:{reason} per §2j
 
 every check MUST produce one of:
   1→ CHECK CHANGES THE ANALYSIS → revise finding BEFORE workspace write

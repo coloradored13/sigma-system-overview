@@ -314,6 +314,127 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
 
 !cost: per-call API cost to external providers. Agents should be selective — verify load-bearing findings ¬every data point.
 
+#### §2i precision gate (26.4.23)
+
+!purpose: prevent false-precision in load-bearing quantitative claims — R19 eval B/3.14 calibration(3/4)+accuracy(3/4) failed on 4 distinct false-precision cases (F[TA-C2] withdrawn FTE range, F[TA-A2] $200K-$2M no driver breakdown, H2 10-13mo no CI, PM 35/20/25% no Bayesian). Quantification preceded justification.
+!observed failure mode: agents attach numbers to claims without derivation, CI, reference class, or qualitative qualifier. Reader cannot distinguish calibrated estimate from anchoring artifact.
+
+!applies-to: quantitative claims (numeric point estimates, ranges, percentages, timelines) in ANALYZE findings
+
+gate fires when BOTH conditions met:
+  CONDITION 1 (no uncertainty justification): numeric claim lacks ALL of — (a) explicit driver breakdown showing derivation | (b) CI or reference class cited | (c) qualitative qualifier ("order-of-magnitude", "illustrative", "approximately")
+  CONDITION 2 (load-bearing): ANY one of — (i) >70% confidence tag | (ii) HIGH/CRITICAL-severity tag | (iii) cited in primary recommendation/conclusion
+
+both fire → agent MUST produce ONE of:
+  [a] driver breakdown: "derives from: [C1: X%] + [C2: Y%]..."
+  [b] CI+RC: "80% CI [lo, hi] based on RC[{class}]={rate}"
+  [c] qualitative restatement: "approximately [magnitude], precise estimate ¬supportable"
+
+over-fire prevention (per C5 — defend each invocation, ¬create exceptions):
+  - explicit qualitative qualifier satisfies CONDITION 1 → no fire
+  - deterministic code/fact findings → CONDITION 2 won't trigger → no fire
+  - "order-of-magnitude"/"illustrative"/"approximately" stated → CONDITION 1 satisfied → no fire
+
+chain-evaluator enforcement (A20):
+  CONDITION 2 = code-detected (text pattern matching): >70% confidence tag, HIGH/CRITICAL-severity tag, primary-recommendation marker
+  CONDITION 1 suppression heuristic = keyword presence: driver-breakdown keywords, CI notation, "approximately"/"illustrative"/"order-of-magnitude" qualifiers
+  A20 fires WARN + emits CAL-EMIT record to calibration-log.md (not BLOCK at plan-lock)
+  CONDITION 1 full-semantic detection DEFERRED — calibration build required after ≥3-review evidence on CONDITION 2 (DA[#5] concession)
+  CONDITION 1 enforcement in current build = DIRECTIVE (agents comply) + DA r2 challenge via existing "§2i check perfunctory" format
+
+!path β+ audit-monitored calibration (ADR[β+]):
+  §2i fires WARN until audit-calibration-gate.py outputs PROMOTE signal.
+  promotion thresholds: ≥3 distinct reviews with fires AND ≤20% false-positive rate AND ≥5 DA-verdicted fires (not-reviewed ≠ legitimate).
+  lead updates chain-evaluator mode WARN→BLOCK on PROMOTE.
+  rationale: 20% FP threshold = C5-compatible ("80%+ hit rate = each invocation defensible on average"). >20% FP after 3 reviews → gate recalibration, ¬promotion.
+
+!CAL-EMIT record format (emitted per A20 WARN firing):
+  CAL-EMIT[A20]: review-id:{session-date-slug} |finding-ref:{F[agent-finding-id]} |fire-reason:{CONDITION-2-marker-matched} |workspace-context:{agent}:{finding-text-excerpt-50-chars} |da-verdict:PENDING
+
+> BUILD variant → see build-directives.md §2i
+
+#### §2p premise-audit pre-dispatch (26.4.23)
+
+!purpose: prevent frame-anchoring — R19 evaluator flagged premises (tier-structure necessity, firm-size floor, data-readiness baseline, adoption likelihood) "accepted as frame" before H[] dispatch; DA in r2 did work that initial framing should have done. FORMAT-level intervention transfers 70-85% per CDS R[format-cognitive-REVISED].
+!observed failure mode: lead reads user prompt → anchors on proposed tier/framework → writes H[] that test surface hypotheses while leaving structural premises unchallenged → agents confirm surface claims, premises uninvestigated.
+
+!when: WORKFLOW STEP 7a — AFTER §7 prompt-decomposition, BEFORE H-level agent spawn
+!applies-to: ANALYZE mode | BUILD mode → see build-directives.md §2p
+!sequence-constraint: lead answers PA[1-4] INDEPENDENTLY before re-reading user's proposed H-space. order-is-load-bearing — reversing sequence recreates the anchoring.
+!scope: STRUCTURAL premises ¬domain-depth (domain premises → §2e+DA)
+
+4 structural premise tests:
+  PA[1]: tier-necessity — is proposed tier/framework NECESSARY or is simpler structure adequate?
+  PA[2]: firm-size-floor — minimum viable org? (state explicitly)
+  PA[3]: data-readiness — what data must exist for findings to be actionable? (gap? yes/no)
+  PA[4]: adoption-baseline — RC[{class}]={rate} | above/at/below base-rate?
+
+!workspace format (lead writes to ## premise-audit-results in scratch/workspace BEFORE spawning agents):
+  PREMISE-AUDIT[pre-dispatch]:
+  PA[1]: tier-necessity: {CONFIRMED|CHALLENGED|GAP} — {one-sentence rationale}
+  PA[2]: firm-size-floor: {minimum-org} | {assumption}
+  PA[3]: data-readiness: {preconditions} | gap:{yes/no}
+  PA[4]: adoption-baseline: RC[{class}]={rate} | above/at/below base-rate
+  → proceed-with-H | revise-H-space({N}) | flag-premise({N})
+
+!rules:
+  - CHALLENGED/GAP on PA[1] or PA[2] → revise H-space BEFORE dispatch
+  - CHALLENGED on PA[3] or PA[4] → convert to explicit H[] for agents to test
+  - DA receives PREMISE-AUDIT in r2 — checks agents ¬re-anchored on challenged premises
+  - ## premise-audit-results section MUST exist in workspace before agent spawn — chain-eval presence check BLOCK day-one (per PM[3] mitigation)
+
+> BUILD variant → see build-directives.md §2p (Step 7a inserted in c1-plan.md between Step 7 and Step 8)
+
+#### §2d-severity provenance (26.4.23, extension of §2d)
+
+!purpose: distinguish finding-provenance from severity-provenance. R19 example: SR-11-7 exam findings (T1 banking-regulator source) extrapolated as severity for AI-agent review context. Transfer assumption itself unchecked. finding-claim and severity-claim are SEPARABLE epistemic objects — §2d tracks one, §2d-severity tracks the other.
+!observed failure mode: agent cites T1 source for claim-provenance → inherits T1-quality aura for severity rating despite severity extrapolated across domain boundary. ECE compounded by extrapolation layer (CDS R[LLM-calibration]).
+
+!applies-to: severity rating (LOW/MEDIUM/HIGH/CRITICAL) extrapolated from:
+  - different-sector regulatory doc (banking→AI, pharma→fintech, etc.)
+  - different-population base rate (exam-taker failure rate → review-error rate)
+  - analogical cross-technology reasoning
+!when ¬applies: severity from document being reviewed OR primary source covering exact domain → standard §2d tagging sufficient
+
+!rule: severity by extrapolation MUST carry severity-basis tag alongside finding source tag
+!format (3 required fields):
+  |severity-basis:[extrapolation:{from-context}→{to-context} |assumption:{transfer-claim} |confidence-delta:{source-tier}→{extrapolation-tier}]
+
+R19 example:
+  F[RL-F1] HIGH-severity |source:[independent-research:T1(OCC SR-11-7)] |severity-basis:[extrapolation:SR-11-7-exam-findings→AI-agent-review-context |assumption:SR exam failure rates transfer to AI-agent error rates in comparable review scope |confidence-delta:T1→agent-inference]
+
+!consequence: severity-basis:extrapolation → DA r2 explicit audit
+  DA format: "ARTIFACT-AUDIT[§2d-severity|{finding-id}]: severity extrapolated {from}→{to}. State the assumption that makes transfer valid. Evidence disconfirming transfer?"
+!rule: absence of |severity-basis:| tag on HIGH/CRITICAL extrapolated severity = process violation (same class as missing source tag)
+!chain-evaluator: A23 detects HIGH/CRITICAL severity markers in findings + checks for |severity-basis:| presence when cross-domain indicators present. WARN + CAL-EMIT per path β+.
+
+> BUILD variant → see build-directives.md §2d-severity
+
+#### §2j HIGH-severity governance minimum artifact (26.4.23)
+
+!purpose: actionability floor for governance/compliance findings. R19 F[CDS-A1]+F[CDS-B1] scored Actionability 3/4 because recommendations stopped at gap-identification without templates, specimen crosswalks, or decision trees. Sherman Kent+SATs: receiver must be able to act without further consultation. Gap-ID alone fails.
+!observed failure mode: Zeigarnik completion bias — naming the gap creates false closure. Recommendation "implement X governance" without artifact structure → adoption drops 30-40% vs artifact-bearing recommendation (Speier et al. 2003, MIS Quarterly).
+
+!applies-to: HIGH-severity OR CRITICAL-severity findings in governance/compliance domain ONLY
+  scope markers: committee structure | approval process | oversight role | compliance requirement | audit function
+  ¬applies-to: technical findings, market findings, MEDIUM/LOW severity (anti-gold-plating scope)
+
+!rule: qualifying finding MUST include minimum artifact (agent chooses one TIER) OR explicit "ARTIFACT-GAP: {reason}" tag
+
+minimum artifact taxonomy:
+  TIER-A: Template stub — fill-in-blank structure for recommended gate artifact (~20-30 min, minimum viable)
+  TIER-B: Decision tree — binary branching logic operationalizing governance control
+  TIER-C: Specimen artifact — completed example for context (most actionable, highest effort)
+
+!DA exit-gate quality check (ADR[3]):
+  format: "ARTIFACT-REVIEW[§2j|{finding-id}]: TIER-{A/B/C} |quality:{substantive|nominal} |→ accept|revise"
+  nominal artifact (3-field placeholder satisfies letter ¬spirit) → DA challenges as perfunctory per §2 DA challenge template
+  substantive = receiver could enact the governance control from the artifact alone
+!rule: ARTIFACT-GAP tag without concrete reason ("deferred to next phase" insufficient) → DA challenge
+!chain-evaluator: A22 detects HIGH/CRITICAL+governance markers + checks for TIER-A/B/C artifact presence OR ARTIFACT-GAP tag. WARN + CAL-EMIT per path β+.
+
+> BUILD variant → see build-directives.md §3b actionability criterion extension
+
 #### DA enforcement of hygiene checks
 
 DA evaluates checks during challenge round:
@@ -325,10 +446,28 @@ grade modifiers:
   - check completed perfunctorily (filled section, didn't engage) → challenge issued
 
 DA challenge format for weak checks:
-  "DA[#N] process: §2[a/b/c/e] check on [finding] is perfunctory.
+  "DA[#N] process: §2[a/b/c/e/i/p/j/d-severity] check on [finding] is perfunctory.
    You wrote '[what they wrote]' but then [what they did that contradicts it].
    |→ revise finding to reflect check result, or provide specific evidence
    for why concern doesn't apply. 'It's still the right approach' is ¬specific evidence."
+
+#### DA verdict on CAL-EMIT records (26.4.23, path β+)
+
+!purpose: close the calibration loop for WARN-first gates (§2i/§2j/§2d-severity). audit-calibration-gate.py gates BLOCK-promotion on ≥3 reviews + ≤20% FP rate — this requires DA verdicts on each firing to classify legitimate vs false-positive.
+
+!when: DA r2 exit-gate — DA processes every CAL-EMIT[PENDING] record written to workspace by chain-evaluator this session
+
+!rule: for each CAL-EMIT[{gate-id}] record in workspace with da-verdict:PENDING:
+  DA appends: da-verdict:{legitimate|false-positive|not-reviewed}
+    legitimate: gate correctly flagged a real §2i/§2j/§2d-severity violation — agent should revise
+    false-positive: gate fired on well-formed finding; heuristic mismatch — record for gate recalibration
+    not-reviewed: DA examined workspace but could not adjudicate this firing (time-boxed, out-of-domain) — record as missing data
+
+!DA exit-gate format extension:
+  exit-gate: PASS|FAIL |engagement:[grade] |unresolved:[...] |hygiene:[...] |cal-emit-verdicts:{N-total}/{N-legitimate}/{N-false-positive}/{N-not-reviewed}
+
+!rule: CAL-EMIT[PENDING] records left in workspace at DA exit-gate = process violation (same class as missing DA challenges). DA MUST verdict all PENDING records before PASS.
+!rule: not-reviewed >30% after 3 reviews → lead flags calibration stall, sigma-audit runs audit-calibration-gate.py manually.
 
 > build-mode guardrails (§4a-d: scope creep, assumption conflicts, gold-plating, test integrity) → see build-directives.md
 
@@ -1063,6 +1202,55 @@ audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process 
 !rule: /sigma-audit reads archived workspace independently in fresh context — no exposure to review conversation
 !rule: /sigma-audit produces verdict (GREEN/YELLOW/RED), flagged findings, remediation plan, calibration patterns
 !rule: calibration patterns stored to team patterns (store_team_pattern) for cross-review tracking
+
+### §8e workspace corruption recovery (26.4.23, formalized from R19 Pattern A)
+
+!purpose: formalize R19 exemplary recovery as reusable template. Auditor flagged R19 recovery-log as "exemplary" — Scope Integrity 4/4 earned via transparency, not absence-of-incident. Future corruptions are inevitable (sed -i cross-session + concurrent-write races); preserved pattern keeps response structured rather than improvised.
+!observed trigger: R19 #1 `sed -i ''` silent corruption → 4 agent sections lost mid-R1 | also: tool-call failure mid-write, filesystem error, concurrent-write race overwriting anchor.
+
+!trigger-conditions: workspace.md or scratch/*-workspace.md contains partial content, lost agent sections, phantom scaffolding, or any detectable state divergence from expected post-write outcome.
+
+!lead workflow (7 steps, sequential, ¬skip-ahead):
+
+  §8e-1 PRESERVE corrupted-state:
+    cp {workspace} {workspace}.corrupted.{YYYY-MM-DD-HHMM}
+    !purpose: corrupted artifact preserved for forensics + audit trail. ¬delete even after recovery.
+
+  §8e-2 EXTRACT preserved-sections (read-only tools ONLY):
+    !allowed: Read | cat | awk (without -i) | sed (without -i) | grep
+    !forbidden: sed -i | any tool modifying the corrupted file
+    !purpose: avoid compounding damage. R19 initial corruption was sed -i; second sed -i during recovery would propagate.
+
+  §8e-3 REBUILD scaffolding from lead-conversation-context:
+    admin work: restore ## section headers, ordering, workspace-template structure.
+    ¬analytical: lead ¬re-derives agent findings — scaffolding only.
+    !purpose: separate admin rebuild (lead role) from analytical restoration (agent role).
+
+  §8e-4 COORDINATE re-paste with strict-Edit-tool + write-window-freeze:
+    lead SendMessages each affected agent: "! workspace-corrupted |section:{agent} |→ re-paste your {round} findings via Edit tool ONLY |¬sed-i |workspace write-window freezes until your re-paste ✓"
+    agents re-paste via Edit tool (single-writer atomic, OR workspace_write() helper per IC[6]).
+    write-window freeze = other agents pause writes until affected re-pastes complete.
+
+  §8e-5 ATTEST restored-section provenance:
+    each restored section carries attestation line at section top:
+    `<!-- RECOVERY[§8e]: restored {YYYY-MM-DD-HHMM} |verbatim-from-pre-corruption:{true|approximate|partial-reconstruction} |source:{agent-memory|conversation-context|corrupted-artifact-salvage} -->`
+    !purpose: audit trail — future /sigma-audit distinguishes restored from original content.
+
+  §8e-6 DOCUMENT recovery in ## recovery-log:
+    lead writes to workspace ## recovery-log (new section if absent):
+    `RECOVERY[§8e|{YYYY-MM-DD-HHMM}]: trigger:{what-corrupted-it} |lost:{sections-unrecoverable} |preserved:{sections-salvaged} |re-pasted:{sections-agent-restored} |attestation-status:{all-verbatim|some-approximate|partial} |duration:{minutes}`
+    !purpose: one-line incident summary for /sigma-audit consumption + cross-session pattern detection.
+
+  §8e-7 TRANSPARENCY — ¬silent-restore:
+    !rule: lead MUST report recovery to user in final synthesis.
+    !rule: Scope Integrity criterion (§6e) credits transparent recovery (4/4 earnable via §8e compliance) — silent restore = Scope Integrity ≤2/4 (contamination flag).
+    audit consequence: /sigma-audit reads ## recovery-log and restoration attestations — absent documentation with detectable content changes = RED verdict.
+
+!cross-references:
+  §8a: when to archive — §8e applies DURING review (live corruption) vs §8a's post-review archival. ¬conflated.
+  §8d: /sigma-audit reads ## recovery-log + attestations as primary recovery-compliance signal.
+  sigma-lead.md ## Recovery section: lead workflow pointer to §8e.
+  §6e: Scope Integrity scoring credits transparent recovery.
 
 ## §9 post-review-calibration-protocol (26.3.23)
 

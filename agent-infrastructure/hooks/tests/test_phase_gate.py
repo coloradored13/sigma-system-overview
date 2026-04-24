@@ -430,3 +430,165 @@ class TestPhaseGateIntegration:
             "tool_input": {"command": "git commit -m 'test'"},
         }, home_dir=home)
         assert result.returncode == 2, "Should block git commit during incomplete sigma session"
+
+
+# ---------------------------------------------------------------------------
+# SQ[13g] + SQ[SS-2] — sed-i BLOCK 4 detection + shlex evasion matrix
+# ---------------------------------------------------------------------------
+#
+# BLOCK 4 (phase-gate.py:235+) covers the R19 silent-overwrite failure mode:
+# `sed -i` (no backup suffix) on workspace.md + /.claude/teams/sigma-*/shared/
+# + /.claude/hooks/ paths. Tokenization via shlex.split(posix=True) (IC[1])
+# is what makes the gate resistant to shell-quoting bypass.
+#
+# Evasion forms covered per CAL[4] + SS-2 matrix:
+#   - env-var wrapper: `env FOO=bar sed -i 'x' workspace.md`
+#   - xargs wrapper:   `echo workspace.md | xargs sed -i 'x'`
+#   - absolute-path sed: `/usr/bin/sed -i ...`
+#   - -i '' separated form (BSD-style, effectively no-backup)
+#   - -i.bak joined form (ALLOWED, real suffix = recoverable)
+#   - quoting tricks / mixed operand ordering
+
+
+class TestSedInPlaceBlock4Detection:
+    """Direct coverage of phase_gate.check_sed_in_place() on workspace paths."""
+
+    def test_blocks_sed_i_on_workspace_md(self):
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i 's/foo/bar/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is True
+        assert "SED IN-PLACE BLOCKED" in reason
+
+    def test_blocks_sed_i_on_hooks_directory(self):
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i 's/old/new/' /Users/me/.claude/hooks/chain-evaluator.py"
+        )
+        assert blocked is True
+        assert "/.claude/hooks/" in reason or "protected path" in reason
+
+    def test_allows_sed_i_bak_backup_form(self):
+        """-i.bak with real suffix creates a recoverable backup — allowed per CAL[4]."""
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i.bak 's/foo/bar/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is False, f"Backup form must pass, got reason: {reason}"
+
+    def test_blocks_sed_i_empty_suffix_separated_form(self):
+        """BSD-style `sed -i '' file` is no-backup on BSD — must be blocked."""
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i '' 's/foo/bar/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is True, (
+            "`-i '' file` form is effectively no-backup on BSD — must be blocked"
+        )
+
+    def test_allows_sed_i_outside_protected_scope(self):
+        """Tool calls on paths outside workspace/hooks scope are never blocked."""
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i 's/foo/bar/' /tmp/random-file.txt"
+        )
+        assert blocked is False
+
+    def test_allows_sed_without_i_flag(self):
+        """Plain `sed` (non-in-place, reads to stdout) is never our concern."""
+        blocked, reason = pg.check_sed_in_place(
+            "sed 's/foo/bar/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is False
+
+
+class TestSedShlexEvasionMatrix:
+    """SS-2 matrix: argv-tokenization coverage vs raw-regex bypass attempts."""
+
+    def test_env_wrapper_detected(self):
+        """`env FOO=bar sed -i ...` — shlex walks all tokens for a `sed` node."""
+        blocked, reason = pg.check_sed_in_place(
+            "env LC_ALL=C sed -i 's/x/y/' ~/.claude/hooks/phase-gate.py"
+        )
+        assert blocked is True, (
+            "env-wrapper must not bypass — shlex walk finds sed token at position 2"
+        )
+
+    def test_xargs_stdin_is_known_limitation_not_blocked(self):
+        """`xargs sed -i` with target path via stdin is documented out-of-scope.
+
+        Positive-contract test: phase-gate.py uses shlex.split to parse argv.
+        When the target file reaches sed through xargs stdin rather than its
+        own argv, the protected-path check has no operand to examine. This is
+        a DELIBERATE argv-scope limitation per ADR[SS-1] + docstring at
+        phase-gate.py:300 (post-BUILD-CONCERN[cqa] 26.4.24 resolution (a)).
+
+        Rejected alternative: blocking any `xargs` + `sed -i` chain regardless
+        of operand paths produces too-high false-positive rate on legitimate
+        batch-edits outside the protected scope. Process convention covers
+        the gap: reviewers must spot `xargs sed -i` in PR diffs on protected
+        paths. When this test starts failing (i.e. the gate DOES block), the
+        implementation has been extended — update this test to match the new
+        contract.
+        """
+        blocked, _reason = pg.check_sed_in_place(
+            "echo ~/.claude/hooks/x.py | xargs sed -i 's/a/b/'"
+        )
+        assert blocked is False, (
+            "xargs stdin path is out-of-scope for argv-based shlex walk — "
+            "if this starts blocking, ADR[SS-1] contract has been extended; update test"
+        )
+
+    def test_absolute_sed_path_detected(self):
+        """`/usr/bin/sed -i ...` — detected via tok.endswith('/sed')."""
+        blocked, reason = pg.check_sed_in_place(
+            "/usr/bin/sed -i 's/foo/bar/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is True, (
+            "Absolute sed path must be caught — tok.endswith('/sed') covers this"
+        )
+
+    def test_joined_iflag_with_empty_suffix_blocked(self):
+        """`-i''` joined with quoted empty string — the suffix collapses; must block."""
+        # shlex parses `sed -i'' 'pat' file` as [sed, -i, pat, file] after
+        # posix quote-stripping. Confirm BLOCK fires in this form.
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i'' 's/x/y/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is True, (
+            "-i'' (empty-string join) must block — no real backup suffix"
+        )
+
+    def test_long_in_place_flag_blocked(self):
+        """--in-place without suffix is equivalent to -i — must block."""
+        blocked, reason = pg.check_sed_in_place(
+            "sed --in-place 's/x/y/' ~/.claude/hooks/chain-evaluator.py"
+        )
+        assert blocked is True, (
+            "`--in-place` long form must block — same semantics as `-i` no-backup"
+        )
+
+    def test_malformed_command_does_not_block(self):
+        """shlex.split raises ValueError on unbalanced quotes; gate should return False, not error."""
+        # Unterminated quoted string — shlex raises, check_sed_in_place must
+        # fail-open (let the shell error naturally).
+        blocked, reason = pg.check_sed_in_place(
+            'sed -i "unterminated workspace.md'
+        )
+        assert blocked is False, (
+            "Malformed command must not block — fail-open on shlex parse error"
+        )
+
+    def test_chained_command_second_sed_still_blocked(self):
+        """Shell separators (&&, ||, ;) terminate; sed in second command still scanned."""
+        blocked, reason = pg.check_sed_in_place(
+            "cd /tmp && sed -i 's/a/b/' ~/.claude/teams/sigma-review/shared/workspace.md"
+        )
+        assert blocked is True, (
+            "Second sed after && must still block — walker continues through separators"
+        )
+
+    def test_sigma_optimize_shared_scope_protected(self):
+        """SED_I_PROTECTED_PATHS covers sigma-optimize/shared/ symmetric to sigma-review."""
+        blocked, reason = pg.check_sed_in_place(
+            "sed -i 's/x/y/' ~/.claude/teams/sigma-optimize/shared/something.md"
+        )
+        assert blocked is True, (
+            "sigma-optimize/shared/ must be protected same as sigma-review/shared/"
+        )

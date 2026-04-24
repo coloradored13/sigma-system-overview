@@ -220,13 +220,17 @@ def extract_agents_from_workspace(content: str) -> list[str]:
     # Try roster-based allowlist first (robust)
     roster_agents = _load_roster_agents()
     if roster_agents:
-        # Also include "devils-advocate" which is always valid but handled
-        # separately in some checks — include it in extraction
+        # devils-advocate is roster-valid but excluded from agent extraction:
+        # DA produces challenges, not F[]/DB[]/XVERIFY content, so downstream
+        # iteration over this list breaks if DA is included (R19 regression
+        # after roster.md added DA entry 26.4.11). Exclusion matches the
+        # fallback branch at line 246 — contract was documented at 223-224
+        # but the filter was never implemented here.
         agents = []
         seen = set()
         for name in agent_headers:
             key = name.lower()
-            if key in roster_agents and key not in seen:
+            if key in roster_agents and key != "devils-advocate" and key not in seen:
                 agents.append(key)
                 seen.add(key)
         return agents

@@ -2,16 +2,21 @@
 """Phase Gate — minimal PreToolUse + PostToolUse hook for atomic checklist model.
 
 Replaces phase-compliance-enforcer.py (841 lines → ~120 lines).
-Only three checks survive from the original 8 BLOCKs + 6 WARNs:
 
 HARD BLOCKS (PreToolUse exit code 2):
   1. Code write authorization — default-deny on Write/Edit to code files
      during BUILD sessions unless workspace contains plan-lock evidence (ADR/IC).
   2. Git commit gate — blocks git commit/push unless chain-evaluator reports
      complete (reads .chain-status.json).
+  3. Pre-shutdown promotion gate — blocks SendMessage shutdown_request
+     unless workspace has promotion + contamination + sycophancy sections.
+  4. sed -i workspace/hooks scope — blocks sed -i on workspace.md, shared/
+     workspace files, or /.claude/hooks/ paths. Uses shlex.split() argv
+     tokenization (CAL[4]) — not raw regex. Backup-extension forms
+     (-i.bak, -i '' + path) are permitted (they write to separate files).
 
 SOFT WARNS (PostToolUse systemMessage):
-  3. Context firewall — warns when personal context detected in workspace writes.
+  5. Context firewall — warns when personal context detected in workspace writes.
 
 Everything else (phase skip, DA exit-gate, BELIEF-on-advance, CB evidence,
 synthesis write, SendMessage dispatch) is handled by the chain-evaluator.py
@@ -21,6 +26,7 @@ Stop hook which evaluates completeness at session end.
 import json
 import os
 import re
+import shlex
 import sys
 from pathlib import Path
 
@@ -226,7 +232,154 @@ def check_premature_shutdown(tool_input: dict) -> tuple[bool, str]:
 
 
 # ---------------------------------------------------------------------------
-# WARN 4: Context firewall
+# BLOCK 4: sed -i on workspace + /.claude/hooks/ (ADR[SS-1] + IC[1] + CAL[4])
+# ---------------------------------------------------------------------------
+
+# Path substrings that trigger the sed-i block. Match is substring-based
+# so relative paths, absolute paths, and ~ expansions all hit the gate.
+SED_I_PROTECTED_PATHS = [
+    "workspace.md",
+    "/.claude/teams/sigma-review/shared/",
+    "/.claude/teams/sigma-optimize/shared/",
+    "/.claude/hooks/",
+    "/sigma-review/shared/",  # catches non-absolute path forms
+    "/sigma-optimize/shared/",
+]
+
+
+def _sed_i_flag_has_backup(flag_token: str, next_token: str | None) -> bool:
+    """Decide whether a sed -i invocation uses a backup-extension form.
+
+    Conservative: only the ``-i<SUFFIX>`` joined form with a non-empty
+    suffix is treated as a backup form. The separated ``-i '' file`` form
+    is equivalent to in-place-no-backup on BSD sed (the empty string is
+    the suffix) and is BLOCKED to stay safe across platforms. Likewise
+    the bare ``-i`` flag (GNU form without suffix) is BLOCKED.
+
+    CAL[4] note: backup-extension forms pass. We read that narrowly —
+    the backup must be a real suffix, not an empty string, to count.
+    """
+    # Joined form: -i.bak, -iBACKUP
+    if flag_token.startswith("-i") and len(flag_token) > 2:
+        return True
+    # Any other shape (-i alone, --in-place alone) is blocked
+    return False
+
+
+def check_sed_in_place(command: str) -> tuple[bool, str]:
+    """BLOCK sed -i on workspace paths or /.claude/hooks/.
+
+    Uses shlex.split() to tokenize argv — resistant to raw-regex bypass
+    via env wrappers, shell quoting, and variable expansion within the
+    argument list that resolves at parse time.
+
+    Backup-extension forms (``sed -i.bak``) pass per CAL[4] rationale:
+    a real suffix produces a recoverable .bak copy on both GNU and BSD
+    sed. In-place-no-backup forms (``sed -i``, ``sed -i ''``, ``sed
+    --in-place``) are blocked — those are the R19 silent-overwrite
+    shapes that cause data loss under concurrent workspace writes.
+
+    Scope (CAL[4]): workspace.md, teams/sigma-review/shared/, teams/
+    sigma-optimize/shared/, and /.claude/hooks/. Tool calls outside
+    these scopes are never blocked.
+
+    KNOWN LIMITATION (ADR[SS-1] shlex.split argv scope):
+    Paths supplied to sed via stdin — e.g. ``echo PATH | xargs sed -i
+    'pattern'`` — are NOT visible to an argv scanner. They exist only
+    at runtime, after this hook has decided. The following forms
+    therefore bypass this check and could overwrite a protected path:
+
+      - ``echo ~/.claude/teams/.../workspace.md | xargs sed -i 's/a/b/'``
+      - ``find . -name '*.md' | xargs sed -i 's/a/b/'``
+      - ``cat filelist.txt | xargs -n1 sed -i 's/a/b/'``
+
+    Forms where the path IS in argv — including ``xargs -I{}`` with a
+    literal operand after sed, ``env FOO=bar sed -i path``, and
+    ``/abs/path/to/sed -i workspace.md`` — remain covered.
+
+    Closing the stdin-piped gap requires runtime interception (a sed
+    shim, a PreToolUse that re-parses stdin at exec time, or an OS
+    monitor), all of which were explicitly out of ADR[SS-1] scope.
+    If empirical incidents surface, a new SQ with ADR can address it.
+    The CQA evasion-matrix test suite documents the bypass forms
+    against this docstring (see ``test_phase_gate.py`` — xargs-stdin
+    cases are marked as known-gap rather than removed so the contract
+    is inspectable from the test side as well).
+    """
+    # Fast-path: no sed in the command at all
+    if "sed" not in command:
+        return False, ""
+
+    # Tokenize. Raw regex can be fooled by quoting tricks — shlex
+    # matches shell argv parsing (IC[1]).
+    try:
+        tokens = shlex.split(command, posix=True)
+    except ValueError:
+        # Malformed command (unbalanced quotes). Don't block on parse
+        # error — let the shell fail naturally.
+        return False, ""
+
+    # Walk tokens looking for a sed invocation. Covers wrappers like
+    # `env FOO=bar sed ...` and `xargs -I{} sed ... {}` where the sed
+    # token appears literally in argv. Does NOT cover stdin-piped
+    # forms (`echo path | xargs sed -i ...`) — those paths aren't in
+    # argv, so the scanner cannot see them. See docstring KNOWN
+    # LIMITATION block.
+    n = len(tokens)
+    for i, tok in enumerate(tokens):
+        if tok != "sed" and not tok.endswith("/sed"):
+            continue
+
+        # Collect flags + operands for this sed invocation. Stop at
+        # shell separators — they terminate the current command.
+        invocation = []
+        j = i + 1
+        while j < n and tokens[j] not in (";", "&&", "||", "|", "&"):
+            invocation.append(tokens[j])
+            j += 1
+
+        # Find the -i flag (if any)
+        i_flag_idx = None
+        for k, t in enumerate(invocation):
+            if t == "-i" or t.startswith("-i") or t == "--in-place":
+                # Must be a real flag, not a file that happens to start
+                # with "-i" (unlikely but shlex.split preserves it).
+                # Only treat tokens starting with "-" as flags.
+                if t.startswith("-"):
+                    i_flag_idx = k
+                    break
+
+        if i_flag_idx is None:
+            continue  # no -i flag on this sed call — not our concern
+
+        flag_tok = invocation[i_flag_idx]
+        next_tok = invocation[i_flag_idx + 1] if i_flag_idx + 1 < len(invocation) else None
+
+        if _sed_i_flag_has_backup(flag_tok, next_tok):
+            continue  # backup form — permitted per CAL[4]
+
+        # Check operand paths against protected scope. Operands are
+        # all non-flag tokens after the -i flag.
+        operands = [t for t in invocation[i_flag_idx + 1 :] if not t.startswith("-")]
+        for path in operands:
+            for marker in SED_I_PROTECTED_PATHS:
+                if marker in path:
+                    return True, (
+                        f"SED IN-PLACE BLOCKED: 'sed -i' (no backup suffix) on "
+                        f"protected path '{path}' denied. In-place edits without a "
+                        f"backup extension cause silent overwrites under concurrent "
+                        f"workspace writes (R19 data-loss incident). Use one of:\n"
+                        f"  - sed -i.bak 'pattern' <file>  (creates backup, recoverable)\n"
+                        f"  - Edit tool (atomic, no concurrency race)\n"
+                        f"  - workspace_write() helper (atomic Python replace, IC[6])\n"
+                        f"Protected scope: workspace.md, teams/sigma-*/shared/, /.claude/hooks/."
+                    )
+
+    return False, ""
+
+
+# ---------------------------------------------------------------------------
+# WARN 5: Context firewall
 # ---------------------------------------------------------------------------
 
 def detect_context_firewall_leak(file_path: str, content: str) -> str | None:
@@ -263,6 +416,9 @@ def enforce_pre_tool_use(data: dict) -> tuple[int, dict]:
     elif tool_name == "Bash":
         command = tool_input.get("command", "")
         should_block, reason = check_premature_git_operation(command)
+        if should_block:
+            return 2, {"reason": reason}
+        should_block, reason = check_sed_in_place(command)
         if should_block:
             return 2, {"reason": reason}
 

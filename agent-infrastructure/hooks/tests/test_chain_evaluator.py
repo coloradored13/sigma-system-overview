@@ -13,6 +13,7 @@ Tests cover:
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
@@ -625,3 +626,852 @@ class TestChainEvaluatorIntegration:
         if result.stdout.strip():
             parsed = json.loads(result.stdout)
             assert parsed["passed"] is False
+
+
+# ---------------------------------------------------------------------------
+# SQ[13b] — A12 parser key-rename regression tests (R19 #4, shipped a2a7fa8)
+# ---------------------------------------------------------------------------
+
+# Full archived-session workspace content — exercises the gc.check_session_end
+# parser that populates details["archive_file_found"]. The ``## archive``
+# section + "archive: PRESENT" anchor is what the source parser keys on.
+_ARCHIVED_WORKSPACE_CONTENT = """\
+# workspace — test review
+## status: complete
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] finding |source:[independent-research] T1
+
+## convergence
+tech-architect: ✓ complete
+
+## archive
+archive-date: 2026-04-20
+archive-location: ~/.claude/teams/sigma-review/shared/archive/2026-04-20-test.md
+archive-created: yes
+archive: PRESENT
+
+## git
+committed: yes
+pushed: yes
+"""
+
+
+class TestA12ArchiveFileFoundKeyRename:
+    """Regression: R19 #4 — A12 consumes gc.check_session_end().details['archive_file_found'].
+
+    Before a2a7fa8, chain-evaluator.py:241 used key 'archive_exists' — a mismatch
+    against gate_checks source key 'archive_file_found'. A12 silently failed because
+    the .get() default returned False.
+
+    These two tests lock the contract: the key is archive_file_found, and when
+    gate_checks reports True, check_a12 passes (absent a grace-window concern).
+    """
+
+    def test_a12_reads_archive_file_found_key_not_archive_exists(self, patch_paths):
+        """The A12 check must key on 'archive_file_found' (current) not 'archive_exists' (removed)."""
+        write, ws, _ = patch_paths
+        write(_ARCHIVED_WORKSPACE_CONTENT)
+
+        # Mock gc.check_session_end to return archive_file_found=True
+        mock_result = MagicMock()
+        mock_result.details = {"archive_file_found": True, "git_clean": True}
+        mock_result.issues = []
+        with patch.object(ce.gc, "check_session_end", return_value=mock_result):
+            item = ce.check_a12(_ARCHIVED_WORKSPACE_CONTENT)
+
+        assert item.passed is True, (
+            f"A12 must pass when archive_file_found=True, got issues: {item.issues}"
+        )
+        assert "archive_file_found" in item.details, (
+            "A12 must surface archive_file_found in its details dict (downstream consumer contract)"
+        )
+        assert item.details["archive_file_found"] is True
+
+    def test_a12_fails_when_archive_file_found_false_and_workspace_old(self, patch_paths):
+        """When archive_file_found=False AND workspace >24h old, A12 fails (no grace)."""
+        write, ws, _ = patch_paths
+        write(_ARCHIVED_WORKSPACE_CONTENT)
+
+        # Backdate the workspace file to >24h old so grace window does not apply.
+        import os as _os
+        old_ts = datetime.now(timezone.utc).timestamp() - (25 * 3600)  # 25h ago
+        _os.utime(ws, (old_ts, old_ts))
+
+        mock_result = MagicMock()
+        mock_result.details = {"archive_file_found": False}
+        mock_result.issues = ["archive missing"]
+        with patch.object(ce.gc, "check_session_end", return_value=mock_result):
+            item = ce.check_a12(_ARCHIVED_WORKSPACE_CONTENT)
+
+        assert item.passed is False, (
+            "A12 must fail when archive_file_found=False AND workspace >24h old"
+        )
+        assert item.details.get("grace_window_applied") is False
+
+
+# ---------------------------------------------------------------------------
+# SQ[13e] — A12 24h grace-window deterministic tests (ie-1 SQ[2])
+# ---------------------------------------------------------------------------
+
+
+class TestA12GraceWindow:
+    """A12 24h grace-window: archive-missing is OK when workspace <24h old.
+
+    Non-looping invariant (CAL[1]): grace is a synchronous mtime delta, no
+    poll/wait/sleep. Tests mutate file mtime via os.utime for deterministic
+    boundary checks without relying on wall-clock.
+    """
+
+    def _set_workspace_age(self, ws_path, hours_ago: float) -> None:
+        import os as _os
+        target_ts = datetime.now(timezone.utc).timestamp() - (hours_ago * 3600)
+        _os.utime(ws_path, (target_ts, target_ts))
+
+    def test_grace_applies_when_workspace_younger_than_24h(self, patch_paths):
+        """Archive missing + workspace 23.9h old → A12 passes with grace_window_applied=True."""
+        write, ws, _ = patch_paths
+        write("# workspace\n## status: active\n")
+        self._set_workspace_age(ws, hours_ago=23.9)
+
+        mock_result = MagicMock()
+        mock_result.details = {"archive_file_found": False}
+        mock_result.issues = ["archive missing"]
+        with patch.object(ce.gc, "check_session_end", return_value=mock_result):
+            item = ce.check_a12("# workspace\n## status: active\n")
+
+        assert item.passed is True, "Grace must apply when workspace <24h old"
+        assert item.details["grace_window_applied"] is True
+        assert item.details["workspace_age_hours"] < 24.0
+        assert any("grace-window" in issue for issue in item.issues), (
+            "A12 must surface grace-window note in issues when applied"
+        )
+
+    def test_grace_does_not_apply_past_24h(self, patch_paths):
+        """Archive missing + workspace 24.1h old → A12 fails, no grace."""
+        write, ws, _ = patch_paths
+        write("# workspace\n## status: active\n")
+        self._set_workspace_age(ws, hours_ago=24.1)
+
+        mock_result = MagicMock()
+        mock_result.details = {"archive_file_found": False}
+        mock_result.issues = ["archive missing"]
+        with patch.object(ce.gc, "check_session_end", return_value=mock_result):
+            item = ce.check_a12("# workspace\n## status: active\n")
+
+        assert item.passed is False, "Grace must NOT apply past 24h boundary"
+        assert item.details["grace_window_applied"] is False
+        assert item.details["workspace_age_hours"] >= 24.0
+
+    def test_grace_bypassed_when_archive_present(self, patch_paths):
+        """If archive IS found, grace-window is irrelevant — A12 passes regardless of mtime."""
+        write, ws, _ = patch_paths
+        write("# workspace\n## status: complete\n")
+        self._set_workspace_age(ws, hours_ago=48.0)  # very old, but archive exists
+
+        mock_result = MagicMock()
+        mock_result.details = {"archive_file_found": True}
+        mock_result.issues = []
+        with patch.object(ce.gc, "check_session_end", return_value=mock_result):
+            item = ce.check_a12("# workspace\n## status: complete\n")
+
+        assert item.passed is True
+        assert item.details["grace_window_applied"] is False, (
+            "grace flag must be False when archive is present (not triggered)"
+        )
+
+
+# ---------------------------------------------------------------------------
+# SQ[13c] — A16/A17/A18 peer-verify extensions (complements existing tests)
+# ---------------------------------------------------------------------------
+
+# Canonical peer-verify format (IC[5] locked): "### Peer Verification: X verifying Y"
+# 3-hash header + " verifying " keyword is the regex anchor.
+
+
+class TestPeerVerifyRegexContract:
+    """A16/A17/A18 depend on _PEER_VERIFY_HEADER regex (IC[5] locked).
+
+    These tests extend the existing TestPeerVerification class to lock the
+    canonical format contract explicitly and cover edge cases that arise
+    when the TW SQ[4] spawn-template propagation is live.
+    """
+
+    def test_regex_matches_canonical_3hash_verifying_format(self):
+        """'### Peer Verification: X verifying Y' — the locked canonical format."""
+        ws = """
+### Peer Verification: tech-architect verifying implementation-engineer
+F[IE-1] checked, DB[IE-2] valid, source:[code-read] T1
+"""
+        verifications = ce._extract_peer_verifications(ws)
+        assert len(verifications) == 1
+        assert verifications[0]["verifier"] == "tech-architect"
+        assert verifications[0]["verified"] == "implementation-engineer"
+
+    def test_regex_case_insensitive_on_keyword(self):
+        """'verifying' keyword is case-insensitive per re.IGNORECASE."""
+        ws = """
+### Peer Verification: tech-architect VERIFYING implementation-engineer
+F[x] DB[y] H1
+"""
+        verifications = ce._extract_peer_verifications(ws)
+        assert len(verifications) == 1
+
+    def test_regex_rejects_4hash_header(self):
+        """#### (4 hashes) must NOT match — 3-hash is canonical per IC[5]."""
+        ws = """
+#### Peer Verification: tech-architect verifying implementation-engineer
+F[x] DB[y] H1
+"""
+        verifications = ce._extract_peer_verifications(ws)
+        assert len(verifications) == 0, (
+            "4-hash header must not match — IC[5] locks 3-hash as canonical"
+        )
+
+    def test_regex_rejects_verifies_variant(self):
+        """'X verifies Y' (without -ing) must NOT match — only 'verifying' is canonical."""
+        ws = """
+### Peer Verification: tech-architect verifies implementation-engineer
+F[x] DB[y] H1
+"""
+        verifications = ce._extract_peer_verifications(ws)
+        assert len(verifications) == 0, (
+            "'verifies' variant must not match — canonical format requires 'verifying'"
+        )
+
+    def test_a16_passes_when_all_non_da_agents_have_verifier_sections(self, patch_paths):
+        """Every non-DA agent in extract_agents must appear as verifier of someone."""
+        write, _, _ = patch_paths
+        ws = """\
+## findings
+### tech-architect
+F[TA-1] a finding
+
+### implementation-engineer
+F[IE-1] another
+
+## convergence
+### Peer Verification: tech-architect verifying implementation-engineer
+F[IE-1] valid, DB[IE-1], H1 addressed
+
+### Peer Verification: implementation-engineer verifying tech-architect
+F[TA-1] valid, DB[TA-1], H1 addressed
+"""
+        write(ws)
+        item = ce.check_a16(ws)
+        assert item.passed is True, f"A16 should pass, got: {item.issues}"
+        assert "tech-architect" in item.details["agents"]
+        assert "implementation-engineer" in item.details["agents"]
+        assert item.details["verifications_found"] == 2
+
+    def test_a16_fails_when_agent_has_no_verifier_role(self, patch_paths):
+        """If TA has a finding but never verifies anyone, A16 flags TA as missing."""
+        write, _, _ = patch_paths
+        ws = """\
+## findings
+### tech-architect
+F[TA-1]
+
+### implementation-engineer
+F[IE-1]
+
+## convergence
+### Peer Verification: implementation-engineer verifying tech-architect
+F[TA-1] DB[TA-1] H1
+"""
+        write(ws)
+        item = ce.check_a16(ws)
+        assert item.passed is False
+        assert "tech-architect" in item.details["agents_without_verification"]
+
+    def test_a17_counts_three_distinct_artifact_patterns(self):
+        """A17 needs >=3 artifact refs; mix of F[], DB[], H1 should pass."""
+        ws = """\
+### Peer Verification: tech-architect verifying implementation-engineer
+Confirmed F[IE-1], DB[IE-2] holds, H1 addressed specifically.
+"""
+        item = ce.check_a17(ws)
+        # >=3 patterns: F[IE-1] + DB[IE-2] + H1 = 3 distinct refs
+        assert item.passed is True, f"A17 should pass with 3 refs, got: {item.issues}"
+
+    def test_a17_fails_on_exactly_two_refs(self):
+        """Boundary: exactly 2 refs — below threshold (>=3)."""
+        ws = """\
+### Peer Verification: tech-architect verifying implementation-engineer
+Looked at F[IE-1] and DB[IE-1]. Looks OK.
+"""
+        item = ce.check_a17(ws)
+        assert item.passed is False, "A17 must fail below 3-ref threshold"
+
+    def test_a17_xverify_tag_counts_as_artifact_ref(self):
+        """XVERIFY[provider:model] pattern is one of the locked artifact families."""
+        ws = """\
+### Peer Verification: tech-architect verifying implementation-engineer
+XVERIFY[openai:gpt-4o] XVERIFY[google:gemini] XVERIFY[nemotron:nano]
+"""
+        item = ce.check_a17(ws)
+        assert item.passed is True, (
+            "Three XVERIFY tags alone should satisfy A17's >=3 threshold"
+        )
+
+    def test_a18_coverage_with_da_counted(self, patch_paths):
+        """DA challenges count as verification of all agents (1 ring peer + DA = 2)."""
+        write, _, _ = patch_paths
+        ws = """\
+## findings
+### tech-architect
+F[TA-1]
+
+### implementation-engineer
+F[IE-1]
+
+### Peer Verification: tech-architect verifying implementation-engineer
+F[IE-1] valid DB[IE-1] H1
+
+### Peer Verification: implementation-engineer verifying tech-architect
+F[TA-1] valid DB[TA-1] H1
+
+### devils-advocate
+DA[#1] TA anchor challenge
+DA[#2] IE compliance challenge
+exit-gate: PASS
+"""
+        write(ws)
+        item = ce.check_a18(ws)
+        assert item.passed is True, f"A18 should pass, got: {item.issues}"
+        assert item.details["da_verifies_all"] is True
+        # Each agent verified by >=2 (one peer + DA)
+        for agent, verifiers in item.details["coverage"].items():
+            assert len(verifiers) >= 2, (
+                f"{agent} under-covered: {verifiers}"
+            )
+
+    def test_a18_fails_without_da_and_only_one_peer_verifier(self, patch_paths):
+        """If DA is absent and only one peer verifies, coverage is insufficient."""
+        write, _, _ = patch_paths
+        ws = """\
+## findings
+### tech-architect
+F[TA-1]
+
+### implementation-engineer
+F[IE-1]
+
+### Peer Verification: tech-architect verifying implementation-engineer
+F[IE-1] DB[IE-1] H1
+"""
+        write(ws)
+        item = ce.check_a18(ws)
+        # implementation-engineer has 1 verifier (TA), no DA, no self-verify
+        # tech-architect has 0 verifiers
+        assert item.passed is False
+        assert len(item.details["under_covered"]) > 0
+
+
+# ---------------------------------------------------------------------------
+# SQ[13d] — A3 DB extraction: split-by-DB + (1)(2)(3) marker filter (ie-1 SQ[3])
+# ---------------------------------------------------------------------------
+#
+# R19 #19 fix: pre-rewrite re.findall matched every DB[...] substring, including
+# reference citations ("DB[F[A-1]] confirmed by TA"). Post-fix: split-by-DB
+# produces candidate segments; segments require (1)(2)(3) parenthesised markers
+# to count as genuine dialectical exercises; everything else counts as a
+# reference citation.
+#
+# Surface contract (documented in ie-1 SQ[3] scratch note):
+#   details["db_genuine_by_agent"] : dict[agent, genuine_count]
+#   details["db_reference_by_agent"] : dict[agent, reference_count]
+#   details["shallow_db_entries"] : list[str] (only present if shallow found)
+
+
+def _make_ws_with_agent_db(agent: str, db_block: str) -> str:
+    """Build a minimal workspace with one real-roster agent and a DB block."""
+    return f"""\
+# workspace
+## status: active
+## mode: ANALYZE
+
+## findings
+### {agent}
+F[X-1] a finding |source:[independent-research] T1
+{db_block}
+
+## convergence
+{agent}: ✓ complete
+"""
+
+
+class TestA3DBGenuineVsReference:
+    """Verification 4 contract: genuine DB exercises require (1)(2)(3) markers."""
+
+    def test_five_genuine_exercises_counted(self, patch_paths):
+        write, _, _ = patch_paths
+        # All 5 follow the canonical (1)(2)(3)(4)(5) pattern.
+        db_block = "\n".join(
+            f"DB[F[X-{i}]]: (1) initial: a{i} (2) assume-wrong: b{i} "
+            f"(3) strongest-counter: c{i} (4) re-estimate: d{i} (5) reconciled: e{i}"
+            for i in range(1, 6)
+        )
+        ws = _make_ws_with_agent_db("tech-architect", db_block)
+        write(ws)
+        item = ce.check_a3(ws)
+
+        assert item.details["db_genuine_by_agent"].get("tech-architect") == 5, (
+            f"Expected 5 genuine, got {item.details['db_genuine_by_agent']}"
+        )
+        assert item.details["db_reference_by_agent"].get("tech-architect", 0) == 0
+        # No shallow entries (all have 4 and 5)
+        assert "shallow_db_entries" not in item.details or not item.details["shallow_db_entries"]
+
+    def test_pure_references_no_genuine(self, patch_paths):
+        write, _, _ = patch_paths
+        # DB citations in prose — no (1)(2)(3) markers.
+        db_block = (
+            "Summary references: DB[F[X-1]] confirmed by TA, DB[F[X-2]] from prior round, "
+            "DB[F[X-3]] holds under challenge."
+        )
+        ws = _make_ws_with_agent_db("implementation-engineer", db_block)
+        write(ws)
+        item = ce.check_a3(ws)
+
+        assert item.details["db_genuine_by_agent"].get("implementation-engineer", 0) == 0, (
+            "Pure reference citations must NOT count as genuine exercises"
+        )
+        # All three DB[] matches land in references
+        assert item.details["db_reference_by_agent"].get("implementation-engineer") == 3
+
+    def test_mixed_three_genuine_two_references(self, patch_paths):
+        write, _, _ = patch_paths
+        db_block = (
+            "DB[F[X-1]]: (1) initial: a (2) assume-wrong: b (3) counter: c "
+            "(4) re-estimate: d (5) reconciled: e\n"
+            "DB[F[X-2]]: (1) init (2) assume-wrong (3) counter (4) re-est (5) reconciled\n"
+            "DB[F[X-3]]: (1) a (2) b (3) c (4) d (5) e\n"
+            "Later references: DB[F[X-1]] confirmed, DB[F[X-2]] holds."
+        )
+        ws = _make_ws_with_agent_db("tech-architect", db_block)
+        write(ws)
+        item = ce.check_a3(ws)
+
+        assert item.details["db_genuine_by_agent"].get("tech-architect") == 3, (
+            f"Expected 3 genuine, got {item.details['db_genuine_by_agent']}"
+        )
+        assert item.details["db_reference_by_agent"].get("tech-architect") == 2, (
+            f"Expected 2 references, got {item.details['db_reference_by_agent']}"
+        )
+
+    def test_shallow_exercise_flagged(self, patch_paths):
+        """DB with (1)(2)(3) only — counts as genuine but surfaces in shallow_db_entries."""
+        write, _, _ = patch_paths
+        db_block = "DB[F[X-1]]: (1) initial (2) assume-wrong (3) counter — stopped here"
+        ws = _make_ws_with_agent_db("tech-architect", db_block)
+        write(ws)
+        item = ce.check_a3(ws)
+
+        assert item.details["db_genuine_by_agent"].get("tech-architect") == 1
+        assert "shallow_db_entries" in item.details
+        shallow = item.details["shallow_db_entries"]
+        assert any("tech-architect" in entry for entry in shallow), (
+            f"Shallow entry must reference the agent name: {shallow}"
+        )
+
+    def test_multi_agent_keyed_per_agent(self, patch_paths):
+        """Two agents, each with different genuine/reference counts, keyed correctly."""
+        write, _, _ = patch_paths
+        ws = """\
+# workspace
+## status: active
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] finding |source:[independent-research] T1
+DB[F[TA-1]]: (1) initial: a (2) assume-wrong: b (3) counter: c (4) re-est: d (5) reconciled: e
+DB[F[TA-2]]: (1) a (2) b (3) c (4) d (5) e
+
+### implementation-engineer
+F[IE-1] finding |source:[independent-research] T1
+DB[F[IE-1]]: (1) i (2) w (3) c (4) r (5) f
+Earlier: DB[F[TA-1]] was settled by TA, DB[F[TA-2]] also confirmed.
+
+## convergence
+tech-architect: ✓ complete
+implementation-engineer: ✓ complete
+"""
+        write(ws)
+        item = ce.check_a3(ws)
+
+        assert item.details["db_genuine_by_agent"].get("tech-architect") == 2
+        assert item.details["db_genuine_by_agent"].get("implementation-engineer") == 1
+        # IE has 2 references citing TA's DBs
+        assert item.details["db_reference_by_agent"].get("implementation-engineer") == 2
+        # TA has no references in its own section
+        assert item.details["db_reference_by_agent"].get("tech-architect", 0) == 0
+
+    def test_adjacent_db_entries_split_correctly(self, patch_paths):
+        """DB entries with no intervening prose — lookahead split must not merge them."""
+        write, _, _ = patch_paths
+        # Three genuine exercises back-to-back, no blank lines between.
+        db_block = (
+            "DB[F[X-1]]: (1) a (2) b (3) c (4) d (5) e\n"
+            "DB[F[X-2]]: (1) a (2) b (3) c (4) d (5) e\n"
+            "DB[F[X-3]]: (1) a (2) b (3) c (4) d (5) e"
+        )
+        ws = _make_ws_with_agent_db("tech-architect", db_block)
+        write(ws)
+        item = ce.check_a3(ws)
+
+        assert item.details["db_genuine_by_agent"].get("tech-architect") == 3, (
+            "Adjacent DB entries must split into 3 segments, not merge into 1"
+        )
+
+
+# ---------------------------------------------------------------------------
+# SQ[13f] + SQ[CDS-6..8] — path-β+ WARN-first gates (A20/A22/A23) + CAL-EMIT
+# ---------------------------------------------------------------------------
+
+
+def _ws_with_finding(agent: str, finding_line: str, *, build_id: str = "26.4.24-test") -> str:
+    """Minimal workspace with ## build-id and one finding line placed in ## findings."""
+    return f"""\
+# workspace
+## build-id: {build_id}
+## status: active
+## mode: ANALYZE
+
+## findings
+### {agent}
+{finding_line}
+
+## convergence
+{agent}: ✓ complete
+"""
+
+
+class TestA20PrecisionGateCondition2:
+    """SQ[13f] + SQ[CDS-6] — A20 fires on CONDITION 2 triggers, suppresses on CONDITION 1 keywords."""
+
+    def test_fires_on_70pct_confidence_marker(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] >70% confidence this migration closes by Q3 — no driver breakdown",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+
+        assert item.passed is True, "A20 is WARN-only, must never fail chain"
+        assert item.details["fire_count"] == 1
+        assert item.details["fires"][0]["trigger"] == "confidence>=70%"
+        assert item.details["fires"][0]["finding_id"] == "TA-1"
+        assert len(item.details["cal_emit_records"]) == 1
+
+    def test_fires_on_high_severity_marker(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "implementation-engineer",
+            "F[IE-1] HIGH-severity defect: cross-tenant data leak observed in staging",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 1
+        assert item.details["fires"][0]["trigger"] == "HIGH/CRITICAL-severity"
+
+    def test_fires_on_primary_recommendation(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] primary recommendation: consolidate on Postgres 16",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 1
+        assert item.details["fires"][0]["trigger"] == "primary-recommendation-cited"
+
+    def test_suppressed_by_driver_breakdown(self, patch_paths):
+        """CONDITION 1 suppression: 'derives from: [...]' keyword present → no fire."""
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] >70% confidence — derives from: [base-rate=42%, peer-data=78%, RC[analog]=65%]",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 0, (
+            "CONDITION 1 driver breakdown suppressor must prevent fire"
+        )
+
+    def test_suppressed_by_ci_notation(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] HIGH-severity risk, 80% CI [12, 34] based on historical data",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 0
+
+    def test_suppressed_by_approximately_qualifier(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] primary recommendation: approximately 30% cost reduction expected",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 0
+
+
+class TestA20CALEmitSchema:
+    """SQ[CDS-6] — CAL-EMIT record format compliance + threshold/no-fire cases."""
+
+    def test_cal_emit_record_matches_directive_schema(self, patch_paths):
+        """CAL-EMIT[A20]: review-id:X |finding-ref:F[Y] |fire-reason:Z |workspace-context:agent:excerpt |da-verdict:PENDING"""
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] HIGH-severity migration defect in payment pipeline",
+            build_id="2026-04-24-r19-test",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        record = item.details["cal_emit_records"][0]
+
+        assert record.startswith("CAL-EMIT[A20]: review-id:")
+        assert "review-id:2026-04-24-r19-test " in record
+        assert "|finding-ref:F[TA-1] " in record
+        assert "|fire-reason:HIGH/CRITICAL-severity " in record
+        assert "|workspace-context:tech-architect:" in record
+        assert record.endswith("|da-verdict:PENDING")
+
+    def test_no_fire_produces_empty_records_list(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] observed 3 log entries in the audit trail — no severity claim",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["cal_emit_records"] == []
+        assert item.details["fire_count"] == 0
+
+    def test_multiple_fires_per_agent_each_emit_record(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = """\
+# workspace
+## build-id: multi-fire-test
+## status: active
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] HIGH-severity finding one
+F[TA-2] >70% confidence in finding two
+
+## convergence
+tech-architect: ✓ complete
+"""
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 2
+        assert len(item.details["cal_emit_records"]) == 2
+        finding_ids = [f["finding_id"] for f in item.details["fires"]]
+        assert "TA-1" in finding_ids and "TA-2" in finding_ids
+
+    def test_review_id_fallback_when_no_build_id_header(self, patch_paths):
+        """No ## build-id → date-prefix + task-excerpt or 'unnamed' fallback."""
+        write, _, _ = patch_paths
+        ws = """\
+# workspace
+## status: active
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] HIGH-severity fallback case
+
+## convergence
+tech-architect: ✓ complete
+"""
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        review_id = item.details["review_id"]
+        import re as _re
+        assert _re.match(r"^\d{4}-\d{2}-\d{2}-", review_id), (
+            f"fallback review_id must be date-prefixed: {review_id}"
+        )
+
+
+class TestA22GovernanceArtifact:
+    """SQ[CDS-7] — A22 fires on HIGH-severity + governance + missing TIER/GAP."""
+
+    def test_fires_on_high_severity_governance_no_artifact(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] HIGH-severity: lack of approval process for model deployment",
+        )
+        write(ws)
+        item = ce.check_a22_governance_artifact(ws)
+        assert item.passed is True, "A22 is WARN-only"
+        assert item.details["fire_count"] == 1
+        assert item.details["fires"][0]["trigger"] == "HIGH-severity-governance-no-TIER-artifact"
+
+    def test_suppressed_by_tier_a_artifact_in_window(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = """\
+# workspace
+## build-id: tier-test
+## status: active
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] HIGH-severity: oversight role missing for AI-governance committee.
+Recommended: TIER-A template stub — model-approval workflow with maker-checker gates.
+
+## convergence
+tech-architect: ✓ complete
+"""
+        write(ws)
+        item = ce.check_a22_governance_artifact(ws)
+        assert item.details["fire_count"] == 0, (
+            "TIER-A in tail must suppress — artifact satisfies directive"
+        )
+
+    def test_suppressed_by_artifact_gap_tag(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = """\
+# workspace
+## build-id: gap-test
+## status: active
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] HIGH-severity: compliance requirement uncovered for SOC2 audit function.
+ARTIFACT-GAP: phase-2 crosswalk pending legal sign-off.
+
+## convergence
+tech-architect: ✓ complete
+"""
+        write(ws)
+        item = ce.check_a22_governance_artifact(ws)
+        assert item.details["fire_count"] == 0, (
+            "ARTIFACT-GAP:{reason} tag must suppress fire"
+        )
+
+    def test_does_not_fire_on_non_governance_high_severity(self, patch_paths):
+        """HIGH-severity without governance marker → A22 no fire (scope narrow)."""
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "implementation-engineer",
+            "F[IE-1] HIGH-severity performance regression in query planner",
+        )
+        write(ws)
+        item = ce.check_a22_governance_artifact(ws)
+        assert item.details["fire_count"] == 0, (
+            "Non-governance HIGH-severity must NOT fire A22 (anti-gold-plating scope)"
+        )
+
+
+class TestA23SeverityProvenance:
+    """SQ[CDS-8] — A23 fires on extrapolated HIGH severity missing |severity-basis: tag."""
+
+    def test_fires_on_extrapolated_severity_missing_tag(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] HIGH-severity: SR-11-7 findings extrapolated to AI-agent review context",
+        )
+        write(ws)
+        item = ce.check_a23_severity_provenance(ws)
+        assert item.passed is True, "A23 is WARN-only"
+        assert item.details["fire_count"] == 1
+        assert item.details["fires"][0]["trigger"] == "extrapolated-severity-missing-basis-tag"
+
+    def test_suppressed_when_severity_basis_tag_present(self, patch_paths):
+        write, _, _ = patch_paths
+        ws = """\
+# workspace
+## build-id: basis-tag-test
+## status: active
+## mode: ANALYZE
+
+## findings
+### tech-architect
+F[TA-1] HIGH-severity: SR-11-7 exam findings extrapolated to AI-agent scope |severity-basis:[extrapolation:banking→AI |assumption:exam-failure-rates-transfer |confidence-delta:T1→agent-inference]
+
+## convergence
+tech-architect: ✓ complete
+"""
+        write(ws)
+        item = ce.check_a23_severity_provenance(ws)
+        assert item.details["fire_count"] == 0, (
+            "|severity-basis: tag present in window → A23 must not fire"
+        )
+
+    def test_does_not_fire_on_native_domain_severity(self, patch_paths):
+        """HIGH-severity without extrapolation indicator → A23 no fire (narrow scope)."""
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "implementation-engineer",
+            "F[IE-1] HIGH-severity SQL injection vector identified in search endpoint",
+        )
+        write(ws)
+        item = ce.check_a23_severity_provenance(ws)
+        assert item.details["fire_count"] == 0, (
+            "Native-domain severity (no extrapolation indicator) must NOT fire A23"
+        )
+
+
+class TestPathBetaPlusIntegration:
+    """Integration: CAL-EMIT records → calibration-log.md → audit-calibration-gate.py pipeline."""
+
+    def test_cal_emit_appends_to_calibration_log_when_file_exists(
+        self, patch_paths, tmp_path, monkeypatch
+    ):
+        """Fire A20 against tmp log-file, verify append + schema."""
+        cal_log = tmp_path / "calibration-log.md"
+        cal_log.write_text("# calibration-log\n## Records\n", encoding="utf-8")
+        monkeypatch.setattr(ce, "CALIBRATION_LOG_PATH", cal_log)
+
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] HIGH-severity integration test finding",
+            build_id="integration-test",
+        )
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+
+        assert item.details["fire_count"] == 1
+        log_after = cal_log.read_text(encoding="utf-8")
+        assert "CAL-EMIT[A20]" in log_after
+        assert "review-id:integration-test" in log_after
+        assert "finding-ref:F[TA-1]" in log_after
+        assert "da-verdict:PENDING" in log_after
+
+    def test_cal_emit_silent_when_log_missing(
+        self, patch_paths, tmp_path, monkeypatch
+    ):
+        """File-missing → silent: record still in details, no exception raised."""
+        missing = tmp_path / "does-not-exist.md"
+        assert not missing.exists()
+        monkeypatch.setattr(ce, "CALIBRATION_LOG_PATH", missing)
+
+        write, _, _ = patch_paths
+        ws = _ws_with_finding(
+            "tech-architect",
+            "F[TA-1] HIGH-severity silent-write test",
+            build_id="silent-test",
+        )
+        write(ws)
+        # Must not raise — file existence check prevents write; record still returned
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 1
+        assert len(item.details["cal_emit_records"]) == 1, (
+            "Record must still be returned in details even if file write skipped"
+        )

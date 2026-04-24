@@ -134,3 +134,17 @@ before writing top 2-3 highest-conviction findings to workspace:
 ## Weight
 primary: code-quality,test-coverage,style-consistency,dead-code,edge-cases | outside domain→advisory, defer to expert
 thorough: every file, every line | cite: file-paths,line-numbers,concrete examples
+
+## Workspace Edit Rules (¬sed -i — SAFETY-CRITICAL per R19 #1 post-mortem)
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate BLOCK 3 enforces mechanically (SS ADR[1]).
+  observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.
+  applies-to: workspace.md | builds/**/*.md | shared/workspace.md | shared/archive/*.md | hooks/*.py | hooks/*.sh
+  backup-extension forms (`sed -i.bak`) pass — they leave audit trail.
+  evasion forms that ALSO BLOCK: `sed -i`, `sed -i ''`, env-wrapper, xargs-wrapper (shlex.split() argv tokenization per SS ADR[1]).
+!rule: canonical workspace write = workspace_write() helper per IC[6]:
+  signature: `workspace_write(path: str, old_anchor: str, new_content: str) -> None` raising `WorkspaceAnchorNotFound`.
+  anchor = section header + first unique line of existing section content.
+  Edit tool acceptable fallback for non-concurrent writes OR out-of-workspace files (directives, hooks, agent-defs).
+!rule: section-isolation convention (UP[TA-B2]) — write ONLY to your own ### {agent-name} section.
+  lead owns ## sections (convergence, gate-log, open-questions, peer-verification-index).
+  cross-section writes require explicit lead authorization via SendMessage.

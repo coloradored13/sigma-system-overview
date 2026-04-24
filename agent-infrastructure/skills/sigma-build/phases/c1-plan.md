@@ -59,6 +59,37 @@ Report to user:
 ```
 **WAIT for user confirmation before proceeding.** Do not spawn agents without approval.
 
+### Step 7a: Premise-Audit Pre-Dispatch (HARD GATE — §2p)
+
+Per directives.md §2p (build-directives.md §2p BUILD variant), lead answers PA[1-4] BEFORE re-reading user's proposed H-space in Step 8. **Sequence is load-bearing** — reversing recreates the frame-anchoring that §2p prevents (R19 evaluator: premises "accepted as frame" before H[] dispatch).
+
+!applies-to: ALL sigma-build tasks (TIER-1/2/3)
+!sequence-constraint: PA[1-4] answered from user prompt ALONE — do NOT re-read user's proposed tiers/frameworks/H-space until Step 7a is complete
+!scope: STRUCTURAL premises ¬domain-depth (domain → §2e+DA in agent analysis)
+
+4 structural premise tests (BUILD-scoped per build-directives.md §2p):
+- PA[1]: tech-tier-necessity — is proposed architecture tier NECESSARY or is simpler stack adequate? (monolith vs microservices vs serverless vs event-driven)
+- PA[2]: scale-floor — minimum viable user/request volume? State explicitly — ¬assume 10K+ from prompt framing.
+- PA[3]: data-readiness — what integration points/datasets must exist for build to deploy usefully? Gap? yes/no.
+- PA[4]: precedent-baseline — RC[{similar-build-in-stack}]={typical-duration} | above/at/below base-rate?
+
+Write PREMISE-AUDIT result to scratch workspace `## premise-audit-results` section (populated in Step 10 template) using workspace_write() helper per IC[6]:
+```
+PREMISE-AUDIT[pre-dispatch]:
+  PA[1]: tech-tier-necessity: {CONFIRMED|CHALLENGED|GAP} — {one-sentence rationale}
+  PA[2]: scale-floor: {minimum-volume} | {assumption-stated}
+  PA[3]: data-readiness: {required-preconditions} | gap:{yes/no}
+  PA[4]: precedent-baseline: RC[{class}]={rate} | above/at/below base-rate
+  → proceed-with-H | revise-H-space({N}) | flag-premise({N})
+```
+
+!rule: CHALLENGED/GAP on PA[1] or PA[2] → revise scope-boundary + Q[] BEFORE advancing to Step 8 (¬spawn agents with contested structural premise)
+!rule: CHALLENGED on PA[3] or PA[4] → convert to explicit H[] for agents to test in Step 8
+!rule: decision line (→ proceed|revise|flag) is REQUIRED — chain-evaluator presence check BLOCKs on missing `## premise-audit-results` section (PM[3] mitigation, BLOCK day-one per DA[#6]-b resolution)
+!rule: DA receives PREMISE-AUDIT in r2 (Step 18) — checks agents ¬re-anchored on CHALLENGED premises
+
+Report: `"PREMISE-AUDIT: PA[1]:{status} |PA[2]:{status} |PA[3]:{status} |PA[4]:{status} |→ {decision}"`
+
 ### Step 8: Prompt Understanding (HARD GATE)
 sigma-build is self-contained. Any prompt enters here and gets broken down before agents see it.
 
@@ -103,6 +134,8 @@ Report: `"PROMPT-UNDERSTANDING: Q:{count} |H:{count}(challenged:{count}) |C:{cou
 - [ ] Complexity tier assessed and reported
 - [ ] Agent selection reported to user
 - [ ] User confirmed agent selection
+- [ ] **Step 7a premise-audit (§2p): PA[1-4] answered BEFORE Step 8 H-space re-read** — sequence-constraint enforced
+- [ ] **Step 7a decision line recorded** (→ proceed | revise | flag) — chain-evaluator BLOCKs on missing `## premise-audit-results` section
 - [ ] Prompt understanding (Q/H/C) completed with challenge + clarify
 - [ ] User confirmed prompt understanding
 - [ ] Cost estimate reported (and confirmed if > $10)
@@ -130,6 +163,15 @@ Create directory and scratch file at `~/.claude/teams/sigma-review/shared/builds
 
 ## prompt-understanding
 {Q/H/C from preflight step 8 — copy exactly as user confirmed}
+
+## premise-audit-results
+PREMISE-AUDIT[pre-dispatch]:
+  PA[1]: tech-tier-necessity: {CONFIRMED|CHALLENGED|GAP} — {one-sentence rationale}
+  PA[2]: scale-floor: {minimum-volume} | {assumption-stated}
+  PA[3]: data-readiness: {required-preconditions} | gap:{yes/no}
+  PA[4]: precedent-baseline: RC[{class}]={rate} | above/at/below base-rate
+  → proceed-with-H | revise-H-space({N}) | flag-premise({N})
+(populated by lead in Step 7a BEFORE agent spawn — chain-evaluator BLOCKs on missing decision line)
 
 ## scope-boundary
 This build implements: {phase description, specific features}
@@ -230,8 +272,40 @@ Claims H1-HN are user hypotheses extracted from the prompt. Test these — find 
 Do ¬assume they are true. If a claim (e.g. scale, tech choice) drives architectural decisions,
 flag: "H[N] assumption used — ¬independently validated" and cite the specific choice it affects.
 
+## ΣVerify Init (MANDATORY pre-ToolSearch — §2h belt-and-suspenders)
+before any ToolSearch or sub-tool call: invoke mcp__sigma-verify__init {} once.
+  !purpose: hateoas-agent state-gates verify_finding/cross_verify/challenge behind init transition.
+    R19 #3 failure mode: 5/5 agents skipped init → 5 XVERIFY-FAIL.
+  !redundant-with: machine.py auto-ready (TA ADR[1]) — spawn-prompt call is belt-and-suspenders per DA[#2] compromise + SS ADR[2].
+  !if-unavailable: init returns ¬providers → proceed without XVERIFY (all findings carry no-tag, neutral per §2h).
+  !do-NOT-retry: one init call per session; subsequent tool calls succeed idempotently.
+
+## Workspace Write Rules (¬sed -i, atomic-Python-replace, section-isolation)
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate BLOCK 3 enforces mechanically.
+  observed: R19 #1 `sed -i ''` silent corruption → 4 agent sections lost mid-R1.
+  canonical: Edit tool OR workspace_write() helper per IC[6].
+!rule: section-isolation convention — write ONLY to your own ### {agent-name} section.
+  lead writes ## sections (convergence, gate-log, open-questions, peer-verification-index).
+  cross-section writes → SendMessage lead, request authorization.
+!rule: workspace_write(path: str, old_anchor: str, new_content: str) -> None helper per IC[6]:
+  atomic Python replace; raises WorkspaceAnchorNotFound on anchor miss (anchor = section header + first unique line).
+  use for workspace.md + builds/*/*.md + shared/workspace.md writes.
+  Edit tool is acceptable fallback for out-of-workspace files (directives, agent-defs, hooks).
+
 ## Rate Limits
 shared API: 1K RPM + 90K output tok/min across all agents. rate-limit-error→backoff 10s, max 3 retries/60s.
+
+## Peer Verification Assignment
+After completing your findings + analytical hygiene, verify {peer-name}'s workspace section.
+Write a section with this EXACT header format (chain-evaluator A16/A17/A18 regex match):
+```
+### Peer Verification: {your-name} verifying {peer-name}
+```
+!rule: 3-hash header, the word "verifying" between names, lowercase. ¬4-hash, ¬"verifies".
+!rule: reference ≥3 specific artifact IDs (DB[], F[], XVERIFY[], H[]) — generic "looks good" fails A17 specificity check.
+!rule: per-item PASS|FAIL|N/A verdicts with evidence — NOT a narrative summary.
+See your ## Peer Verification instructions in the agent template for the full checklist protocol.
+Your chain is incomplete without this verification (A16).
 
 ## Work
 {select track based on agent role — lead includes ONLY the relevant section}
