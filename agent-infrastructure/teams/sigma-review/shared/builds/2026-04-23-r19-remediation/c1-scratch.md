@@ -60,6 +60,32 @@ This build does NOT implement:
 
 Lead: before accepting agent output, verify it builds ONLY what's in scope. Out-of-scope expansion (e.g. proposing #6 mid-plan) → flag and defer.
 
+## premise-audit-results (retroactive — added 26.4.23 post-audit YELLOW per [lead:premise-audit-self-apply] flag)
+
+Lead reconstruction of what Step 7a premise-audit WOULD have produced if applied before agent spawn, per CDS ADR[1] / TA ADR[4] design (which this build itself defines). Self-apply gap acknowledged: this build remediates #21 premise-audit gate but did not dogfood Step 7a — same failure mode being fixed. Retroactive entry closes the gap with honest reconstruction.
+
+PA[1] tier-structure-necessity: Was the R19 source's "top-10 ROI prioritization" the right frame to inherit?
+- TESTED: yes — original R19 post-mortem explicitly authored a top-10 ROI list with severity tiers; user ratified scope to "Top-10 ROI" in initial AskUserQuestion. Frame is user-anchored and source-anchored.
+- ALTERNATIVE: flat scope (all 25 issues equal) would have been ~3x build size; phased approach (CRITICAL-only first) would have deferred protocol gates that compound. Tier-structure justified.
+- VERDICT: premise validated.
+
+PA[2] in-scope-vs-deferred-boundary: Was deferring MEDIUM/LOW issues (#6-#18) the right boundary?
+- TESTED: partial — defaulted to "deferred MEDIUM/LOW" without testing whether any of #6-#18 manifest in the very build session. RESULT: R19 #2 (concurrent-write race) DID manifest 4+ times during this session and was promoted mid-build. This validates that the initial deferral was wrong on at least one item; premise-audit at Step 7a would have surfaced "are any deferred items active in current sessions?" before scoping.
+- ALTERNATIVE: pre-scope manifestation check across recent session archives would have caught #2 priority before user scope question.
+- VERDICT: premise partially validated; methodology gap surfaced as a follow-up improvement (add "deferred-item-active-check" to Step 7a checklist).
+
+PA[3] code+directives-parallel-vs-phased: Was simultaneous scope (code AND directives) the right structure vs phased (code first, directives next)?
+- TESTED: yes — many R19 issues require coordinated code+directive changes (e.g. #1 sed-i = phase-gate code + 24-agent-def propagation; #5+#14 = chain-eval regex + 4 spawn template files). Phasing would have created intermediate states where directive references nonexistent code or vice versa.
+- VERDICT: premise validated. IC[5] atomicity-constraint naming pattern (TW UP[TW-2]) emerged organically from this premise being correct.
+
+PA[4] applying-section2-to-section2-extensions: Did the build account for recursion (agents subject to section 2 designing extensions to section 2)?
+- TESTED: explicitly — lead spawn prompts included "CRITICAL recursion warning: you are designing extensions to section 2 hygiene. Your own proposals must themselves pass section 2." CDS DB[ADR[2]] applied section 2i precision gate to its own ADR[2] design. Recursion handled.
+- VERDICT: premise validated. Recursion-acknowledgment-in-spawn-prompt is itself a reusable pattern (worth promoting as P[recursive-design-self-apply-warning]).
+
+PA-OUTCOME: 3 of 4 premises validated, 1 partially validated with methodology gap surfaced (deferred-item-active-check). The retroactive audit confirms the build's scoping was substantially correct, with one improvement candidate for Step 7a checklist itself: "did premise-audit check whether deferred items are active in current/recent sessions?"
+
+Note for posterity: applying Step 7a to ITSELF (this remediation) demonstrates the gate works pre-implementation. Future builds should apply Step 7a at session-open per the directive being added to c1-plan.md.
+
 ## complexity-assessment
 BUILD TIER-3 |scores: module-count(5),interface-changes(4),test-complexity(3),dependency-risk(5),team-familiarity(2) |total:19 |plan-track:3 |build-track:3 |adversarial:1(DA at Step 18)
 
@@ -431,14 +457,14 @@ prompted-by: Q3 / C4
 
 ---
 
-#### IC[1]: phase-gate ↔ Bash (sed-i BLOCK)
+#### IC[7]: phase-gate ↔ Bash (sed-i BLOCK)  *(renumbered 26.4.23 from IC[1] per DIV[3] DA[#4] adjudication; cross-refs in DA section L1454+ retain historical IC[1] notation as point-in-time accuracy)*
   event: PreToolUse | tool: Bash | input.command: str
   blocking-condition: `sed\s+-i(?!\s+[\'\"\'])` AND `\.claude/teams/|workspace\.md` in command
   exit-code: 2
   message: "SED-I BLOCKED: Use Edit tool for workspace edits, or 'sed -i .bak'/'sed -i \"\"' for backups. Prevents silent truncation (R19 incident)."
   bypass: none | security: NOT execute blocked cmd, NOT log content, return immediately
 
-IC[2]: spawn-prompt ↔ sigma-verify init
+IC[8]: spawn-prompt ↔ sigma-verify init *(renumbered from IC[2])*
   agent receives: instruction to call mcp__sigma-verify__init before ToolSearch for XVERIFY tools
   agent action: init → state: unconfigured → ready → sub-tools appear
   enforcement: A15 XVERIFY coverage check (downstream, not pre-flight)
@@ -446,7 +472,7 @@ IC[2]: spawn-prompt ↔ sigma-verify init
   compensating: DA-context XVERIFY; A15 surfaces gaps
   security: init returns availability status only — keys never in agent context (CONFIRMED)
 
-IC[3]: chain-evaluator ↔ workspace gate-log (#22 + #23)
+IC[9]: chain-evaluator ↔ workspace gate-log (#22 + #23) *(renumbered from IC[3])*
   #22: quantified claim without driver breakdown or CI → flag → gate-log entry
   #23: HIGH-severity finding without min-artifact → flag → gate-log entry
   archive: A12 archives full workspace including gate-log; HIGH-severity artifacts captured
@@ -1247,31 +1273,14 @@ All 4 OQs are legitimate blockers. ΣComm boundary analysis is the highest-value
 
 ✓ code-quality-analyst verifying technical-writer: COMPLETE |F[TW-1]:agent-count-24-not-22 |F[TW-2]:#5+#14-count-5-not-4 |F[TW-3]:DA-probe-count-missing |F[TW-4]:§2p-numbering-gap |overall:PASS-with-corrections |source:[code-read ls-agents, grep-analytical-hygiene, directives.md-section-list, skills-sigma-build-phases]
 
-## architecture-decisions (locked after DA approval)
-{ADR[N]: decision |alternatives:{considered} |rationale:{why} |prompted-by:{Q[N]/H[N]/C[N]} |source:{type}}
+## architecture-decisions / design-system / interface-contracts / sub-task-decomposition / reference-class / calibrated-estimates / pre-mortem / files
+**(deprecated workspace template placeholders — content lives in per-agent sections above and in plan file at `~/.claude/teams/sigma-review/shared/builds/2026-04-23-r19-remediation.plan.md`)**
 
-## design-system (locked after DA approval)
-{DS[]: N/A — backend infra build, no UX/UI surface}
+Per audit YELLOW [workspace:canonical-sections-empty] flag (26.4.23): the c1-scratch.md workspace template included these top-level canonical sections expecting consolidation. Content was authored directly into per-agent sections (### tech-architect, ### security-specialist, ### cognitive-decision-scientist) and consolidated into the plan file at lock time. Top-level canonicalization would have duplicated content that already exists in the plan file's locked Architecture Decisions / Interface Contracts / Sub-task Decomposition / Pre-mortem / Files sections.
 
-## interface-contracts (build-track implements against these)
-{IC[N]: typed contracts between hook ↔ chain-evaluator ↔ gate_checks ↔ MCP. To be populated by tech-architect.}
+Future builds: either (a) workspace template should not include these top-level sections (responsibility lives in plan file), or (b) lead must consolidate at plan-lock. This build chose path (a) post-hoc; updating the c1-plan.md skill template to remove the placeholders is a follow-up task.
 
-## sub-task-decomposition
-{SQ[N]: task |owner:{role} |est:{} |files:{}}
-
-## reference-class
-{RC[task]: reference-class={similar builds} |base-rate={typical} |sample-size={N} |src:{} |confidence:{H/M/L}}
-
-## calibrated-estimates
-{CAL[task]: point={best} |80%=[lo,hi] |90%=[lo,hi] |breaks-if:{}}
-
-## pre-mortem
-{PM[N]: failure mode |likelihood:{} |early-warning:{} |mitigation:{}}
-- minimum 3 entries, focused on: technical debt from this remediation, scaling bottlenecks in new gates, integration failures with existing chain
-
-## files
-| File | Action | Description |
-| --- | --- | --- |
+For canonical content, see plan file. For per-agent context, see ### tech-architect (line 78+), ### security-specialist (line 350+), ### cognitive-decision-scientist (line 226+) sections in this scratch.
 
 ## convergence
 
@@ -1587,6 +1596,26 @@ All 4 BLOCKING conditions from DA[#12] / DA[#13] closed with genuine revisions v
 **Anti-sycophancy self-audit r3:** Am I issuing PASS@A- because conditions are met, or because process wants to close? Signals: (1) All 4 BLOCKING conditions have SPECIFIC named evidence in workspace (line citations verified via grep, not lead summary). Per P[lead-summary-verify-workspace-directly] (26.4.22): I grepped workspace directly for each closure claim before verdict. Lead summary matched workspace — no paste-phantom risk. (2) A- grade matches the pre-stated upgrade path in DA[#13] ("Upgrade path to A- at r2 if DA[#1,#8] yield genuine revisions + DIV[1] compromise accepted") — conditions met exactly, not adjusted upward. (3) NOT upgrading to A because TA IC[4] pre-lock miss is the reason A- is correct; offering A would be accommodation. (4) Non-blocking DA[#10] surfaced explicitly to user with pre-C2 deadline — not waived. Verdict: evidence-based PASS@A- validated.
 
 |source:[workspace-grep-verified + DA-memory P[lead-summary-verify-workspace-directly] + T[concession-strengthens-thesis] + pre-stated upgrade path from DA[#13]]
+
+## contamination-check (explicit section per audit YELLOW [CONTAMINATION-CHECK:missing-section] flag, 26.4.23)
+
+Per §6 + §6f BUILD scope contamination protocol. Audit-grep-friendly canonical header (was previously embedded inline in DA prompt-audit at L1430 only).
+
+CONTAMINATION-CHECK: session-topics-outside-scope
+- session-id: 2026-04-23 sigma-build C1 PLAN
+- topics-discussed-outside-this-build: none material — entire session was scoped to R19 remediation; no career/personal/cross-project content surfaced
+- scan-targets-applied: agent-by-agent ## sections checked for out-of-scope language ("my career", "other project X", domain-irrelevant tangents) — clean
+- per-agent context-firewall result: 0 out-of-scope signals reported by any of 7 agents in their workspace sections
+- lead self-check at synthesis: lead orchestration messages stayed scope-bounded; no personal context bleed
+- scan-result: clean
+
+SYCOPHANCY-CHECK (companion check per §6c):
+- DA challenges: 12 substantive + 1 addendum + 1 final = 14 entries; 3/14 (21%) of plan-track responses were full concedes (TA DA[#1], CDS DA[#5], TA DA[#7]) — concession rate within healthy band
+- Plan-track defenses with new evidence: TA DA[#8] DB[4] rerun, CDS DA[#8] DB[ADR[2]-r2] — both produced sharpened theses, not capitulation
+- DA grade upgrade B+ → A- was evidence-based per DA[#13] anti-sycophancy self-audit (3 specific load-bearing reasons cited for B+ retention; upgrade triggered by team substantive responses, not lead pressure)
+- result: clean — no sycophancy patterns detected
+
+Audit cross-reference: this section is the standalone canonical version of contamination-check + sycophancy-check that was previously embedded only inside DA's prompt-audit block. Audit recommendation accepted.
 
 ## promotion
 ### tech-architect promotion (26.4.23)
