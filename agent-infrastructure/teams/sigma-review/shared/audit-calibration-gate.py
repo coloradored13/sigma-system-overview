@@ -8,6 +8,9 @@ per-gate promotion thresholds:
     RECALIBRATE   ≥3 distinct reviews |>20% FP rate
     CALIBRATING   insufficient data (fewer reviews OR fewer verdicts)
 
+WARN-first gates evaluated: A20 (§2i precision), A22 (§2j governance
+artifact), A23 (§2d severity provenance), A24 (sigma-verify init pre-flight).
+
 Thresholds are sourced from directives.md §2i path β+ (~line 347).
 
 This is a STANDALONE script — NOT a chain-evaluator A-check (per CAL[10]).
@@ -41,7 +44,10 @@ _CAL_EMIT_RE = re.compile(
 )
 
 # Valid gate IDs per PF[4] lock (c2-scratch) — A21 RESERVED, not valid.
-VALID_GATES = {"A20", "A22", "A23"}
+# A24 added 2026-04-24 (R3 fix per CDS r2 cross-section finding): A24 fires
+# correctly via chain-evaluator but consumer was bucketing CAL-EMIT[A24]
+# records as malformed because the gate-id wasn't in this set.
+VALID_GATES = {"A20", "A22", "A23", "A24"}
 
 # Promotion thresholds (directives.md §2i path β+)
 MIN_REVIEWS = 3
@@ -280,7 +286,7 @@ def run(log_path: Path, gate_filter: str | None = None) -> tuple[int, str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        description="Evaluate β+ calibration thresholds for WARN-first gates (A20/A22/A23)."
+        description="Evaluate β+ calibration thresholds for WARN-first gates (A20/A22/A23/A24)."
     )
     parser.add_argument(
         "--file",

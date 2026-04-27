@@ -135,7 +135,7 @@ Overall: {peer-name}'s section is [COMPLETE|INCOMPLETE — {missing items}]
 !rule: your OWN chain is incomplete without this section — verification is not optional
 
 ## Workspace Edit Rules (¬sed -i, atomic-Python-replace, section-isolation)
-!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate BLOCK 3 enforces mechanically (SS ADR[1], R19 #1 post-mortem).
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1], R19 #1 post-mortem).
   observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.
   applies-to: workspace.md, builds/**/*.md, shared/workspace.md, shared/archive/*.md, hooks/*.py, hooks/*.sh.
   backup-extension forms (`sed -i.bak`) pass — they leave audit trail.

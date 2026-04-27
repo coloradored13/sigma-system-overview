@@ -610,7 +610,10 @@ def _emit_cal_record(
     does not exist or the write fails, the record is still returned so
     tests can observe detection without a live filesystem dependency.
     """
-    clean_excerpt = excerpt.replace("\n", " ").strip()[:50]
+    # Producer-side pipe-escape: CAL-EMIT record uses `|` as field delimiter,
+    # so literal pipes in excerpts break downstream parsing. Translate to `/`
+    # before truncation (CDS XVERIFIED openai+google high-agree; DA confirmed).
+    clean_excerpt = excerpt.replace("\n", " ").replace("|", "/").strip()[:50]
     record = (
         f"CAL-EMIT[{gate_id}]: review-id:{review_id} "
         f"|finding-ref:{finding_ref} "
@@ -938,6 +941,123 @@ def check_a23_severity_provenance(content: str) -> ChainItem:
 
 
 # ---------------------------------------------------------------------------
+# A24: sigma-verify init pre-flight — WARN on load-bearing findings that
+# lack XVERIFY coverage when ΣVerify was MCP-available this session.
+# ---------------------------------------------------------------------------
+
+# Same-line / small-window presence check. XVERIFY[provider:model] OR
+# XVERIFY-FAIL[provider:model] OR XVERIFY-PARTIAL both count as covered.
+_XVERIFY_ANY_RE = re.compile(
+    r"\bXVERIFY(?:-(?:FAIL|PARTIAL))?[\[\s(:]",
+    re.IGNORECASE,
+)
+
+
+def check_a24_sigma_verify_coverage(content: str) -> ChainItem:
+    """A24: sigma-verify init pre-flight (WARN, path β+).
+
+    Scope (narrow, per SS recommendation):
+      - ΣVerify is MCP-available per workspace ## infrastructure pre-flight
+      - Finding has a load-bearing marker (>=70% confidence, HIGH/CRITICAL
+        severity, or primary-recommendation citation — same detectors as A20)
+      - Finding's line + 500-char window does NOT contain an XVERIFY / XVERIFY-FAIL /
+        XVERIFY-PARTIAL tag
+
+    What A24 catches: load-bearing findings written without XVERIFY coverage
+    when ΣVerify was available (agent skipped the mandatory §2h step).
+
+    What A24 does NOT catch: runtime authorization gaps or MCP-Registry
+    advertisement issues — those are sigma-verify server-side concerns per
+    IC[8] gateway-semantic-contract (see sigma-verify/machine.py docstring).
+
+    A15 (gc.check_xverify_coverage) is the per-agent binary check; A24 is
+    the per-finding β+ calibration gate — complementary, not redundant.
+    """
+    review_id = _review_id_from_content(content)
+    fires: list[dict[str, str]] = []
+    cal_records: list[str] = []
+
+    # Gate: only fire when ΣVerify was available this session.
+    if not gc.is_sigverify_available(content):
+        return ChainItem(
+            item_id="A24",
+            name="sigma-verify init pre-flight (WARN, path β+)",
+            passed=True,
+            category="agent-work",
+            details={
+                "fires": [],
+                "fire_count": 0,
+                "cal_emit_records": [],
+                "path": "β+ WARN-first",
+                "review_id": review_id,
+                "skip_reason": "ΣVerify unavailable — A24 does not apply",
+            },
+            issues=[],
+        )
+
+    agents = gc.extract_agents_from_workspace(content)
+    for agent in agents:
+        section = gc._get_agent_section(content, agent)
+        for finding_id, line in _iter_finding_lines(section):
+            # Load-bearing check — reuse A20 triggers verbatim
+            trigger = None
+            if _CONFIDENCE_70_RE.search(line):
+                trigger = "confidence>=70%"
+            elif _HIGH_SEVERITY_RE.search(line):
+                trigger = "HIGH/CRITICAL-severity"
+            elif _PRIMARY_REC_RE.search(line):
+                trigger = "primary-recommendation-cited"
+            if not trigger:
+                continue
+            # Window around the finding — line + next 500 chars, bounded by
+            # the next F[] so we don't bleed into sibling findings.
+            line_end = section.find(line) + len(line)
+            tail_end = min(line_end + 500, len(section))
+            tail = section[line_end:tail_end]
+            next_finding = _FINDING_LINE_RE.search(tail)
+            if next_finding:
+                tail = tail[: next_finding.start()]
+            window = line + tail
+            if _XVERIFY_ANY_RE.search(window):
+                continue  # XVERIFY / XVERIFY-FAIL / XVERIFY-PARTIAL present
+            record = _emit_cal_record(
+                gate_id="A24",
+                review_id=review_id,
+                finding_ref=f"F[{finding_id}]",
+                fire_reason=f"load-bearing-without-xverify:{trigger}",
+                agent=agent,
+                excerpt=line,
+            )
+            fires.append({
+                "agent": agent,
+                "finding_id": finding_id,
+                "trigger": trigger,
+            })
+            cal_records.append(record)
+
+    return ChainItem(
+        item_id="A24",
+        name="sigma-verify init pre-flight (WARN, path β+)",
+        passed=True,
+        category="agent-work",
+        details={
+            "fires": fires,
+            "fire_count": len(fires),
+            "cal_emit_records": cal_records,
+            "path": "β+ WARN-first",
+            "review_id": review_id,
+        },
+        issues=[
+            f"A24 WARN: load-bearing F[{f['finding_id']}] "
+            f"(agent={f['agent']}, trigger={f['trigger']}) has no XVERIFY / "
+            f"XVERIFY-FAIL tag — sigma-verify was available this session. "
+            f"CAL-EMIT written, DA verdict PENDING"
+            for f in fires
+        ],
+    )
+
+
+# ---------------------------------------------------------------------------
 # Chain evaluation: run all items
 # ---------------------------------------------------------------------------
 
@@ -951,6 +1071,7 @@ ANALYZE_CHAIN = [
     check_a20_precision_gate,
     check_a22_governance_artifact,
     check_a23_severity_provenance,
+    check_a24_sigma_verify_coverage,
     # Chain closure
     check_a11, check_a12, check_a13, check_a14,
 ]
@@ -994,6 +1115,11 @@ def evaluate_single(item_id: str, workspace_path: str | Path | None = None) -> C
         "A9": check_a9, "A10": check_a10, "A11": check_a11, "A12": check_a12,
         "A13": check_a13, "A14": check_a14, "A15": check_a15,
         "A16": check_a16, "A17": check_a17, "A18": check_a18,
+        # Path β+ calibration gates (WARN-first, CAL-EMIT)
+        "A20": check_a20_precision_gate,
+        "A22": check_a22_governance_artifact,
+        "A23": check_a23_severity_provenance,
+        "A24": check_a24_sigma_verify_coverage,
         "B1": check_b1, "B2": check_b2, "B3": check_b3, "B4": check_b4,
     }
 

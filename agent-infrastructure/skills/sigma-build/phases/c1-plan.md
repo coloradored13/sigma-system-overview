@@ -281,7 +281,7 @@ before any ToolSearch or sub-tool call: invoke mcp__sigma-verify__init {} once.
   !do-NOT-retry: one init call per session; subsequent tool calls succeed idempotently.
 
 ## Workspace Write Rules (¬sed -i, atomic-Python-replace, section-isolation)
-!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate BLOCK 3 enforces mechanically.
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically.
   observed: R19 #1 `sed -i ''` silent corruption → 4 agent sections lost mid-R1.
   canonical: Edit tool OR workspace_write() helper per IC[6].
 !rule: section-isolation convention — write ONLY to your own ### {agent-name} section.

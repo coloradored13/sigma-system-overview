@@ -49,6 +49,21 @@ peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-question
 7→INDEPENDENCE-CHECK: verify you have NOT read search-conservative's workspace section (§2 cross-agent-independence). If you have, flag as integrity violation.
 8→PERSIST + CONVERGE
 
+## Workspace Edit Rules (¬sed -i, atomic-Python-replace, section-isolation)
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1], R19 #1 post-mortem).
+  observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.
+  applies-to: workspace.md, builds/**/*.md, shared/workspace.md, shared/archive/*.md, hooks/*.py, hooks/*.sh.
+  backup-extension forms (`sed -i.bak`) pass — they leave audit trail.
+  test-forms that must all BLOCK: `sed -i`, `sed -i ''`, `sed -i""`, env-wrapper, xargs-wrapper (shlex.split() argv tokenization per SS ADR[1]).
+!rule: canonical workspace write = workspace_write() helper per IC[6].
+  signature: workspace_write(path: str, old_anchor: str, new_content: str) -> None
+  raises WorkspaceAnchorNotFound on anchor miss.
+  anchor = section header (e.g. `### {agent-name}`) + first unique line of existing section content.
+!rule: section-isolation convention (UP[TA-B2]) — write ONLY to your own ### {agent-name} section.
+  lead owns ## sections (convergence, gate-log, open-questions, peer-verification-index).
+  cross-section writes require explicit lead authorization via SendMessage.
+!rule: Edit tool is acceptable for out-of-workspace files (directives.md, agent-defs, skill phase files).
+
 ## Persistence (before ✓, no direct file writes)
 1. store_agent_memory(tier:project, agent:search-aggressive, team:sigma-optimize) → experiment findings ΣComm
 2. store_agent_memory(tier:global, agent:search-aggressive, team:sigma-optimize) → R[]/C[]/identity if updated

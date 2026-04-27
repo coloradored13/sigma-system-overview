@@ -25,6 +25,11 @@ Persistent, compiled domain knowledge from sigma-review analyses. Each page is u
 
 - [Enterprise AI Rollout — Financial Services](enterprise-ai-rollout-finserv.md) — four conditions model, SR 11-7 compliance architecture, compliance x adoption heuristic, ROI calibration (P=0.35 18mo), survivorship bias, cognitive biases in vendor selection, timeline base rates, pre-mortem taxonomy, measurement debiasing [R18, 26.4.16]
 
+- [Sigma-Build Infrastructure Architecture](sigma-build-infrastructure-architecture.md) — chain-evaluator A12 grace + A20/A22/A23 WARN+CAL-EMIT + A24 sigma-verify pre-flight + A3 layered authority; phase-gate BLOCK 4 sed-i + shlex; multi-layer contract drift pattern (4 instances) [B-r19-remediation, 26.4.25]
+- [β+ Calibration Pattern](beta-plus-calibration-pattern.md) — WARN-first gate-promotion, CAL-EMIT schema, 3-reviews/20%-FP/5-DA-verdicted thresholds, producer/consumer schema-decoupling failure mode, regression-lock pre-flight pattern [B-r19-remediation, 26.4.25]
+- [workspace_write Contract](workspace-write-contract.md) — IC[6] signature, anchor-presence + no-op double-guard against PM[4], section-isolation convention, 67 production writes / 0 anchor failures, recursive-self-reference anti-pattern [B-r19-remediation, 26.4.25]
+- [Premise-Audit Step 7a](premise-audit-step-7a.md) — pre-dispatch anti-anchoring, PA[1-4] template, sequence constraint at c1-plan.md:62, chain-eval BLOCK day-one, BUILD/ANALYZE split, self-application bootstrap exception [B-r19-remediation, 26.4.25]
+
 ## Convention
 - One page per entity, domain, or topic that appears across reviews or warrants standalone reference
 - Page filenames: lowercase, hyphenated (e.g., `loan-admin-tech-landscape.md`, `alter-domus.md`)

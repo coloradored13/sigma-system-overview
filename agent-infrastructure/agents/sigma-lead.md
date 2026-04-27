@@ -66,7 +66,7 @@ Canonical peer-verification header format (chain-evaluator A16/A17/A18 regex mat
 !rule: canonical write method = workspace_write(path: str, old_anchor: str, new_content: str) -> None helper per IC[6]:
   atomic Python replace; raises WorkspaceAnchorNotFound on anchor miss.
   anchor = section header + first unique line of section content.
-!rule: ¬sed -i on workspace files or ~/.claude/hooks/ — phase-gate BLOCK 3 enforces mechanically (SS ADR[1]).
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1]).
 !rule: Edit tool acceptable for out-of-workspace files (directives.md, agent-defs).
 
 Include the peer assignment in each agent's spawn prompt:

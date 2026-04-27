@@ -37,7 +37,7 @@ SendMessage each agent:
   !rule: 3-hash, "verifying" between names, lowercase. ¬4-hash, ¬"verifies". Chain-evaluator A16/A17/A18 match exactly this format (IC[5], regex unchanged).
   !rule: reference ≥3 specific artifact IDs (SQ[], CHECKPOINT[], F[]) — generic "looks good" fails A17.
 - Section-isolation convention (UP[TA-B2]): agents write ONLY to their own ### {agent-name} section in scratch workspace; lead writes ## sections. Cross-section writes require lead authorization. Canonical method: workspace_write() helper per IC[6] for workspace files; Edit tool acceptable for out-of-workspace files.
-- ¬sed -i rule: phase-gate BLOCK 3 enforces ban on sed -i against workspace files and ~/.claude/hooks/ files (SS ADR[1]).
+- ¬sed -i rule: phase-gate enforces the sed-i BLOCK ban against workspace files and ~/.claude/hooks/ files (SS ADR[1]).
 
 ## Build
 

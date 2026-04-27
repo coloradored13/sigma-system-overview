@@ -4,15 +4,20 @@
 - created: 2026-04-23
 - build-id: 2026-04-23-r19-remediation
 - tier: BUILD TIER-3 (score 19)
-- status: built
+- status: closing
 - plan-exit-gate: PASS
 - plan-belief: P=0.88
-- DA-grade: A-
-- build-exit-gate: PASS-PENDING-C3
-- build-belief: P=0.00 (C3 computes)
+- DA-grade-c1: A-
+- DA-grade-c3-r1: B (FAIL on 3 blockers)
+- DA-grade-c3-r2: A- (PASS post-r2-fix, CDS NEW HIGH found)
+- DA-grade-c3-r3: A (PASS post-r3-fix, 1 LOW 4th-instance deferred)
+- build-exit-gate: PASS
+- build-belief: P=0.89 (C3 r3 final)
 - team-name: r19-remediation-c1
 - c2-team-name: r19-remediation-c2
+- c3-team-name: r19-remediation-c3
 - c2-completed: 2026-04-24
+- c3-r1-r2-r3-completed: 2026-04-25
 
 ## Context
 Remediate the top-10 ROI infrastructure + protocol-layer issues surfaced in the R19 sigma-review post-mortem (2026-04-22 ai-agent-rollout-playbook-vet review — audit GREEN, eval B 3.14). Both code (chain-evaluator.py, phase-gate.py, sigma-verify MCP) and directives/spawn-templates/agent-defs are in scope. Memory source: `~/.claude/projects/-Users-bjgilbert/memory/project_sigma-review-infrastructure-issues.md`.
@@ -273,7 +278,21 @@ Cluster C (CQA, 12 SQs incl gating):
 - §2i CONDITION 1 full-semantic detection deferred per ADR[CDS-2]+DA[#5] (suppression heuristic same-line only in code)
 - β+ calibration gate promotion remains deliberate lead action on PROMOTE signal (documented in audit-calibration-gate.py output handling)
 
-## Build Review Summary
+## Build Review Summary (written by C3)
+- **DA challenges**: 13 r1 + 0 r2 (PASS) + 1 r3 LOW spot-check finding = 14 total | **DA grade**: B (r1 FAIL on 3 blockers) → A- (r2 PASS post-fix) → A (r3 PASS post-CDS-finding-fix)
+- **Plan compliance**: full — all r1+r2 blockers resolved; ADR[1] documented-drift handled via synthesis language lock per TA+DA r1 convergence; A24 silent-skip caught in r1 + shipped in r2 + consumer-allowlist completed in r3; BLOCK 3→4 doc drift fixed via TW OPTION 2 (block-number-agnostic phrasing — superior to literal sweep per DA endorsement) + R3 add-on for 5 sigma-optimize agents (per TW BUILD-CONCERN[tw-r2]) + R3-2 canonical resync (per CQA→TW peer-verify SHA-128 finding); statistical-analyst propagated; CAL-EMIT pipe-escape fixed at chain-evaluator.py:613; A24 wired end-to-end (producer chain-evaluator + ANALYZE_CHAIN + evaluate_single dispatch + audit-calibration-gate VALID_GATES + argparse choices)
+- **Test integrity findings**: 1 in r1 (DA[#11] §4d gap on TestA20CALEmitSchema missing pipe-fixture — closed in r2 via CQA pipe-bearing fixture test); CQA r2 + r3 tests all pass §4d criteria (behavior not runs, requirements not implementation, failure cases included, no hardcoded shortcuts, real infrastructure not mocks)
+- **BUILD rubric**: correctness=4/4 test-coverage=4/4 maintainability=4/4 performance=4/4 security=4/4 api-design=4/4 (24/24 overall); 5 minor deferrals logged as synthesis recommendations for future builds (xargs framing minor, IC[7-9] namespace, A24 docstring attribution, A24 §-enumeration in directives.md, XVERIFY over-suppression regex, A24 no-Condition-1-suppression docstring note)
+- **Contamination check**: clean (zero off-topic discussions; entire conversation focused on r19-remediation C3)
+- **Sycophancy check**: clean (DA r1 blockers ruled VALID over TA "needs-fixes:none-blocking"; CDS r2 NEW HIGH accepted over DA r2 PASS without retracting DA's PASS; A24 lead-recommendation REVISED defer→ship after SS made stronger argument; SS explicit anti-sycophancy bias-check; multiple evidence-based position updates documented)
+- **Review rounds**: 3 (r1 review FAIL → r2 fixes/review PASS-with-CDS-NEW-HIGH → r3 fix/verify PASS) | **Final belief**: P=0.89
+- **Fixes applied**: 9 total (r2: 5 IE [A24, pipe-escape, IC[8] docstring, machine.py:144 orphan-ref no-op, dispatch dict A20/A22/A23] + 5 TW [BLOCK sweep 27 files, statistical-analyst, R3 add-on 5 sigma-optimize, R3-2 canonical resync 29 files, peer-verify CDS] + 6 CQA [pipe-fixture, A24 tests x5, BLOCK sweep grep-verify, R3-2 SHA verify, full regression, A24-consumer-roundtrip]; r3: 1 IE [VALID_GATES + docstring + argparse] + 1 CQA [A24-consumer-roundtrip with regression-lock]) | **Tests**: 247/247 canonical pass + 300/300 sigma-verify pass | **Regressions**: 0 across 3 rounds (240→246→247)
+- **Build-track convergence**: r2 4/4 IE fixes shipped under budget (25min vs 60min) + r3 1/1 IE fix under budget (8min vs 10min); TW R2+R3+R3-2 = 5 fixes + 67 successful workspace_write helper writes (IC[6] dogfooded with zero WorkspaceAnchorNotFound); CQA 7 new tests + 4 verify items + 2 bonus calibration findings (deferred per gold-plating discipline)
+- **Peer-verify ring**: 7/7 closed (DA→TA, TA→IE, IE→CQA, CQA→TW, TW→CDS, CDS→SS, SS→DA) + IE→CQA re-closed at r3
+- **Process strengths**: TW BUILD-CONCERN-then-ratify protocol applied 2x cleanly (no silent absorption); IE refusal+flag against task-list-teammate misroute at session start (process-integrity-over-completion in action); SS explicit anti-sycophancy bias-check + bonus end-to-end A24 wiring trace; CDS bonus telemetry recovery (13 historical A24 records surfaced via fix); CQA regression-lock pre-flight assertion pattern; DA pattern-recognition-from-3-instances-to-4
+- **Process gaps logged for sigma-mem**: A24 silent-skip root cause (plan ## Files entry without SQ owner + TW punt-instead-of-flag) → 4 structural fix candidates for promotion; multi-layer-contract-drift pattern (4 instances) → P[doc-enumeration-drift-from-machine-source-of-truth]; template-vs-instance drift sync-script + chain-evaluator A25 detection design (decision: duplication preserves rule-following safety, sync script over generator, mechanical detection prevents drift); recursive-self-reference anti-pattern (TW used prior propagation as canonical reference instead of source-of-truth) → P[propagate-from-source-not-prior-instance]; task-list-teammate auto-router misroute → mitigation pattern documented
+
+## Close Status
 *(empty — written by C3)*
 
 ## Close Status

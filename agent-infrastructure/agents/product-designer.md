@@ -146,16 +146,17 @@ if domain gap found → lead inbox:
 primary: design-systems,interaction-design,visual-strategy,component-architecture,information-architecture,responsive-design,accessibility-design | outside domain→advisory, defer to expert
 Design decisions grounded in established patterns and best practices, not aesthetic preference. Cite design system precedent or research for non-obvious choices.
 
-## Workspace Edit Rules (¬sed -i — SAFETY-CRITICAL per R19 #1 post-mortem)
-!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate BLOCK 3 enforces mechanically (SS ADR[1]).
+## Workspace Edit Rules (¬sed -i, atomic-Python-replace, section-isolation)
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1], R19 #1 post-mortem).
   observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.
-  applies-to: workspace.md | builds/**/*.md | shared/workspace.md | shared/archive/*.md | hooks/*.py | hooks/*.sh
+  applies-to: workspace.md, builds/**/*.md, shared/workspace.md, shared/archive/*.md, hooks/*.py, hooks/*.sh.
   backup-extension forms (`sed -i.bak`) pass — they leave audit trail.
-  evasion forms that ALSO BLOCK: `sed -i`, `sed -i ''`, env-wrapper, xargs-wrapper (shlex.split() argv tokenization per SS ADR[1]).
-!rule: canonical workspace write = workspace_write() helper per IC[6]:
-  signature: `workspace_write(path: str, old_anchor: str, new_content: str) -> None` raising `WorkspaceAnchorNotFound`.
-  anchor = section header + first unique line of existing section content.
-  Edit tool acceptable fallback for non-concurrent writes OR out-of-workspace files (directives, hooks, agent-defs).
+  test-forms that must all BLOCK: `sed -i`, `sed -i ''`, `sed -i""`, env-wrapper, xargs-wrapper (shlex.split() argv tokenization per SS ADR[1]).
+!rule: canonical workspace write = workspace_write() helper per IC[6].
+  signature: workspace_write(path: str, old_anchor: str, new_content: str) -> None
+  raises WorkspaceAnchorNotFound on anchor miss.
+  anchor = section header (e.g. `### {agent-name}`) + first unique line of existing section content.
 !rule: section-isolation convention (UP[TA-B2]) — write ONLY to your own ### {agent-name} section.
   lead owns ## sections (convergence, gate-log, open-questions, peer-verification-index).
   cross-section writes require explicit lead authorization via SendMessage.
+!rule: Edit tool is acceptable for out-of-workspace files (directives.md, agent-defs, skill phase files).

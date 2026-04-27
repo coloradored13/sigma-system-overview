@@ -1475,3 +1475,270 @@ class TestPathBetaPlusIntegration:
         assert len(item.details["cal_emit_records"]) == 1, (
             "Record must still be returned in details even if file write skipped"
         )
+
+    def test_cal_emit_survives_pipe_bearing_source_tag(self, patch_paths):
+        """Blocker 3 regression-lock: excerpt with literal `|` must roundtrip
+        through the consumer regex and land in the valid-bucket, not malformed.
+
+        The emitter uses `|` as field delimiter; unescaped pipes inside the
+        excerpt (e.g. `|source:[T1(OCC SR-11-7)]` per §2d source-provenance)
+        were splitting the regex into wrong groups and dropping records into
+        malformed_lines. Fix: producer sanitises `|` → `/` at chain-evaluator.py:616
+        before truncation. Feedback_realistic-tests.md: fixture mirrors real
+        workspace content from sigma-review/shared/workspace.md (source tag +
+        severity-basis tag both common §2d patterns).
+        """
+        # Load the consumer module by its actual filename (hyphen → importlib).
+        consumer_path = (
+            Path(__file__).resolve().parent.parent.parent
+            / "teams" / "sigma-review" / "shared" / "audit-calibration-gate.py"
+        )
+        assert consumer_path.exists(), f"consumer script missing: {consumer_path}"
+        spec = importlib.util.spec_from_file_location(
+            "audit_calibration_gate_consumer_test", consumer_path
+        )
+        acg = importlib.util.module_from_spec(spec)
+        sys.modules["audit_calibration_gate_consumer_test"] = acg
+        spec.loader.exec_module(acg)
+
+        write, _, _ = patch_paths
+        # Realistic finding: HIGH-severity (A20 trigger) with pipe-bearing
+        # source tag + severity-basis tag — exactly the content shape that
+        # broke parse before the fix.
+        finding = (
+            "F[TA-1] HIGH-severity audit gap |source:[T1(OCC SR-11-7)] "
+            "|severity-basis:regulatory-filing"
+        )
+        ws = _ws_with_finding("tech-architect", finding, build_id="pipe-fixture")
+        write(ws)
+        item = ce.check_a20_precision_gate(ws)
+        assert item.details["fire_count"] == 1, "A20 must fire on HIGH-severity"
+        record = item.details["cal_emit_records"][0]
+
+        # (a) Consumer regex roundtrip: record must match cleanly.
+        match = acg._CAL_EMIT_RE.match(record)
+        assert match is not None, (
+            f"Pipe-bearing record failed consumer regex — regression to pre-fix "
+            f"behaviour. Record: {record!r}"
+        )
+        assert match.group("gate") == "A20"
+        assert match.group("verdict") == "PENDING"
+
+        # (b) parse_log valid-bucket contract: record stats land in A20, not malformed.
+        stats, malformed = acg.parse_log(record + "\n")
+        assert malformed == [], f"unexpected malformed_lines: {malformed}"
+        assert "A20" in stats
+        assert stats["A20"].total_fires == 1
+        assert stats["A20"].pending == 1
+
+        # (c) Sanitisation intent: `|` replaced with `/` (not dropped, not
+        # truncated to empty). The source-tag prefix must survive as `/source:`
+        # so DA can still read the provenance class in calibration review.
+        context = match.group("context")
+        assert "|" not in context, (
+            f"fix regressed: pipe leaked into workspace-context: {context!r}"
+        )
+        assert "/source:" in context or "/severity-basis:" in context, (
+            f"sanitisation dropped content meaning — excerpt slice lost the "
+            f"tag prefix that DA reads for provenance. Context: {context!r}"
+        )
+
+    def test_cal_emit_a24_record_lands_in_valid_bucket(self, patch_paths):
+        """R3 regression-lock: A24 CAL-EMIT records must parse into stats_by_gate,
+        NOT malformed_lines.
+
+        Pre-fix (audit-calibration-gate.py:44 VALID_GATES = {A20, A22, A23}),
+        a well-formed CAL-EMIT[A24] line passed _CAL_EMIT_RE (gate-id pattern
+        is `[A-Z]\\d+`, accepts A24) but failed the membership check at
+        parse_log:127 (`if gate not in VALID_GATES`) — so the record landed
+        in malformed_lines and A24 calibration data was silently dropped.
+
+        Post-fix (line 50: A24 added to VALID_GATES), the same record now
+        lands in stats_by_gate["A24"] like a first-class gate.
+
+        This is the consumer-side counterpart to test_cal_emit_survives_pipe_
+        bearing_source_tag (which proves producer-side excerpt sanitisation).
+        Together they prove the producer/consumer contract is closed for both
+        the gate-id allowlist AND the field-content sanitisation surfaces.
+        """
+        consumer_path = (
+            Path(__file__).resolve().parent.parent.parent
+            / "teams" / "sigma-review" / "shared" / "audit-calibration-gate.py"
+        )
+        spec = importlib.util.spec_from_file_location(
+            "audit_calibration_gate_a24_test", consumer_path
+        )
+        acg = importlib.util.module_from_spec(spec)
+        sys.modules["audit_calibration_gate_a24_test"] = acg
+        spec.loader.exec_module(acg)
+
+        # Sanity: assert A24 is in VALID_GATES (the actual fix being tested).
+        assert "A24" in acg.VALID_GATES, (
+            "A24 missing from VALID_GATES — IE fix not yet applied. "
+            "Test is a regression-lock for that fix; if it never shipped, "
+            "this assertion correctly halts the test rather than silently "
+            "passing on a non-existent contract."
+        )
+
+        # Produce a real CAL-EMIT[A24] record via the chain-evaluator A24 check
+        # (no synthetic record-string — exercise the actual producer end-to-end).
+        write, _, _ = patch_paths
+        ws = (
+            "# workspace\n"
+            "## build-id: a24-consumer-roundtrip\n"
+            "## status: active\n"
+            "## mode: ANALYZE\n\n"
+            "## infrastructure\n"
+            "ΣVerify available — providers: openai, google, nemotron\n"
+            "## findings\n"
+            "### tech-architect\n"
+            "F[TA-1] HIGH-severity migration defect in payment pipeline\n\n"
+            "## convergence\n"
+            "tech-architect: ✓ complete\n"
+        )
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.details["fire_count"] == 1, "A24 must fire on this fixture"
+        record = item.details["cal_emit_records"][0]
+
+        # Sanity: record matches consumer regex (line-format compliance).
+        match = acg._CAL_EMIT_RE.match(record)
+        assert match is not None, (
+            f"A24 record failed consumer regex format: {record!r}"
+        )
+        assert match.group("gate") == "A24"
+
+        # Load-bearing assertion: parse_log puts the A24 record into
+        # stats_by_gate["A24"], NOT malformed_lines (this is the bug-fixed line).
+        stats, malformed = acg.parse_log(record + "\n")
+        assert malformed == [], (
+            f"A24 record routed to malformed bucket — VALID_GATES gap regressed: "
+            f"{malformed}"
+        )
+        assert "A24" in stats, (
+            f"A24 missing from stats_by_gate keys: {list(stats.keys())}"
+        )
+        assert stats["A24"].total_fires == 1
+        assert stats["A24"].pending == 1
+
+
+class TestA24SigmaVerifyInitPreFlight:
+    """Blocker 1 — A24 check_a24_sigma_verify_coverage (WARN, path β+).
+
+    A24 catches load-bearing findings written without XVERIFY coverage when
+    ΣVerify was MCP-available this session. Complementary to A15 (per-agent
+    binary); A24 is per-finding β+ calibration. Scope bounded to §2h by SS
+    narrowing recommendation (ADR[SS-2] belt-and-suspenders + A24 code path).
+    """
+
+    _INFRA_AVAILABLE = (
+        "## infrastructure\n"
+        "ΣVerify available — providers: openai, google, nemotron\n"
+    )
+
+    def _ws_with_infra(
+        self,
+        agent: str,
+        finding_line: str,
+        *,
+        infra: str | None = None,
+        build_id: str = "a24-test",
+    ) -> str:
+        """Like _ws_with_finding but with a ## infrastructure block.
+
+        Default infra declares ΣVerify available (triggers A24). Pass
+        infra="" or a 'ΣVerify unavailable' string to bypass the gate.
+        """
+        if infra is None:
+            infra = self._INFRA_AVAILABLE
+        return (
+            f"# workspace\n"
+            f"## build-id: {build_id}\n"
+            f"## status: active\n"
+            f"## mode: ANALYZE\n\n"
+            f"{infra}\n"
+            f"## findings\n"
+            f"### {agent}\n"
+            f"{finding_line}\n\n"
+            f"## convergence\n"
+            f"{agent}: ✓ complete\n"
+        )
+
+    def test_no_fire_when_xverify_present_on_load_bearing(self, patch_paths):
+        """Load-bearing finding with XVERIFY tag in window → no A24 fire."""
+        write, _, _ = patch_paths
+        # Same-line XVERIFY — classic §2h compliance.
+        line = "F[TA-1] HIGH-severity audit gap XVERIFY[openai:gpt-4o] corroborated"
+        ws = self._ws_with_infra("tech-architect", line, build_id="xv-present")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 0
+        assert item.details["cal_emit_records"] == []
+
+    def test_fires_on_load_bearing_without_xverify(self, patch_paths):
+        """Load-bearing finding + no XVERIFY/XVERIFY-FAIL in window → WARN + CAL-EMIT."""
+        write, _, _ = patch_paths
+        line = "F[TA-1] HIGH-severity critical failure in deployment pipeline"
+        ws = self._ws_with_infra("tech-architect", line, build_id="a24-fires")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        # WARN-first: passed=True even when firing.
+        assert item.passed is True, "A24 is WARN-only path β+"
+        assert item.details["fire_count"] == 1
+        assert len(item.details["cal_emit_records"]) == 1
+        fire = item.details["fires"][0]
+        assert fire["agent"] == "tech-architect"
+        assert fire["finding_id"] == "TA-1"
+        assert fire["trigger"] == "HIGH/CRITICAL-severity"
+        record = item.details["cal_emit_records"][0]
+        assert record.startswith("CAL-EMIT[A24]: review-id:a24-fires ")
+        assert "|finding-ref:F[TA-1] " in record
+        assert "|fire-reason:load-bearing-without-xverify:HIGH/CRITICAL-severity " in record
+        assert record.endswith("|da-verdict:PENDING")
+
+    def test_no_fire_when_sigverify_unavailable(self, patch_paths):
+        """Gate: ΣVerify not declared available → A24 does not apply."""
+        write, _, _ = patch_paths
+        line = "F[TA-1] HIGH-severity load-bearing finding without XVERIFY"
+        # Empty infrastructure section → is_sigverify_available returns False.
+        ws = self._ws_with_infra(
+            "tech-architect", line, infra="## infrastructure\n",
+            build_id="sv-unavail",
+        )
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 0
+        assert item.details["cal_emit_records"] == []
+        assert item.details.get("skip_reason", "").startswith(
+            "ΣVerify unavailable"
+        ), "must surface skip_reason so DA can distinguish no-fire-gated vs no-fire-clean"
+
+    def test_xverify_fail_also_suppresses(self, patch_paths):
+        """XVERIFY-FAIL counts as coverage per _XVERIFY_ANY_RE — gap is documented."""
+        write, _, _ = patch_paths
+        line = (
+            "F[TA-1] HIGH-severity migration defect "
+            "XVERIFY-FAIL[google:gemini-1.5] 503-gap documented"
+        )
+        ws = self._ws_with_infra("tech-architect", line, build_id="xv-fail")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.details["fire_count"] == 0, (
+            "XVERIFY-FAIL is attempted-and-documented per §2h state 2 — "
+            "should NOT trigger A24 (gap is already surfaced)"
+        )
+
+    def test_evaluate_single_dispatches_a24(self, patch_paths):
+        """evaluate_single('A24') returns A24 ChainItem, not 'Unknown item ID'."""
+        write, _, _ = patch_paths
+        line = "F[TA-1] HIGH-severity finding without XVERIFY"
+        ws = self._ws_with_infra("tech-architect", line, build_id="dispatch-test")
+        write(ws)
+        # Patch DEFAULT_WORKSPACE so evaluate_single reads our fixture.
+        item = ce.evaluate_single("A24")
+        assert item.item_id == "A24"
+        assert "Unknown" not in item.name, (
+            f"A24 not registered in evaluate_single dispatch: {item.name}"
+        )
