@@ -1,0 +1,59 @@
+# Enterprise AI Rollout — B2B SaaS
+Last updated: 26.4.28 | Reviews: R-2026-04-22-ai-agent-rollout-playbook-vet (26.4.28)
+
+## Summary
+Domain knowledge for AI agent rollouts at B2B SaaS firms — multi-tenant deployments where the SaaS firm's product embeds AI features used by enterprise customers and, frequently, by the customers' own employees as data subjects. The phased workbook structure (Phase 0 through 4) with binary exit gates is more falsifiable than principle-level tier gates and is the recommended primary execution scaffold for any firm. The B2B SaaS-specific challenges concentrate around multi-tenancy (ANN pre-filter isolation, tenant-partitioned indexing), labor-performance AI under EU AI Act Annex III paragraph 2, CCPA ADMT operationalization, GDPR Article 22 worker-as-data-subject rights, and SOC 2 trust services criteria mapping for AI controls.
+
+## Phased Workbook Structure as Primary Execution Scaffold
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] The B2B SaaS phased workbook format (goal, rationale, workstreams, exit gates, artifacts; Phase 0 governance/procurement → Phase 1 platform build → Phase 2 first agent → Phase 3 expansion → Phase 4 multi-agent) with binary exit gates is the correct execution scaffold for any AI agent rollout — not just for SaaS firms. The 13 binary Phase 0 exit gates of the B2B SaaS playbook are more falsifiable than principle-level tier gates ("observability maturity") because a ship-it coalition can satisfy the latter by pointing to any functional OTel deployment. Capability-maturity tier taxonomies (Tier 0-3) remain useful as a reference appendix for capability classification, timeline estimation, and CTO/board communication, but the workbook is the executable form.
+
+## Multi-Tenancy — Tenant-Partitioned Indexing
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Tenant-partitioned indexing for vector retrieval is the architecturally correct pattern. Implementation must hold under the chosen vector store: pgvector below 500K vectors or latency-tolerant; Qdrant v1.13 (March 2026) above 500K vectors or when p95 latency must stay below 50ms; Turbopuffer for multi-tenant cold-start retrieval dominance. Partitioning is a necessary but not sufficient condition — see ANN pre-filter gap below.
+
+## ANN Pre-Filter Tenant Isolation Gap
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] MEDIUM-HIGH-severity gap: standard pgvector and Qdrant default ANN configurations do not prevent cross-tenant leakage when HNSW graph structures cross tenant boundaries, or when ANN search with per-tenant post-filtering returns results from Tenant A while Tenant B's filtered result set is sparse. The fix requires pre-filtered ANN — filtering before similarity scoring, not after. Tenant-isolation treatment that addresses storage partitioning but not pre-filter ANN is incomplete. Specification: ANN search must apply tenant predicate before similarity calculation, not as a post-result filter.
+
+## EU AI Act Annex III Paragraph 2 — Employment Monitoring AI
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Annex III paragraph 2 of the EU AI Act covers AI systems for "employment, workers management and access to self-employment," specifically including "monitoring and evaluating performance and behavior of persons in the working relationship." Workforce-management-system (WMS) AI that tracks worker efficiency, generates performance scores, influences task allocation affecting compensation, or feeds productivity data into HR decisions falls within Annex III paragraph 2. This classification triggers full high-risk AI obligations (EU AI Act Articles 8-25) for the employment-monitoring dimension of WMS AI features. Treating WMS as "generally not directly listed in Annex III" is partially wrong. Required Phase 0 exit-gate prompt: "Do any AI features assess, score, or feed HR/performance decisions about individual workers? If yes: high-risk classification applies for EU deployments."
+
+## EU AI Act Article 25(1)(b) — Fine-Tuning Hook
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Fine-tuning or parameter-adapting a foundation model on customer or domain data for EU-customer-facing outputs may trigger full EU AI Act provider obligations under Article 25(1)(b): conformity assessment, CE marking, EU database registration, post-market monitoring under Articles 72-73. Pure RAG plus system prompt customization is generally below the "substantial modification" threshold per HLEG informal guidance. LoRA and full fine-tuning on domain data are more likely to cross it. Severity MEDIUM at the assessment-gap level (any firm doing fine-tuning for EU-customer-facing AI must assess Art 25(1)(b)); HIGH where fine-tuning targets an Annex III high-risk intended purpose, particularly WMS labor performance management where Art 25(1)(b) and Annex III paragraph 2 combine. Required Phase 0 exit-gate prompt: "Does deployment involve fine-tuning or parameter-adapting the base model? If yes, assess Article 25(1)(b) provider obligations."
+
+## CCPA ADMT Operationalization
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] CPPA finalized ADMT-specific regulations in September 2025, effective January 1, 2027. For B2B SaaS with California-resident end-users (typical in WMS where workers are employed in California warehouses), pre-use notice, opt-out rights, access rights, and risk assessments are required by January 2027. Severity HIGH. Most WMS firms already have California-resident employee end-users, so deferral on the basis of "no California customer-facing activity that meets the 'significant decision' threshold" is incorrect. The operationalization questions — how to deliver pre-use notice in a B2B context, how opt-out works for workers objecting to performance scoring, how access and risk-assessment workflows interact with the customer's own HR processes — are unsolved in standard playbooks and must be designed before Phase 3 launch for California deployments. CCPA "meaningful human involvement" compliance also requires behavioral instrumentation for over-reliance detection (rubber-stamping is non-compliance).
+
+## GDPR Article 22 — Worker as Data Subject
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] When AI agents make or materially influence decisions about individual workers (performance scores, task allocation), GDPR Article 22 rights of explanation, human review, and contestation run to individual workers directly — they are not fulfilled via the enterprise customer's B2B processor agreement. Tenant isolation at the enterprise-customer level does not satisfy data-subject-level rights. Severity MEDIUM for WMS firms with labor performance AI. Required design: data-subject-rights workflow to individual workers (not just the customer's HR contact), with supporting artifacts explainability, human review, and contestation channels.
+
+## SOC 2 — TSC-to-AI-Control Mapping
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] As of 2026, SOC 2 auditors and Big 4 AI audit practices expect firms to propose AI control mappings to Trust Services Criteria. Emerging consensus mapping:
+- CC6.1 / CC6.7 — access to AI features and model APIs
+- CC7.2 — AI anomaly monitoring (drift, refusal spikes, cost anomalies)
+- CC9.2 — AI vendor risk management
+- A1.2 — AI system availability and fallback
+- C1.1 / C1.2 — confidentiality of prompts and retrieved context
+- PI1.4 — accuracy of AI outputs in decision-making
+
+Severity MEDIUM. A firm arriving at an early SOC 2 engagement without a draft AI control mapping has an unproductive conversation. The mapping is the firm's proposal, brought to the auditor, not a unilateral auditor specification.
+
+## Phase 0 Scope — Governance and Procurement First
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] B2B SaaS Phase 0 focuses primarily on governance and procurement, with platform build starting in Phase 1. This differs from financial-services tier taxonomies that often parallelize platform build with governance from day one. Both approaches are defensible. The financial approach is marginally more defensible for regulated firms because OBO identity and data handling agreements should be in place before any model calls touch production data; the SaaS approach is defensible for non-regulated B2B SaaS where the enterprise customer's contract negotiation pace is the binding constraint.
+
+## Customer-Audit Posture — Reasoning Traces are Debugging Only
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] When a regulated-industry customer auditor asks the SaaS firm to show "how the agent decided," the chain-of-thought trace will be produced as evidence — when CoT is less than 25% faithful to the actual decision process per Anthropic May 2025 (Claude 3.7 Sonnet). The compliance-grade audit record is the action log + tool-call trace + retrieved-context snapshot. Reasoning traces should be captured for debugging only, not advertised as audit evidence. Severity HIGH for asymmetric correctness: this warning was present in financial-services playbooks but missing from B2B SaaS playbooks, creating contradictory guidance for firms that use both documents.
+
+## Vendor-Platform-First as Legitimate Architecture
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Using a vendor agent framework as the agent layer is a legitimate architecture choice — Claude Agent SDK (Anthropic, November 2025, 12-month API stability guarantee on core APIs), LangGraph v0.3 (January 2026, stable checkpoint-based state management), OpenAI Agents SDK (October 2025 GA). These frameworks save 6-8 weeks of engineering build time and should be considered. They do not compress the elapsed-time governance constraint: SME eval set construction takes 4-6 months, vendor agreement negotiation 6-12 weeks, shadow mode stabilization 8+ weeks. Computer-use APIs across all three vendors remain early-stage and their interfaces are still evolving.
+
+## Sector-Specific Annex Items Beyond WMS
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] For B2B SaaS verticals beyond WMS:
+- 21 CFR Part 11 AI-generated records mapping for life-sciences customers (records integrity, electronic signatures, audit trails for FDA-regulated data)
+- Colorado SB 24-205 monitoring trigger at Phase 1 exit gate (Colorado AI Act applies to consequential decisions; Phase 1 is the sequencing point at which Colorado posture must be tracked)
+
+## Open Questions
+- How to deliver CCPA ADMT pre-use notice in a B2B context — through the SaaS firm's product UI shown to the customer's worker, through the customer's own HR onboarding, or jointly? Operationalization is unsolved. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+- Whether "tenant-partitioned indexing with pre-filtered ANN" is sufficient isolation for tenants whose own workforces include EU and California residents — the multi-tenancy boundary and the data-subject-rights boundary are not co-extensive. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+- Track A (productivity) versus Track B (production agentic) sequencing for B2B SaaS — Track B may dominate for product-embedded AI but the empirical base rate is thin. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+
+## Sources
+- R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28 — sigma-review Tier 3 ANALYZE on the B2B SaaS phased workbook (and the dual-track financial-services capability-maturity roadmap)

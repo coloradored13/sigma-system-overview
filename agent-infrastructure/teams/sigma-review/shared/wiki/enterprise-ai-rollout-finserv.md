@@ -1,18 +1,58 @@
 # Enterprise AI Rollout — Financial Services
+Last updated: 26.4.28 | Reviews: R18 (26.4.16), R-2026-04-22-ai-agent-rollout-playbook-vet (26.4.28)
 
-Domain knowledge compiled from sigma-review ANALYZE R18, 2026-04-16.
+## Summary
+Domain knowledge for financial-services AI agent rollouts. The governance-first thesis (R18) is confirmed by R-2026-04-22 cross-agent convergence: governance-first sequencing — observability, eval methodology, identity scoping, and committee structure before agent deployment — is the right order for regulated and customer-facing deployments. R-2026-04-22 extends R18 by specifying the regulatory artifact layer (capability-to-examiner crosswalk, FS AI RMF, SR 11-7 examiner-vocabulary translation), graduated lethal-trifecta severity for trust-companies and loan-agency firms, and operational governance-committee design gaps that under-spec tier-promotion decisions. The 10-13 month timeline holds because governance is the constraint, not engineering build time.
 
 ## Four Conditions for Enterprise AI Success
 [R18, 26.4.16] Enterprise AI rollout success requires four necessary conditions (not sequential gates): data readiness, use-case fit, compliance adequacy, adoption quality. Revised from three-gate model under DA challenge — evidence supports factor importance but not sequential ordering. Data readiness is most commonly skipped pre-assessment and #1 abandonment cause (Gartner 60%, Informatica CDO 43%). Planning heuristic, not causal model.
 
+Confirmed [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]: governance-first sequencing for regulated and customer-facing deployments is validated by Morgan Stanley's 98% advisor adoption (governance-first with evolving evaluation framework), Klarna's 2024-2026 CSAT walkback and partial agent rollback (governance-light), and the Air Canada 2024 BCCRT loss confirming "the firm owns what its agent says." Single counter-example: Stripe's internal-tool-first pattern shows governance-first is over-sized for pure-internal advisory at technically strong organizations. Tier or phase advancement should be evidence-gated on observability maturity, not benchmark scores — Berkeley RDI's 2025 demonstration that all major agent benchmarks (SWE-bench, WebArena, τ-bench) are exploitable by automated auditors validates this stance.
+
 ## Financial Services Compliance Architecture
 [R18, 26.4.16] SR 11-7 (OCC/Fed model risk management) explicitly extended to generative AI per GAO-25-107197 (2025). Enterprise obligations: document model purpose/limitations, perform own validation (not rely on vendor attestations), establish audit trails for AI-assisted material decisions, ensure explainability for regulatory examination. SOC II Type II = floor not ceiling. Vendors provide partial artifacts; enterprise builds governance layer on top.
+
+## FS AI RMF — FBIIC/FSSCC February 2026
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] The FBIIC/FSSCC AI Executive Oversight Group published in February 2026 an AI Lexicon and the Financial Services AI Risk Management Framework — an operationalized NIST AI RMF specifically tailored for financial services, jointly produced by Treasury, FBIIC, and FSSCC. This is the closest available operationalization of what the prior playbook regulatory sections lacked. Severity HIGH: a firm not referencing the FS AI RMF in its AI governance program will face examiner questions. Treasury reports from March 2024 and December 2024 are the prior baselines now superseded for AI-RMF purposes by the FS AI RMF.
+
+## Capability-to-Examiner Crosswalk Gap
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] HIGH-severity gap: regulatory regimes (OCC/Fed/FDIC, FINRA/SEC, NAIC/state DOIs, NYDFS) are typically organized by capability tier in playbooks. Examiners examine by examiner question set, not capability tier. The conversion artifact is a crosswalk: regulator → 3-5 specific exam questions → evidence that constitutes a valid answer → which artifact to produce. Without this crosswalk, first-cycle OCC/FINRA/NYDFS AI examinations are expected to produce deficiency findings at a 40-60% rate (the base rate for SR 11-7 first-cycle compliance programs). Build cost: 2-4 weeks with compliance counsel, $25-80K. This is the primary artifact that converts a technology guide into a regulatory program.
+
+## SR 11-7 Compensating-Controls Framework — Examiner Vocabulary Translation
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] The SR 11-7 unit-of-analysis problem for agents — agents are not models in the traditional sense — requires a compensating-controls framework using statistical testing, trajectory evaluation, and red-teaming. The framework is correct in substance but must be expressed in SR 11-7 vocabulary that examiners use: model inventory, conceptual soundness assessment, ongoing monitoring, validation independence. Severity MEDIUM. Fix: a one-paragraph preamble in the MRM section acknowledging the agent-to-SR 11-7 mapping problem, followed by the compensating-controls framework translated into SR 11-7 vocabulary with specific artifact names.
+
+## FINRA — RN 25-07 and 2026 AROR
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] FINRA Regulatory Notice 25-07 (April 2025) directly asks whether AI-generated content constitutes "business as such" under Exchange Act Rule 17a-4(b)(4) — the specific exam question FINRA examiners are now bringing to member firms. The FINRA 2026 Annual Regulatory Oversight Report (AROR) identifies specific AI agent risk vectors examiners are probing: agents acting without human validation, scope exceeding user intent, auditability in multi-step reasoning. Severity MEDIUM. FINRA RN 24-09 remains accurate but is now superseded as the most-current notice for AI examination preparation.
+
+## NAIC — 12-State AI Systems Evaluation Tool Pilot
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] As of April 2026, 23 states and DC have adopted the NAIC AI Model Bulletin. NAIC launched a 12-state multistate AI Systems Evaluation Tool pilot running January through September 2026 across CO, MD, LA, VA, CT, PA, WI, FL, RI, IA, VT, and CA. This is the next-generation examination instrument replacing self-attestation. Severity HIGH for insurance-sector firms in any of those 12 states — they face examination using this tool in 2026 without knowing it exists. Treating NAIC adoption as varying "widely by state" without a count or examination instrument is no longer adequate.
+
+## NYDFS — October 2025 TPSP Letter
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] NYDFS issued a second AI industry letter on October 21, 2025, specifically on third-party service provider management. It addresses AI vendor due diligence structured across initial diligence, contractual protections, and ongoing monitoring, and previews examiner methodology for TPSP/AI vendor assessment. Severity MEDIUM-HIGH for NY-regulated firms. The October 2024 NYDFS AI Industry Letter is the prior reference; the October 2025 letter is the operational TPSP follow-up. A NYDFS-specific AI vendor management checklist per this 2025 letter is the requisite artifact.
+
+## Trust-Company and Loan-Agency Lethal Trifecta — Graduated Severity
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] The lethal trifecta (Simon Willison: private data access + untrusted content ingestion + external communication capability) applies to almost every customer-proximate workflow in trust companies, loan-agency firms, and similar organizations. Severity must be graduated by agent architecture rather than rated flat:
+- HIGH for autonomous interpretive agents (AI directly triggers operational action on covenant or waterfall decisions)
+- MEDIUM-HIGH for human-supervised interpretive agents (AI shapes determination, human documents final call)
+- MEDIUM for rule-based deterministic calculations
+- LOW for pure read-only advisory
+
+For these firm types, use-case selection and governance design are co-equal Phase 0 outputs — not sequential steps where governance comes first and unlocks use-case selection. EU AI Act Article 6 scope-determination must precede Article 9 risk-management-system design.
+
+## Chain-of-Thought is Not a Regulatory Audit Trail
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Anthropic's May 2025 finding: Claude 3.7 Sonnet verbalized decision-relevant hints in fewer than 25% of cases. CoT faithfulness for frontier reasoning models is below 25% in published research. The compliance-grade audit record is the action log + tool-call trace + retrieved-context snapshot — not the model's self-explanation. Reasoning traces should be captured for debugging only; producing them as audit evidence to a regulator (OCC/FINRA/NYDFS) or to a regulated-industry customer auditor invites a finding when the trace is later shown to be unfaithful.
 
 ## Vendor Evaluation — Compliance x Adoption Heuristic
 [R18, 26.4.16] COMPLIANCE-FLOOR x ADOPTION-LIKELIHOOD > COMPLIANCE-CEILING. A compliant tool with low adoption delivers less compliance value than a slightly-less-compliant tool with high adoption. M365 Copilot case study: compliance boundary is real but NPS -24.1, 64% users inactive, CEO admitted integrations "don't really work," DLP bypass vulnerability Jan-Feb 2026. Compliance architecture nobody uses = zero value. Always pair compliance check with effectiveness/adoption check.
 
+## Statsig / OpenAI Acquisition — Concentration Risk
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Statsig was acquired by OpenAI in 2025. Firms deploying OpenAI models through a feature-flag platform now owned by OpenAI have concentrated vendor dependency at two points in their stack (model provider and feature-flag platform) without prior playbooks flagging this as a TPRM event. Under NYDFS Part 500 expectations, a vendor acquired by your model provider mid-engagement is a material third-party risk event requiring documented assessment. Severity MEDIUM. LaunchDarkly remains the unaffiliated alternative.
+
 ## Data Residency Seam Cost
 [R18, 26.4.16] Multi-vendor AI strategies generate non-linear compliance overhead at integration boundaries. Each vendor seam requires separate data flow mapping + DLP enforcement + compliance validation. When Claude routes through M365 Copilot Co-Work, data exits Microsoft compliance boundary to Anthropic US datacenters — excluded from in-country residency commitments. Single-vendor reuses existing governance.
+
+## EU Gateway Residency Path
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] For firms with EU customer-facing operations: "EU customer data requires EU-hosted embeddings and vector store" alone is insufficient — gateway and model API call paths must be analyzed too. Bedrock routes through US regions by default (EU regions exist but require explicit configuration and not all models are available). Azure AI Foundry EU data residency is available for Azure OpenAI but not for Anthropic models on Azure (which route through US East). Self-hosted LiteLLM in an EU VPC is currently the only clean path for GDPR Article 44 compliance when routing to EU-hosted models. Severity HIGH for EU-data-constrained firms.
 
 ## ROI Calibration — Enterprise AI
 [R18, 26.4.16] Base rate: 5-25% of enterprise AI deployments produce measurable ROI. Conditional (pre-defined metrics + exec sponsorship + success criteria): 35-50% at 24mo. Finserv knowledge-work calibrated: P(measurable ROI 18mo) = 0.35, 80% CI [0.20, 0.55]. Drops to 0.15-0.25 without confirmed data readiness. Only 13% of successful implementations deliver payback within 12 months (Deloitte Oct 2025, N=1,854). Sources: MIT/Fortune Aug 2025 (5%), NTT DATA/RAND (70-85% fail expected outcomes), IBM 2026 (29% measure ROI confidently).
@@ -26,8 +66,28 @@ Domain knowledge compiled from sigma-review ANALYZE R18, 2026-04-16.
 ## Enterprise AI Adoption Timeline Base Rates
 [R18, 26.4.16] Planning horizon (12-18mo) ≠ success horizon (<10% company-wide scaling). Track A (productivity tools, 70%+ workforce): 16-24mo indicative. Track B (agentic workflows, production-ready): 18-24mo minimum. Only 14% of organizations have agentic solutions production-ready as of 2025. ERP analogue: 18-36mo median, routinely overruns 50-100% on time.
 
+Confirmed and refined [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]: 10-13 month timeline holds for infra-leveraged firms with existing IAM, observability, and feature flags. Base-rate modal for truly greenfield firms is 12-18 months (Gartner/KPMG/Deloitte 2026 surveys). At 14-18 week median time-to-hire for Senior AI Platform Engineers in 2026, Phase 0 slip of 6-12 weeks is the median scenario. The timeline holds because governance is the constraint, not engineering build time. Vendor frameworks (Claude Agent SDK with 12-month API stability guarantee from Anthropic November 2025; LangGraph v0.3 stable checkpoint-based state management January 2026; OpenAI Agents SDK GA October 2025) save 6-8 weeks of engineering build time but do not compress the elapsed-time governance constraint: SME eval set construction takes 4-6 months, vendor agreement negotiation 6-12 weeks, shadow mode stabilization 8+ weeks.
+
 ## Pre-Mortem Failure Taxonomy — Regulated Sector Tech Rollouts
 [R18, 26.4.16] Five failure modes: (1) compliance paralysis 30% — SR 11-7 review stalls beyond 90d, (2) middle management naysayer organization 35% — passive resistance, not engaged pre-announcement, (3) ROI measurement failure → sponsorship withdrawal 25% — no pre-launch baselines captured, (4) track budget competition 20% — engineering claims majority of AI budget, (5) tool leapfrog erodes champion confidence 40% — better tool launches mid-rollout, no re-evaluation process exists. Adjust probabilities per context.
 
+## Cost Categories Often Unbudgeted
+[R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28] Three operational cost categories materially under-represented in typical 10-13 month playbook cost models:
+- OTel trace storage: full-fidelity retrieval-context traces at 50-200KB per trace with 3-6 year retention under SEC 17a-4 / FINRA 4511 horizons → $200K-$2M/year. Severity MEDIUM.
+- MCP server build: a single production-grade internal MCP server requires ~3-6 weeks of senior engineering time. A typical Tier 1-2 deployment uses 3-8 MCP servers → 10-50 weeks of engineering effort, $75K-$400K. Severity MEDIUM-HIGH.
+- EU AI Act conformity assessment when Annex III high-risk applies: $80K-$250K conditional cost not budgeted in non-EU-aware plans.
+
+Operational-cycle cost is also under-represented relative to build-cycle cost: EU AI Act Art 72 post-market monitoring, Art 73 serious incident reporting, CCPA ADMT annual risk assessment refresh, and Colorado care documentation are statutory standing obligations requiring named operational capacity independent of engineering staffing.
+
 ## Measurement Debiasing
 [R18, 26.4.16] Self-reported time savings overstate gains (social desirability bias). Only 29% of enterprises measure ROI confidently (IBM 2026). Debiasing: manager corroboration alongside self-report, behavioral output indicators (output volume, decision quality, escalation patterns) over usage metrics (login counts, license utilization), independent auditor for ROI reporting (separate operator from measurer), pre-defined business outcome metrics before launch. Finserv-specific additions: hallucination catch rate (leading), audit trail completeness (lagging).
+
+## Open Questions
+- The undocumented governance-committee firm-size floor (~$500M assets / ~30-person tech org). Below this floor, the committee structure (Chair, Playbook Owner, independent reviewer, members from Engineering/Legal/Security) becomes unexecutable because the same person plays multiple committee roles. A "named-accountability single-owner" variant with documented pre-commitment criteria is needed. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+- Adoption-economics tradeoff: when does governance overhead exceed the agent's productivity savings at low query volumes? Qualitatively flagged, not quantified. MIT 2025 data showing 95% of GenAI pilots fail implies adoption is non-trivial. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+- Continuous per-query-class monitoring as an alternative to discrete tier-promotion ceremonies — not stress-tested. Tier structure remains the defensible default. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+- Incident-rate differential between playbook-compliant and governance-light firms: correlational evidence exists; specific magnitude is not precisely characterizable. Communicate qualitatively ("dramatically reduces incident probability") rather than as a specific percentage differential. [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
+
+## Sources
+- R18, 26.4.16 — sigma-review ANALYZE on enterprise AI rollout (M365 Copilot vendor evaluation focus)
+- R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28 — sigma-review Tier 3 ANALYZE on the dual-track financial-services capability-maturity roadmap and B2B SaaS phased workbook
