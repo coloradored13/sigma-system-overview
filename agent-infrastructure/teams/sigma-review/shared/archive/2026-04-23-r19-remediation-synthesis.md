@@ -281,13 +281,20 @@ Source: plan file ## Pre-mortem section. 10 failure modes total.
 
 Plus: **XVERIFY over-suppression regex** (CQA r3 bonus finding): _XVERIFY_ANY_RE at chain-evaluator.py:950-953 matches literal English word "XVERIFY" + whitespace including newline (false-suppression on "XVERIFY was not run" prose). Severity LOW, separate-build candidate.
 
-### 4 structural fix candidates from A24 silent-skip post-mortem
-A24 was LOCKED in plan at 5 layers (PF[4] + ## Files line 162 + PM[1] mitigation + ## Verification step 3 + Scope Boundary expansion 3) but shipped without a check_a24 function. Root cause: plan ## Files entry without an SQ owner + TW punt-instead-of-flag at c2-scratch:409 ("referenced only, implementation is IE-1/CDS scope") was scope demotion without plan amendment. 4 candidates flagged for promotion-round:
+### 4 structural fix candidates from A24 silent-skip post-mortem (operationalized)
 
-1. **C1 plan-completeness check**: structural fix that would require every ## Files entry to have an SQ owner before plan exit-gate PASS. Would prevent unowned LOCKED items.
-2. **C2 boot validation**: each cluster owner asserts at boot that all ## Files entries assigned to them have explicit SQ coverage; raise BUILD-CONCERN otherwise.
-3. **TW agent-def update** (already drafted as P-candidate by TW at c3-scratch:660): "if Files-table entry is unassigned to any cluster's SQ → raise BUILD-CONCERN; ¬punt." Punting on gap is sycophantic-silence disguised as scope-discipline.
-4. **C2 exit-gate diff**: chain-evaluator-side check that diffs plan ## Files table entries against shipped CHECKPOINT files-touched lists; missing entries surface as exit-gate fail.
+A24 was LOCKED in plan at 5 layers (PF[4] + ## Files line 162 + PM[1] mitigation + ## Verification step 3 + Scope Boundary expansion 3) but shipped without a check_a24 function. Root cause: plan ## Files entry without an SQ owner + TW punt-instead-of-flag at c2-scratch:409 ("referenced only, implementation is IE-1/CDS scope") was scope demotion without plan amendment.
+
+Specs verified against current chain-evaluator.py (lines 1057-1098), c2-build.md, technical-writer.md, c2-scratch.md CHECKPOINT format. Each candidate includes file:line insertion, BLOCK vs WARN classification (β+ pattern: WARN-first, then promote after calibration), implementation owner, and trigger condition.
+
+| # | Candidate | File | Insertion point | BLOCK/WARN | Owner | Trigger |
+|---|---|---|---|---|---|---|
+| 1 | C1 plan-completeness check (A26) | `~/.claude/hooks/chain-evaluator.py` | Lines 1057-1078 (after `check_a24_sigma_verify_coverage`); append A26 to `ANALYZE_CHAIN` list at 1064-1077 | WARN-first per β+; promote to BLOCK after ≥3 reviews + ≤20% FP + ≥5 DA-verdicted | implementation-engineer | runs unconditionally in ANALYZE chain when workspace exposes `## plan-file` header; parses plan ## Files table + ## Sub-task Decomposition; flags Files entries with no SQ-owner regex match. Pattern mirror: A24 (lines 956-1057). Obstacle: ## Files table format varies (markdown table vs list vs fenced); need normalized parsing pass before BLOCK promotion. |
+| 2 | C2 boot validation (B5) | Same file | Lines 1079-1080 (BUILD_EXTRAS, after `check_b4`); add to mode-BUILD dispatch at line 1098 | WARN-first; eventual BLOCK at C2 boot transition | implementation-engineer (B5) + technical-writer (c2-build.md Step 2.5 directive) | parses C2 scratch ## agents subsection (already structured) for SQ-coverage; diffs against plan ## Files; raises if any unassigned. Pattern mirror: B1-B4 (lines 526-548). Obstacle: c2-build.md doesn't standardize SQ coverage in spawn prompts today; lower-risk path is parsing scratch ## agents subsection rather than spawn prompts. |
+| 3 | TW agent-def update (Gap-Handling Rules) | `~/.claude/agents/technical-writer.md` | New `## Gap-Handling Rules` section after line 139 (end of Cross-Model Verification, before ## Weight) | directive (not hook) | technical-writer | when noticing Files-table entry unassigned to any cluster's SQ → raise BUILD-CONCERN citing relevant SQ; ¬ punt to "X is Y's scope" without explicit SQ reference. Format: `!rule:` mirroring lines 111-126 (Cross-Model Verification) with 3 numbered outcome states. |
+| 4 | C2 exit-gate diff (B6) | `~/.claude/hooks/chain-evaluator.py` | Lines 1079-1080 (BUILD_EXTRAS, alongside B5) | WARN-first; eventual BLOCK at C2 status:built transition | implementation-engineer | extends existing B2 `gc.check_checkpoint()` (lines 532-535) to aggregate CHECKPOINT files-touched across clusters; cross-checks against plan ## Files; raises on missing entries. Pattern mirror: A24 line-window + section-boundary scanner (lines 1012-1020). Obstacle: CHECKPOINT files-touched is prose not structured (e.g., "workspace_write.py (+ /tmp/ smoke tests, ephemeral)" at c2-scratch.md:235); need normalized parsing pass before BLOCK promotion. |
+
+Ship vehicle: bundled future-build (proposed TIER-2 sigma-build-process-hardening) alongside A14 race fix + A25 template-drift detection + _XVERIFY_ANY_RE regex tightening. Each ships WARN-first per established β+ pattern; BLOCK promotion gated on ≥3 reviews + ≤20% FP + ≥5 DA-verdicted per audit-calibration-gate.py thresholds.
 
 ### Multi-layer-contract-drift pattern (DA's promotion candidate)
 4 instances of the same class confirmed in this build:
@@ -325,3 +332,58 @@ IC[6] hardened in production with 0 WorkspaceAnchorNotFound exceptions across C3
 - A24 silent-skip root cause: plan ## Files entry without SQ owner + TW punt-instead-of-flag → 4 structural fix candidates for promotion-round.
 - C1 audit YELLOW retroactive premise-audit close: legitimate self-detection but flagged for future builds to run Step 7a before C1 scratch drafting.
 - task-list-teammate auto-router misroute at session start: mitigation pattern documented (IE correctly refused per CLAUDE.md ## Lead Role Boundaries).
+
+---
+
+## 8. Eval Addendum (post-26.4.27 sigma-evaluate)
+
+The sigma-evaluate run on 26.4.27 graded this synthesis B (3.14/4.0): Accuracy + Evidence + Scope Integrity = 4/4; Logic + Completeness + Calibration + Actionability = 3/4. Same B 3.14 grade and same weakness profile as the prior R18 sigma-evaluate — recurring lead-side pattern, not one-off. This addendum corrects four specific gaps the eval surfaced, in the synthesis itself rather than an external errata.
+
+### 8.1 Re-rubric: OVERALL is 22/24, not 24/24
+
+The original BUILD rubric (Section 5) declared OVERALL = 24/24 across 6 dimensions while listing 5 LOW deferrals + 1 cosmetic + 4 structural fix candidates as "open" elsewhere in the synthesis. That's incoherent: a max-score rubric cannot accommodate known-residual via "gold-plating discipline" labels — that's a conclusion, not an argument, and per-item low-risk demonstration was not provided.
+
+Corrected rubric: **22/24 overall**. Two dimensions absorb the deduction:
+
+- **Actionability: 4/4 → 3/4.** The 4 structural fix candidates were named without where + BLOCK/WARN + owner + trigger. Section 7 (above) now operationalizes these — but at the time of the original Section 5 scoring, they were ticket titles, not specs. Current state post-this-addendum is closer to 4/4, but the original rubric was 3/4 honestly stated.
+- **Completeness: 4/4 → 3/4.** Five LOW deferrals + one cosmetic remain open at sign-off. The original synthesis framed these as "deferred per gold-plating discipline" without per-item severity-rubric demonstrating low-risk. They are open, regardless of reasonable rationale for deferring them.
+
+Other 4 dimensions remain at 4/4: correctness, test-coverage, maintainability, performance, security, api-design — the SHIPPED code is sound; the rubric correction is about how the synthesis represented the residual, not about code quality.
+
+### 8.2 TA r1 framing correction
+
+The original synthesis (Section 3 Tensions) framed TA's r1 "needs-fixes:none-blocking" as a TA-vs-DA disagreement that I resolved by overruling TA on evidence weight. That framing is wrong.
+
+**Correct framing**: TA was scope-bounded to ADR[1-4] / IC[1-6] per their dispatch prompt. WITHIN that scope, TA's "no fixes needed" verdict was correct — and TA's r2 verification confirmed the fixes were architecturally sound at the dimensions TA reviews. DA's cold-read found cross-section blockers OUTSIDE TA's scope (A24 missing was not in any TA ADR; the 27-file BLOCK doc drift was TW's propagation surface; CAL-EMIT pipe-escape was CDS's calibration-mechanics domain).
+
+This is **two correct verdicts at different scopes**, not a substantive merits disagreement. The original synthesis blurred this — that's a Logic gap I (the synthesis writer / lead) created, not a TA gap. The cross-section finding pattern that emerged (DA r1 catches what plan-track's bounded reviews miss) is the SYSTEM working as designed, not an override.
+
+### 8.3 CDS NEW HIGH r2 finding as review-process-gap signal
+
+CDS's r2 catch of A24 VALID_GATES consumer mismatch (after my r2 dispatch + DA's r2 PASS) was treated in the original synthesis as "specialist + general DA both needed — convergence catch." That framing missed a more important question.
+
+**Triage signal the synthesis should have engaged**: the r2 dispatch prompts I sent to DA + plan-track agents asked "do fixes close r1 blockers?" They did NOT ask "are there NEW cross-section issues outside r1 scope?" CDS happened to read consumer-side code (audit-calibration-gate.py) because their domain expertise pulled them there; DA's r2 didn't because the prompt didn't direct it.
+
+**That's a r2-prompt-design gap.** Future r2 dispatches should explicitly include "scan for NEW cross-section issues outside r1 finding scope" as a discrete prompt section, not assume general adversarial review covers it. Logged behaviorally (Section 8.5) and as future-build SQ candidate (would extend the existing 4-item structural list with a 5th: "r2-prompt-template requires new-scope-scan section").
+
+### 8.4 Calibration false-precision corrections
+
+Three specific instances where the original synthesis presented agent-judgment-or-anecdote with the rhetorical weight of measurement:
+
+- **PM percentages** (Section 6): PM[1] 35%, PM[2] 25%, etc. were carried forward from C1 plan-agents' subjective pre-mortem assignments. Reframe: "C1 plan-agents' subjective pre-mortem likelihoods, not measured base rates from a reference class." Should be presented with explicit confidence framing or omitted from a "manifested vs avoided" claim that implicitly treats them as data.
+- **"1264 passed in <6s wall"** (Section 5 performance dimension): single pytest run at one point in time. Reframe: "single pytest run, not sampled performance characterization." A performance-quality claim requires multiple runs under varied conditions.
+- **"67 successful workspace_write calls / 0 anchor failures → IC[6] hardened in production"** (Section 5 maintainability + Section 7 ## 67 successful... entry): per-call success counts under one session of usage. Reframe: "anecdotal usage signal, not statistical hardening proof." An invariant is hardened when it has survived varied conditions across sessions, not when it has not yet failed in one session.
+
+These are not errors of fact — the runs and counts are real. They are framing errors that overstate the strength of evidence.
+
+### 8.5 Behavioral corrections logged for future analyses
+
+The recurring B 3.14 pattern across two consecutive sigma-evaluate runs is itself the most useful finding from the eval. Logged to sigma-mem failures.md (26.4.28) as a self-calibration meta-pattern with five behavioral corrections:
+
+1. **Score reflects residual**: never declare OVERALL = max-score when known-residual exists. Score reflects, label does not.
+2. **NEW post-PASS findings = triage signals**: when an agent surfaces a NEW finding after my prior PASS verdict, the analytical question is "should the prior round have caught this? if not, why not?" — not just "two-witness convergence."
+3. **Operationalize before naming**: structural recommendations need (where + BLOCK/WARN + owner + trigger) populated before they enter synthesis. Section 7 above is the template.
+4. **Reframe single-trial empirics**: per-call counts, single pytest runs, one-time greps → describe as anecdotal usage signal, not hardening proof.
+5. **Mark pre-mortem percentages as judgment**: PM[N] (35%) etc. are agent-subjective likelihoods, not measured base rates. Distinguish in synthesis.
+
+These apply going forward, measured by whether the next sigma-evaluate run lands above 3.14 with a different weakness profile.

@@ -360,9 +360,6 @@ AUDIT[26.4.23|r19-remediation-c1]: c8-anthropic-exclusion-honored-in-build |all 
 AUDIT[26.4.23|r19-remediation-c1]: path-β+-warn-first-with-3-review-calibration-novel-c4-c5-reconciliation |user-decision in-scope expansion (not silent scope creep): WARN-first chain-evaluator gates on #22/#23/#24 with empirical 3-review calibration log + audit-calibration-gate.py promoting WARN→BLOCK after threshold (≥3 reviews + ≤20% FP + ≥5 DA-verdicted). Resolves C4 (no-legitimate-override-→-BLOCK) vs C5 (rigor-default-edges-self-correct) tension via empirical evidence over rule-additions. First instance — track promotion timing as calibration data. |verdict:GREEN-component |source:sigma-audit |agents: cognitive-decision-scientist,devils-advocate,implementation-engineer,code-quality-analyst
 AUDIT[26.4.23|r19-remediation-c1]: triple-convergence-before-da-pressure-as-healthy-signal |DA[#5] CONDITION-1-deferral conclusion reached independently by IE + CQA + DA before DA pressure was applied. Indicates plan-track + build-track agents share enough rigor that scope-defer signals trigger on multiple channels. Distinguish from herding: convergence-before-DA on a SCOPE constraint is healthy (constraint-driven); convergence-before-DA on a HYPOTHESIS is herding. |verdict:GREEN-component |source:sigma-audit |agents: tech-architect,security-specialist,cognitive-decision-scientist,implementation-engineer,code-quality-analyst,technical-writer,devils-advocate
 
-→ actions:
-→ new pattern observed → append with |agents and |signal
-→ pattern contradicted → move to ¬ section with explanation
 
 ## Retro: R3 — Vet two full AI-agent-rollout playbooks as a unified review. (2026-04-24)
 value: devils-advocate, devils-advocate converged (0 timeouts)
@@ -403,3 +400,11 @@ sources: T1:90 T2:121 T3:4
 xverify: used:6 failed:51 available:yes
 complexity: tier-assessed: 3
 -> recommendation: Low agent convergence count — check if agents are stalling or timing out.
+!evaluate-pattern 26.4.28: sigma-review with XVERIFY-unavailable + load-bearing performance/severity claims tend to ship unverified vendor numbers (Qdrant latency, pgvector thresholds) and potentially-fabricated technique codes (MITRE ATLAS sub-technique). DA warrant audit catches causal leaps (correlation→causation conflation withdrawn 2/2 in this review) but does not catch unsourced quantitative claims that look authoritative. !mitigation: T1/T2 source-tier layering helps but isn't sufficient — when XVERIFY unavailable, lead should require dated-source citation for any vendor-version-specific claim or technique-code citation before promotion. !mech: pre-promotion citation gate + spot-check of named technique codes against current published matrices. |agents: tech-architect,security-specialist,reference-class-analyst,devils-advocate
+AUDIT[26.4.28|ai-agent-rollout-playbook-vet]: workspace-corruption-recovery exemplar — sed -i corruption hard-halted, backup taken, read-only extraction + verbatim re-paste with [recovery-attestation] tags + transparent recovery-log = GREEN auditability post-corruption |verdict:GREEN |source:sigma-audit |agents: all
+AUDIT[26.4.28|ai-agent-rollout-playbook-vet]: DA-context XVERIFY as compensating control for systematic agent-context XVERIFY-FAIL validated — 3 architecturally-distinct providers × 3 load-bearing findings drove severity recalibration; passes exit-gate criterion 9 with documented gap rather than silent skip |verdict:GREEN |source:sigma-audit |agents: devils-advocate,lead
+AUDIT[26.4.28|ai-agent-rollout-playbook-vet]: DA hit rate 90% (18/20 produced revision) at upper bound of healthy 60-80% range — DA self-flagged that R1 may have addressable gaps surfaceable earlier; consider strengthening R1 hygiene checklist (severity-calibration-via-xverify, per-doc both-docs verification) |verdict:GREEN |source:sigma-audit |agents: devils-advocate
+
+→ actions:
+→ new pattern observed → append with |agents and |signal
+→ pattern contradicted → move to ¬ section with explanation
