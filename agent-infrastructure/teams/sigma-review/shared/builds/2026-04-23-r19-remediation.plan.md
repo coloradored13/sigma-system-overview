@@ -4,7 +4,7 @@
 - created: 2026-04-23
 - build-id: 2026-04-23-r19-remediation
 - tier: BUILD TIER-3 (score 19)
-- status: closing
+- status: complete
 - plan-exit-gate: PASS
 - plan-belief: P=0.88
 - DA-grade-c1: A-
@@ -292,11 +292,16 @@ Cluster C (CQA, 12 SQs incl gating):
 - **Process strengths**: TW BUILD-CONCERN-then-ratify protocol applied 2x cleanly (no silent absorption); IE refusal+flag against task-list-teammate misroute at session start (process-integrity-over-completion in action); SS explicit anti-sycophancy bias-check + bonus end-to-end A24 wiring trace; CDS bonus telemetry recovery (13 historical A24 records surfaced via fix); CQA regression-lock pre-flight assertion pattern; DA pattern-recognition-from-3-instances-to-4
 - **Process gaps logged for sigma-mem**: A24 silent-skip root cause (plan ## Files entry without SQ owner + TW punt-instead-of-flag) → 4 structural fix candidates for promotion; multi-layer-contract-drift pattern (4 instances) → P[doc-enumeration-drift-from-machine-source-of-truth]; template-vs-instance drift sync-script + chain-evaluator A25 detection design (decision: duplication preserves rule-following safety, sync script over generator, mechanical detection prevents drift); recursive-self-reference anti-pattern (TW used prior propagation as canonical reference instead of source-of-truth) → P[propagate-from-source-not-prior-instance]; task-list-teammate auto-router misroute → mitigation pattern documented
 
-## Close Status
-*(empty — written by C3)*
-
-## Close Status
-*(empty — written by C3)*
+## Close Status (written by C3)
+- synthesis-artifact: ~/.claude/teams/sigma-review/shared/archive/2026-04-23-r19-remediation-synthesis.md (327 lines, 7 sections, written by separate-context synthesis-agent per CLAUDE.md ## Lead Role Boundaries)
+- wiki-pages-updated: 4 new pages with [B-r19-remediation, 26.4.27] attribution — sigma-build-infrastructure-architecture.md, beta-plus-calibration-pattern.md, workspace-write-contract.md, premise-audit-step-7a.md; INDEX.md updated. V24+V25+V26 PASS (compilation-agent separate-context).
+- promotions: 18 user-approved (user "approve all" 26.4.27) + 31 auto-promoted = 49 patterns persisted to sigma-mem patterns.md; 1 classification adjudication decision logged to decisions.md
+- portfolio-entry: ~/.claude/teams/sigma-review/shared/portfolio.md appended r19-remediation entry (3rd portfolio entry after loan-admin-agent-v2 + ai-agent-rollout-playbook-vet)
+- sync: COMPLETE — 6 commits pushed (sigma-verify 273d83d IC[8] docstring; sigma-system-overview 672abbf close-out bundle + 0fb4bcc memory snapshot + 3e82823 c3-scratch archive + 57ef8c1 + b2fa035 calibration-log final). Both repos pushed to origin/main.
+- archive: ~/.claude/teams/sigma-review/shared/archive/2026-04-23-r19-remediation-c3-scratch.md (1331 lines with metadata header)
+- chain-evaluator: 21/22 items PASS (final pre-shutdown run). A14 git-clean reflects known structural race against chain-evaluator's own CAL-EMIT writes (logged to sigma-mem failures.md 26.4.28; future-build SQ candidate to exclude calibration-log from A14 OR run A14 pre-emission).
+- known-limitations-deferred-to-next-build: 5 LOW (xargs framing minor, IC[7-9] namespace, A24 docstring attribution, A24 §-enumeration in directives.md, _XVERIFY_ANY_RE over-suppression regex) + 1 cosmetic (A24 no-Condition-1-suppression docstring) + 4 structural fix candidates from A24 silent-skip post-mortem (C1 plan-completeness check + C2 boot validation + TW agent-def update + C2 exit-gate diff) + chain-evaluator A25 template-drift detection + A14-vs-calibration-log race
+- status: complete
 
 ## Verification
 How to verify the build end-to-end in C3 review:
