@@ -956,7 +956,7 @@ _XVERIFY_ANY_RE = re.compile(
 def check_a24_sigma_verify_coverage(content: str) -> ChainItem:
     """A24: sigma-verify init pre-flight (WARN, path β+).
 
-    Scope (narrow, per SS recommendation):
+    Scope (narrow, per DA[#1] r1 finding + SS r1 ship recommendation):
       - ΣVerify is MCP-available per workspace ## infrastructure pre-flight
       - Finding has a load-bearing marker (>=70% confidence, HIGH/CRITICAL
         severity, or primary-recommendation citation — same detectors as A20)

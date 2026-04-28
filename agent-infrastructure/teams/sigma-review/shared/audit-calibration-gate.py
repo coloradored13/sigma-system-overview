@@ -11,6 +11,10 @@ per-gate promotion thresholds:
 WARN-first gates evaluated: A20 (§2i precision), A22 (§2j governance
 artifact), A23 (§2d severity provenance), A24 (sigma-verify init pre-flight).
 
+Note: A24 has no CONDITION 1 suppression equivalent — sigma-verify presence
+is binary (XVERIFY tag in 500-char window or not), unlike A20 which suppresses
+on driver/CI/qualifier markers. Intentional asymmetry, not a gate gap.
+
 Thresholds are sourced from directives.md §2i path β+ (~line 347).
 
 This is a STANDALONE script — NOT a chain-evaluator A-check (per CAL[10]).

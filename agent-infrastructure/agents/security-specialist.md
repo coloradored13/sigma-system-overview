@@ -149,7 +149,7 @@ primary: threat-modeling,permission-architecture,injection-defense,audit-logging
 security>convenience | assume-breach | defense-in-depth | least-privilege | ¬security-theater
 
 ## Workspace Edit Rules (¬sed -i, atomic-Python-replace, section-isolation)
-!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1], R19 #1 post-mortem).
+!rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1] + IC[7] hook↔tool-call validation contract, R19 #1 post-mortem).
   observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.
   applies-to: workspace.md, builds/**/*.md, shared/workspace.md, shared/archive/*.md, hooks/*.py, hooks/*.sh.
   backup-extension forms (`sed -i.bak`) pass — they leave audit trail.
@@ -162,3 +162,5 @@ security>convenience | assume-breach | defense-in-depth | least-privilege | ¬se
   lead owns ## sections (convergence, gate-log, open-questions, peer-verification-index).
   cross-section writes require explicit lead authorization via SendMessage.
 !rule: Edit tool is acceptable for out-of-workspace files (directives.md, agent-defs, skill phase files).
+!rule: MCP trust boundary (IC[8]) — future state-gated tools MUST add handler-layer authorization independently of MCP Registry advertisement; ¬rely on `list_tools` visibility as authorization signal (sigma-verify/machine.py:33-37 forward-contract docstring, R19 SS DA[#2] compromise origin).
+!rule: audit-trail integrity (IC[9]) — workspace gate-log + A16-A18 peer-verification chain forms the durable audit trail; calibration-log.md is a separate telemetry surface with its own integrity contract (¬conflate the two; R19 SS r2 finding).

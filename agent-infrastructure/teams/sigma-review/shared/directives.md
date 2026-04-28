@@ -453,13 +453,13 @@ DA challenge format for weak checks:
 
 #### DA verdict on CAL-EMIT records (26.4.23, path β+)
 
-!purpose: close the calibration loop for WARN-first gates (§2i/§2j/§2d-severity). audit-calibration-gate.py gates BLOCK-promotion on ≥3 reviews + ≤20% FP rate — this requires DA verdicts on each firing to classify legitimate vs false-positive.
+!purpose: close the calibration loop for WARN-first gates (§2i/§2j/§2d-severity + A24 sigma-verify pre-flight — all four path-β+ gates). audit-calibration-gate.py gates BLOCK-promotion on ≥3 reviews + ≤20% FP rate — this requires DA verdicts on each firing to classify legitimate vs false-positive.
 
 !when: DA r2 exit-gate — DA processes every CAL-EMIT[PENDING] record written to workspace by chain-evaluator this session
 
 !rule: for each CAL-EMIT[{gate-id}] record in workspace with da-verdict:PENDING:
   DA appends: da-verdict:{legitimate|false-positive|not-reviewed}
-    legitimate: gate correctly flagged a real §2i/§2j/§2d-severity violation — agent should revise
+    legitimate: gate correctly flagged a real §2i/§2j/§2d-severity/A24 violation — agent should revise
     false-positive: gate fired on well-formed finding; heuristic mismatch — record for gate recalibration
     not-reviewed: DA examined workspace but could not adjudicate this firing (time-boxed, out-of-domain) — record as missing data
 
@@ -1207,6 +1207,7 @@ audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process 
 
 !purpose: formalize R19 exemplary recovery as reusable template. Auditor flagged R19 recovery-log as "exemplary" — Scope Integrity 4/4 earned via transparency, not absence-of-incident. Future corruptions are inevitable (sed -i cross-session + concurrent-write races); preserved pattern keeps response structured rather than improvised.
 !observed trigger: R19 #1 `sed -i ''` silent corruption → 4 agent sections lost mid-R1 | also: tool-call failure mid-write, filesystem error, concurrent-write race overwriting anchor.
+!cross-ref: this section is the operational complement to IC[7] (security contract on hook ↔ tool-call validation, sed-i BLOCK enforcement). IC[7] establishes the mechanical contract; §8e formalizes the recovery template when the contract holds but external corruption occurs (filesystem, concurrent-write, MCP failure).
 
 !trigger-conditions: workspace.md or scratch/*-workspace.md contains partial content, lost agent sections, phantom scaffolding, or any detectable state divergence from expected post-write outcome.
 
