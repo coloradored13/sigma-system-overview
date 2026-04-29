@@ -1,6 +1,6 @@
 ---
 name: sigma-retrieve
-description: Agentic RAG pipeline for structured retrieval during sigma-review analyses. Spawns retriever agents that select optimal search strategy, score document relevance, and filter noise. Use when agents need grounded data beyond basic web search, or when the user says "deep research" or "retrieve".
+description: Agentic web research pipeline. Decomposes a topic into typed sub-queries (factual/opinion/counter/precedent), spawns parallel retrievers across the web, scores sources for authority/recency/relevance, validates cross-source convergence, and packages findings with provenance. Use as the standalone equivalent of deep research, or as a sub-component invoked by sigma-review agents for grounded evidence. Triggers: "deep research", "retrieve", "thorough research".
 argument-hint: "[query or topic to research]"
 allowed-tools: Read, Grep, Glob, Bash, Agent, WebSearch, WebFetch
 ---
