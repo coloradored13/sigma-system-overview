@@ -81,6 +81,9 @@ coloradored13/{hateoas-agent(public),sigma-mem(public),ollama-mcp-bridge(public)
 - [Schema drift check](feedback_schema-drift-check.md) — when shipping features, either wire or delete every schema field; don't advertise functionality the app doesn't deliver (26.4.20)
 - [Accountable rigor over permissiveness](feedback_accountable-rigor-over-permissiveness.md) — when a rule over-fires, require the system to defend each invocation rather than adding exceptions; rigor stays default, edges self-correct (26.4.20)
 - [XVERIFY excludes Anthropic](feedback_xverify-anthropic-excluded.md) — sigma-verify cross-model checks must exclude anthropic provider; Claude verifying Claude is not cross-model; enforce in spawn prompts until sigma-verify default-excludes (26.4.23)
+- [Avoid parallel sessions](feedback_avoid-parallel-sessions.md) — don't run concurrent Claude sessions writing to sigma-system-overview shared infra; check git log + mtimes before starting work that touches it (26.4.28)
+- [Recovery over apology](feedback_recovery-over-apology.md) — don't apologize for tech hiccups (API errors, MCP flapping, dropped spawns); name state + recover; keeping to the plan after a hiccup IS the success (26.4.28)
+- [User-approval gate non-bypassable](feedback_user-approval-gate-non-bypassable.md) — when lead persists for agents on MCP-flap, the auto-vs-user-approve classification gate STILL APPLIES; transport-failure does NOT authorize gate-skip; silently elevating new-principle entries is a contamination vector (26.4.28)
 
 ## references
 - [Anthropic rate limits](reference_anthropic-rate-limits.md) — 1K RPM, 90K output tok/min (binding constraint), all Claude models (26.4.2)

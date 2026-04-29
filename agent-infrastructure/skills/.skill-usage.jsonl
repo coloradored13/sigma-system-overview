@@ -254,3 +254,16 @@
 {"timestamp": "2026-04-23T23:24:42.714041", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "sigma-review"}
 {"timestamp": "2026-04-24T09:13:08.392802", "skill": "sigma-build", "file": "phases/c3-review.md", "tier": "router", "context": "sigma-review"}
 {"timestamp": "2026-04-28T12:25:39.038680", "skill": "sigma-build", "file": "phases/c3-review.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T19:43:56.656352", "skill": "sigma-review", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T19:44:03.067550", "skill": "sigma-review", "file": "phases/README.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T19:58:57.388379", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T20:35:01.033232", "skill": "sigma-review", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T20:35:04.918497", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T20:35:11.417281", "skill": "sigmacomm", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T22:59:41.232191", "skill": "sigma-audit", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T22:59:41.388013", "skill": "sigma-evaluate", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T22:59:58.192258", "skill": "sigma-evaluate", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T23:00:02.209535", "skill": "sigma-evaluate", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T23:00:02.209728", "skill": "sigma-evaluate", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T23:13:19.870452", "skill": "sigma-review", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-04-28T23:14:28.515329", "skill": "sigma-build", "file": "phases/c1-plan.md", "tier": "router", "context": "sigma-review"}
