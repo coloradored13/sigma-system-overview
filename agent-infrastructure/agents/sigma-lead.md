@@ -39,6 +39,37 @@ User may override. Pass `model` in the Agent tool call: `Agent({..., model: "opu
 Extract from user prompt: QUESTIONS (Q1-QN), CLAIMS → HYPOTHESES (H1-HN), CONSTRAINTS (C1-CN).
 Present to user for confirmation. Write to workspace ## prompt-decomposition.
 
+**Premise-audit pre-dispatch (HARD GATE — §2p):**
+Run AFTER prompt decomposition and BEFORE Step 2 spawn. **Sequence is load-bearing** — reversing recreates the frame-anchoring §2p prevents (R19 evaluator: premises "accepted as frame" before H[] dispatch). Per directives.md §2p, answer PA[1-4] from the user prompt ALONE — do NOT re-read the user's proposed tiers/frameworks/H-space until premise-audit is complete.
+
+!applies-to: ALL sigma-review tasks (TIER-1/2/3)
+!scope: STRUCTURAL premises ¬domain-depth (domain → §2e+DA in agent analysis)
+
+Four structural premise tests (ANALYZE-scoped per directives.md §2p):
+- PA[1] tier-necessity — is the proposed tier/framework NECESSARY or is simpler structure adequate?
+- PA[2] firm-size-floor — minimum viable org? (state explicitly)
+- PA[3] data-readiness — what data must exist for findings to be actionable? (gap? yes/no)
+- PA[4] adoption-baseline — RC[{class}]={rate} | above/at/below base-rate?
+
+Write PREMISE-AUDIT result to workspace `## premise-audit-results` section using workspace_write() helper per IC[6]:
+```
+PREMISE-AUDIT[pre-dispatch]:
+  PA[1]: tier-necessity: {CONFIRMED|CHALLENGED|GAP} — {one-sentence rationale}
+  PA[2]: firm-size-floor: {minimum-org} | {assumption-stated}
+  PA[3]: data-readiness: {preconditions} | gap:{yes/no}
+  PA[4]: adoption-baseline: RC[{class}]={rate} | above/at/below base-rate
+  → proceed-with-H | revise-H-space({N}) | flag-premise({N})
+```
+
+!rule: CHALLENGED/GAP on PA[1] or PA[2] → revise scope-boundary + H-space BEFORE Step 2 spawn (¬spawn agents with contested structural premise)
+!rule: CHALLENGED on PA[3] or PA[4] → convert to explicit H[] for agents to test
+!rule: decision line (→ proceed | revise | flag) is REQUIRED — chain-evaluator §2p presence-check BLOCKs on missing `## premise-audit-results` section (PM[3] mitigation, BLOCK day-one per DA[#6]-b resolution)
+!rule: DA receives PREMISE-AUDIT in r2 (Step 5) — checks agents ¬re-anchored on CHALLENGED premises
+
+Report: `"PREMISE-AUDIT: PA[1]:{status} |PA[2]:{status} |PA[3]:{status} |PA[4]:{status} |→ {decision}"`
+
+Cross-ref: BUILD variant carries the "Step 7a" label (sigma-build c1-plan.md:62 Step 7a HARD GATE); ANALYZE side keeps the structure but drops the label per H7 r2 — structure survives, label dropped to avoid renumber-cascade across the sigma-review/SKILL.md and this file's workflow steps.
+
 ### 2. Initialize workspace + spawn agents
 
 Write workspace.md with: task, scope-boundary, prompt-decomposition, agent sections, infrastructure.
@@ -173,7 +204,7 @@ After agents complete analytical work and DA challenges, each agent reads their 
 Spawn synthesis agent with workspace path only. No conversation context, no user remarks, no lead interpretations. If synthesis agent fails, deliver raw workspace findings with explicit gap flag. Save to `shared/archive/{date}-{task-slug}-synthesis.md`. Chain evaluator checks A11.
 
 **7b. Compilation** (lead MUST NOT write wiki content):
-Spawn compilation agent with: synthesis artifact path, wiki directory (`shared/wiki/`), INDEX.md. Page rules: add findings with `[R{N}, {date}]` attribution, flag contradictions (`⚠ CONFLICT`), note convergence (`✓ Confirmed`), never silently overwrite. Update INDEX.md.
+Spawn compilation agent with: synthesis artifact path, wiki directory (`shared/wiki/`), INDEX.md, review-id (matches workspace `## review-id` or `## build-id` slug). Page rules: add findings with `[R{N}, {date}]` attribution, flag contradictions (`⚠ CONFLICT`), note convergence (`✓ Confirmed`), never silently overwrite. Update INDEX.md. **On completion, the compilation agent MUST append `## compilation-complete: [R-{review-id}]` to the workspace** — phase-gate BLOCK 5 enforces this header before any archive operation (per ADR[6]/IC[6]). If compilation fails or is skipped intentionally, the operator may unblock with the manual-override form: `## compilation-complete: [R-{review-id}, manual-override, reason: {reason}]`. The manual-override form requires an audit-traceable reason.
 
 **7c. Promotion:**
 1. MCP health check: `recall: "health check before promotion"` — if MCP disconnected, ask user to restart

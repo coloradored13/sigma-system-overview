@@ -592,3 +592,157 @@ class TestSedShlexEvasionMatrix:
         assert blocked is True, (
             "sigma-optimize/shared/ must be protected same as sigma-review/shared/"
         )
+
+
+class TestPreArchiveCompilationGate:
+    """SQ[9] / ADR[6] / IC[6]: BLOCK 5 — 06b pre-archive compilation gate.
+
+    Workspace must contain `## compilation-complete: [R-{review-id}]` header
+    before any archive operation. Manual-override recovery form is also
+    accepted. Stale-workspace FP guard via _is_sigma_session().
+    """
+
+    _ARCHIVE_PATH = (
+        "/Users/test/.claude/teams/sigma-review/shared/archive/2026-04-29-test.md"
+    )
+
+    def test_blocks_archive_write_without_header(self, patch_paths):
+        """Write to archive path without compilation-complete → BLOCK."""
+        write, _, _ = patch_paths
+        write("## task\nactive sigma session\n## findings\n")  # active session
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._ARCHIVE_PATH, "content": "synthesis"},
+        )
+        assert blocked is True
+        assert "PRE-ARCHIVE BLOCKED" in reason
+        assert "compilation-complete" in reason
+        assert "manual-override" in reason
+
+    def test_passes_archive_write_with_header(self, patch_paths):
+        """Write to archive path WITH compilation-complete → pass."""
+        write, _, _ = patch_paths
+        write(
+            "## task\nactive\n"
+            "## compilation-complete: [R-2026-04-29-test]\n"
+            "## findings\n"
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._ARCHIVE_PATH, "content": "synthesis"},
+        )
+        assert blocked is False
+        assert reason == ""
+
+    def test_passes_archive_write_with_manual_override(self, patch_paths):
+        """Manual-override form unblocks per IC[6] recovery path."""
+        write, _, _ = patch_paths
+        write(
+            "## task\nactive\n"
+            "## compilation-complete: [R-2026-04-29-test, manual-override, "
+            "reason: compilation-agent crashed after MCP timeout]\n"
+            "## findings\n"
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._ARCHIVE_PATH, "content": "synthesis"},
+        )
+        assert blocked is False, "manual-override form must unblock"
+
+    def test_blocks_archive_bash_cp_without_header(self, patch_paths):
+        write, _, _ = patch_paths
+        write("## task\nactive\n## findings\n")
+        blocked, reason = pg.check_pre_archive_gate(
+            "Bash",
+            {"command": "cp /tmp/workspace.md /Users/test/.claude/teams/sigma-review/shared/archive/foo.md"},
+        )
+        assert blocked is True
+
+    def test_blocks_archive_bash_mv_without_header(self, patch_paths):
+        write, _, _ = patch_paths
+        write("## task\nactive\n## findings\n")
+        blocked, reason = pg.check_pre_archive_gate(
+            "Bash",
+            {"command": "mv old.md /Users/test/.claude/teams/sigma-build/shared/archive/old.md"},
+        )
+        assert blocked is True
+
+    def test_does_not_block_outside_archive_path(self, patch_paths):
+        write, _, _ = patch_paths
+        write("## task\nactive\n## findings\n")
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": "/Users/test/.claude/teams/sigma-review/shared/workspace.md",
+             "content": "x"},
+        )
+        assert blocked is False, "Non-archive paths are not gated"
+
+    def test_does_not_block_outside_sigma_session(self, patch_paths):
+        """PM[5] FP guard: stale/non-sigma workspace must NOT trigger BLOCK 5."""
+        write, _, _ = patch_paths
+        # No ## task, no ## mode → not a sigma session
+        write("# empty workspace\n")
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._ARCHIVE_PATH, "content": "x"},
+        )
+        assert blocked is False, (
+            "PM[5] mitigation: BLOCK 5 must NOT fire outside an active sigma session"
+        )
+
+    def test_compilation_complete_regex_matches_canonical(self):
+        """IC[6] regex matches canonical form."""
+        m = pg._COMPILATION_COMPLETE_RE.search(
+            "## compilation-complete: [R-2026-04-29-shared-process-hardening]"
+        )
+        assert m is not None
+        assert m.group(1) == "2026-04-29-shared-process-hardening"
+        assert m.group(2) is None
+
+    def test_compilation_complete_regex_matches_manual_override(self):
+        m = pg._COMPILATION_COMPLETE_RE.search(
+            "## compilation-complete: [R-test-id, manual-override, reason: agent crashed]"
+        )
+        assert m is not None
+        assert m.group(1) == "test-id"
+        assert m.group(2) == "agent crashed"
+
+    def test_compilation_complete_regex_does_not_match_partial(self):
+        """Malformed forms must NOT match (per IC[6])."""
+        # Missing closing bracket
+        assert pg._COMPILATION_COMPLETE_RE.search(
+            "## compilation-complete: [R-test-id"
+        ) is None
+        # Missing R- prefix
+        assert pg._COMPILATION_COMPLETE_RE.search(
+            "## compilation-complete: [test-id]"
+        ) is None
+        # Different case
+        assert pg._COMPILATION_COMPLETE_RE.search(
+            "## Compilation-Complete: [R-test]"
+        ) is None
+
+    def test_pre_tool_use_dispatch_blocks_archive(self, patch_paths):
+        """End-to-end: enforce_pre_tool_use returns exit code 2 on blocked archive."""
+        write, _, _ = patch_paths
+        write("## task\nactive\n## findings\n")
+        exit_code, output = pg.enforce_pre_tool_use({
+            "tool_name": "Write",
+            "tool_input": {"file_path": self._ARCHIVE_PATH, "content": "x"},
+        })
+        assert exit_code == 2
+        assert "PRE-ARCHIVE BLOCKED" in output["reason"]
+
+    def test_pre_tool_use_dispatch_allows_with_header(self, patch_paths):
+        """End-to-end: enforce_pre_tool_use allows archive when header present."""
+        write, _, _ = patch_paths
+        write(
+            "## task\nactive\n"
+            "## compilation-complete: [R-test]\n"
+            "## findings\n"
+        )
+        exit_code, output = pg.enforce_pre_tool_use({
+            "tool_name": "Write",
+            "tool_input": {"file_path": self._ARCHIVE_PATH, "content": "x"},
+        })
+        assert exit_code == 0

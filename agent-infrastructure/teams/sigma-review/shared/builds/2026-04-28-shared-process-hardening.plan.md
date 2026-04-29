@@ -5,15 +5,16 @@
 - locked: 2026-04-28
 - build-id: 2026-04-28-shared-process-hardening
 - tier: BUILD TIER-2 (score 16/25)
-- status: plan-locked
+- status: built
+- c2-locked: 2026-04-29
 - plan-exit-gate: PASS (DA effective PASS post-fix)
 - plan-belief: P=0.88
 - plan-da-grade: B+ CONDITIONAL-PASS r1 with all 4 BLOCKING resolved → effective PASS
 - post-c1-audit-verdict: **YELLOW** (11 PASS / 3 PARTIAL / 1 FAIL of 15 rows). FAIL = K (XVERIFY criterion-9 single-provider routing — sigma-verify infrastructure 2-build pattern; recovery option-c: defer XVERIFY redo to C2 build-track on load-bearing implementation findings). 3 PARTIALs (LOW): B H[] presentation merge, C dual-test-SQ doc gap (now addressed below), G PM-track plan-vs-build distinction (directive-update candidate).
 - audit-flags-recurring: :K sigma-verify infra 2-build P0; :promotion-gate auto-vs-user-approve same-session recurrence (pre-shutdown hook gap); :gate-log-prose-parsing schema needed
 - audit-disclosure-status: gate-log entry written to scratch ## gate-log "post-C1 sigma-audit verdict" section. C1 truly-closed status conditional on user accepting recovery option-c; alternatives (a) re-run XVERIFY now or (b) accept gap as documented.
-- build-exit-gate: PENDING
-- build-belief: P=0.00
+- build-exit-gate: **PASS** — 12/12 SQs DONE, peer-verify ring closed (TW→IE PASS 6/0/0, CQA→TW PASS 6/0/0, IE→CQA PASS 5/0/0), zero regressions, 1245/1260 hook-suite (1 pre-existing unrelated failure documented), 103 new tests added (59 IE + 7 TW + 37 CQA, all passing), 11 sigma-mem entries persisted. XREVIEW advisory MEDIUM with 3 C3 carry-forward gaps.
+- build-belief: **P=0.85** (down from plan-belief 0.88 due to advisory MEDIUM XREVIEW finding on BLOCK 5 enforcement-surface — production-ready for plan-faithful day-1 BLOCK but C3 must resolve manual-override actor ambiguity + decide on Bash regex / path normalization expansion)
 - output-label: P2.A 10-item shared process-hardening bundle (sigma-build c1/c2 mechanics + shared chain-evaluator/workspace conventions + sigma-review workflow placement)
 - source-plan: ~/.claude/plans/which-of-the-suggestions-mellow-anchor.md (P2.A)
 - scratch: ~/.claude/teams/sigma-review/shared/builds/2026-04-28-shared-process-hardening/c1-scratch.md (status: archived-c1)
@@ -137,9 +138,70 @@ P2.A from the merged closeout-and-enforcement plan: 10 process-hardening items s
 - **Peer-verify ring**: TW↔TA (r1 honest-FAIL + r2 CONDITIONAL-PASS post-population) | IE↔CQA (PASS, both directions) | DA peer-verify N/A by convention.
 - **XVERIFY**: TA ADR[6] agree-high (openai gpt-5.4); TW WP[2] PARTIAL¬DISAGREE (openai); DA challenge() reasoning-tier on top-1 returned MED with substantive counter. cross_verify infrastructure flapping documented as INFRASTRUCTURE FOLLOW-UP for sigma-verify maintenance.
 
-## Build Status
+## Build Status (written by C2)
 
-(empty — written by C2)
+### Meta
+- C2 conversation: 2026-04-29
+- C2 lead: team-lead@sigma-build-c2-sph
+- C2 build-track team: sigma-build-c2-sph (3 agents: implementation-engineer, technical-writer, code-quality-analyst)
+- C2 mode: pure execution against locked plan; no DA, no plan-track, no parallel engineers; single cluster.
+- C2 scratch: ~/.claude/teams/sigma-review/shared/builds/2026-04-28-shared-process-hardening/c2-scratch.md (status: archived-c2 at C2 close)
+
+### Test Results
+- chain-evaluator + phase-gate suites: **207/207 PASS**
+- full hook-suite: **1245 passed, 14 skipped, 1 failed** (1260 collected)
+- failure: test_structural_validation.py::TestSettingsJsonHooks::test_existing_settings_preserved — settings.json effortLevel='xhigh' vs 'high', **pre-existing unrelated to this build** (predates C1 lock; documented in C3 carry-forward)
+- new tests added by this build: **103** (59 IE + 7 TW + 37 CQA)
+  - IE: TestA14RaceFix(7) + TestA26PlanCompleteness(9) + TestB5C2Boot(9) + TestB6C2ExitGate(8) + TestA25TemplateDrift(9) + 5 new TestA24SigmaVerifyInitPreFlight + TestPreArchiveCompilationGate(12)
+  - TW: test_step7a_cross_ref.py(7)
+  - CQA: TestArchivedWorkspacePassthrough(18) + TestDA12UniversalEdgeCases(13) + TestVerificationSpotChecks(6)
+- regressions: **0**
+
+### Checkpoints
+- CHECKPOINT[implementation-engineer]: FINAL — 7/7 SQs |files-created: chain-evaluator.py (4 new check_a*/check_b* + race-fix wrapper + regex tightening + ADR[9] shared helpers _strip_bom + _strip_fenced_blocks) + phase-gate.py (BLOCK 5 + helpers + dispatch) + sigma-lead.md:207 (compilation-agent spawn + manual-override; was line 176 pre-TW SQ[10] insertion) + scripts/sync-templates.sh (NEW) + 59 tests |interfaces-matched: yes (ADR[1]/IC[1], ADR[2]/IC[3]/IC[8], ADR[3]/IC[2], ADR[4]/IC[4], ADR[5]/IC[5], ADR[6]/IC[6], ADR[7]/IC[7], ADR[8], ADR[9]) |drift: none |surprises: shared `_strip_bom`+`_strip_fenced_blocks` helpers extracted as DRY win across A26/B5/B6/A25 (per ADR[9])
+- CHECKPOINT[technical-writer]: FINAL — 4/4 SQs |files-modified: 4 (technical-writer.md + directives.md + SKILL.md + sigma-lead.md Step 1) + 1 created (test_step7a_cross_ref.py 7/7 PASS) |interfaces-matched: yes (ADR[10] verbatim threshold ≥3+≤20%FP, H7 r2 label-drop, paraphrase test, bidirectional §2p↔§8f cross-ref) |PM[7..9] mitigations confirmed |drift: none |surprises: none
+- CHECKPOINT[code-quality-analyst]: FINAL — 1/1 SQ + DA[#12] applied |files-created: 1 (test_archived_workspaces.py 37/37 PASS) |archives-covered: 3 frozen (r19-remediation-workspace + ai-agent-rollout-playbook-vet 26.4.22 + sigma-chatroom-m1ab-workspace) |WARN-only invariant VERIFIED + no-regression invariant VERIFIED + 5/5 edge-case classes covered single-pass per DA[#12] |drift: none |surprises: none
+
+### Cross-Model Code Review
+XREVIEW[openai:gpt-5.4][phase-gate.py BLOCK 5 (ADR[6]/IC[6])]: vulnerability=MEDIUM |issues:8 logical gaps surfaced |advisory weight per c2-build.md Step 6 — informs C3, does NOT block C2 exit |GAP[#5] manual-override governance independently confirms TW VP[1] concern (two reviewers flag same actor-authority ambiguity in sigma-lead.md:176/207). See c2-scratch ## cross-model-code-review for full counter-argument and C3 carry-forward triage.
+
+### SQ Status
+- SQ[1] A26 plan-completeness ChainItem (WARN-first): **DONE** — 9/9 tests pass, ADR[3]/IC[2] anchored regex BOM/fenced-aware, source: F[IE-3]
+- SQ[2] B5 C2 boot validation ChainItem (WARN-first): **DONE** — 9/9 tests pass, ADR[2]/IC[3]/IC[8] schema + ADR[9] universal edge cases, source: F[IE-4]
+- SQ[3] TW Gap-Handling Rules section: **DONE** — paraphrase tests Q3-orphan-file/Q3-undeclared-file/Q3-incomplete-row active (PM[7] mitigation), cross-refs §8f + directives §6, source: F[TW-1]
+- SQ[4] B6 C2 exit-gate diff ChainItem (WARN-first): **DONE** — 8/8 tests pass, ADR[4]/IC[4] 3-pass parser (keyword=value primary → prose fallback → parse-fail), source: F[IE-5]
+- SQ[5] A14 race fix wrapper (greenfield): **DONE** — 7/7 tests pass, ADR[1]/IC[1] wrapper-only design (gc.check_session_end UNCHANGED preserving A12), regex `r"calibration-log\.md$"` anchored, fallback to gc capped list on subprocess failure, cap-at-10 fix verified via 15-file case, source: F[IE-1]
+- SQ[6] A25 template-drift + sync-templates.sh + hash baseline: **DONE** — 9/9 tests pass, ADR[5]/IC[5] LF-normalize + BOM-strip + rstrip + SHA256, hash-parity VERIFIED empirically (sync-templates.sh and chain-evaluator._a25_hash produce identical digest `eac7289eaf72ac80...`), source: F[IE-6]
+- SQ[7] _XVERIFY_ANY_RE bracket-required tightening: **DONE** — 17/17 tests pass (5 new + existing TestA24 + TestA14 cross-coverage), ADR[7]/IC[7] bracket form `r"\bXVERIFY(?:-(?:FAIL|PARTIAL))?\["`, **PM[2] mitigation honored**: step 1 grep-audit completed BEFORE replace — confirmed single consumer at chain-evaluator.py:1104 (drifted from plan §:1021 due to A14 wrapper edits adding ~80 lines earlier in file), zero risk to existing fixtures, source: F[IE-2]
+- SQ[8] §8f post-exit-gate workspace-headers directive: **DONE** — directives.md ## sync NEW (A27 chain-eval gate WARN-first) + 4 mandated headers + ADR[10] threshold preserved verbatim ≥3 reviews + ≤20% FP per β+ precedent (NOT "2+", which would have been silent threshold drift) + DC[1-3] cross-refs incl. bidirectional §2p↔§8f, source: F[TW-2]
+- SQ[9] phase-gate BLOCK 5 + sigma-lead.md compilation-agent spawn instruction: **DONE** — 12/12 tests pass, ADR[6]/IC[6] plan-faithful BLOCK day-1 (¬WARN per plan §P2.A row 119), regex `^## compilation-complete: \[R-([^,\]]+)(?:, manual-override, reason: ([^\]]+))?\]$` matches canonical + override forms exactly, _is_sigma_session() FP guard per PM[5], B1 option-i single-owner consolidation honored, source: F[IE-7]
+- SQ[10] Premise-audit sigma-review placement: **DONE** — SKILL.md Step 1 Prepare extension + sigma-lead.md Step 1 sub-step (lines ~38-72), structure mirrors c1-plan.md:62 Step 7a HARD GATE, "Step 7a" label dropped on ANALYZE side per H7 r2 falsification (structure survives, label dropped to avoid renumber-cascade), grep-audit pre+post clean (PM[8] mitigation), source: F[TW-3]+F[TW-4]
+- SQ[11] TestArchivedWorkspacePassthrough on 3 frozen archives: **DONE** — 37/37 tests pass on test_archived_workspaces.py, WARN-only invariant + no-regression invariant + DA[#12] universal edge-case checklist (empty/BOM/unicode/fenced/trailing-WS) all VERIFIED on r19-remediation-workspace + ai-agent-rollout-playbook-vet 26.4.22 + sigma-chatroom-m1ab-workspace; PM[1] mitigation honored (≥3 archives covered), source: F[CQA-1..3]
+- SQ[TW-6] Cross-ref grep-test for Step 7a: **DONE** — 7/7 tests pass on test_step7a_cross_ref.py, "Step 7a" label-presence-in-BUILD + label-absent-from-ANALYZE-files-parametrized + premise-audit-results-section-referenced + §2p↔§8f cross-refs + bounded-grep-audit, dual-test-SQ structure documented per audit PARTIAL-C remediation, source: F[TW-4]
+
+### Peer-Verify Ring (closed)
+- TW→IE: **PASS 6/0/0** + 1 low-severity non-blocking concern (VP[1] manual-override actor ambiguity, flagged for C3)
+- CQA→TW: **PASS 6/0/0** with 17+ artifact IDs cited
+- IE→CQA: **PASS 5/0/0** (criteria a-e), empirically validated (IE re-ran tests/test_archived_workspaces.py → 37/37 PASS in 6.73s)
+
+### sigma-mem Persistence
+- Total entries: **11** (6 IE + 4 TW + 1 CQA), all tagged `|src:shared-process-hardening-c2-2026-04-29|`
+- MCP healthy this session — zero memory-fallback needed (contrast with C1 which required lead-on-behalf persistence due to MCP flapping)
+
+### C3 Carry-Forward Concerns
+- **VP[1]+GAP[#5] manual-override actor ambiguity** (sigma-lead.md:207, lead vs user authority undefined) — independently confirmed by TW peer-verify + openai gpt-5.4 challenge. C3 must resolve.
+- **GAP[#1+#3] Bash regex incomplete coverage in BLOCK 5** (redirects, scripting languages, indirect writes) — real adversarial bypass surface; plan-faithful day-1 BLOCK accepts this residual per plan §P2.A row 119; C3 to decide tighten vs accept.
+- **GAP[#2] path normalization gap in `_path_is_archive`** (symlinks, `..`, case differences).
+- **Pre-existing unrelated test failure**: settings.json effortLevel='xhigh' vs 'high' (predates this build).
+- **Process-integrity event**: CQA caught + held against 4 off-channel task-list injections (sequenced premature-closure pattern) at 07:03Z. Lead recovery had a secondary error briefly hijacking 3 IE SQ tasks before restoration. Promotion-candidates: (a) personal vs team task-list namespace distinction, (b) lead-owned orchestration tasks should not use TaskCreate at all in BUILD mode, (c) verify task descriptions before bulk owner-changes.
+
+### Build Exit
+- All 12 SQs DONE (zero PARTIAL, zero BLOCKED)
+- Zero regressions
+- Peer-verify ring closed
+- Memory persistence complete
+- XREVIEW advisory recorded
+- C3 carry-forward concerns logged with provenance
 
 ## Build Review Summary
 

@@ -137,6 +137,31 @@ before writing top 2-3 highest-conviction findings to workspace:
 primary: doc-quality,narrative,example-accuracy,onboarding,cross-doc-consistency | outside domain→advisory, defer to expert
 reader's perspective | claims→verifiable | instructions→followable
 
+## Gap-Handling Rules (BUILD-mode, c1-plan review — mandatory)
+
+!purpose: enforce plan-completeness so every Files-table entry has an owning cluster SQ. R19 #3-class gap (file listed in plan-§Files but no SQ assigns implementation) → BUILD silently drops the file → C3 audit catches it. TW catches it at c1-plan review BEFORE plan-lock.
+
+!when: BUILD c1-plan review checkpoint, AFTER §Files table populated, BEFORE plan-exit-gate. Also re-applies on c1-plan revision (e.g., DA round absorption that adds files).
+
+!rule: paraphrase test — read each row of plan §Files. For each row, locate the SQ[N] in §Sub-task Decomposition whose Files column contains this exact path. If absent, raise BUILD-CONCERN.
+  pass: every §Files row maps to ≥1 SQ[N] in §Sub-task Decomposition (via exact path match, ¬prefix, ¬glob).
+  fail: row exists in §Files but no SQ Files column references it → BUILD-CONCERN[Q3-orphan-file]
+
+!rule: paraphrase test inverse — every SQ[N] in §Sub-task Decomposition has all its Files-column entries listed in plan §Files.
+  pass: every SQ Files entry appears as a row in §Files (else plan §Files is incomplete).
+  fail: SQ references file absent from §Files → BUILD-CONCERN[Q3-undeclared-file]
+
+!rule: empty §Files row content (Action or Description blank) → BUILD-CONCERN[Q3-incomplete-row].
+
+!finding format (TW writes to workspace ## technical-writer findings during c1-plan review):
+  BUILD-CONCERN[Q3-orphan-file]: file:{path} |location:plan-§Files row {N} |gap:no SQ Files column references this path |→ assign owner+SQ OR remove from §Files
+  BUILD-CONCERN[Q3-undeclared-file]: file:{path} |location:SQ[{N}] |gap:not in plan-§Files |→ add §Files row OR drop from SQ
+  BUILD-CONCERN[Q3-incomplete-row]: file:{path} |row-fields-missing:{Action|Description} |→ populate before lock
+
+!escalation: ≥1 BUILD-CONCERN[Q3-*] → c1-plan exit-gate cannot pass. Lead resolves (assign-or-remove) before lock. ¬silent-pass.
+
+!cross-ref: §8f workspace-headers (post-exit-gate ANALYZE-mode equivalent), directives §6 plan-completeness gate.
+
 ## Workspace Edit Rules (¬sed -i, atomic-Python-replace, section-isolation)
 !rule: ¬sed -i on workspace files or ~/.claude/hooks/ files — phase-gate enforces the sed-i BLOCK mechanically (SS ADR[1], R19 #1 post-mortem).
   observed failure mode: R19 `sed -i ''` silent workspace corruption → 4 agent sections lost mid-R1.

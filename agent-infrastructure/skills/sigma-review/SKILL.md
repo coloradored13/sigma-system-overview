@@ -44,7 +44,16 @@ Run `python3 ~/.claude/hooks/chain-evaluator.py status` at any time to see what'
 
 Read `~/.claude/agents/sigma-lead.md` for the full workflow. Key steps:
 
-1. **Prepare:** Complexity assessment, model selection, prompt decomposition (Q/H/C)
+1. **Prepare:** Complexity assessment, model selection, prompt decomposition (Q/H/C), **premise-audit pre-dispatch (HARD GATE — §2p)**
+   - Premise-audit pre-dispatch is a sub-step of Prepare, run AFTER prompt decomposition and BEFORE Step 2 spawn. Sequence is load-bearing — reversing recreates the frame-anchoring §2p prevents (R19 evaluator: premises "accepted as frame" before H[] dispatch). Per directives.md §2p, lead answers PA[1-4] from user prompt ALONE — do NOT re-read user's proposed tiers/frameworks/H-space until premise-audit is complete.
+   - Four structural premise tests (ANALYZE-scoped per directives.md §2p):
+     - PA[1] tier-necessity — is proposed tier/framework NECESSARY or is simpler structure adequate?
+     - PA[2] firm-size-floor — minimum viable org? (state explicitly)
+     - PA[3] data-readiness — what data must exist for findings to be actionable? (gap? yes/no)
+     - PA[4] adoption-baseline — RC[{class}]={rate} | above/at/below base-rate?
+   - Lead writes PREMISE-AUDIT result to workspace `## premise-audit-results` section BEFORE spawning agents (Step 2). Format per directives.md §2p `!workspace format`. Decision line (`→ proceed-with-H | revise-H-space({N}) | flag-premise({N})`) is REQUIRED — chain-evaluator §2p presence-check BLOCKs on missing `## premise-audit-results` section (PM[3] mitigation).
+   - Rules: CHALLENGED/GAP on PA[1] or PA[2] → revise H-space BEFORE Step 2 spawn. CHALLENGED on PA[3] or PA[4] → convert to explicit H[] for agents to test. DA receives PREMISE-AUDIT in r2 — checks agents ¬re-anchored on challenged premises.
+   - Cross-ref: BUILD variant carries the "Step 7a" label (sigma-build c1-plan.md:62 Step 7a HARD GATE); ANALYZE side keeps the structure but drops the label to avoid renumber-cascade across the workflow steps.
 2. **Spawn:** Initialize workspace, assign peer verification ring, spawn agents via TeamCreate
 3. **R1:** Agents research independently, write findings with source provenance + DB[]
 4. **Circuit breaker:** Check for zero-dissent after R1

@@ -12,6 +12,7 @@ Tests cover:
 
 import json
 import os
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -1742,3 +1743,756 @@ class TestA24SigmaVerifyInitPreFlight:
         assert "Unknown" not in item.name, (
             f"A24 not registered in evaluate_single dispatch: {item.name}"
         )
+
+    # ----- SQ[7]/ADR[7]/IC[7]: _XVERIFY_ANY_RE bracket-required -----
+    def test_prose_xverify_colon_does_not_suppress(self, patch_paths):
+        """Prose 'XVERIFY:' (no bracket) MUST NOT suppress A24 — bracket-required."""
+        write, _, _ = patch_paths
+        # Author wrote "XVERIFY: pending" as narration, not a real tag.
+        line = (
+            "F[TA-1] HIGH-severity gap. XVERIFY: pending — provider routing failed"
+        )
+        ws = self._ws_with_infra("tech-architect", line, build_id="prose-colon")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.details["fire_count"] == 1, (
+            "Prose 'XVERIFY:' is not a real tag — A24 must fire (no bracket = no coverage)"
+        )
+
+    def test_prose_xverify_paren_does_not_suppress(self, patch_paths):
+        """Prose 'XVERIFY (note)' MUST NOT suppress A24 — bracket-required."""
+        write, _, _ = patch_paths
+        line = (
+            "F[TA-1] HIGH-severity issue. XVERIFY (skipped this round, see ADR[2])"
+        )
+        ws = self._ws_with_infra("tech-architect", line, build_id="prose-paren")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.details["fire_count"] == 1, (
+            "Prose 'XVERIFY (note)' is not a real tag — A24 must fire"
+        )
+
+    def test_prose_xverify_space_does_not_suppress(self, patch_paths):
+        """Prose 'XVERIFY tag absent' MUST NOT suppress A24 — bracket-required."""
+        write, _, _ = patch_paths
+        line = (
+            "F[TA-1] HIGH-severity finding. XVERIFY tag absent in this section"
+        )
+        ws = self._ws_with_infra("tech-architect", line, build_id="prose-space")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.details["fire_count"] == 1, (
+            "Prose 'XVERIFY ' (space-followed) is not a real tag — A24 must fire"
+        )
+
+    def test_bracket_xverify_suppresses(self, patch_paths):
+        """Bracket-form XVERIFY[provider:model] DOES suppress A24 (canonical)."""
+        write, _, _ = patch_paths
+        line = "F[TA-1] HIGH-severity issue XVERIFY[openai:gpt-4o] corroborated"
+        ws = self._ws_with_infra("tech-architect", line, build_id="bracket-form")
+        write(ws)
+        item = ce.check_a24_sigma_verify_coverage(ws)
+        assert item.details["fire_count"] == 0, (
+            "Bracket-form XVERIFY[provider:model] is the canonical tag and suppresses A24"
+        )
+
+    def test_xverify_partial_bracket_suppresses(self, patch_paths):
+        """XVERIFY-PARTIAL[provider] (bracket) suppresses; prose 'XVERIFY-PARTIAL' does not."""
+        write, _, _ = patch_paths
+        # Bracket form
+        line_bracket = "F[TA-1] HIGH-severity issue XVERIFY-PARTIAL[openai:gpt-4o] partial"
+        ws_b = self._ws_with_infra("tech-architect", line_bracket, build_id="partial-bracket")
+        write(ws_b)
+        item_b = ce.check_a24_sigma_verify_coverage(ws_b)
+        assert item_b.details["fire_count"] == 0, "XVERIFY-PARTIAL[...] suppresses"
+
+        # Prose form
+        line_prose = "F[TA-1] HIGH-severity issue. XVERIFY-PARTIAL: deferred to next round"
+        ws_p = self._ws_with_infra("tech-architect", line_prose, build_id="partial-prose")
+        write(ws_p)
+        item_p = ce.check_a24_sigma_verify_coverage(ws_p)
+        assert item_p.details["fire_count"] == 1, "Prose 'XVERIFY-PARTIAL:' does NOT suppress"
+
+
+class TestA14RaceFix:
+    """SQ[5]: A14 race fix wrapper per ADR[1]/IC[1].
+
+    Wrapper-level race-fix: shared/calibration-log.md is an append-only
+    CAL-EMIT sink that hooks write at session end and races with A14's
+    git-clean check, producing false-positive dirty status. The wrapper
+    re-runs `git status --porcelain` independently for full untruncated
+    list (cap-at-10 fix) and applies r"calibration-log\\.md$" exclusion.
+
+    Cases:
+      a) calibration-log.md only dirty → A14 passes
+      b) calibration-log.md + other dirty file → A14 fails (other file kept)
+      c) subprocess failure → falls back to gc capped list
+      d) .bak file is NOT excluded (precise regex, NOT broad glob)
+    """
+
+    _BASE_WS = (
+        "# workspace\n"
+        "## status: active\n"
+        "## mode: ANALYZE\n"
+        "## task\nrace-fix test\n"
+    )
+
+    def _patch_subprocess_run(self, monkeypatch, returncode=0, stdout="", stderr="",
+                              raise_exc=None):
+        """Patch ce.subprocess.run for the A14 wrapper subprocess call."""
+        from unittest.mock import MagicMock
+
+        def fake_run(*args, **kwargs):
+            if raise_exc is not None:
+                raise raise_exc
+            mock = MagicMock()
+            mock.returncode = returncode
+            mock.stdout = stdout
+            mock.stderr = stderr
+            return mock
+
+        monkeypatch.setattr(ce.subprocess, "run", fake_run)
+
+    def _patch_gc_session_end(self, monkeypatch, *, git_clean=False, uncommitted=None,
+                               unpushed=0, archive_found=True):
+        """Patch gc.check_session_end so the wrapper has a stable base result."""
+        if uncommitted is None:
+            uncommitted = []
+        from types import SimpleNamespace
+
+        def fake_session_end(content, repo_path=None):
+            details = {
+                "archive_file_found": archive_found,
+                "archive_count": 1 if archive_found else 0,
+                "git_clean": git_clean,
+                "uncommitted_count": len(uncommitted),
+                "uncommitted_files": uncommitted[:10],
+                "unpushed_commits": unpushed,
+                "git_error": None,
+                "repo_path": repo_path,
+            }
+            issues = []
+            if not git_clean:
+                issues.append(f"Uncommitted changes in repo: {len(uncommitted)} files")
+            if unpushed:
+                issues.append(f"{unpushed} unpushed commit(s) — push before completing review")
+            return SimpleNamespace(
+                name="V22-session-end-verified",
+                passed=archive_found and git_clean and unpushed == 0,
+                details=details,
+                issues=issues,
+            )
+
+        monkeypatch.setattr(ce.gc, "check_session_end", fake_session_end)
+
+    def test_calibration_log_only_dirty_passes(self, monkeypatch):
+        """Case a: only calibration-log.md dirty → A14 passes (race-fix)."""
+        # gc reports dirty (because gc does NOT exclude calibration-log)
+        self._patch_gc_session_end(
+            monkeypatch, git_clean=False,
+            uncommitted=[" M teams/sigma-review/shared/calibration-log.md"],
+        )
+        # Wrapper re-runs and applies exclusion → empty filtered list
+        self._patch_subprocess_run(
+            monkeypatch, returncode=0,
+            stdout=" M teams/sigma-review/shared/calibration-log.md\n",
+        )
+        item = ce.check_a14(self._BASE_WS)
+        assert item.passed is True, (
+            "calibration-log.md is the only dirty file — A14 wrapper must "
+            "exclude it and pass (CAL-EMIT race-fix)"
+        )
+        assert item.details["a14_calibration_log_excluded"] is True
+        assert item.details["uncommitted_count"] == 0
+        assert item.details["uncommitted_files"] == []
+        assert item.details["git_clean"] is True
+        # No 'Uncommitted' issue should remain
+        assert not any("uncommitted" in i.lower() for i in item.issues)
+
+    def test_calibration_log_plus_other_dirty_fails(self, monkeypatch):
+        """Case b: calibration-log + other → A14 fails on the other file only."""
+        self._patch_gc_session_end(
+            monkeypatch, git_clean=False,
+            uncommitted=[
+                " M teams/sigma-review/shared/calibration-log.md",
+                " M agents/sigma-lead.md",
+            ],
+        )
+        self._patch_subprocess_run(
+            monkeypatch, returncode=0,
+            stdout=" M teams/sigma-review/shared/calibration-log.md\n M agents/sigma-lead.md\n",
+        )
+        item = ce.check_a14(self._BASE_WS)
+        assert item.passed is False, "Other file is dirty — A14 must fail"
+        assert item.details["uncommitted_count"] == 1, "Only sigma-lead.md remains after exclusion"
+        files = item.details["uncommitted_files"]
+        assert len(files) == 1
+        assert "sigma-lead.md" in files[0]
+        # calibration-log.md should NOT be in the filtered list
+        assert not any("calibration-log.md" in f for f in files)
+        # Issue text should reflect filtered count
+        assert any("1 files" in i and "calibration-log.md excluded" in i for i in item.issues)
+
+    def test_subprocess_failure_falls_back_to_gc(self, monkeypatch):
+        """Case c: subprocess failure → fall back to gc capped list with note."""
+        self._patch_gc_session_end(
+            monkeypatch, git_clean=False,
+            uncommitted=[f" M file{i}.py" for i in range(15)],
+        )
+        # Subprocess raises — wrapper falls back
+        self._patch_subprocess_run(
+            monkeypatch, raise_exc=subprocess.TimeoutExpired(cmd="git", timeout=10),
+        )
+        item = ce.check_a14(self._BASE_WS)
+        # Falls back to gc result (git_clean=False)
+        assert item.passed is False
+        assert item.details["a14_wrapper_status"].startswith("fallback-to-gc-capped")
+        assert item.details["a14_calibration_log_excluded"] is False
+        # gc list is capped at 10 — limitation surfaces in details
+        assert len(item.details["uncommitted_files"]) == 10
+
+    def test_bak_file_not_excluded(self, monkeypatch):
+        """Case d: .bak file is NOT excluded — precise regex calibration-log\\.md$."""
+        self._patch_gc_session_end(
+            monkeypatch, git_clean=False,
+            uncommitted=[" M teams/sigma-review/shared/calibration-log.md.bak"],
+        )
+        self._patch_subprocess_run(
+            monkeypatch, returncode=0,
+            stdout=" M teams/sigma-review/shared/calibration-log.md.bak\n",
+        )
+        item = ce.check_a14(self._BASE_WS)
+        assert item.passed is False, (
+            ".bak file must NOT be excluded — A14 regex is `calibration-log\\.md$` "
+            "(NOT a broad glob); .bak suffix breaks the anchor"
+        )
+        assert item.details["uncommitted_count"] == 1
+        files = item.details["uncommitted_files"]
+        assert len(files) == 1
+        assert files[0].endswith(".bak")
+
+    def test_only_other_file_dirty_no_calibration_log(self, monkeypatch):
+        """Wrapper baseline: no calibration-log present, other file dirty → A14 fails normally."""
+        self._patch_gc_session_end(
+            monkeypatch, git_clean=False,
+            uncommitted=[" M agents/sigma-lead.md"],
+        )
+        self._patch_subprocess_run(
+            monkeypatch, returncode=0, stdout=" M agents/sigma-lead.md\n",
+        )
+        item = ce.check_a14(self._BASE_WS)
+        assert item.passed is False
+        assert item.details["uncommitted_count"] == 1
+
+    def test_clean_repo_passes(self, monkeypatch):
+        """Wrapper baseline: clean repo (no dirty files) → A14 passes."""
+        self._patch_gc_session_end(monkeypatch, git_clean=True, uncommitted=[])
+        self._patch_subprocess_run(monkeypatch, returncode=0, stdout="")
+        item = ce.check_a14(self._BASE_WS)
+        assert item.passed is True
+        assert item.details["uncommitted_count"] == 0
+        assert item.details["git_clean"] is True
+
+    def test_full_list_not_capped_at_10(self, monkeypatch):
+        """Wrapper returns full untruncated list (cap-at-10 fix per ADR[1])."""
+        # 15 dirty files (none calibration-log)
+        files = [f" M file{i}.py" for i in range(15)]
+        self._patch_gc_session_end(monkeypatch, git_clean=False, uncommitted=files)
+        self._patch_subprocess_run(
+            monkeypatch, returncode=0,
+            stdout="\n".join(files) + "\n",
+        )
+        item = ce.check_a14(self._BASE_WS)
+        assert item.passed is False
+        # Full list, NOT gc's 10-item cap
+        assert item.details["uncommitted_count"] == 15
+        assert len(item.details["uncommitted_files"]) == 15
+
+
+class TestA26PlanCompleteness:
+    """SQ[1] / ADR[3] / IC[2]: A26 plan-completeness (WARN-first).
+
+    Trigger anchor: `^## plan-file\\s*$` (case-sensitive, BOM-aware,
+    fenced-code excluded). Verification cases per IC[2]:
+      a) `## plans` (real scratch section) → no trigger
+      b) `## plan-file:` inline form → captures path, NOT header anchor
+      c) `### plan-file` (3-hash) → no trigger
+      d) `## plan-file` inside fenced ``` block → no trigger
+      e) Real `## plan-file` header with missing file → WARN
+    """
+
+    def test_plans_section_does_not_trigger(self, tmp_path):
+        """`## plans` is a real workspace section — must NOT trigger A26."""
+        ws = (
+            "# workspace\n"
+            "## status: active\n"
+            "## task\nmulti-plan review\n"
+            "## plans\n"
+            "- plan A: build chain-evaluator gates\n"
+            "- plan B: write tests\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 0
+        assert item.details.get("skip_reason", "").startswith("no `## plan-file`"), (
+            "## plans section must NOT trigger A26 — false-positive prevention"
+        )
+
+    def test_plan_file_inline_colon_form_captures_path(self, tmp_path):
+        """`## plan-file: <path>` inline form → A26 reads path, fires WARN if missing."""
+        missing_path = str(tmp_path / "nonexistent-plan.md")
+        ws = (
+            "# workspace\n"
+            "## status: active\n"
+            "## task\nbuild test\n"
+            f"## plan-file: {missing_path}\n"
+            "## findings\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.details["fire_count"] == 1
+        assert item.details["plan_path"] == missing_path
+        assert item.details["plan_exists"] is False
+        assert item.details["parse_mode"] == "inline-colon"
+        assert item.passed is True, "WARN-first: passed=True even on fire"
+
+    def test_three_hash_plan_file_does_not_trigger(self, tmp_path):
+        """`### plan-file` (3-hash) is a sub-section — must NOT trigger A26."""
+        ws = (
+            "# workspace\n"
+            "## status: active\n"
+            "## findings\n"
+            "### plan-file\n"
+            "discussion of plan-file structure\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 0
+
+    def test_fenced_plan_file_does_not_trigger(self, tmp_path):
+        """`## plan-file` inside ```...``` fenced block must NOT trigger."""
+        ws = (
+            "# workspace\n"
+            "## status: active\n"
+            "## task\nexample\n"
+            "Here is an example workspace:\n"
+            "```\n"
+            "## plan-file\n"
+            "/path/to/plan.md\n"
+            "```\n"
+            "## findings\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.details["fire_count"] == 0, (
+            "Fenced-code block content must NOT trigger A26 (per ADR[9])"
+        )
+
+    def test_real_plan_file_header_with_existing_file_no_fire(self, tmp_path):
+        """Header anchor + path-on-next-line + file exists → no fire."""
+        plan_file = tmp_path / "real-plan.md"
+        plan_file.write_text("# real plan\n", encoding="utf-8")
+        ws = (
+            "# workspace\n"
+            "## status: active\n"
+            "## task\nbuild\n"
+            "## plan-file\n"
+            f"{plan_file}\n"
+            "## findings\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 0
+        assert item.details["plan_exists"] is True
+        assert item.details["parse_mode"] == "header-then-line"
+
+    def test_real_plan_file_header_with_missing_file_fires(self, tmp_path):
+        """Header anchor + missing file → WARN + CAL-EMIT."""
+        missing_path = str(tmp_path / "missing.plan.md")
+        ws = (
+            "# workspace\n"
+            "## status: active\n"
+            "## task\nbuild\n"
+            "## plan-file\n"
+            f"{missing_path}\n"
+            "## findings\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.details["fire_count"] == 1
+        assert item.details["plan_exists"] is False
+        rec = item.details["cal_emit_records"][0]
+        assert rec.startswith("CAL-EMIT[A26]:")
+        assert "plan-file-referenced-but-missing" in rec
+
+    def test_bom_prefix_does_not_break_detection(self, tmp_path):
+        """BOM-prefixed workspace must still detect ## plan-file (per ADR[9])."""
+        missing_path = str(tmp_path / "boom.md")
+        ws = (
+            "﻿# workspace\n"
+            "## status: active\n"
+            f"## plan-file: {missing_path}\n"
+        )
+        item = ce.check_a26_plan_completeness(ws)
+        assert item.details["fire_count"] == 1
+        assert item.details["plan_path"] == missing_path
+
+    def test_evaluate_single_dispatches_a26(self, patch_paths):
+        """evaluate_single('A26') returns A26 ChainItem, not 'Unknown'."""
+        write, _, _ = patch_paths
+        write("# workspace\n## status: idle\n")
+        item = ce.evaluate_single("A26")
+        assert item.item_id == "A26"
+        assert "Unknown" not in item.name
+
+    def test_a26_registered_in_analyze_chain(self):
+        """A26 must be in ANALYZE_CHAIN (visible to evaluate_chain)."""
+        assert ce.check_a26_plan_completeness in ce.ANALYZE_CHAIN, (
+            "A26 must be registered in ANALYZE_CHAIN for evaluate_chain to run it"
+        )
+
+
+class TestB5C2Boot:
+    """SQ[2] / ADR[2] / IC[3] / IC[8]: B5 C2 boot validation (WARN-first).
+
+    Reads `## agent-assignments`; falls back to `## sub-task-decomposition`.
+    Format: `SQ[N]: owner=AGENT |cluster=FILE,FILE2,...`. Edge cases
+    (per IC[8]/ADR[9]): BOM-strip, empty-section→WARN-not-crash, fenced-code
+    exclusion before section search. Explicit zero-parse WARN on schema gap.
+    """
+
+    def test_canonical_agent_assignments_parses(self):
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "| Cluster | Owner | SQ[] | Files |\n"
+            "|---|---|---|---|\n"
+            "SQ[5]: owner=implementation-engineer |cluster=chain-evaluator.py,tests/test_chain_evaluator.py\n"
+            "SQ[7]: owner=implementation-engineer |cluster=chain-evaluator.py\n"
+            "SQ[3]: owner=technical-writer |cluster=technical-writer.md\n"
+            "## findings\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 0, "Canonical schema → no fire"
+        assert item.details["parse_state"] == "agent-assignments"
+        assert len(item.details["assignments_parsed"]) == 3
+        first = item.details["assignments_parsed"][0]
+        assert first["sq_id"] == "5"
+        assert first["owner"] == "implementation-engineer"
+        assert "chain-evaluator.py" in first["files"]
+        assert "tests/test_chain_evaluator.py" in first["files"]
+
+    def test_no_section_at_all_warns(self):
+        """No agent-assignments AND no sub-task-decomposition → WARN."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## findings\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        assert item.passed is True, "WARN-first"
+        assert item.details["fire_count"] == 1
+        assert item.details["parse_state"] == "no-section"
+        rec = item.details["cal_emit_records"][0]
+        assert "no-agent-assignments-section" in rec
+
+    def test_empty_section_warns_does_not_crash(self):
+        """Empty agent-assignments section → WARN, no crash (per IC[8])."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "\n"
+            "## findings\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        assert item.passed is True
+        assert item.details["fire_count"] == 1
+        assert item.details["parse_state"] == "empty-section"
+
+    def test_fallback_to_sub_task_decomposition_warns(self):
+        """`## agent-assignments` absent but `## sub-task-decomposition` present →
+        fallback used, WARN emitted to surface schema gap (per ADR[2])."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## sub-task-decomposition\n"
+            "SQ[1]: owner=implementation-engineer |cluster=chain-evaluator.py\n"
+            "## findings\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        assert item.passed is True
+        assert item.details["section_used"] == "sub-task-decomposition"
+        # Fallback used → fire (so the schema gap surfaces)
+        assert item.details["fire_count"] == 1
+        rec = item.details["cal_emit_records"][0]
+        assert "fallback-to-sub-task-decomposition" in rec
+        # But the assignments still parse so downstream agents can act
+        assert len(item.details["assignments_parsed"]) == 1
+
+    def test_section_exists_but_zero_parse_warns(self):
+        """Section present, body present, but no SQ[N]: lines → zero-parse WARN."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "| Cluster | Owner | SQ[] | Files |\n"
+            "|---|---|---|---|\n"
+            "| A | engineer | 1 | foo.py |\n"
+            "## findings\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        # Body is non-empty (table) but no parseable SQ[N]: owner=... |cluster=
+        # lines → explicit zero-parse WARN per IC[8]
+        assert item.details["fire_count"] == 1
+        assert any("zero-parse" in rec for rec in item.details["cal_emit_records"])
+        assert item.details["assignments_parsed"] == []
+
+    def test_fenced_code_block_does_not_falsely_match_section(self):
+        """`## agent-assignments` inside ```...``` MUST NOT trigger section detection."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "Example schema:\n"
+            "```\n"
+            "## agent-assignments\n"
+            "SQ[1]: owner=engineer |cluster=foo.py\n"
+            "```\n"
+            "## findings\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        # Fenced block is stripped → no section detected
+        assert item.details["parse_state"] == "no-section"
+        assert item.details["fire_count"] == 1
+
+    def test_bom_prefix_does_not_break_detection(self):
+        """BOM-prefixed workspace must still detect ## agent-assignments."""
+        ws = (
+            "﻿# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "SQ[1]: owner=engineer |cluster=foo.py\n"
+        )
+        item = ce.check_b5_c2_boot(ws)
+        assert item.details["fire_count"] == 0
+        assert item.details["parse_state"] == "agent-assignments"
+        assert len(item.details["assignments_parsed"]) == 1
+
+    def test_evaluate_single_dispatches_b5(self, patch_paths):
+        """evaluate_single('B5') returns B5 ChainItem, not 'Unknown'."""
+        write, _, _ = patch_paths
+        write("# workspace\n## status: idle\n")
+        item = ce.evaluate_single("B5")
+        assert item.item_id == "B5"
+        assert "Unknown" not in item.name
+
+    def test_b5_in_build_extras(self):
+        """B5 must be in BUILD_EXTRAS (BUILD-only, run by evaluate_chain in BUILD)."""
+        assert ce.check_b5_c2_boot in ce.BUILD_EXTRAS
+
+
+class TestB6C2ExitGate:
+    """SQ[4] / ADR[4] / IC[4]: B6 C2 exit-gate diff (WARN-first).
+
+    3-pass CHECKPOINT parser: keyword=value primary → prose fallback →
+    parse-fail. WARN-first per ADR[8]. Diffs declared files against
+    `## agent-assignments`.
+    """
+
+    def test_keyword_value_primary_parses(self):
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "SQ[5]: owner=implementation-engineer |cluster=chain-evaluator.py\n"
+            "## checkpoints\n"
+            "CHECKPOINT[implementation-engineer]: files-created=chain-evaluator.py "
+            "|functions-done=check_a14 |interfaces-matched=yes |drift=none |surprises=none\n"
+        )
+        item = ce.check_b6_c2_exit_gate(ws)
+        assert item.passed is True
+        assert item.details["checkpoint_count"] == 1
+        cp = item.details["checkpoints_parsed"][0]
+        assert cp["parse_mode"] == "keyword=value"
+        assert cp["fields"]["files-created"] == "chain-evaluator.py"
+        assert cp["fields"]["interfaces-matched"] == "yes"
+        assert item.details["fire_count"] == 0, "Aligned files → no fire"
+
+    def test_prose_fallback_parses(self):
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "SQ[5]: owner=implementation-engineer |cluster=chain-evaluator.py\n"
+            "## checkpoints\n"
+            "CHECKPOINT[implementation-engineer]: files-created: chain-evaluator.py "
+            "|functions-done: check_a14 |drift: none\n"
+        )
+        item = ce.check_b6_c2_exit_gate(ws)
+        cp = item.details["checkpoints_parsed"][0]
+        assert cp["parse_mode"] == "prose-fallback"
+        assert cp["fields"]["files-created"] == "chain-evaluator.py"
+
+    def test_parse_fail_warns(self):
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## checkpoints\n"
+            "CHECKPOINT[implementation-engineer]: arbitrary unstructured prose without fields\n"
+        )
+        item = ce.check_b6_c2_exit_gate(ws)
+        cp = item.details["checkpoints_parsed"][0]
+        assert cp["parse_mode"] == "parse-fail"
+        assert item.details["fire_count"] == 1
+        rec = item.details["cal_emit_records"][0]
+        assert "checkpoint-parse-fail" in rec
+        assert item.passed is True, "WARN-first"
+
+    def test_files_diff_from_assignments_warns(self):
+        """CHECKPOINT declares unexpected file (not in agent-assignments) → WARN."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "## agent-assignments\n"
+            "SQ[5]: owner=implementation-engineer |cluster=chain-evaluator.py\n"
+            "## checkpoints\n"
+            "CHECKPOINT[implementation-engineer]: files-created=phase-gate.py,unexpected.py "
+            "|functions-done=foo\n"
+        )
+        item = ce.check_b6_c2_exit_gate(ws)
+        # phase-gate.py and unexpected.py are not in expected set
+        assert item.details["fire_count"] >= 1
+        triggers = [f["trigger"] for f in item.details["fires"]]
+        assert "files-diff-from-assignments" in triggers
+
+    def test_no_checkpoints_no_fire(self):
+        """No CHECKPOINT lines → no fire (B6 doesn't enforce presence — that's V19)."""
+        ws = "# workspace\n## status: building\n## findings\n"
+        item = ce.check_b6_c2_exit_gate(ws)
+        assert item.details["fire_count"] == 0
+        assert item.details["checkpoint_count"] == 0
+
+    def test_fenced_checkpoint_not_falsely_matched(self):
+        """CHECKPOINT[...] inside ```...``` must NOT be parsed (per ADR[9])."""
+        ws = (
+            "# workspace\n"
+            "## status: building\n"
+            "Example:\n"
+            "```\n"
+            "CHECKPOINT[engineer]: arbitrary unparseable content\n"
+            "```\n"
+            "## findings\n"
+        )
+        item = ce.check_b6_c2_exit_gate(ws)
+        assert item.details["checkpoint_count"] == 0
+
+    def test_evaluate_single_dispatches_b6(self, patch_paths):
+        write, _, _ = patch_paths
+        write("# workspace\n## status: idle\n")
+        item = ce.evaluate_single("B6")
+        assert item.item_id == "B6"
+        assert "Unknown" not in item.name
+
+    def test_b6_in_build_extras(self):
+        assert ce.check_b6_c2_exit_gate in ce.BUILD_EXTRAS
+
+
+class TestA25TemplateDrift:
+    """SQ[6] / ADR[5] / IC[5]: A25 template-drift detection (WARN-first).
+
+    Hash-identity per IC[5]: LF-normalize, BOM-strip, rstrip lines, SHA256.
+    Compare against baseline sidecar. Drift → WARN.
+    """
+
+    def test_no_baseline_no_fire(self, tmp_path, monkeypatch):
+        """First-time setup: no baseline file → no fire (benign)."""
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", tmp_path / "baseline.json")
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.passed is True
+        assert item.details["fire_count"] == 0
+        assert item.details["baseline_present"] is False
+
+    def test_matching_hash_no_fire(self, tmp_path, monkeypatch):
+        tpath = tmp_path / "tpl1.md"
+        tpath.write_text("hello\nworld\n", encoding="utf-8")
+        baseline = tmp_path / "baseline.json"
+        h = ce._a25_hash("hello\nworld\n")
+        baseline.write_text(json.dumps({"tpl1.md": h}), encoding="utf-8")
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", baseline)
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.details["fire_count"] == 0
+        assert "tpl1.md" in item.details["templates_checked"]
+
+    def test_drift_warns(self, tmp_path, monkeypatch):
+        tpath = tmp_path / "tpl1.md"
+        tpath.write_text("DRIFTED CONTENT\n", encoding="utf-8")
+        baseline = tmp_path / "baseline.json"
+        h = ce._a25_hash("ORIGINAL CONTENT\n")
+        baseline.write_text(json.dumps({"tpl1.md": h}), encoding="utf-8")
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", baseline)
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.details["fire_count"] == 1
+        rec = item.details["cal_emit_records"][0]
+        assert "hash-mismatch" in rec
+        assert item.passed is True, "WARN-first"
+
+    def test_missing_template_warns(self, tmp_path, monkeypatch):
+        baseline = tmp_path / "baseline.json"
+        baseline.write_text(json.dumps({"missing.md": "abc123"}), encoding="utf-8")
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", baseline)
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.details["fire_count"] == 1
+        rec = item.details["cal_emit_records"][0]
+        assert "template-file-missing" in rec
+
+    def test_crlf_normalized_to_lf(self, tmp_path, monkeypatch):
+        """macOS LF baseline must match Windows CRLF current (per PM[4])."""
+        tpath = tmp_path / "tpl.md"
+        tpath.write_text("line1\r\nline2\r\n", encoding="utf-8")
+        # Baseline was hashed from LF-normalized content
+        h = ce._a25_hash("line1\nline2\n")
+        baseline = tmp_path / "baseline.json"
+        baseline.write_text(json.dumps({"tpl.md": h}), encoding="utf-8")
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", baseline)
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.details["fire_count"] == 0, (
+            "CRLF must normalize to LF — same hash on both platforms (PM[4])"
+        )
+
+    def test_bom_stripped_before_hash(self, tmp_path, monkeypatch):
+        """BOM-prefixed content must hash same as non-BOM (per IC[5])."""
+        tpath = tmp_path / "tpl.md"
+        tpath.write_text("﻿hello\n", encoding="utf-8")
+        h = ce._a25_hash("hello\n")
+        baseline = tmp_path / "baseline.json"
+        baseline.write_text(json.dumps({"tpl.md": h}), encoding="utf-8")
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", baseline)
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.details["fire_count"] == 0
+
+    def test_trailing_whitespace_rstripped(self, tmp_path, monkeypatch):
+        """Trailing whitespace per line must be stripped before hash (IC[5])."""
+        tpath = tmp_path / "tpl.md"
+        tpath.write_text("hello   \nworld\t\n", encoding="utf-8")
+        h = ce._a25_hash("hello\nworld\n")
+        baseline = tmp_path / "baseline.json"
+        baseline.write_text(json.dumps({"tpl.md": h}), encoding="utf-8")
+        monkeypatch.setattr(ce, "_A25_TEMPLATES_DIR", tmp_path)
+        monkeypatch.setattr(ce, "_A25_BASELINE_FILE", baseline)
+        item = ce.check_a25_template_drift("# workspace\n")
+        assert item.details["fire_count"] == 0
+
+    def test_evaluate_single_dispatches_a25(self, patch_paths):
+        write, _, _ = patch_paths
+        write("# workspace\n## status: idle\n")
+        item = ce.evaluate_single("A25")
+        assert item.item_id == "A25"
+        assert "Unknown" not in item.name
+
+    def test_a25_registered_in_analyze_chain(self):
+        assert ce.check_a25_template_drift in ce.ANALYZE_CHAIN

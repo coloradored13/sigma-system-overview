@@ -14,9 +14,13 @@ HARD BLOCKS (PreToolUse exit code 2):
      workspace files, or /.claude/hooks/ paths. Uses shlex.split() argv
      tokenization (CAL[4]) — not raw regex. Backup-extension forms
      (-i.bak, -i '' + path) are permitted (they write to separate files).
+  5. 06b pre-archive compilation gate — blocks archive operations unless
+     workspace contains `## compilation-complete: [R-{review-id}]` header.
+     Manual-override recovery: `## compilation-complete: [R-{id}, manual-override,
+     reason: {reason}]`. Per ADR[6]/IC[6] (plan §P2.A row 119: BLOCK day-1).
 
 SOFT WARNS (PostToolUse systemMessage):
-  5. Context firewall — warns when personal context detected in workspace writes.
+  6. Context firewall — warns when personal context detected in workspace writes.
 
 Everything else (phase skip, DA exit-gate, BELIEF-on-advance, CB evidence,
 synthesis write, SendMessage dispatch) is handled by the chain-evaluator.py
@@ -379,7 +383,100 @@ def check_sed_in_place(command: str) -> tuple[bool, str]:
 
 
 # ---------------------------------------------------------------------------
-# WARN 5: Context firewall
+# BLOCK 5: 06b pre-archive compilation gate (ADR[6] / IC[6])
+#
+# Per plan §P2.A row 119 (BLOCK day-1, ¬WARN). Blocks archive operations
+# unless the workspace contains `## compilation-complete: [R-{review-id}]`
+# header. Manual-override recovery form is also accepted.
+# ---------------------------------------------------------------------------
+
+# IC[6]: header detection regex
+_COMPILATION_COMPLETE_RE = re.compile(
+    r"^## compilation-complete: \[R-([^,\]]+)(?:, manual-override, reason: ([^\]]+))?\]$",
+    re.MULTILINE,
+)
+
+# Archive operations to intercept. Bash commands matching these patterns
+# are pre-archive moves; Write/Edit to paths under archive/ are also gated.
+_ARCHIVE_PATH_MARKERS = [
+    "/.claude/teams/sigma-review/shared/archive/",
+    "/.claude/teams/sigma-build/shared/archive/",
+    "/.claude/teams/sigma-optimize/shared/archive/",
+    "/sigma-review/shared/archive/",
+    "/sigma-build/shared/archive/",
+]
+_ARCHIVE_BASH_RE = re.compile(
+    r"\b(?:cp|mv|cat\s+>>|tee)\b.*?(?:" + "|".join(re.escape(m) for m in _ARCHIVE_PATH_MARKERS) + ")",
+    re.IGNORECASE,
+)
+
+
+def _has_compilation_complete() -> tuple[bool, str | None, bool]:
+    """Check if workspace has `## compilation-complete: [R-{id}]` header.
+
+    Returns (has_header, review_id, is_manual_override).
+    """
+    try:
+        content = DEFAULT_WORKSPACE.read_text(encoding="utf-8")
+    except (FileNotFoundError, OSError):
+        return False, None, False
+    m = _COMPILATION_COMPLETE_RE.search(content)
+    if not m:
+        return False, None, False
+    return True, m.group(1).strip(), m.group(2) is not None
+
+
+def _path_is_archive(path: str) -> bool:
+    return any(marker in path for marker in _ARCHIVE_PATH_MARKERS)
+
+
+def check_pre_archive_gate(tool_name: str, tool_input: dict) -> tuple[bool, str]:
+    """BLOCK 5: 06b pre-archive — workspace must have compilation-complete header.
+
+    Stale-workspace FP guard: only fires inside an active sigma session
+    (per _is_sigma_session()). Manual-override form unblocks with reason.
+    """
+    # FP guard per PM[5]: never fire outside a sigma session
+    if not _is_sigma_session():
+        return False, ""
+
+    is_archive_op = False
+
+    if tool_name in ("Write", "Edit"):
+        path = tool_input.get("file_path", "")
+        if _path_is_archive(path):
+            is_archive_op = True
+    elif tool_name == "Bash":
+        cmd = tool_input.get("command", "")
+        if _ARCHIVE_BASH_RE.search(cmd):
+            is_archive_op = True
+
+    if not is_archive_op:
+        return False, ""
+
+    has_header, review_id, manual_override = _has_compilation_complete()
+    if has_header:
+        return False, ""
+
+    # BLOCK with recovery instructions per IC[6]
+    return True, (
+        "PRE-ARCHIVE BLOCKED: workspace does not contain the required "
+        "`## compilation-complete: [R-{review-id}]` header. Run the 06b "
+        "compilation step (compile findings to wiki/memory) before archiving.\n\n"
+        "Recovery options:\n"
+        "  1. Run compilation: spawn compilation-agent (sigma-lead.md:176) and "
+        "wait for it to write `## compilation-complete: [R-{review-id}]`.\n"
+        "  2. Manual override: append "
+        "`## compilation-complete: [R-{review-id}, manual-override, "
+        "reason: {reason}]` to workspace, then retry. Reason is required "
+        "and will be audited.\n\n"
+        "Per ADR[6]/IC[6] (plan §P2.A row 119): BLOCK day-1 prevents "
+        "archive-without-compilation, which loses analytical provenance."
+    )
+
+
+# ---------------------------------------------------------------------------
+# WARN 6: Context firewall
 # ---------------------------------------------------------------------------
 
 def detect_context_firewall_leak(file_path: str, content: str) -> str | None:
@@ -412,6 +509,9 @@ def enforce_pre_tool_use(data: dict) -> tuple[int, dict]:
         should_block, reason = check_code_write_authorization(file_path)
         if should_block:
             return 2, {"reason": reason}
+        should_block, reason = check_pre_archive_gate(tool_name, tool_input)
+        if should_block:
+            return 2, {"reason": reason}
 
     elif tool_name == "Bash":
         command = tool_input.get("command", "")
@@ -419,6 +519,9 @@ def enforce_pre_tool_use(data: dict) -> tuple[int, dict]:
         if should_block:
             return 2, {"reason": reason}
         should_block, reason = check_sed_in_place(command)
+        if should_block:
+            return 2, {"reason": reason}
+        should_block, reason = check_pre_archive_gate(tool_name, tool_input)
         if should_block:
             return 2, {"reason": reason}
 

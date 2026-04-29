@@ -383,6 +383,11 @@ chain-evaluator enforcement (A20):
   - DA receives PREMISE-AUDIT in r2 — checks agents ¬re-anchored on challenged premises
   - ## premise-audit-results section MUST exist in workspace before agent spawn — chain-eval presence check BLOCK day-one (per PM[3] mitigation)
 
+!cross-references:
+  §8f DC[3]: post-exit-gate workspace-headers — ANALYZE post-DA-exit-gate sibling. §2p header (## premise-audit-results) is written BEFORE H[] dispatch; §8f headers (## promotion, ## sync, ## archive-complete, ## synthesis-complete) are written AFTER DA exit-gate PASS. Common pattern: workspace-header presence = phase-ran, ¬just-claimed.
+  sigma-review/SKILL.md Step 1 sub-step: ANALYZE-side workflow placement (premise-audit pre-dispatch as Prepare sub-step; "Step 7a" label dropped per H7 r2 — structure survives, label dropped to avoid SKILL.md renumber-cascade).
+  sigma-lead.md Step 1: ANALYZE-side workflow execution sub-step (mirrors c1-plan.md:62 Step 7a HARD GATE structure).
+
 > BUILD variant → see build-directives.md §2p (Step 7a inserted in c1-plan.md between Step 7 and Step 8)
 
 #### §2d-severity provenance (26.4.23, extension of §2d)
@@ -1252,6 +1257,40 @@ audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process 
   §8d: /sigma-audit reads ## recovery-log + attestations as primary recovery-compliance signal.
   sigma-lead.md ## Recovery section: lead workflow pointer to §8e.
   §6e: Scope Integrity scoring credits transparent recovery.
+
+### §8f post-exit-gate workspace-headers (26.4.29)
+
+!purpose: enforce post-exit-gate phase completion via workspace-header presence. R19 #21 + B 3.14 weakness profile: lead declares chain-closed without writing ## sync (template snapshot) → next review imports stale templates → calibration drift compounds. Header presence is the mechanical signal that the post-exit-gate phase actually ran ¬just-was-claimed.
+
+!when: AFTER DA exit-gate PASS, BEFORE workspace archive (§8a). Order: synthesis → promotion → sync → archive. Each phase writes its workspace header on completion.
+
+!applies-to: ANALYZE mode (sigma-review) | BUILD mode → see build-directives.md §8f (post c3-review chain-closure).
+
+!workspace-header mandate (lead writes after each phase completes):
+  ## synthesis-complete: [{date}|{synthesis-agent-id}] — written when synthesis-agent declares ✓
+  ## promotion: [{auto-stored:N}|{user-approve:M}|{date}] — written when promotion phase exits (existing; A13 already gates presence)
+  ## sync: [{templates-hashed:N}|{drift-detected:Y/N}|{date}] — NEW MANDATE (this directive)
+  ## archive-complete: [{archive-path}|{INDEX-row-N}|{date}] — written after §8a copy + §8c index append
+
+!chain-evaluator enforcement:
+  ## promotion: A13 (existing) — presence-checked, evidence-required.
+  ## sync: A27 (new gate, WARN-first per path β+ ADR[β+]) — presence-checked. Promotion threshold per ADR[10]: ≥3 reviews where ## sync absent + ≤20% false-positive rate (precedent-aligned with A20 §2i, ¬"2+" provisional). audit-calibration-gate.py issues PROMOTE on threshold met → lead updates A27 mode WARN→BLOCK.
+  ## synthesis-complete + ## archive-complete: directive-only this cycle (no chain-evaluator gate yet; promotion deferred until A27 path β+ data lands).
+
+!header format (machine-parseable, single-line):
+  `## sync: [templates-hashed:{N}|drift-detected:{Y|N}|date:{YYYY-MM-DD}]`
+  template-hash baseline: ~/Projects/sigma-system-overview/agent-infrastructure/scripts/sync-templates.sh (per A25/IC[5]). drift-detected:Y → triggers re-sync workflow (§8a archive PROCEEDS but flagged for next-session reconciliation).
+
+!recovery / manual-override form:
+  `## sync: [templates-hashed:0|skipped|reason:{reason}|date:{YYYY-MM-DD}]`
+  audit-trail mandate: skipped form requires reason text; A27 chain-eval accepts the skipped form but logs to calibration-log.md (DC[A27-SKIP]) for post-session review. Skipped without reason → BUILD-CONCERN raised by /sigma-audit.
+
+!cross-references:
+  DC[1]: §8a — ## archive-complete header is the §8a post-write attestation (existing archival rule re-anchored to header).
+  DC[2]: §8c — ## archive-complete `INDEX-row-N` value verifies INDEX append occurred (¬just-archive-copy).
+  DC[3]: §2p — premise-audit-results header (ANALYZE-mode) is the pre-dispatch sibling of §8f post-exit-gate headers; both use workspace-header presence as the mechanical phase-completion signal. §2p header written BEFORE H[] dispatch; §8f headers written AFTER DA exit-gate PASS. Common pattern: header-presence = phase-ran, ¬just-claimed. Cross-ref BUILD variant: build-directives.md §2p (Step 7a in c1-plan.md between Step 7 and Step 8) — the BUILD pre-dispatch sibling carries the "Step 7a" label; ANALYZE side does NOT (per H7 r2 falsification — structure survives, label dropped to avoid renumber-cascade in sigma-review/SKILL.md).
+  §6e: Scope Integrity credits header-presence-with-content; absent or empty header = ≤2/4.
+  A27 (new): see chain-evaluator.py — WARN-first calibration period, BLOCK on PROMOTE.
 
 ## §9 post-review-calibration-protocol (26.3.23)
 
