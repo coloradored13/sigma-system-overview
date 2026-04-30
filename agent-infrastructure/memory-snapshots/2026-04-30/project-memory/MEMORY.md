@@ -92,6 +92,7 @@ coloradored13/{hateoas-agent(public),sigma-mem(public),ollama-mcp-bridge(public)
 - [Gemini daily quota](reference_gemini-daily-quota.md) — 250 req/day per model even on paid tier (26.4.3)
 - [Experiment execution pattern](reference_experiment-execution-pattern.md) — concurrent eval, checkpointing, budget pause, nohup (26.4.3)
 - [Subscription vs per-token cost model](reference_subscription-vs-pertoken.md) — agents+lead are subscription, only XVERIFY paid providers (openai+google) bill per-token; full sigma-build ~$1-5 not $10-15 (26.4.23)
+- [Split-pane agent teams](reference_split-pane-agent-teams.md) — native Claude Code UX for user-in-multi-agent chat: tmux + CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 (26.4.30)
 
 ## user profile
 - [LLM internals interest](user_llm-internals-interest.md) — embeddings, hidden states, superposition, AI philosophy, convergence theory (26.4.2)
