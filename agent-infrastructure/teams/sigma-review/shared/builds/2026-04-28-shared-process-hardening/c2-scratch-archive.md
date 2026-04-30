@@ -161,7 +161,7 @@ All entries tagged `|src:shared-process-hardening-c2-2026-04-29|` per convention
 
 ## cross-model-code-review
 
-XREVIEW[openai:gpt-5.4][phase-gate.py BLOCK 5 / ADR[6]/IC[6]]: vulnerability=MEDIUM |advisory weight per c2-build.md Step 6 — informs C3, does NOT block C2 exit |provider:openai gpt-5.4 (anthropic excluded per feedback_xverify-anthropic-excluded:26.4.23) |tier:standard |source:|source:external-openai-gpt-5.4|
+XREVIEW[openai:gpt-5.4][phase-gate.py BLOCK 5 / ADR[6]/IC[6]]: vulnerability=MEDIUM |advisory weight per c2-build.md Step 6 — informs C3, does NOT block C2 exit |provider:openai gpt-5.4 (anthropic excluded per feedback_xverify-anthropic-excluded:26.4.23) |tier:standard |source:external-openai-gpt-5.4|
 
 Counter-argument summary: Implementation appears superficially sound but enforcement model is narrow and heuristic. Bash regex covers `cp|mv|cat>>|tee` only — many archive-bound write paths unaddressed (`>`, `>>` raw, `install`, `rsync`, `dd`, `python -c`, `tar`, `zip`, `scp`, `ln`, `bash -c` indirection). `_path_is_archive` substring match could be over/under-inclusive (no normalization, symlinks, `..` traversal, case). 12 unit tests are example-cases not invariants — no fuzzing/adversarial/path-canonicalization testing.
 
@@ -191,3 +191,48 @@ C3 carry-forward triage:
 
 ## merge-verification
 N/A (no parallel engineers — single IE per cluster).
+
+## c2-close-cleanup-pass (2026-04-29, post-audit/post-eval reconciliation)
+
+Triggered by: sigma-evaluate C 2.57/4.0 (below A target ≥3.5). Audit GREEN concurrent. Cleanup addresses documentation-hygiene failures the eval flagged in `## findings` body. Body sections preserved as-written (writing-time accurate); reconciliation provides canonical mapping.
+
+### Line-number canonicalization (sigma-lead.md compilation-agent spawn)
+- IE's SQ[9] edit LANDED at line 176 in IE's writing-time frame (correct per F[IE-7], CHECKPOINT[implementation-engineer], VP[1], VP[CQA-4..6], scratch convergence at line 152, ## cross-model-code-review at lines 164/169, ## gate-log C3-carry-forward at line 186 — all written before TW's SQ[10] half-2 landed).
+- TW's SQ[10] half-2 then inserted ~31 lines at sigma-lead.md Step 1 Prepare (~38-72), shifting IE's edit downward.
+- CURRENT canonical line: `sigma-lead.md:207`. Plan Build Status §CHECKPOINT[implementation-engineer] (plan line 161) reflects this correctly (`:207 (compilation-agent spawn + manual-override; was line 176 pre-TW SQ[10] insertion)`).
+- Read every body reference to "sigma-lead.md:176", "line ~176", "line 176", "sigma-lead.md:175-176" as → current state at sigma-lead.md:207 / 206-207.
+
+### Test-count reconciliation
+- Scratch convergence (line 152) and CHECKPOINT[implementation-engineer] (line 84) cite **1208/1209 hook-tests** — accurate snapshot at IE's convergence (pre-CQA SQ[11]).
+- Post-CQA's `test_archived_workspaces.py` (37 tests), full hook-suite is **1245 passed / 14 skipped / 1 pre-existing failure (unrelated) / 1260 total** — reflected in plan Build Status §Test Results and ## gate-log line 180.
+- Delta: 1245 - 1208 = 37 = exactly CQA's SQ[11] new tests. No discrepancy. Snapshot-timing artifact (IE checkpointed pre-CQA, gate-log written post-CQA).
+
+### Double-prefix typo
+- Line 164 `|source:|source:external-openai-gpt-5.4|` → corrected to single `|source:external-openai-gpt-5.4|`. Surfaces audit promotion candidate (d): `|source:|source:` double-prefix lint as low-friction format checker.
+
+### TW |source: tag schema gap
+- TW F[1..4] lack canonical `|source:` tags per build-directives §2d. The §2d source types (`[independent-research]`, `[prompt-claim]`, `[cross-agent]`, `[agent-inference]`, `[external-verification]`) are code/data-shaped and don't fit doc-edit findings. Embedded provenance is traceable (TW F[1..4] cite specific files and line ranges in prose), so this is formatting drift, not protocol violation (audit Check 2 verdict: minor-issues).
+- C3 directive-update candidate: extend §2d with `[doc-edit]` / `[directive-write]` / `[cross-ref-grep]` types per audit promotion candidate (c).
+
+### VP[1] + GAP[#5] elevation (sigma-evaluate gating item, ELEVATED FROM CARRY-FORWARD)
+- Lead's prior "non-blocking, C3 carry-forward" classification reached without explicit elevate-or-defer criterion or named decision-maker. Eval correctly identified this as the failure mode the peer-verify ring exists to catch (dual-confirm = TW peer-verify + openai gpt-5.4 challenge on the same governance gap).
+- Reclassified: **C3 GATING ITEM** (not stylistic carry-forward).
+- C3 must produce, in this order:
+  1. Decision-maker for manual-override authority: name explicitly (lead-only / lead-with-user-approval / user-only / role-not-yet-defined). ADR[6] §"Manual-override recovery" is currently silent on this.
+  2. Criterion for the decision: what evidence or principle determines the choice (e.g., "lead-with-user-approval per existing destructive-operations confirmation rail" or "user-only per audit-trail integrity").
+  3. sigma-lead.md:207 wording update: replace "operator may unblock" with the decided actor + authority (e.g., "lead may invoke manual-override only after user approval").
+  4. Optional: directive update queuing additional governance hardening.
+- Until C3 produces (1)+(2)+(3), the manual-override BLOCK 5 escape hatch exists with undefined authority — process-clean per audit but quality-deficient per eval.
+
+### Patterns elevated for memory-compile after C3
+- (P1) Documentation-hygiene under build pressure: agents announce changes in real time with their writing-time frame; lead must reconcile line numbers + counts + cross-refs at C2 close, not just append. Snapshot-staleness compounds with each agent message.
+- (P2) Dual-confirm escalation: when peer-verify and XREVIEW (or any two independent reviewer paths) flag the same concern, convergence must record explicit elevate-or-defer decision with criterion + named decision-maker. "Carry-forward to C3" is a deferral that needs reason and name, not a label.
+- (P3) `paste-with-grep` citation format: `path:line — [excerpt]` is self-falsifying (if line content drifts, the excerpt fails); bare `path:line` references go stale silently.
+- (P4) Audit-vs-eval rigor delta: audit verdict (GREEN/YELLOW/RED) checks "did we do the steps?"; eval grade (A-F) checks "was the response well-calibrated?". Both bars matter. GREEN-with-C-grade signals the team did the work but lead reconciliation slipped.
+- (P5) Audit promotion candidates: (a) personal-vs-team task list namespace enforcement, (b) no-TaskCreate-for-lead-orchestration in BUILD mode, (c) §2d source-type extensions for doc-edit findings, (d) `|source:|source:` double-prefix lint.
+
+### Cleanup status
+- Body sections of this scratch preserved as-written (writing-time accurate per their respective frames).
+- This `## c2-close-cleanup-pass` section is the canonical reconciliation reference for any future reader.
+- Plan Build Status §C3 Carry-Forward Concerns updated separately to mark VP[1]+GAP[#5] as **C3 GATE** (not advisory carry-forward).
+- Re-archive overwrites prior c2-scratch-archive.md with this cleanup pass included; prior archive snapshot is preserved in this conversation history and in audit/eval reports.
