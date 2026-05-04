@@ -133,3 +133,27 @@ jobs:
             echo "── $sub"
             (cd "$sub" && ruff check src/ tests/ && ruff format --check src/ tests/)
           done
+
+  doc-validation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install all packages (validate-docs needs pytest --co)
+        run: |
+          python -m pip install --upgrade pip
+          pip install './hateoas-agent[dev,anthropic]'
+          pip install './sigma-mem[dev]'
+          pip install './sigma-verify[dev]'
+
+      - name: Validate doc stats match code
+        run: ./validate-docs.sh

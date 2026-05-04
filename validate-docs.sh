@@ -23,7 +23,7 @@ echo "-- hateoas-agent --"
 if [ -d "hateoas-agent/src" ]; then
   HA_LOC=$(find hateoas-agent/src -name "*.py" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
   HA_TEST_LOC=$(find hateoas-agent/tests -name "*.py" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
-  HA_TESTS=$(cd hateoas-agent && python3 -m pytest tests/ --co -q 2>/dev/null | tail -1 | grep -oE '[0-9]+' | head -1) || HA_TESTS="?"
+  HA_TESTS=$(cd hateoas-agent && python3 -m pytest tests/ --co -q --override-ini="addopts=" 2>/dev/null | grep -oE '[0-9]+ tests collected' | grep -oE '[0-9]+' | head -1) || HA_TESTS="?"
 
   echo "  Actual: src=${HA_LOC} LOC, tests=${HA_TEST_LOC} LOC, test_count=${HA_TESTS}"
 
@@ -97,7 +97,7 @@ echo "-- sigma-mem --"
 if [ -d "sigma-mem/src" ]; then
   SM_LOC=$(find sigma-mem/src -name "*.py" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
   SM_TEST_LOC=$(find sigma-mem/tests -name "*.py" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
-  SM_TESTS=$(cd sigma-mem && PYTHONPATH=src python3 -m pytest tests/ --co -q 2>/dev/null | tail -1 | grep -oE '[0-9]+' | head -1) || SM_TESTS="?"
+  SM_TESTS=$(cd sigma-mem && PYTHONPATH=src python3 -m pytest tests/ --co -q --override-ini="addopts=" 2>/dev/null | grep -oE '[0-9]+ tests collected' | grep -oE '[0-9]+' | head -1) || SM_TESTS="?"
 
   echo "  Actual: src=${SM_LOC} LOC, tests=${SM_TEST_LOC} LOC, test_count=${SM_TESTS}"
 
@@ -156,6 +156,125 @@ if [ -d "sigma-mem/src" ]; then
   fi
 else
   warn "sigma-mem/src not found (submodule not initialized?)"
+fi
+
+echo ""
+
+# --- sigma-verify ---
+echo "-- sigma-verify --"
+
+if [ -d "sigma-verify/src" ]; then
+  SV_LOC=$(find sigma-verify/src -name "*.py" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
+  SV_TEST_LOC=$(find sigma-verify/tests -name "*.py" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
+  SV_TESTS=$(cd sigma-verify && PYTHONPATH=src python3 -m pytest tests/ --co -q --override-ini="addopts=" 2>/dev/null | grep -oE '[0-9]+ tests collected' | grep -oE '[0-9]+' | head -1) || SV_TESTS="?"
+
+  echo "  Actual: src=${SV_LOC} LOC, tests=${SV_TEST_LOC} LOC, test_count=${SV_TESTS}"
+
+  # README stats table
+  README_TABLE_SV=$(grep 'sigma-verify' README.md | grep '|' | head -1) || README_TABLE_SV=""
+  if [ -n "$README_TABLE_SV" ]; then
+    R_SRC=$(echo "$README_TABLE_SV" | awk -F'|' '{print $3}' | grep -oE '[0-9,]+' | head -1 | tr -d ',')
+    R_TESTS=$(echo "$README_TABLE_SV" | awk -F'|' '{print $5}' | grep -oE '[0-9,]+' | head -1 | tr -d ',')
+    echo "  README table claims: src=${R_SRC} LOC, test_count=${R_TESTS}"
+
+    if [ -n "$R_SRC" ] && [ -n "$SV_LOC" ]; then
+      DIFF=$(( SV_LOC - R_SRC ))
+      ABS_DIFF=${DIFF#-}
+      THRESHOLD=$(( R_SRC / 10 ))
+      if [ "$ABS_DIFF" -gt "$THRESHOLD" ]; then
+        fail "sigma-verify src LOC: actual=${SV_LOC} vs README=${R_SRC} (diff=${DIFF})"
+      else
+        pass "sigma-verify src LOC within tolerance (actual=${SV_LOC}, claimed=${R_SRC})"
+      fi
+    fi
+
+    if [ -n "$R_TESTS" ] && [ "$SV_TESTS" != "?" ]; then
+      if [ "$R_TESTS" != "$SV_TESTS" ]; then
+        fail "sigma-verify test count: actual=${SV_TESTS} vs README=${R_TESTS}"
+      else
+        pass "sigma-verify test count matches (${SV_TESTS})"
+      fi
+    fi
+  else
+    fail "sigma-verify not listed in README.md stats table"
+  fi
+
+  # ARCHITECTURE stats table
+  ARCH_TABLE_SV=$(grep 'sigma-verify' ARCHITECTURE.md | grep '|' | head -1) || ARCH_TABLE_SV=""
+  if [ -n "$ARCH_TABLE_SV" ]; then
+    A_SRC=$(echo "$ARCH_TABLE_SV" | awk -F'|' '{print $3}' | grep -oE '[0-9,]+' | head -1 | tr -d ',')
+    A_TESTS=$(echo "$ARCH_TABLE_SV" | awk -F'|' '{print $5}' | grep -oE '[0-9,]+' | head -1 | tr -d ',')
+    echo "  ARCHITECTURE table claims: src=${A_SRC} LOC, test_count=${A_TESTS}"
+
+    if [ -n "$A_SRC" ] && [ -n "$SV_LOC" ]; then
+      DIFF=$(( SV_LOC - A_SRC ))
+      ABS_DIFF=${DIFF#-}
+      THRESHOLD=$(( A_SRC / 10 ))
+      if [ "$ABS_DIFF" -gt "$THRESHOLD" ]; then
+        fail "sigma-verify src LOC: actual=${SV_LOC} vs ARCHITECTURE=${A_SRC} (diff=${DIFF})"
+      else
+        pass "sigma-verify src LOC in ARCHITECTURE within tolerance (actual=${SV_LOC}, claimed=${A_SRC})"
+      fi
+    fi
+
+    if [ -n "$A_TESTS" ] && [ "$SV_TESTS" != "?" ]; then
+      if [ "$A_TESTS" != "$SV_TESTS" ]; then
+        fail "sigma-verify test count: actual=${SV_TESTS} vs ARCHITECTURE=${A_TESTS}"
+      else
+        pass "sigma-verify test count in ARCHITECTURE matches (${SV_TESTS})"
+      fi
+    fi
+  else
+    fail "sigma-verify not listed in ARCHITECTURE.md stats table"
+  fi
+else
+  warn "sigma-verify/src not found (submodule not initialized?)"
+fi
+
+echo ""
+
+# --- Agent counts (definitions in agents/, active roster) ---
+echo "-- Agent counts --"
+
+AGENT_DEF_COUNT=$(ls agent-infrastructure/agents/ 2>/dev/null | grep -vE '^(_template\.md|SIGMA-COMM-SPEC\.md|sigma-comm\.md|sigma-lead\.md)$' | wc -l | tr -d ' ')
+ROSTER_COUNT=$(grep -cE '^[a-z][a-z-]+ \|domain:' agent-infrastructure/teams/sigma-review/shared/roster.md 2>/dev/null || echo "0")
+
+echo "  Actual: ${AGENT_DEF_COUNT} agent definitions, ${ROSTER_COUNT} on roster"
+
+# Check README claim
+README_AGENT_DEFS=$(grep -oE '[0-9]+ agent definitions' README.md | head -1 | grep -oE '[0-9]+') || README_AGENT_DEFS=""
+README_ROSTER=$(grep -oE '[0-9]+ agents on the (active )?roster' README.md | head -1 | grep -oE '[0-9]+') || README_ROSTER=""
+
+if [ -n "$README_AGENT_DEFS" ]; then
+  if [ "$README_AGENT_DEFS" = "$AGENT_DEF_COUNT" ]; then
+    pass "README agent-definition count matches (${AGENT_DEF_COUNT})"
+  else
+    fail "README claims ${README_AGENT_DEFS} agent definitions; actual is ${AGENT_DEF_COUNT}"
+  fi
+else
+  warn "Could not find 'NN agent definitions' claim in README.md"
+fi
+
+if [ -n "$README_ROSTER" ]; then
+  if [ "$README_ROSTER" = "$ROSTER_COUNT" ]; then
+    pass "README roster count matches (${ROSTER_COUNT})"
+  else
+    fail "README claims ${README_ROSTER} on roster; actual is ${ROSTER_COUNT}"
+  fi
+else
+  warn "Could not find 'NN agents on the roster' claim in README.md"
+fi
+
+# Check ARCHITECTURE claim
+ARCH_AGENT_DEFS=$(grep -oE '[0-9]+ global agent definitions' ARCHITECTURE.md | head -1 | grep -oE '[0-9]+') || ARCH_AGENT_DEFS=""
+if [ -n "$ARCH_AGENT_DEFS" ]; then
+  if [ "$ARCH_AGENT_DEFS" = "$AGENT_DEF_COUNT" ]; then
+    pass "ARCHITECTURE agent-definition count matches (${AGENT_DEF_COUNT})"
+  else
+    fail "ARCHITECTURE claims ${ARCH_AGENT_DEFS} agent definitions; actual is ${AGENT_DEF_COUNT}"
+  fi
+else
+  warn "Could not find 'NN global agent definitions' claim in ARCHITECTURE.md"
 fi
 
 echo ""

@@ -4,12 +4,13 @@
 
 ## What this is
 
-Four interlocking components that together create AI agent teams with persistent memory, compressed communication, and deterministic behavior:
+Five interlocking components that together create AI agent teams with persistent memory, compressed communication, and deterministic behavior:
 
 1. **hateoas-agent** — A Python framework that applies HATEOAS (Hypermedia As The Engine Of Application State) to AI agent tool use
 2. **sigma-mem** — A persistent memory system for Claude, built on hateoas-agent, exposed as an MCP server
-3. **ΣComm** — A compressed communication protocol for agent-to-agent messaging
-4. **Agent Team Infrastructure** — File-based infrastructure for self-sufficient agent teams with persistent identity
+3. **sigma-verify** — A cross-model verification system, built on hateoas-agent, exposed as an MCP server
+4. **ΣComm** — A compressed communication protocol for agent-to-agent messaging
+5. **Agent Team Infrastructure** — File-based infrastructure for self-sufficient agent teams with persistent identity
 
 ## The core insight
 
@@ -26,7 +27,7 @@ This principle — **deterministic state-driven navigation** — is then applied
 
 ### hateoas-agent
 
-A Python library (~3,323 LOC, 439 tests) that implements HATEOAS for AI agent tool use.
+A Python library (~3,354 LOC, 452 tests) that implements HATEOAS for AI agent tool use.
 
 **How it works:**
 ```
@@ -72,7 +73,7 @@ The framework handles:
 
 ### sigma-mem
 
-A persistent memory system for Claude (~1,724 LOC, 186 tests), exposed as an MCP server. Built on hateoas-agent.
+A persistent memory system for Claude (~2,672 LOC, 302 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The memory system is itself a HATEOAS state machine. Claude calls `recall` (the gateway), describes the current context, and the system detects the conversation type (project work, debugging, being corrected, team work, etc.) and returns relevant memories with state-dependent actions.
@@ -111,6 +112,37 @@ Claude calls get_team_decisions("sigma-review")
 - Compressed notation — fits more signal into limited context windows
 - Anti-memories (¬) — explicitly track what is NOT true to prevent false assumptions
 - Human-auditable — all memory is markdown files, no database
+
+### sigma-verify
+
+A cross-model verification system (~1,776 LOC, 300 tests), exposed as an MCP server. Built on hateoas-agent.
+
+**How it works:**
+The verification system is a HATEOAS state machine. Agents call `init` (the gateway), and the system advertises which verification actions are available given the current quotas, configured models, and prior findings.
+
+```
+Agent calls init()
+  → returns: configured models, current quotas, available actions
+  → advertises: get_models, verify_finding, cross_verify, challenge, check_quotas
+
+Agent calls verify_finding(claim, evidence)
+  → routes to alternative model(s)
+  → returns: agreement/disagreement, divergent reasoning, confidence delta
+  → advertises: cross_verify (broader panel), challenge (adversarial), check_quotas
+```
+
+**Actions:**
+- `get_models` — list configured verification models
+- `verify_finding` — check a single finding against an alternative model
+- `cross_verify` — check against multiple models in parallel
+- `challenge` — ask an alternative model to argue against the finding
+- `check_quotas` — current usage / remaining budget per model
+
+**Key design decisions:**
+- Same HATEOAS pattern as sigma-mem — agents discover what's possible from server state
+- Quota-aware — actions disappear when budget is exhausted, no silent failures
+- Built as a peer to sigma-mem so agents can verify before storing or after recall
+- Used by `/sigma-evaluate` and the adversarial round in `/sigma-review` to ground challenges in independent model output
 
 ### ΣComm Protocol
 
@@ -152,7 +184,7 @@ File-based infrastructure for self-sufficient agent teams with persistent identi
 
 **Architecture:**
 ```
-~/.claude/agents/              # 21 global agent definitions
+~/.claude/agents/              # 29 global agent definitions (validated by validate-docs.sh)
   sigma-lead.md                # Orchestrator protocol
   sigma-comm.md                # Communication protocol
   devils-advocate.md           # Adversarial analyst (exit-gate authority)
@@ -162,12 +194,14 @@ File-based infrastructure for self-sufficient agent teams with persistent identi
   ux-researcher.md             # Developer experience specialist
   code-quality-analyst.md      # Code quality specialist
   technical-writer.md          # Documentation specialist
-  + 5 market-domain agents     # macro-rates, sanctions-trade, energy, geopolitical, portfolio
-  + 3 regulatory-domain agents # regulatory, tech-industry, economics
-  + 2 dynamic agents           # created mid-review when DA identifies domain gaps
+  + market-domain agents       # macro-rates, sanctions-trade, energy, geopolitical, portfolio
+  + regulatory-domain agents   # regulatory, tech-industry, economics
+  + cross-cutting specialists  # cognitive-decision-scientist, security-specialist, statistical-analyst, etc.
+  + dynamic agents             # created mid-review when DA identifies domain gaps
   _template.md                 # Canonical agent definition template
+  See agent-infrastructure/teams/sigma-review/shared/roster.md for the 22 currently active.
 
-~/.claude/skills/              # 7 orchestration skills
+~/.claude/skills/              # Orchestration + auxiliary skills
   sigma-review/                # ANALYZE mode — multi-agent research with adversarial rounds
   sigma-build/                 # BUILD mode — plan→challenge→build→review
   sigma-evaluate/              # Rubric-based output evaluation (3 evaluators + judge)
@@ -175,17 +209,18 @@ File-based infrastructure for self-sufficient agent teams with persistent identi
   sigma-retrieve/              # Agentic RAG pipeline
   sigma-research/              # Agent domain research refresh
   sigma-init/                  # Team initialization
+  + auxiliary skills           # source-validation, sigmacomm helpers, etc.
 
 ~/.claude/teams/sigma-review/  # Team instance
   shared/
-    roster.md                  # 17 agents with domains + wake-for rules
-    directives.md              # ANALYZE governance (902 lines)
-    build-directives.md        # BUILD governance (341 lines)
+    roster.md                  # 22 agents with domains + wake-for rules
+    directives.md              # ANALYZE governance
+    build-directives.md        # BUILD governance
     decisions.md               # Expertise-weighted decisions with attribution
-    patterns.md                # Cross-agent observations (142 lines, growing)
+    patterns.md                # Cross-agent observations (growing across reviews)
     workspace.md               # Current task (agents read/write collaboratively)
     orchestrator-config.py     # Automated phase transition CLI
-    archive/                   # 7 archived review workspaces
+    archive/                   # Archived review workspaces (51+ runs)
   agents/{name}/
     memory.md                  # Persistent personal memory (agent self-maintains)
   inboxes/{name}.md            # Markdown/ΣComm inbox (summarize-and-clear)
@@ -282,7 +317,7 @@ User interaction:
 
 ## Evidence it works
 
-The system has completed 7+ reviews across codebases, market analyses, and stress tests. Team composition has grown from 3 core agents to 17 roster agents with adversarial layer.
+The system has completed 50+ reviews across codebases, market analyses, and stress tests. Team composition has grown from 3 core agents to 22 roster agents with adversarial layer.
 
 **Review history:**
 - Reviews 1-3 (sigma-mem): correctness issues → polish → architecture review
@@ -326,13 +361,14 @@ The system has completed 7+ reviews across codebases, market analyses, and stres
 
 ## Stats
 
-| Component | Source LOC | Test LOC | Tests | Files |
-|-----------|-----------|----------|-------|-------|
-| hateoas-agent | 3,323 | 7,630 | 439 | 19 modules, 25 test files, 12 examples |
-| sigma-mem | 1,724 | 1,749 | 186 | 5 modules, 5 test files |
-| Agent definitions | 2,890 | — | — | 21 agent files |
-| Skills | 1,641 | — | — | 7 skills |
-| Directives | 1,243 | — | — | ANALYZE (902) + BUILD (341) |
-| **Total** | **~10,800** | **~9,400** | **625** | |
+| Component | Source LOC | Test LOC | Tests |
+|-----------|-----------|----------|-------|
+| hateoas-agent | 3,354 | 7,776 | 452 |
+| sigma-mem | 2,672 | 2,677 | 302 |
+| sigma-verify | 1,776 | 3,697 | 300 |
+| Agent definitions | 4,399 (29 files) | — | — |
+| **Total (Python)** | **7,802** | **14,150** | **1,054** |
 
-**Team scale:** 17 roster agents, 7 skills, 7 archived reviews, 142-line cross-agent pattern log
+Numeric stats above are validated in CI by `validate-docs.sh` against the live submodules and `agent-infrastructure/agents/`.
+
+**Team scale:** 22 roster agents, 51+ archived reviews, cross-agent pattern log growing with each review.
