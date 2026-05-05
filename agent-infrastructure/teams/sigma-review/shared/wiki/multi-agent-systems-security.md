@@ -1,5 +1,5 @@
 # Multi-Agent Systems Security
-Last updated: 26.4.28 | Reviews: R-2026-04-22-ai-agent-rollout-playbook-vet (26.4.28)
+Last updated: 26.5.5 | Reviews: R-2026-04-22-ai-agent-rollout-playbook-vet (26.4.28), R-26.4.22 retroactive 06b (26.5.5)
 
 ## Summary
 Multi-agent topologies are now the default deployment pattern in LangGraph (LangSmith Q1 2026 telemetry: 60%+ of production deployments use multi-agent subgraph patterns with default credential inheritance). Standard playbooks treat agents as isolated entities under single-user OBO tokens, which is an architectural omission once Tier 2+ writes or multi-agent orchestration is in scope. Three specific gaps recur: agent-to-agent trust boundaries, composite lethal trifecta in multi-agent systems, and the absent A2A protocol guidance for enterprise interoperability. MITRE ATLAS added LLM Prompt Injection (parent technique AML.T0051) covering chain-of-agent injection in March 2026, classifying it as production-relevant rather than theoretical. GDPR Article 26 joint-controller doctrine is current law with DPA enforcement precedent for multi-agent pipelines touching EU personal data.
@@ -44,6 +44,9 @@ All three legs are present without explicit human confirmation across the A-to-B
 - Apply CaMeL-style per-tool policy codification at the subagent dispatch boundary, not only at the user-facing entry point
 - Anthropic's Constitutional Classifiers at 4.4% jailbreak success is the best published external classifier defense — still not zero, requires layered defense
 
+## Multi-Agent Trace Review — Qualitatively Different Cognitive Requirements
+[R-26.4.22, ai-agent-rollout-playbook-vet] Standard reviewers trained on single-agent traces lack the cognitive skills and mental models to detect multi-agent failure modes. A single-agent trace has one tool-call sequence, one reasoning path, one decision point per turn. A multi-agent trace has N agents, M inter-agent calls, potentially parallel branches, and emergent behaviors not visible in any individual agent's trace alone. Gaps unaddressed in standard playbooks: (a) reviewer training requirements for multi-agent oversight (different mental models required than for single-agent review); (b) visualization tooling for multi-agent traces (standard OTel dashboards are not designed for parallel agent execution); (c) cognitive load ceiling for how many concurrent agent paths a human reviewer can meaningfully supervise. This is a compounding gap — the architectural trust boundary gap (see Agent-to-Agent Trust Boundaries above) is detectable only if reviewers have the cognitive capacity and tooling to examine multi-agent execution traces effectively. Severity MEDIUM at Tier 2+ multi-agent deployments. Source: CDS-2 peer-verify of TA-2 (cross-domain addition to F[TA-A9]); TA-2 peer-verify of CDS-2 (F[CDS-A9] extension).
+
 ## Open Questions
 - Long-term agent memory audit posture — no published consensus, intersects but does not duplicate trace retention requirements [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
 - Multi-agent eval methodology — pass^k goal-completion is specified for single-agent trajectories but no equivalent rubric covers cross-agent delegation success [R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28]
@@ -51,3 +54,4 @@ All three legs are present without explicit human confirmation across the A-to-B
 
 ## Sources
 - R-2026-04-22-ai-agent-rollout-playbook-vet, 26.4.28 — sigma-review Tier 3 ANALYZE on dual-track financial-services capability-maturity roadmap and B2B SaaS phased workbook (post-audit citation correction 26.4.23: AML.T0051 parent technique cited rather than specific sub-technique ID)
+- R-26.4.22, ai-agent-rollout-playbook-vet, retroactive 06b compilation 26.5.5 — additional finding from CDS-2/TA-2 peer-verify (multi-agent trace review cognitive requirements, F[CDS-A9] extension)
