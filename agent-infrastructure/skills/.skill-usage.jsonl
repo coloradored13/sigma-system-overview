@@ -278,3 +278,4 @@
 {"timestamp": "2026-04-29T10:19:19.428266", "skill": "sigma-retrieve", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
 {"timestamp": "2026-05-01T11:05:50.912646", "skill": "sigma-build", "file": "phases/c3-review.md", "tier": "router", "context": "sigma-review"}
 {"timestamp": "2026-05-01T11:14:46.500376", "skill": "sigma-review", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}
+{"timestamp": "2026-05-05T08:45:04.075898", "skill": "sigma-audit", "file": "SKILL.md", "tier": "router", "context": "sigma-review"}

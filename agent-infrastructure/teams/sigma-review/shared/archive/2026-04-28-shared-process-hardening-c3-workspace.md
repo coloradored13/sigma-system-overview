@@ -1284,3 +1284,7 @@ P-candidate[IE-U3] |class:user-approve |finding:**Hook empirical-test must inclu
 ## compilation-complete: [R-2026-04-28-shared-process-hardening, manual-override, reason: synthesis-precedes-compilation sequencing trap surfaced 2026-05-01 by phase-gate BLOCK 5 enforcing on synthesis-archive write per ADR-6 IC-6 - user-authorized exception 2026-05-01 - precondition gap in directives.md sect 8f BUILD variant criterion - compilation cannot run before synthesis per c3-review.md Step 14a since compilation reads synthesis as input - follow-up SQ for next build BLOCK 5 synthesis carve-out OR c3-review.md re-ordering OR sect 8f criterion synthesis-precondition clause]
 
 ## compilation-complete: [R-2026-04-28-shared-process-hardening]
+
+## sync: [templates-hashed:0|skipped|reason: directive landed mid-build via SQ[8]; self-application begins next review per audit remediation #2 lifecycle-of-mandate documentation|date:2026-05-05]
+
+## archive-complete: [R-2026-04-28-shared-process-hardening, date:2026-05-05, schema-status: SCHEMA-TBD-WS3-SQ-T7 — header was mandated by this build but format never defined; placeholder used here pending WS-3 SQ-T7 schema formalization parallel to ## sync form]
