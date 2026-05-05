@@ -5,8 +5,14 @@
 - locked: 2026-04-28
 - build-id: 2026-04-28-shared-process-hardening
 - tier: BUILD TIER-2 (score 16/25)
-- status: built
+- status: complete
 - c2-locked: 2026-04-29
+- c3-r1-completed: 2026-05-01
+- c3-r2-r2micro-completed: 2026-05-02 (synthesis 2026-05-02; close-out promotion+sync 2026-05-04/05)
+- c3-team-name: shared-process-hardening-c3
+- archive-c3: ~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-c3-workspace.md
+- commit: f8b94ae (sigma-system-overview, pushed origin/main 2026-05-05)
+- build-belief: P=0.91 (C3 r2-micro final, post-CONCERN-1-close; pre-events P=0.92, post-event-1 P=0.88, R2 fix + R2-micro fix earned back +0.03 by closing both surfaced gaps in-build with 8 new tests covering the missing path classes; remains <0.92 to preserve honest signal that 2 directive↔hook integration defects were shipped and only caught by synthesis-agent halt during close-out)
 - plan-exit-gate: PASS (DA effective PASS post-fix)
 - plan-belief: P=0.88
 - plan-da-grade: B+ CONDITIONAL-PASS r1 with all 4 BLOCKING resolved → effective PASS
@@ -179,7 +185,7 @@ XREVIEW[openai:gpt-5.4][phase-gate.py BLOCK 5 (ADR[6]/IC[6])]: vulnerability=MED
 - SQ[3] TW Gap-Handling Rules section: **DONE** — paraphrase tests Q3-orphan-file/Q3-undeclared-file/Q3-incomplete-row active (PM[7] mitigation), cross-refs §8f + directives §6, source: F[TW-1]
 - SQ[4] B6 C2 exit-gate diff ChainItem (WARN-first): **DONE** — 8/8 tests pass, ADR[4]/IC[4] 3-pass parser (keyword=value primary → prose fallback → parse-fail), source: F[IE-5]
 - SQ[5] A14 race fix wrapper (greenfield): **DONE** — 7/7 tests pass, ADR[1]/IC[1] wrapper-only design (gc.check_session_end UNCHANGED preserving A12), regex `r"calibration-log\.md$"` anchored, fallback to gc capped list on subprocess failure, cap-at-10 fix verified via 15-file case, source: F[IE-1]
-- SQ[6] A25 template-drift + sync-templates.sh + hash baseline: **DONE** — 9/9 tests pass, ADR[5]/IC[5] LF-normalize + BOM-strip + rstrip + SHA256, hash-parity VERIFIED empirically (sync-templates.sh and chain-evaluator._a25_hash produce identical digest `eac7289eaf72ac80...`), source: F[IE-6]
+- SQ[6] A25 template-drift + sync-templates.sh + hash baseline: **DONE** — 9/9 tests pass, ADR[5]/IC[5] LF-normalize + BOM-strip + rstrip + SHA256, hash-parity VERIFIED empirically on macOS Python 3.14 across 7 fixture classes (LF/CRLF/BOM-prefix/mid-stream-BOM/mixed-EOL/unicode/trailing-WS-tabs). Cross-platform parity (Windows/Linux) is **designed-in** via shared normalization sequence (per IC[5]) but NOT empirically tested across actual platforms. Source: F[IE-6] (restated C3-r1 per joint TA+CQA+DA convergence; sigma-mem pattern `hash-parity-empirical-verify` flagged for revision at Step 15 promotion).
 - SQ[7] _XVERIFY_ANY_RE bracket-required tightening: **DONE** — 17/17 tests pass (5 new + existing TestA24 + TestA14 cross-coverage), ADR[7]/IC[7] bracket form `r"\bXVERIFY(?:-(?:FAIL|PARTIAL))?\["`, **PM[2] mitigation honored**: step 1 grep-audit completed BEFORE replace — confirmed single consumer at chain-evaluator.py:1104 (drifted from plan §:1021 due to A14 wrapper edits adding ~80 lines earlier in file), zero risk to existing fixtures, source: F[IE-2]
 - SQ[8] §8f post-exit-gate workspace-headers directive: **DONE** — directives.md ## sync NEW (A27 chain-eval gate WARN-first) + 4 mandated headers + ADR[10] threshold preserved verbatim ≥3 reviews + ≤20% FP per β+ precedent (NOT "2+", which would have been silent threshold drift) + DC[1-3] cross-refs incl. bidirectional §2p↔§8f, source: F[TW-2]
 - SQ[9] phase-gate BLOCK 5 + sigma-lead.md compilation-agent spawn instruction: **DONE** — 12/12 tests pass, ADR[6]/IC[6] plan-faithful BLOCK day-1 (¬WARN per plan §P2.A row 119), regex `^## compilation-complete: \[R-([^,\]]+)(?:, manual-override, reason: ([^\]]+))?\]$` matches canonical + override forms exactly, _is_sigma_session() FP guard per PM[5], B1 option-i single-owner consolidation honored, source: F[IE-7]
@@ -227,13 +233,45 @@ XREVIEW[openai:gpt-5.4][phase-gate.py BLOCK 5 (ADR[6]/IC[6])]: vulnerability=MED
 - XREVIEW advisory recorded
 - C3 carry-forward concerns logged with provenance
 
-## Build Review Summary
+## Build Review Summary (written by C3)
 
-(empty — written by C3)
+- DA challenges: 9 (1 HIGH, 4 MED, 4 LOW) | DA grade: B+ CONDITIONAL-PASS r1 → effective PASS post-fix (all dispositions resolved: 6 concede/fix, 3 accept-with-documentation per DA's own recommendation)
+- Plan compliance: full (TA peer-verify PASS 4/4 on all C3 fixes; 10/10 ADR + 8/8 IC verified at C3 r1; 1 cosmetic drift at phase-gate.py:467 stale-line-ref fixed in C3)
+- Test integrity findings: 1 substantive (F[IE-6] empirical-claim restated per joint TA+CQA+DA convergence — single-input demonstration generalized to invariant claim was the test-as-proof fallacy plan §P3.4 was meant to catch; now restated as "VERIFIED empirically on macOS Python 3.14 across 7 fixture classes; cross-platform parity designed-in via shared normalization sequence but NOT empirically tested across actual platforms")
+- BUILD rubric (RESTORED post-R2-close): correctness=4/4 test-coverage=**3/4** (R2 added 8 new tests covering the previously-missing paths: TestBlock5MultiPathWorkspace 6 + cross-build authorization 2; documented residual CONCERN-2 suffix-stripper coverage + GAP-D fenced-block parity prevent 4/4) maintainability=4/4 performance=4/4 security=3/4 (CONCERN-1 cross-build bypass closed in R2-micro; GAP[#1+#3] adversarial Bash + GAP[#2] path normalization remain documented residuals) api-design=4/4 (archive_path parameter added cleanly) (total **22/24 = 3.67/4.0**; meets ≥A target ≥3.5/4.0; beats R18+R19 recurring B 3.14 weakness profile)
+- Contamination check: clean (no session-topics-outside-scope; agent context firewalls held; lead-side dispatch references only build-internal artifacts)
+- Sycophancy check: clean (no softening, no selective-emphasis, no dissent-reframed; quad-convergence on GATE-1 + triple-convergence on F[IE-6] are real with documented independent derivation paths)
+- Review rounds: **2 + r2-micro** | Final belief: **P=0.91** (TA pre-fix r1 was 0.91; post-fix r1 peer-verify PASS 4/4 + CQA 4/4 activations clean raised posterior to 0.92; adjusted DOWN to 0.88 post-event-1 sequencing-trap; would have stayed at 0.88 if event-2 BLOCK-5-WORKSPACE-PATH had been accept-with-documentation; **R2 in-build fix [user-authorized option (b)] earned back +0.03 to P=0.91 by closing BOTH surfaced events in-build with 8 new tests + IE pre-emptive calibration disclosure on R2 empirical methodology**; capped at <0.92 to preserve honest signal that 2 directive↔hook integration defects were shipped and only caught by synthesis-agent halt during close-out — the gate caught them, not the test design; capped also by residual GAP[#5] unaddressable mechanical-authority-enforcement portion + DA[#4] Bash-regex / MultiEdit / NotebookEdit dispatch gap accepted-with-documentation + cross-platform hash-template parity designed-in-not-empirically-tested + 5 R2 follow-up edge-case gaps surfaced by CQA + suffix-stripper coverage CONCERN-2 documented residual)
+- Fixes applied: 5 (4 source + 1 directive) | Tests: pass (1245/14/1 exact C2 baseline parity, zero new regressions)
+- Convergence highlights:
+  - **GATE-1 manual-override actor authority** (HARD GATE from C2 carry-forward): user-approved `lead-with-user-approval` per quad-convergent recommendation (DA + TA + openai gpt-5.4 XVERIFY + TW). 4 deliverables shipped: actor lock + 3-precondition criterion (compilation-spawned-failed AND ≥1-retry AND user-approval-recorded) + sigma-lead.md:207 verbatim wording replacement + directives.md §8f BUILD variant sub-section with honor-system acknowledgment closing addressable portion of GAP[#5]
+  - **F[IE-6] adversarial target**: triple-convergent RESTATE not RETRACT (DA + TA + CQA) — preserves real empirical signal (7-fixture-class cross-tool digest equality) while conceding test-as-proof critique (cross-platform parity is designed-in, not empirically tested)
+  - **Dual-confirm framing disaggregation**: VP[1] (LOW, wording at sigma-lead.md:207) and GAP[#5] (MED, enforcement-model gap on regex/path-match surface) preserved as separate close-out items per DA[#3] — addressable portion of GAP[#5] closed via directive honor-system acknowledgment, unaddressable portion (mechanical authority enforcement) accepted as documented residual
+- C3 advisory carry-forwards (accept-with-documentation, log as follow-up SQ for next build):
+  - DA[#4] GAP[#1+#3] Bash regex incomplete coverage in BLOCK 5 (redirects without `cat`, shell expansions, command substitution, nested `bash -c`, scripting-language indirection) + NEW finding: MultiEdit / NotebookEdit dispatch gap (not in C2 inventory)
+  - DA[#5] GAP[#2] `_path_is_archive` substring-match bypass surface (symlinks, `..`, case differences) — KNOWN LIMITATIONS docstring added in-build, mechanical fix deferred (out of scope per ADR[6] day-1 BLOCK mandate)
+  - DA[#9] stale-line-ref recurring-cost pattern → promotion-candidate "stale-line-number lint rule" for next build
+  - **NEW: SYNTHESIS-BLOCK-5 sequencing trap (surfaced 2026-05-01 during C3 close-out)** — phase-gate BLOCK 5 (this build's own ship) traps c3-review.md Step 13f synthesis-archive-write because compilation hasn't run yet. TestPreArchiveCompilationGate(12) covered "blocks/passes archive-write" but did NOT exercise "synthesis-before-compilation" path. User authorized manual-override under exception clause for this C3 close (precondition gap: compilation cannot structurally run before synthesis since compilation reads synthesis as input per Step 14a). Follow-up SQ for next build, ranked options: (1) phase-gate.py BLOCK 5 path-class refinement to exempt `*-synthesis.md` archive-writes [recommended — preserves c3-review.md ordering], (2) directives.md §8f criterion synthesis-precondition clause [adds clarity to manual-override criterion], (3) c3-review.md re-ordering compilation-before-synthesis [structurally impossible since compilation reads synthesis], (4) separate synthesis archive directory entirely outside `shared/archive/` path-class.
+- C3 separate maintenance items (not blocking): pre-existing test failure `test_structural_validation.py::TestSettingsJsonHooks::test_existing_settings_preserved` (settings.json effortLevel='xhigh' vs 'high') — predates C1 lock, surface to backlog
+- Peer-verify ring closed: TA→IE PASS 4/4 (FIX-1+2+3+4) + CQA→TW PASS (directive Edit + dual-confirm disaggregation) + IE→CQA from C2 still holds (regression baseline preserved)
+- XVERIFY: openai gpt-5.4 single-provider verify_finding per build-directives §2h fallback (cross_verify multi-provider hung per known infra issue), anthropic excluded per CLAUDE.md correction. Result: partial / medium-confidence on ADR[6]/IC[6] BLOCK 5 compliance — agreed regex+FP-guard verbatim, flagged same `:176` stale ref TA flagged independently (DA[#8] convergence)
 
-## Close Status
+## Close Status (written by C3)
 
-(empty — written by C3)
+- synthesis-artifact: ~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-synthesis.md (43,838 bytes, 9 sections, lead-not-modifying per Step 13 boundary)
+- wiki-pages-updated: 5 (1 new + 4 existing)
+  - NEW: directive-hook-integration-pattern.md (84 lines, captures meta-finding from 2 close-out events)
+  - UPDATED: sigma-build-infrastructure-architecture.md (+63 lines), premise-audit-step-7a.md (+7 lines), beta-plus-calibration-pattern.md (+7 lines), cross-model-protocol-calibration.md (+15 lines)
+  - INDEX.md updated with R12 attribution to 4 existing pages + new entry for directive-hook-integration-pattern.md
+  - All entries tagged [R-2026-04-28-shared-process-hardening, 26.5.2]; no contradictions silently resolved
+- promotions: 22/22 user-approve approved (8 DA + 4 TW + 1 CQA + 3 IE + 3 TA + 3 retroactive: DA-A1+A2 pre-flap + DA's TW-4 concession on cleanup-pass-precedence merged); 18 auto-landed (DA 2 retroactive + TA 2 confirmed-auto + 1 decision + IE 5 patterns + 1 decision + TW 3 patterns + CQA 6 patterns); 2 decisions logged via store_memory fallback (log_decision MCP-flapped); 42 total promotion-events
+- sync: COMPLETE — sigma-system-overview commit f8b94ae (103 files: 19 substantive + memory snapshot 2026-05-02), pushed to origin/main 2026-05-05; A14 git-clean reports legitimate post-archive drift on calibration-log.md + new c3-workspace archive file (resolved by post-archive sync commit)
+- archive: ~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-c3-workspace.md (1269 lines, metadata header added, status: archived-c3)
+- session-end-validation: V22 (archive exists + git committed) PASS, V23 (synthesis artifact exists) PASS, V24+V25+V26 (wiki attribution + no silent contradictions + no deleted pages) PASS
+- close-out trajectory (honest): r1 P=0.92 → post-event-1 P=0.88 (synthesis-agent halt #1) → R2 multi-path fix → TA CONCERN-1 cross-build bypass → R2-micro short-circuit → post-R2 P=0.91; the build's own honor-system enforcement caught two directive↔hook integration defects this build shipped (the gate working as designed); R2 in-build closure preserves <0.92 cap to honestly signal "defects shipped + caught only by gate-halt during close-out, not by test design"
+- meta-pattern surfaced for next build: directive↔hook integration co-test rule (now in wiki at directive-hook-integration-pattern.md) — directives that name recovery paths must be co-tested with the hooks that enforce the gates they recover from
+- top deferred to next build: 5 R2 follow-up gaps (CQA-surfaced GAP-D HIGH `_strip_fenced_blocks` parity in phase-gate.py + GAP-A/B/C edge-case test coverage + GAP-E trailing-WS regex anchor + CONCERN-2 LOW suffix-stripper extension), 4 ranked options for synthesis-precedes-compilation sequencing trap, DA[#4] Bash regex + MultiEdit/NotebookEdit dispatch gap, GAP[#2] _path_is_archive substring-match bypass, DA[#9] stale-line-number lint rule, DA[#6] §2d source-type enum extension, pre-existing test_existing_settings_preserved
+- status: complete
 
 ## C2 Handoff Notes
 

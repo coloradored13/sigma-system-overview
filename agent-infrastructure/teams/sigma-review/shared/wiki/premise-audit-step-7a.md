@@ -1,9 +1,11 @@
 # Premise-Audit Step 7a (Pre-Dispatch Anti-Anchoring)
-Last updated: 26.4.25 | Reviews: B-r19-remediation
+Last updated: 26.5.2 | Reviews: B-r19-remediation, R-2026-04-28-shared-process-hardening
 
 ## Summary
 
 Premise-audit is a pre-dispatch step in `c1-plan.md` (Step 7a) that runs before agent spawn during sigma-build/sigma-review C1 plan phase. It surfaces frame-assumptions in the user's prompt before they get baked into agent hypotheses, mitigating analytical anchoring on flawed premises. The structure is a four-field template (PA[1-4]) and is enforced by chain-evaluator BLOCK day-one (not WARN). Step 7a is sequence-load-bearing — it must run before Step 8 hypothesis drafting. [B-r19-remediation, 26.4.25]
+
+Confirmed [R-2026-04-28-shared-process-hardening, 26.5.2]: the BUILD-side Step 7a HARD GATE was extended to the ANALYZE side (`sigma-lead.md` and `SKILL.md`) so the same anti-anchoring discipline applies before sigma-review dispatch, not only before sigma-build. The "Step 7a" label was deliberately dropped on the ANALYZE side (kept on BUILD side at `c1-plan.md:62/137/138/174` and `build-directives.md:144/151`) to avoid a renumber-cascade in the sigma-review numbering. The four-field PA[1-4] structure, sequence constraint, premise-audit-results section, decision line, CHALLENGED/GAP rules, and DA r2 cross-check survived; only the label was dropped. This partially falsifies H7 ("verbatim reuse") — structure transfers, label does not.
 
 ---
 
@@ -58,6 +60,10 @@ CDS split the premise-audit definition for BUILD vs ANALYZE modes:
 
 Both modes share the four-field structure and the Step 7a sequence position. [B-r19-remediation, 26.4.25]
 
+[R-2026-04-28-shared-process-hardening, 26.5.2] **ANALYZE-side placement details**: In the shared-process-hardening build, the premise-audit pre-dispatch sub-step landed in `sigma-lead.md` Step 1 (lines ~38-72) and in `SKILL.md` Step 1 Prepare extension. The structure mirrors `c1-plan.md:62` Step 7a HARD GATE: PA[1-4] tier-necessity / firm-size-floor / data-readiness / adoption-baseline; sequence-constraint (PA before H-space re-read); PREMISE-AUDIT[pre-dispatch] workspace template; decision line REQUIRED (chain-evaluator §2p presence-check); CHALLENGED/GAP rules; DA r2 cross-check at Step 5 (ANALYZE numbering). The four PA[] domain-tier examples (tier-necessity, firm-size-floor, data-readiness, adoption-baseline) come from the AI-agent-rollout review and are illustrative — actual content is prompt-specific.
+
+**Bounded grep-audit pattern (PM[8] mitigation)**: workflow-step renumbering breaks cross-refs. The shared-process-hardening build ran a pre+post grep-audit confirming "Step 7a" appears only in BUILD contexts (sigma-build/phases/c1-plan.md:62/137/138/174, build-directives.md:144/151) plus the deliberately bounded DC[3] cross-ref in directives.md. This is the canonical pattern: when a step-label is intentionally bounded to one mode, grep-audit pre-edit and post-edit, name the bounded set in the cross-ref, and treat any new occurrences outside the bounded set as drift to be resolved before merge.
+
 ---
 
 ## Self-Application Bootstrap Exception
@@ -79,3 +85,4 @@ None.
 ## Sources
 
 - B-r19-remediation synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-23-r19-remediation-synthesis.md`
+- R-2026-04-28-shared-process-hardening synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-synthesis.md`

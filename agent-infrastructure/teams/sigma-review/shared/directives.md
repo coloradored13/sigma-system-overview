@@ -1285,10 +1285,37 @@ audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process 
   `## sync: [templates-hashed:0|skipped|reason:{reason}|date:{YYYY-MM-DD}]`
   audit-trail mandate: skipped form requires reason text; A27 chain-eval accepts the skipped form but logs to calibration-log.md (DC[A27-SKIP]) for post-session review. Skipped without reason → BUILD-CONCERN raised by /sigma-audit.
 
+!recovery / manual-override form (BUILD §8f variant — post-c3 phase chain-closure for compilation):
+  `## compilation-complete: [R-{review-id}, manual-override, reason: {reason}]`
+  authority: lead-with-user-approval ONLY. ¬lead-only, ¬user-only.
+  preconditions (ALL must hold — AND, ¬OR):
+    (a) compilation agent spawned per sigma-lead.md:207 Step 7b AND either failed to return
+        `## compilation-complete: [R-{review-id}]` header OR returned explicit failure signal
+        (compilation-agent error, MCP unrecoverable, wiki-write blocked).
+    (b) ≥1 retry attempted (re-spawn or equivalent recovery path) AND retry outcome documented
+        in workspace ## review-findings or scratch with timestamp + failure-mode + retry-attempt evidence.
+    (c) user approval recorded in conversation; reason field captures user-supplied justification
+        (NOT lead self-justification); retry evidence referenced verbatim (timestamp or workspace section).
+  enforcement-model: HONOR-SYSTEM. _COMPILATION_COMPLETE_RE in phase-gate.py cannot mechanically
+    verify user approval — authority is honor-system reinforced by audit (reason-field text +
+    /sigma-audit BUILD-CONCERN on generic reasons). Mechanical enforcement of authority
+    (cryptographic approval, separate user-write file, role-based ACL) is OUT-OF-SCOPE this build.
+    Closes addressable portion of openai-gpt-5.4 GAP[#5] from C2 XREVIEW; unaddressable portion
+    (mechanical enforcement of authority) is documented and accepted as residual.
+  audit-trail expectation: A27 chain-eval logs override invocation to calibration-log.md
+    (DC[A27-OVERRIDE]) for post-session review. Generic reason text ("skipped", "ran out of time",
+    "couldn't finish") fails audit → BUILD-CONCERN raised by /sigma-audit.
+  cross-references: sigma-lead.md:207 (operational instruction for lead); CLAUDE.md "Executing
+    actions with care" (destructive-operations / shared-state confirmation rail — joint authority
+    precedent); §8f line 1284-1286 (ANALYZE-track ## sync recovery form, structurally parallel
+    pattern); §8e (workspace corruption recovery, shares attestation pattern); §2p DC[3]
+    (premise-audit-results pre-dispatch sibling — header-presence=phase-ran shared with §8f).
+
 !cross-references:
   DC[1]: §8a — ## archive-complete header is the §8a post-write attestation (existing archival rule re-anchored to header).
   DC[2]: §8c — ## archive-complete `INDEX-row-N` value verifies INDEX append occurred (¬just-archive-copy).
   DC[3]: §2p — premise-audit-results header (ANALYZE-mode) is the pre-dispatch sibling of §8f post-exit-gate headers; both use workspace-header presence as the mechanical phase-completion signal. §2p header written BEFORE H[] dispatch; §8f headers written AFTER DA exit-gate PASS. Common pattern: header-presence = phase-ran, ¬just-claimed. Cross-ref BUILD variant: build-directives.md §2p (Step 7a in c1-plan.md between Step 7 and Step 8) — the BUILD pre-dispatch sibling carries the "Step 7a" label; ANALYZE side does NOT (per H7 r2 falsification — structure survives, label dropped to avoid renumber-cascade in sigma-review/SKILL.md).
+  DC[4]: §8f BUILD-track variant above — compilation manual-override form. Same recovery-form structure as ## sync ANALYZE-track form (line 1284-1286); authority model is lead-with-user-approval (more restrictive than ## sync's lead-only because compilation skip has durable wiki-state consequence while ## sync skip is calibration-period only). Closes VP[1] (TW peer-verify of IE F[IE-7]) + addressable portion of GAP[#5] (openai gpt-5.4 XREVIEW phase-gate.py BLOCK 5). |src:shared-process-hardening-c3-2026-05-01|
   §6e: Scope Integrity credits header-presence-with-content; absent or empty header = ≤2/4.
   A27 (new): see chain-evaluator.py — WARN-first calibration period, BLOCK on PROMOTE.
 
