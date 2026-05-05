@@ -1,9 +1,11 @@
 # Cross-Model Protocol Design — Calibration and Empirical Findings
-Last updated: 2026-04-09 | Reviews: R16
+Last updated: 26.5.2 | Reviews: R16, R-2026-04-28-shared-process-hardening
 
 ## Summary
 
 Calibration and confidence estimates for SIGMA-COMM-WIRE and cross-model protocol design generally. Covers bootstrap reliability, format choice rationale, adoption risk, and pre-mortem failure modes. Produced by reference-class-analyst with DA challenge. These findings inform confidence levels for the protocol specification — they are not the spec itself.
+
+[R-2026-04-28-shared-process-hardening, 26.5.2] also adds operational findings on XVERIFY behavior in practice: single-provider fallback when `cross_verify` hangs, and the Anthropic exclusion rule for cross-model verification.
 
 ---
 
@@ -93,6 +95,19 @@ None within this review. H5 represents the clearest falsification — pre-review
 
 ---
 
+## XVERIFY Operational Findings
+
+[R-2026-04-28-shared-process-hardening, 26.5.2] Two operational rules for XVERIFY usage emerged in practice during this build's C3 close-out:
+
+**Single-provider fallback when `cross_verify` hangs.** Per `build-directives.md §2h`, when the multi-provider `cross_verify` MCP call hangs (a known infra issue), agents and lead are authorized to fall back to a single-provider `verify_finding` call against one non-Anthropic provider. In this build, `openai gpt-5.4` was used as the fallback verifier on ADR[6]/IC[6] BLOCK 5 compliance and returned medium-confidence agreement. Result is recorded as **partial / medium-confidence** in the synthesis — a single-provider verify is NOT the same evidence weight as a multi-provider cross-verify, and synthesis must label it as such rather than presenting partial verification as full cross-verify.
+
+**Anthropic exclusion rule for cross-model verification.** Per `feedback_xverify-anthropic-excluded.md` (26.4.23) and reaffirmed in this build: sigma-verify cross-model checks must exclude the `anthropic` provider, because Claude verifying Claude is not cross-model. This is enforced in spawn prompts as a temporary measure until sigma-verify default-excludes anthropic from `cross_verify`. The rule applies to both the multi-provider and single-provider fallback forms — when falling back to a single provider per §2h, choose a non-Anthropic provider (`openai`, `google`, etc.). The rule is not a quality concern about Claude as a verifier; it is a logical-independence concern (a self-consistent verifier of itself does not provide cross-model convergence evidence).
+
+**Pattern**: cross-model protocol design must accommodate the operational reality that multi-provider verification can hang, fall back gracefully, and label the fallback honestly. Building this distinction (full cross-verify vs single-provider fallback verify) into the verification record format is a candidate addition to the SIGMA-COMM-WIRE error taxonomy and result-confidence enum.
+
+---
+
 ## Sources
 
 - `archive/2026-04-09-cross-model-protocol-synthesis.md` — R16 synthesis, Appendix: Calibration and Confidence Notes (reference-class-analyst, with DA challenge)
+- R-2026-04-28-shared-process-hardening synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-synthesis.md`

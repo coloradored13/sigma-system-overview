@@ -1,9 +1,11 @@
 # Sigma-Build Infrastructure Architecture
-Last updated: 26.4.25 | Reviews: B-r19-remediation
+Last updated: 26.5.2 | Reviews: B-r19-remediation, R-2026-04-28-shared-process-hardening
 
 ## Summary
 
-Sigma-build is enforced by two mechanical-gate scripts plus a calibration sidecar: `chain-evaluator.py` (atomic A-checks A1–A24, fired by the Stop hook), `phase-gate.py` (transition-time BLOCKs 1–4), and `audit-calibration-gate.py` (β+ promotion telemetry). The R19 remediation build added four new analytical-tier checks (A20/A22/A23/A24), a fourth phase-gate BLOCK (sed-i ban with shlex tokenization), the `workspace_write` helper for safe gate-log appends, and the calibration-log promotion mechanism. Several "multi-layer contract drift" defects surfaced in C3 — producer/consumer schema decoupling between chain-evaluator and audit-calibration-gate is the dominant failure class. [B-r19-remediation, 26.4.25]
+Sigma-build is enforced by two mechanical-gate scripts plus a calibration sidecar: `chain-evaluator.py` (atomic A-checks A1–A26, fired by the Stop hook), `phase-gate.py` (transition-time BLOCKs 1–5), and `audit-calibration-gate.py` (β+ promotion telemetry). The R19 remediation build added four new analytical-tier checks (A20/A22/A23/A24), a fourth phase-gate BLOCK (sed-i ban with shlex tokenization), the `workspace_write` helper for safe gate-log appends, and the calibration-log promotion mechanism. Several "multi-layer contract drift" defects surfaced in C3 — producer/consumer schema decoupling between chain-evaluator and audit-calibration-gate is the dominant failure class. [B-r19-remediation, 26.4.25]
+
+[R-2026-04-28-shared-process-hardening, 26.5.2] The shared-process-hardening build added six new chain-evaluator checks (A26 plan-completeness, B5 C2 boot validation, B6 C2 exit-gate diff, A14 race fix, A25 template-drift detection, _XVERIFY_ANY_RE regex tightening), the BLOCK 5 06b pre-archive compilation gate in phase-gate.py with a multi-path workspace scan added at C3 R2, and the directives.md §8f BUILD-track variant (compilation manual-override form, lead-with-user-approval authority, honor-system enforcement model). Two directive↔hook integration defects surfaced and were closed during C3 close-out — both caught by the gate halting rather than silent-bypassing. See [Directive-Hook Integration Pattern](directive-hook-integration-pattern.md) for the meta-finding.
 
 ---
 
@@ -34,6 +36,27 @@ A24 is a per-finding β+ complement to A15's per-agent binary check. It intentio
 ### A3 (DB-step parser, layered authority)
 A3 extracts dialectical-bootstrapping evidence. R19 fix: split-by-DB tokenizer + (1)(2)(3) requirement detection. IC[4] layered authority preserved — `result = gc.check_dialectical_bootstrapping(content)` keeps the upstream object intact; layer-2 augments details only. No double-counting. [B-r19-remediation, 26.4.25]
 
+### A14 (race-fix wrapper for git-status calibration-log exclusion)
+[R-2026-04-28-shared-process-hardening, 26.5.2] A14 verifies the working tree is git-clean at session end. The race-fix wrapper at `chain-evaluator.py:339-449` re-runs `git status --porcelain` independently with timeout=10, applies a precise `r"calibration-log\.md$"` exclusion to filter out legitimate calibration-log writes from the dirty-file list, recomputes git_clean from the filtered list, and falls back to the gate-controller's cap-of-10 list on subprocess failure. The shared `gc.check_session_end` helper is intentionally NOT modified — A12 protection of the shared helper is preserved at the wrapper layer. Cap-at-10 fix verified via 15-file test case; `.bak` non-exclusion case (`r"\.md$"` anchored, rejects `.bak`) covered by TestA14RaceFix case (d). The wrapper layering pattern (modify-at-call-site, leave-shared-helper-untouched) is reusable when a check needs targeted exclusion that other consumers of the same helper must NOT inherit.
+
+### A25 (template-drift detection via SHA256 normalization)
+[R-2026-04-28-shared-process-hardening, 26.5.2] A25 detects drift between sigma-build template files (e.g., `_template.md`, agent boot-prompt templates) and a baseline hash sidecar. `chain-evaluator.py:1547-1655` LF-normalizes (BOM-strip + per-line rstrip) before SHA256-hashing each template. Baseline lives at `templates/.templates-hash-baseline.json`. WARN-first with recovery instructions naming `sync-templates.sh`. The companion sync script at `~/Projects/sigma-system-overview/agent-infrastructure/scripts/sync-templates.sh:40-42` embeds the SAME Python normalize heredoc (`BOM_RE.sub(...).replace("\r\n","\n").replace("\r","\n") + rstrip + SHA256`) as `chain-evaluator._a25_normalize:1605-1606`. By construction, identical input on the same Python interpreter produces byte-identical output across both tools. Cross-platform parity is **designed-in** via shared normalization sequence but NOT empirically tested across actual platforms (single-interpreter macOS Python 3.14 only). CQA C3 r1 verified 7 fixture classes byte-identical on macOS: LF, CRLF, BOM-prefix, mid-stream-BOM, mixed-EOL, unicode, trailing-WS-tabs. The "VERIFIED empirically" → "designed-in but not cross-platform-tested" wording change is a pattern-template for hash-parity verification — single-interpreter testing is not a cross-platform claim, even when the normalization is correct-by-construction.
+
+### A26 (plan-completeness check, WARN-first)
+[R-2026-04-28-shared-process-hardening, 26.5.2] A26 verifies the workspace declares its plan-file via the canonical `^## plan-file\s*$` anchored heading. `chain-evaluator.py:1187-1303` uses BOM-aware regex with fenced-code-block exclusion to avoid false positives from `## plans`, `## plan-file:`, `### plan-file`, and fenced occurrences. WARN-first per H1 ramp; `passed=True` regardless of result. Empty-section condition produces a WARN (not a crash) via the universal edge-case helpers (see ADR[9] below).
+
+### B5 (C2 boot validation, WARN-first)
+[R-2026-04-28-shared-process-hardening, 26.5.2] B5 reads the `## agent-assignments` section (canonical schema `SQ[N]: owner=AGENT |cluster=FILE,FILE2,...`) at `chain-evaluator.py:1305-1419`. Falls back to `## sub-task-decomposition` with explicit fallback WARN; emits explicit zero-parse WARN when the section is non-empty but no SQ-lines parse. The section-parse pattern is reusable for any future check that reads structured agent-assignment data — the schema lives in IC[3] and the fallback chain is intentional (allows incremental adoption while flagging non-canonical authoring).
+
+### B6 (C2 exit-gate diff, WARN-first)
+[R-2026-04-28-shared-process-hardening, 26.5.2] B6 cross-checks `## c2-exit-gate` CHECKPOINT records against the `## agent-assignments` cluster lists. Three-pass parser at `chain-evaluator.py:1421-1584`: keyword=value primary → prose fallback → parse-fail. The keyword=value primary form is the canonical schema (per IC[4]); prose fallback exists to absorb pre-canonical workspaces without forcing rewrites. Cross-checks files-diff against agent-assignments to catch "agent shipped a file not in their cluster" and "agent didn't ship a file in their cluster."
+
+### _XVERIFY_ANY_RE bracket-required tightening
+[R-2026-04-28-shared-process-hardening, 26.5.2] `chain-evaluator.py:1059-1062` (single consumer at :1130). The regex was tightened to `r"\bXVERIFY(?:-(?:FAIL|PARTIAL))?\["` — bracket-required, drops colon/paren/whitespace alternatives. Prose mentions of "XVERIFY" cannot suppress the gate; only canonical bracketed forms `XVERIFY[...]`, `XVERIFY-FAIL[...]`, `XVERIFY-PARTIAL[...]` count. PM[2] mitigation pattern (grep-audit-before-replace) confirmed the single consumer at :1130, with a documented drift from plan §:1021 to :1130 due to ~80 lines added by the A14 wrapper. Treat plan-referenced line numbers as advisory and grep-confirm before edits.
+
+### ADR[9] universal edge-case helpers (DRY win)
+[R-2026-04-28-shared-process-hardening, 26.5.2] `_strip_bom` and `_strip_fenced_blocks` shared helpers at `chain-evaluator.py:340-360`, reused across A26 (:1207), B5/B6 via `_b5_extract_section` (:1336), and A25. Always called BEFORE section search; empty-section produces WARN-not-crash. The DRY win surfaced as an IE checkpoint surprise — the third gate to need BOM/fenced handling made it cheaper to centralize than to copy. **Open**: phase-gate.py header scan does NOT yet share these helpers; CQA flagged this as GAP-D (HIGH) follow-up — promote ADR[9] to apply to phase-gate.py header scans, not just chain-evaluator gates. Same edge-case classes (BOM, fenced-code, empty-section) apply to both files; sharing the helpers prevents drift.
+
 ---
 
 ## Phase-Gate BLOCK 4 (sed-i Ban)
@@ -45,6 +68,33 @@ Phase-gate.py enforces transition-time hard blocks. R19 added BLOCK 4 (renumbere
 **Known limitation (xargs stdin)**: the bypass enumeration is preserved in `phase-gate.py:300` as inspectable contract. SS dissented from DA[#4]'s framing concern that listing bypasses in the docstring "advertises" them — SS's position (lead-accepted): listing specific bypass forms in the enforcement file IS the contract; concealing them would be worse security hygiene. Threat model is accidental silent corruption, not sophisticated-adversary evasion. [B-r19-remediation, 26.4.25]
 
 The OPTION 2 phrasing introduced post-hoc — "phase-gate enforces the sed-i BLOCK mechanically" (drops numeric identifier) — is block-number-agnostic and future-renumber-immune. CAL[R3-2-canonical-block-hash-identity] subsumes the weaker CAL[R2-OPTION2-phrasing] after R3-2 resync. [B-r19-remediation, 26.4.25]
+
+---
+
+## Phase-Gate BLOCK 5 (06b Pre-Archive Compilation Gate)
+
+[R-2026-04-28-shared-process-hardening, 26.5.2] BLOCK 5 enforces that compilation runs before any archive write. It fires when the workspace lacks the required `## compilation-complete: [R-{id}]` header at the time an archive-op is attempted.
+
+**Header schema and regex** (`phase-gate.py:386-503`):
+
+```
+## compilation-complete: [R-{id}]
+## compilation-complete: [R-{id}, manual-override, reason: {reason}]
+```
+
+Matched by `^## compilation-complete: \[R-([^,\]]+)(?:, manual-override, reason: ([^\]]+))?\]$`. The bracketed-and-anchored form prevents prose mentions and accidental near-matches. `_is_sigma_session()` FP guard fires before archive-op detection so non-sigma sessions are not blocked.
+
+**Why BLOCK day-one (not WARN-first ramp)**: ADR[6] decided the gate semantics are sequencing-not-analytical (the gate enforces "compilation-came-first," which is binary, not a quality judgment). WARN-first ramps make sense when calibration data is needed to set the FP threshold; BLOCK 5 has no FP threshold to set — either compilation completed before the archive write or it didn't. INDEX-scan implementation alternative was rejected during ADR resolution due to coupling concerns (BLOCK 5 should not require the wiki INDEX to be authoritative on which archive-paths exist).
+
+**Multi-path workspace scan (C3 R2 + R2-micro fix)** [R-2026-04-28-shared-process-hardening, 26.5.2]: BLOCK 5 originally read only from `DEFAULT_WORKSPACE = ~/.claude/teams/sigma-review/shared/workspace.md` (hardcoded at `phase-gate.py:43`). This was correct for ANALYZE-track sessions but mechanically unreachable for BUILD-track sessions, because `directives.md §8f BUILD variant` instructs the lead to write the manual-override header to BUILD scratch (`builds/{id}/c{N}-scratch.md`), not to workspace.md. The hook never read BUILD scratches. R2 added `BUILDS_DIR` plus a multi-source `_is_sigma_session()` (reads workspace.md OR any `builds/{id}/c{N}-scratch.md` modified within a 7-day window) and a multi-path `_has_compilation_complete()` (checks workspace.md AND active build scratches). The R2-micro short-circuit (5-line addition) closes the cross-build authorization bypass that R2 introduced: when `archive_path` can derive a preferred-build AND that build's directory exists AND its scratch has no override, return False BEFORE the broad-glob fallback fires. Broad-glob fallback now fires ONLY when preferred-build is undeterminable. TA empirically verified PASS via three scenarios: cross-build r19 BLOCK, in-build PASS, cross-build sigma-v2 BLOCK.
+
+**Manual-override recovery form**: `## compilation-complete: [R-{id}, manual-override, reason: {reason}]`. Authority is `lead-with-user-approval ONLY`. Three AND-joined preconditions: (a) compilation-spawned-failed, (b) ≥1 retry documented, (c) user-approval recorded. The reason text must name the specific failure mode (compilation-agent error, MCP unrecoverable, wiki-write blocked) and reference the retry attempt by timestamp or workspace section. Generic reasons ("skipped", "ran out of time") fail audit. The lead writes the manual-override form to workspace; user approval is recorded in conversation; the reason field captures user-supplied justification, not lead self-justification. See `directives.md §8f` for the full criterion.
+
+**Honor-system enforcement model — explicitly acknowledged residual**: `_COMPILATION_COMPLETE_RE` in phase-gate.py cannot mechanically verify the user actually approved. Authority is honor-system reinforced by audit (reason-field text + sigma-audit BUILD-CONCERN on generic reasons). Mechanical enforcement of authority (cryptographic approval, separate user-write file, role-based ACL) is OUT-OF-SCOPE per ADR[6] day-1 BLOCK mandate. The directive content names this residual openly rather than concealing it. This is the canonical pattern for honor-system gates: when a gate's mechanical enforcement covers the *occurrence* but not the *authorization*, name the gap in the directive text rather than letting it surface only via post-hoc audit.
+
+**KNOWN LIMITATIONS docstring on `_path_is_archive`** (`phase-gate.py:429-457`) — doc-only addition parallel to `check_sed_in_place ADR[SS-1]` template at `phase-gate.py:280-311`. Documents three bypass classes: (a) symlinks, (b) cwd-relative `..` traversal canonicalization mismatch, (c) macOS-specific case-insensitivity bypass. Names `os.path.realpath` + case-folding canonicalization as the closure path. Plan-faithful day-1 acceptance per plan §P2.A row 119 — mechanical fix would have been scope-expansion past the locked plan.
+
+**Tool-name dispatch gap** (DA[#4], accept-with-documentation): `phase-gate.py:445` enumerates only `tool_name in ("Write", "Edit")` for direct path detection. MultiEdit and NotebookEdit accept `file_path`/`notebook_path` arguments and could legitimately write to archive paths without triggering BLOCK 5. Bash regex coverage is also incomplete (redirects without `cat`, shell expansions, command substitution, nested `bash -c`, scripting-language indirection). Logged as follow-up SQ for next build; promotion-candidate pattern: phase-gate dispatch must enumerate ALL tool_names that can write paths, not just Write/Edit.
 
 ---
 
@@ -97,6 +147,10 @@ Pattern: **hardcoded enumeration in human-facing context that diverges from mach
 
 The single-source mitigation pattern (argparse `choices = sorted(VALID_GATES)`) is the structural fix; the manual enumeration sweep (TW R3-2 canonical-block-hash-identity invariant) is the operational fix.
 
+[R-2026-04-28-shared-process-hardening, 26.5.2] **Confirmed: stale-line-ref recurring-cost is a fifth instance** of the contract drift pattern. DA[#8] in this build flagged that `phase-gate.py:467` BLOCK-message documentation referenced `sigma-lead.md:176`, but TW SQ[10] half-2 inserted ~31 lines at sigma-lead.md Step 1 ~38-72 (premise-audit pre-dispatch sub-step), so the correct line was `:207`. The fix moved the doc-text reference; behavioral surface unchanged. DA[#9] generalized this as the "stale-line-ref recurring-cost pattern" — promotion-candidate "stale-line-number lint rule" for next build's plan-track (e.g., sigma-audit grep `sigma-lead\.md:\d+` references against current line numbers). Same root pattern as BLOCK 3→4 doc drift: machine-source-of-truth advances ahead of human-facing reference.
+
+[R-2026-04-28-shared-process-hardening, 26.5.2] **Sixth instance — directive↔hook integration drift**: see [Directive-Hook Integration Pattern](directive-hook-integration-pattern.md) for the meta-finding. Briefly: a directive (`directives.md §8f BUILD variant`) instructed lead to write a recovery header to BUILD scratch, but the hook (`phase-gate.py BLOCK 5`) only read from `DEFAULT_WORKSPACE`. Both shipped in the same build; their integration was never co-tested end-to-end. The recovery hatch the directive promised was mechanically unreachable. Closed via in-build R2 fix (multi-path scan + R2-micro short-circuit). This is the contract-drift pattern's most subtle form — the producer/consumer aren't divergent enumerations; they are divergent files-being-read.
+
 ---
 
 ## Open Questions
@@ -106,6 +160,15 @@ The single-source mitigation pattern (argparse `choices = sorted(VALID_GATES)`) 
 - **A24 docstring attribution drift** (DA r2 cosmetic): chain-evaluator.py:959 attributes scope-narrowing to "SS recommendation" but A24 missing-check was DA[#1]. Lead-discretion fix. [B-r19-remediation, 26.4.25]
 - **_XVERIFY_ANY_RE over-suppression** (CQA r3 bonus): regex at chain-evaluator.py:950-953 matches literal English word "XVERIFY" + whitespace including newline (false-suppression on prose like "XVERIFY was not run"). Severity LOW, separate-build candidate. [B-r19-remediation, 26.4.25]
 
+[R-2026-04-28-shared-process-hardening, 26.5.2] Closed in this build: the bracket-required form `r"\bXVERIFY(?:-(?:FAIL|PARTIAL))?\["` at `chain-evaluator.py:1059-1062` drops colon/paren/whitespace alternatives. Prose mentions can no longer suppress.
+
+- **GAP-D (HIGH, R12)** [R-2026-04-28-shared-process-hardening, 26.5.2]: `_strip_fenced_blocks` parity with chain-evaluator ADR[9] missing in phase-gate.py header scan; promote ADR[9] universal edge-case helpers from `chain-evaluator.py:340-360` to apply to phase-gate.py header scans, not just chain-evaluator gates. Memory-compile candidate: parallel-solution opportunity — same edge-case classes (BOM, fenced-code, empty-section) apply to both files.
+- **GAP-E (low, R12)** [R-2026-04-28-shared-process-hardening, 26.5.2]: trailing-WS `$` anchor in `_COMPILATION_COMPLETE_RE`. Cosmetic regex tightening; does not change behavior under canonical authoring.
+- **CONCERN-2 (LOW, R12)** [R-2026-04-28-shared-process-hardening, 26.5.2]: suffix-stripper extension for archive-name conventions (`-c{N}-scratch`, `-audit`, `-eval`, `-vet`). Current suffix-stripper covers common cases but not all sigma-track archive name shapes.
+- **DA[#4] tool-name dispatch + Bash regex coverage** [R-2026-04-28-shared-process-hardening, 26.5.2]: `phase-gate.py:445` covers only Write/Edit for direct path detection. MultiEdit/NotebookEdit accept file_path/notebook_path; Bash regex misses redirects without `cat`, shell expansions, command substitution, nested `bash -c`, scripting-language indirection. Accept-with-documentation per plan §P2.A row 119 day-1 BLOCK mandate; logged as follow-up SQ.
+- **DA[#5] `_path_is_archive` substring-match bypass** [R-2026-04-28-shared-process-hardening, 26.5.2]: symlinks, `..` traversal, case differences. KNOWN LIMITATIONS docstring added in-build at `phase-gate.py:429-457`; mechanical fix deferred. Closure path: `os.path.realpath` + case-folding canonicalization.
+- **Synthesis-precedes-compilation sequencing trap** [R-2026-04-28-shared-process-hardening, 26.5.2]: surfaced 2026-05-01 at synthesis dispatch when phase-gate BLOCK 5 fired on the synthesis-archive write attempt for this build. Compilation cannot structurally precede synthesis (compilation reads synthesis as input per c3-review.md Step 14a). Resolution path is structural, not a one-line fix. Plan ## Build Review Summary records four ranked options for next build: (1) BLOCK 5 synthesis carve-out, (2) c3-review.md re-ordering, (3) directives.md §8f criterion extension with synthesis-precondition class, (4) make synthesis NOT an archive write (write to non-archive path first, archive at compilation completion).
+
 ## Contradictions
 
 None unresolved. All cross-agent tensions in C3 (TA "non-blocking" vs DA "3 blockers"; SS dissent on xargs framing; A24 ship vs defer) were resolved by lead ruling on evidence weight, with reasoning preserved in the synthesis archive.
@@ -113,3 +176,4 @@ None unresolved. All cross-agent tensions in C3 (TA "non-blocking" vs DA "3 bloc
 ## Sources
 
 - B-r19-remediation synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-23-r19-remediation-synthesis.md`
+- R-2026-04-28-shared-process-hardening synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-synthesis.md`

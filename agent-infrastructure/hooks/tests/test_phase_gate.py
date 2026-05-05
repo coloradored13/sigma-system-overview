@@ -53,11 +53,19 @@ def tmp_chain_status(tmp_path):
 
 
 @pytest.fixture
-def patch_paths(tmp_workspace, tmp_chain_status):
-    """Patch both DEFAULT_WORKSPACE and CHAIN_STATUS_FILE."""
+def patch_paths(tmp_workspace, tmp_chain_status, tmp_path):
+    """Patch DEFAULT_WORKSPACE, CHAIN_STATUS_FILE, and BUILDS_DIR.
+
+    BUILDS_DIR is patched to an empty tmp directory so tests cannot pick
+    up the live ~/.claude/teams/sigma-review/shared/builds/ tree as a
+    spurious "active sigma session" signal (R2 multi-path fix).
+    """
     _write, ws_path = tmp_workspace
+    builds_dir = tmp_path / "builds"
+    builds_dir.mkdir()
     with patch.object(pg, "DEFAULT_WORKSPACE", ws_path), \
-         patch.object(pg, "CHAIN_STATUS_FILE", tmp_chain_status):
+         patch.object(pg, "CHAIN_STATUS_FILE", tmp_chain_status), \
+         patch.object(pg, "BUILDS_DIR", builds_dir):
         yield _write, ws_path, tmp_chain_status
 
 
@@ -67,7 +75,10 @@ def patch_paths(tmp_workspace, tmp_chain_status):
 
 class TestIsSigmaSession:
     def test_returns_false_when_no_workspace(self, tmp_path):
-        with patch.object(pg, "DEFAULT_WORKSPACE", tmp_path / "nonexistent.md"):
+        empty_builds = tmp_path / "builds_empty"
+        empty_builds.mkdir()
+        with patch.object(pg, "DEFAULT_WORKSPACE", tmp_path / "nonexistent.md"), \
+             patch.object(pg, "BUILDS_DIR", empty_builds):
             assert pg._is_sigma_session() is False
 
     def test_returns_false_for_idle_workspace(self, patch_paths):
@@ -241,8 +252,11 @@ class TestPrematureGitOperation:
 
     def test_allows_git_commit_when_no_workspace(self, tmp_path):
         """CRITICAL: git commit must work when workspace doesn't exist."""
+        empty_builds = tmp_path / "builds_empty"
+        empty_builds.mkdir()
         with patch.object(pg, "DEFAULT_WORKSPACE", tmp_path / "nonexistent.md"), \
-             patch.object(pg, "CHAIN_STATUS_FILE", tmp_path / "nonexistent.json"):
+             patch.object(pg, "CHAIN_STATUS_FILE", tmp_path / "nonexistent.json"), \
+             patch.object(pg, "BUILDS_DIR", empty_builds):
             blocked, reason = pg.check_premature_git_operation("git commit -m 'test'")
             assert blocked is False
 
@@ -746,3 +760,262 @@ class TestPreArchiveCompilationGate:
             "tool_input": {"file_path": self._ARCHIVE_PATH, "content": "x"},
         })
         assert exit_code == 0
+
+
+class TestBlock5MultiPathWorkspace:
+    """R2 multi-path fix (2026-05-02): BLOCK 5 must scan both DEFAULT_WORKSPACE
+    AND fresh build scratch files.
+
+    Closes the directive↔hook gap where BUILD-track sessions wrote the
+    `## compilation-complete: [R-{id}]` override header to
+    builds/{id}/c{N}-scratch.md per directives.md §8f BUILD variant — the
+    hook previously read DEFAULT_WORKSPACE only and would block the archive
+    write the directive said the override should clear.
+    """
+
+    @pytest.fixture
+    def patch_multi(self, tmp_path):
+        """Patch DEFAULT_WORKSPACE + BUILDS_DIR; helpers to write to either."""
+        ws = tmp_path / "workspace.md"
+        builds = tmp_path / "builds"
+        builds.mkdir()
+
+        def write_workspace(content):
+            ws.write_text(content, encoding="utf-8")
+
+        def write_build_scratch(build_id, c_label, content):
+            d = builds / build_id
+            d.mkdir(parents=True, exist_ok=True)
+            scratch = d / f"{c_label}-scratch.md"
+            scratch.write_text(content, encoding="utf-8")
+            return scratch
+
+        with patch.object(pg, "DEFAULT_WORKSPACE", ws), \
+             patch.object(pg, "BUILDS_DIR", builds), \
+             patch.object(pg, "CHAIN_STATUS_FILE", tmp_path / ".chain-status.json"):
+            yield write_workspace, write_build_scratch, builds
+
+    _BUILD_ID = "2026-04-28-shared-process-hardening"
+    _ARCHIVE_PATH_FOR_BUILD = (
+        f"/Users/test/.claude/teams/sigma-review/shared/archive/"
+        f"{_BUILD_ID}-synthesis.md"
+    )
+
+    def test_header_in_build_scratch_passes_block5(self, patch_multi):
+        """Override header in builds/{id}/c3-scratch.md → BLOCK 5 passes
+        when archive write target matches that build-id (preferred-build path).
+        """
+        write_workspace, write_scratch, _ = patch_multi
+        # Workspace.md has session markers but NO compilation-complete header.
+        write_workspace("## task\nbuild review\n## mode: BUILD\n")
+        # Build scratch has the override header (manual-override form).
+        write_scratch(
+            self._BUILD_ID,
+            "c3",
+            "## task\nbuild review C3\n"
+            f"## compilation-complete: [R-{self._BUILD_ID}, "
+            "manual-override, reason: in-build hook wiring]\n"
+            "## findings\n",
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._ARCHIVE_PATH_FOR_BUILD, "content": "synthesis"},
+        )
+        assert blocked is False, (
+            "Override header at builds/{id}/c3-scratch.md must satisfy "
+            "BLOCK 5 when the archive write targets that same build-id"
+        )
+
+    def test_header_only_in_workspace_md_still_passes(self, patch_multi):
+        """Backwards-compat: header at DEFAULT_WORKSPACE alone still satisfies
+        BLOCK 5 (preserves prior ANALYZE-track behavior)."""
+        write_workspace, _, _ = patch_multi
+        write_workspace(
+            "## task\nactive review\n"
+            "## compilation-complete: [R-some-review-id]\n"
+            "## findings\n"
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": "/Users/test/.claude/teams/sigma-review/shared/"
+                          "archive/2026-04-29-test.md",
+             "content": "x"},
+        )
+        assert blocked is False, (
+            "Pre-existing ANALYZE-track placement (header in workspace.md) "
+            "must still pass BLOCK 5 unchanged"
+        )
+
+    def test_no_header_anywhere_blocks(self, patch_multi):
+        """Regression of original BLOCK 5 behavior: header missing from BOTH
+        workspace.md AND any active build scratch → BLOCK fires.
+        """
+        write_workspace, write_scratch, _ = patch_multi
+        write_workspace("## task\nbuild review\n## mode: BUILD\n")
+        # Build scratch is fresh + has session markers but NO override header.
+        write_scratch(
+            self._BUILD_ID,
+            "c2",
+            "## task\nbuild review C2\n## findings\nno compilation header\n",
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._ARCHIVE_PATH_FOR_BUILD, "content": "x"},
+        )
+        assert blocked is True, (
+            "BLOCK must still fire when no compilation-complete header "
+            "exists in any active workspace-source"
+        )
+        assert "PRE-ARCHIVE BLOCKED" in reason
+
+    def test_stale_workspace_md_does_not_classify_session(self, patch_multi):
+        """FP guard: stale workspace.md (mtime > freshness window) MUST NOT
+        on its own classify the current state as in-sigma when no fresh
+        build scratch exists. Mirrors the synthesis-agent-discovered case
+        where workspace.md was 8 days old.
+        """
+        write_workspace, _, _ = patch_multi
+        write_workspace("## task\nstale\n## mode: BUILD\n")
+        # Force mtime far outside the freshness window.
+        ws_path = pg.DEFAULT_WORKSPACE
+        ancient = ws_path.stat().st_mtime - (30 * 24 * 60 * 60)
+        os.utime(ws_path, (ancient, ancient))
+        # No fresh build scratch — _is_sigma_session must return False.
+        assert pg._is_sigma_session() is False, (
+            "Stale workspace.md alone (no fresh build scratch) must NOT "
+            "classify session as in-sigma; would otherwise misfire BLOCK 5"
+        )
+
+    def test_stale_build_scratch_ignored(self, patch_multi):
+        """Companion FP guard: stale build scratch (mtime > window) must
+        NOT classify as in-sigma either."""
+        _, write_scratch, _ = patch_multi
+        scratch = write_scratch(
+            self._BUILD_ID,
+            "c1",
+            "## task\nold build\n## mode: BUILD\n",
+        )
+        ancient = scratch.stat().st_mtime - (30 * 24 * 60 * 60)
+        os.utime(scratch, (ancient, ancient))
+        assert pg._is_sigma_session() is False, (
+            "Stale build scratch must be skipped by freshness filter"
+        )
+
+    def test_build_id_extraction_from_archive_path(self):
+        """Helper: archive path shaped like archive/{build-id}-synthesis.md
+        yields the build-id portion."""
+        bid = pg._build_id_from_archive_path(
+            "/x/y/archive/2026-04-28-shared-process-hardening-synthesis.md"
+        )
+        assert bid == "2026-04-28-shared-process-hardening"
+        # Different suffix
+        bid2 = pg._build_id_from_archive_path(
+            "/x/y/archive/2026-04-28-some-build-workspace.md"
+        )
+        assert bid2 == "2026-04-28-some-build"
+        # Bare archive name (no recognized suffix) returns the stem unchanged
+        bid3 = pg._build_id_from_archive_path("/x/y/archive/2026-04-28-some.md")
+        assert bid3 == "2026-04-28-some"
+        # Empty/None → None
+        assert pg._build_id_from_archive_path("") is None
+        assert pg._build_id_from_archive_path(None) is None
+
+    def test_cross_build_authorization_blocked_when_preferred_build_has_no_override(
+        self, patch_multi
+    ):
+        """R2 micro-fix (TA CONCERN-1): build A's compilation-complete header
+        MUST NOT authorize an archive write targeting build B.
+
+        Setup: build_a has the override header, build_b does not. Archive
+        write targets build_b's archive name. With the original R2 step-3
+        broad-glob fallback this would return exit=0 (build_a's header
+        authorizes build_b's write — cross-build authorization bypass).
+        After the micro-fix, preferred-build resolution finds build_b,
+        sees no override there, returns False directly without falling
+        through to broad-glob.
+        """
+        write_workspace, write_scratch, _ = patch_multi
+        # No override in workspace.md — only fresh session markers so
+        # _is_sigma_session classifies state as in-sigma.
+        write_workspace("## task\nbuild review\n## mode: BUILD\n")
+        # Build A: HAS override header (e.g., already-archived shared-process-
+        # hardening from a different session).
+        write_scratch(
+            "2026-04-28-shared-process-hardening",
+            "c3",
+            "## task\nbuild A\n"
+            "## compilation-complete: [R-2026-04-28-shared-process-hardening, "
+            "manual-override, reason: prior build override]\n"
+            "## findings\n",
+        )
+        # Build B: fresh + active, no override yet.
+        write_scratch(
+            "2026-04-23-r19-remediation",
+            "c2",
+            "## task\nbuild B\n## mode: BUILD\n## findings\nno override header\n",
+        )
+        # Archive write targets build B's archive name.
+        archive_path_for_b = (
+            "/Users/test/.claude/teams/sigma-review/shared/archive/"
+            "2026-04-23-r19-remediation-synthesis.md"
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": archive_path_for_b, "content": "synthesis"},
+        )
+        assert blocked is True, (
+            "Cross-build authorization bypass: build_a's override must NOT "
+            "authorize a write targeting build_b. Preferred-build resolution "
+            "finds build_b, finds no override there, returns False — broad-"
+            "glob fallback must NOT fire when preferred build is determinable."
+        )
+        assert "PRE-ARCHIVE BLOCKED" in reason
+
+    def test_broad_glob_only_fires_when_preferred_build_undeterminable(
+        self, patch_multi
+    ):
+        """R2 micro-fix companion: broad-glob fallback MUST still fire when
+        preferred-build derivation fails (archive path doesn't fit
+        ``{build-id}-{suffix}.md`` shape, or BUILDS_DIR/{build-id}/ missing).
+
+        Path A: archive_path is None — workspace.md has no override but a
+        fresh build scratch does. Without an archive_path we cannot
+        derive a preferred build, so step 3 broad-glob is the right path.
+        """
+        write_workspace, write_scratch, _ = patch_multi
+        write_workspace("## task\nactive\n## mode: BUILD\n")
+        write_scratch(
+            "2026-04-28-shared-process-hardening",
+            "c3",
+            "## task\nbuild active\n"
+            "## compilation-complete: [R-2026-04-28-shared-process-hardening]\n"
+            "## findings\n",
+        )
+        # Call with archive_path=None (e.g., a check that doesn't go through
+        # the normal Write/Edit/Bash dispatch). Broad-glob should find the
+        # header in build's scratch.
+        found, rid, mo = pg._has_compilation_complete(archive_path=None)
+        assert found is True, (
+            "When archive_path is None (preferred-build undeterminable) the "
+            "broad-glob fallback must still find an override in any active "
+            "build scratch — preserves R2 backwards-compat for this case"
+        )
+        assert rid == "2026-04-28-shared-process-hardening"
+        assert mo is False
+
+        # Path B: archive_path is shaped UNRECOGNIZABLY (no -synthesis/
+        # -workspace/-summary suffix and no matching builds/{stem}/ dir).
+        # Suffix-stripper returns the stem; BUILDS_DIR/{stem}/ doesn't
+        # exist so preferred-build resolution falls through to broad-glob.
+        archive_unrecognized = (
+            "/Users/test/.claude/teams/sigma-review/shared/archive/"
+            "no-such-build-2099.md"
+        )
+        found2, rid2, _ = pg._has_compilation_complete(
+            archive_path=archive_unrecognized
+        )
+        assert found2 is True, (
+            "Unrecognized archive name shape (BUILDS_DIR/{stem}/ missing) "
+            "must fall through to broad-glob fallback"
+        )
+        assert rid2 == "2026-04-28-shared-process-hardening"

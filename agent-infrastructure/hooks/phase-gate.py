@@ -41,6 +41,16 @@ from pathlib import Path
 
 CHAIN_STATUS_FILE = Path.home() / ".claude/hooks/.chain-status.json"
 DEFAULT_WORKSPACE = Path.home() / ".claude/teams/sigma-review/shared/workspace.md"
+BUILDS_DIR = Path.home() / ".claude/teams/sigma-review/shared/builds"
+
+# BLOCK 5 / IC[6] multi-path scan (R2 fix, 2026-05-02):
+# Build sessions write the override header to builds/{id}/c{N}-scratch.md per
+# directives.md §8f BUILD variant. Sessions are considered "active" if their
+# scratch file was modified within this window — older scratch files are
+# treated as historical/archived and do NOT classify the current session as
+# in-sigma (FP guard against stale workspace.md, which used to misfire when
+# the only signal was an 8-day-old DEFAULT_WORKSPACE file).
+_FRESH_SESSION_WINDOW_SECONDS = 7 * 24 * 60 * 60
 
 # Paths that are always writable (infrastructure, not code)
 INFRASTRUCTURE_PATH_MARKERS = [
@@ -68,13 +78,81 @@ CONTEXT_FIREWALL_KEYWORDS = [
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _is_sigma_session() -> bool:
-    """Check if current workspace indicates an active sigma session."""
+def _is_fresh(path: Path) -> bool:
+    """Return True if ``path`` was modified within the active-session window."""
     try:
-        content = DEFAULT_WORKSPACE.read_text(encoding="utf-8").lower()
-        return "## task" in content or "## mode" in content
+        mtime = path.stat().st_mtime
     except (FileNotFoundError, OSError):
         return False
+    import time
+    return (time.time() - mtime) <= _FRESH_SESSION_WINDOW_SECONDS
+
+
+def _has_session_markers(path: Path) -> bool:
+    """Return True if ``path`` contains ## task or ## mode session markers."""
+    try:
+        content = path.read_text(encoding="utf-8").lower()
+    except (FileNotFoundError, OSError):
+        return False
+    return "## task" in content or "## mode" in content
+
+
+def _iter_active_build_scratches():
+    """Yield build scratch files (Path) that look active.
+
+    A scratch is "active" when its mtime is within the freshness window AND
+    it contains ## task or ## mode markers. Pre-existing builds with stale
+    mtimes are skipped (FP guard).
+    """
+    if not BUILDS_DIR.is_dir():
+        return
+    try:
+        candidates = sorted(BUILDS_DIR.glob("*/c*-scratch.md"))
+    except OSError:
+        return
+    for scratch in candidates:
+        if _is_fresh(scratch) and _has_session_markers(scratch):
+            yield scratch
+
+
+def _build_id_from_archive_path(archive_path: str) -> str | None:
+    """Extract build-id from an archive write path, if shaped like
+    ``shared/archive/{build-id}-{suffix}.md``.
+
+    Returns the {build-id} portion or None if the path doesn't fit the shape.
+    Used to prefer the matching build's scratch when scanning for an override
+    header.
+    """
+    if not archive_path:
+        return None
+    name = os.path.basename(archive_path)
+    # Strip leading ".md" / extensions and a trailing -synthesis / -workspace
+    # variant; keep the date+task-slug prefix.
+    stem = name
+    if stem.endswith(".md"):
+        stem = stem[:-3]
+    for suffix in ("-synthesis", "-workspace", "-summary"):
+        if stem.endswith(suffix):
+            stem = stem[: -len(suffix)]
+            break
+    return stem or None
+
+
+def _is_sigma_session() -> bool:
+    """Check if any sigma session is currently active.
+
+    R2 multi-path fix (2026-05-02): considers DEFAULT_WORKSPACE AND any
+    fresh build scratch under BUILDS_DIR. Either a fresh workspace.md with
+    session markers OR a fresh c{N}-scratch.md with session markers
+    classifies the session as in-sigma. This closes the directive↔hook gap
+    where BUILD-track sessions wrote override headers to scratch files the
+    hook never read.
+    """
+    if _is_fresh(DEFAULT_WORKSPACE) and _has_session_markers(DEFAULT_WORKSPACE):
+        return True
+    for _ in _iter_active_build_scratches():
+        return True
+    return False
 
 
 def _is_build_session() -> bool:
@@ -411,13 +489,13 @@ _ARCHIVE_BASH_RE = re.compile(
 )
 
 
-def _has_compilation_complete() -> tuple[bool, str | None, bool]:
-    """Check if workspace has `## compilation-complete: [R-{id}]` header.
+def _scan_for_compilation_header(path: Path) -> tuple[bool, str | None, bool]:
+    """Scan a single file for the compilation-complete header.
 
     Returns (has_header, review_id, is_manual_override).
     """
     try:
-        content = DEFAULT_WORKSPACE.read_text(encoding="utf-8")
+        content = path.read_text(encoding="utf-8")
     except (FileNotFoundError, OSError):
         return False, None, False
     m = _COMPILATION_COMPLETE_RE.search(content)
@@ -426,7 +504,95 @@ def _has_compilation_complete() -> tuple[bool, str | None, bool]:
     return True, m.group(1).strip(), m.group(2) is not None
 
 
+def _has_compilation_complete(archive_path: str | None = None) -> tuple[bool, str | None, bool]:
+    """Check if any active workspace has `## compilation-complete: [R-{id}]`.
+
+    R2 multi-path fix (2026-05-02): scans DEFAULT_WORKSPACE first (preserves
+    prior behavior), then build scratch files. When ``archive_path`` is
+    supplied and shaped like ``shared/archive/{build-id}-{suffix}.md``, the
+    matching ``builds/{build-id}/c*-scratch.md`` files are preferred —
+    closing the directive↔hook gap where BUILD-track sessions wrote the
+    override header to scratch files the hook never read.
+
+    R2 micro-fix (TA CONCERN-1, 2026-05-02): when ``archive_path`` yields a
+    derivable preferred build-id AND that build's directory exists, the
+    answer is the preferred build's verdict — pass or fail. We do NOT
+    fall through to a broad-glob scan over OTHER builds' scratches in
+    that case, because doing so allows build A's compilation-complete
+    header to authorize an archive write targeting build B (cross-build
+    authorization bypass). The broad-glob fallback only fires when
+    preferred-build derivation FAILED (no archive_path, or archive_path
+    doesn't fit the ``{build-id}-{suffix}.md`` shape, or BUILDS_DIR/
+    {build-id}/ doesn't exist).
+
+    Returns (has_header, review_id, is_manual_override). The first match
+    wins; later matches are not consulted.
+    """
+    # 1) DEFAULT_WORKSPACE (canonical location for ANALYZE-track sessions).
+    found, rid, mo = _scan_for_compilation_header(DEFAULT_WORKSPACE)
+    if found:
+        return True, rid, mo
+
+    # 2) Prefer the build that matches the archive path being written, if
+    #    we can derive a build-id from it.
+    preferred_build = _build_id_from_archive_path(archive_path) if archive_path else None
+    if preferred_build:
+        preferred_dir = BUILDS_DIR / preferred_build
+        if preferred_dir.is_dir():
+            try:
+                preferred_scratches = sorted(preferred_dir.glob("c*-scratch.md"))
+            except OSError:
+                preferred_scratches = []
+            for scratch in preferred_scratches:
+                found, rid, mo = _scan_for_compilation_header(scratch)
+                if found:
+                    return True, rid, mo
+            # R2 micro-fix: preferred build resolved AND directory exists,
+            # but no override header found in any of its scratches — the
+            # answer is False. Do NOT fall through to broad-glob over
+            # other builds (cross-build authorization bypass guard).
+            return False, None, False
+
+    # 3) Fallback: scan every active build scratch. Only reached when
+    #    preferred-build derivation failed (no archive_path, unrecognized
+    #    archive name shape, or BUILDS_DIR/{build-id}/ does not exist).
+    for scratch in _iter_active_build_scratches():
+        found, rid, mo = _scan_for_compilation_header(scratch)
+        if found:
+            return True, rid, mo
+
+    return False, None, False
+
+
 def _path_is_archive(path: str) -> bool:
+    """Return True if ``path`` resolves to a sigma-review archive directory.
+
+    KNOWN LIMITATION (DA[#5] accept-with-documentation, C3-r1):
+    This is a substring match against ``_ARCHIVE_PATH_MARKERS``. Forms
+    that yield the same on-disk destination but a different argv string
+    bypass this check and the surrounding BLOCK 5 gate:
+
+      - **Symlinks**: ``ln -s archive/ /tmp/a`` then ``cp x /tmp/a/y``.
+        The argv path ``/tmp/a/y`` doesn't contain any marker; the
+        kernel resolves the symlink at write time, after the hook.
+      - **Relative ``..`` traversal**: ``cd archive/.. && cp x archive/y``
+        IS visible (marker still in argv). But ``cd archive/sub && cp x ../y``
+        canonicalizes to an archive path while the argv ``../y`` does not.
+      - **Case differences**: ``/SIGMA-REVIEW/SHARED/ARCHIVE/`` on a
+        case-insensitive filesystem (default macOS HFS+/APFS) resolves
+        to the same directory as the lowercase marker but fails the
+        substring test (markers are lowercase). Unix and Linux are
+        case-sensitive, so this is a macOS-specific bypass.
+
+    Closing this gap requires path canonicalization (``os.path.realpath``
+    + case-folding on macOS) before the marker check, plus a write-path
+    check at exec time for symlink/cwd-relative forms. Both were out of
+    ADR[6]/IC[6] day-1 scope. The day-1 BLOCK is plan-faithful per plan
+    §P2.A row 119 and accepts this residual surface as documented.
+
+    If empirical bypasses surface (operator reports an archive write that
+    skipped the BLOCK), open a follow-up SQ for path canonicalization.
+    """
     return any(marker in path for marker in _ARCHIVE_PATH_MARKERS)
 
 
@@ -441,20 +607,31 @@ def check_pre_archive_gate(tool_name: str, tool_input: dict) -> tuple[bool, str]
         return False, ""
 
     is_archive_op = False
+    archive_path: str | None = None
 
     if tool_name in ("Write", "Edit"):
         path = tool_input.get("file_path", "")
         if _path_is_archive(path):
             is_archive_op = True
+            archive_path = path
     elif tool_name == "Bash":
         cmd = tool_input.get("command", "")
         if _ARCHIVE_BASH_RE.search(cmd):
             is_archive_op = True
+            # Best-effort extract first archive-marker-bearing token; on
+            # failure leave archive_path None and fall back to
+            # broad-glob scan in _has_compilation_complete.
+            for marker in _ARCHIVE_PATH_MARKERS:
+                idx = cmd.find(marker)
+                if idx >= 0:
+                    tail = cmd[idx:].split()[0] if cmd[idx:].split() else ""
+                    archive_path = tail or None
+                    break
 
     if not is_archive_op:
         return False, ""
 
-    has_header, review_id, manual_override = _has_compilation_complete()
+    has_header, review_id, manual_override = _has_compilation_complete(archive_path)
     if has_header:
         return False, ""
 
@@ -464,7 +641,7 @@ def check_pre_archive_gate(tool_name: str, tool_input: dict) -> tuple[bool, str]
         "`## compilation-complete: [R-{review-id}]` header. Run the 06b "
         "compilation step (compile findings to wiki/memory) before archiving.\n\n"
         "Recovery options:\n"
-        "  1. Run compilation: spawn compilation-agent (sigma-lead.md:176) and "
+        "  1. Run compilation: spawn compilation-agent (sigma-lead.md:207) and "
         "wait for it to write `## compilation-complete: [R-{review-id}]`.\n"
         "  2. Manual override: append "
         "`## compilation-complete: [R-{review-id}, manual-override, "

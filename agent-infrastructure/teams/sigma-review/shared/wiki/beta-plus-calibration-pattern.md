@@ -1,9 +1,11 @@
 # β+ Calibration Pattern (WARN-First Promotion Mechanics)
-Last updated: 26.4.25 | Reviews: B-r19-remediation
+Last updated: 26.5.2 | Reviews: B-r19-remediation, R-2026-04-28-shared-process-hardening
 
 ## Summary
 
 β+ calibration is a WARN-first gate-promotion mechanism: a new analytical-tier check fires as a WARN, emits a CAL-EMIT telemetry record, and accumulates evidence in `calibration-log.md`. Once threshold conditions are met (≥3 reviews, ≤20% false-positive rate, ≥5 DA-verdicted records), `audit-calibration-gate.py` recommends PROMOTE → BLOCK. The pattern was operationalized for A20/A22/A23/A24 in the R19-remediation build. The dominant failure mode is producer/consumer schema decoupling — the producer (chain-evaluator) and consumer (audit-calibration-gate) must agree on record format, allowlists, and escape rules. Four schema-decoupling defects surfaced in C3 alone. [B-r19-remediation, 26.4.25]
+
+Confirmed [R-2026-04-28-shared-process-hardening, 26.5.2]: WARN-first ramp applied to a fresh batch of new chain-evaluator items — A26 (plan-completeness), B5 (C2 boot validation), B6 (C2 exit-gate diff), A25 (template-drift detection), and the §8f post-exit-gate `## sync` workspace-header (A27 chain-eval gate). All shipped passed=True regardless of result, with the calibration-log accumulating evidence for later promotion review. The A14 race fix was added at the wrapper layer (NOT a new gate, NOT WARN-first ramp) — it patches an existing check's calibration-log exclusion logic without changing the gate's promotion status.
 
 ---
 
@@ -53,6 +55,8 @@ Decision ordering is exhaustive without overlap: HOLD if not enough DA verdicts;
 
 The 20% FP threshold is C5-compatible: it forces defense-of-invocation rather than exception-addition. PM[CDS-4] flags this threshold as "revise after 2 promotions" — too strict could indefinitely delay useful promotion. [B-r19-remediation, 26.4.25]
 
+Confirmed [R-2026-04-28-shared-process-hardening, 26.5.2]: ADR[10] in the shared-process-hardening build preserved the threshold "**≥3 reviews where `## sync` absent + ≤20% FP**" **verbatim** when adding the §8f `## sync` post-exit-gate header to the WARN-first ramp. This is per the β+ A20 precedent. The build deliberately did not silently drift to "2+ reviews" or other relaxed forms — the canonical wording was guarded against drift via TW directive review. **Pattern**: when adding a new item to an established WARN-first ramp, threshold-language drift is a high-frequency failure mode (the easy mental shortcut "we have enough" is wrong). The fix is not vigilance; it is canonical-source guarding (a single named threshold-block in directives.md that all references must cite verbatim).
+
 ---
 
 ## Producer/Consumer Schema-Decoupling Failure Mode
@@ -69,6 +73,8 @@ This is the **dominant failure class** observed in C3 — four instances of the 
 **Operational mitigation pattern (when single-source isn't possible)**: explicit re-sync from canonical source whenever the producer changes. TW R3-2 canonical-block-hash-identity invariant is the operational version of this pattern (29 files resynced from `_template.md:140-152` to byte-identical hash). [B-r19-remediation, 26.4.25]
 
 **Detection pattern (DA r3 spot-check predicted-and-found)**: after seeing 3 instances, search for the 4th proactively. Look for hardcoded enumerations in human-facing context (directives, agent files, skill phase docs) that should be tracking machine-enforced source-of-truth. [B-r19-remediation, 26.4.25]
+
+[R-2026-04-28-shared-process-hardening, 26.5.2] **Adjacent failure class — directive↔hook integration drift**: in the shared-process-hardening build, a directive (`directives.md §8f BUILD variant`, instructing lead to write a recovery header to BUILD scratch) and a hook (`phase-gate.py BLOCK 5`, only reading from `DEFAULT_WORKSPACE`) shipped in the same build but were never co-tested end-to-end. The directive's recovery hatch was mechanically unreachable. This is producer/consumer drift in a different shape: not divergent enumerations, but divergent **files-being-read-or-written**. The lesson reinforces and generalizes the β+ producer/consumer pattern — when shipping a directive that names a recovery action, the recovery action's mechanical surface must be co-tested with the gate it recovers from. See [Directive-Hook Integration Pattern](directive-hook-integration-pattern.md) for the meta-finding and integration-test pattern.
 
 ---
 
@@ -94,3 +100,4 @@ None unresolved. SS r1 carried CDS's prior OSError silent-skip concern forward c
 ## Sources
 
 - B-r19-remediation synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-23-r19-remediation-synthesis.md`
+- R-2026-04-28-shared-process-hardening synthesis: `~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-synthesis.md`
