@@ -5,10 +5,13 @@
 - locked: 2026-04-28
 - build-id: 2026-04-28-shared-process-hardening
 - tier: BUILD TIER-2 (score 16/25)
-- status: closing
+- status: complete
 - c2-locked: 2026-04-29
 - c3-r1-completed: 2026-05-01
+- c3-r2-r2micro-completed: 2026-05-02 (synthesis 2026-05-02; close-out promotion+sync 2026-05-04/05)
 - c3-team-name: shared-process-hardening-c3
+- archive-c3: ~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-c3-workspace.md
+- commit: f8b94ae (sigma-system-overview, pushed origin/main 2026-05-05)
 - build-belief: P=0.91 (C3 r2-micro final, post-CONCERN-1-close; pre-events P=0.92, post-event-1 P=0.88, R2 fix + R2-micro fix earned back +0.03 by closing both surfaced gaps in-build with 8 new tests covering the missing path classes; remains <0.92 to preserve honest signal that 2 directive↔hook integration defects were shipped and only caught by synthesis-agent halt during close-out)
 - plan-exit-gate: PASS (DA effective PASS post-fix)
 - plan-belief: P=0.88
@@ -253,9 +256,22 @@ XREVIEW[openai:gpt-5.4][phase-gate.py BLOCK 5 (ADR[6]/IC[6])]: vulnerability=MED
 - Peer-verify ring closed: TA→IE PASS 4/4 (FIX-1+2+3+4) + CQA→TW PASS (directive Edit + dual-confirm disaggregation) + IE→CQA from C2 still holds (regression baseline preserved)
 - XVERIFY: openai gpt-5.4 single-provider verify_finding per build-directives §2h fallback (cross_verify multi-provider hung per known infra issue), anthropic excluded per CLAUDE.md correction. Result: partial / medium-confidence on ADR[6]/IC[6] BLOCK 5 compliance — agreed regex+FP-guard verbatim, flagged same `:176` stale ref TA flagged independently (DA[#8] convergence)
 
-## Close Status
+## Close Status (written by C3)
 
-(empty — written by C3)
+- synthesis-artifact: ~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-synthesis.md (43,838 bytes, 9 sections, lead-not-modifying per Step 13 boundary)
+- wiki-pages-updated: 5 (1 new + 4 existing)
+  - NEW: directive-hook-integration-pattern.md (84 lines, captures meta-finding from 2 close-out events)
+  - UPDATED: sigma-build-infrastructure-architecture.md (+63 lines), premise-audit-step-7a.md (+7 lines), beta-plus-calibration-pattern.md (+7 lines), cross-model-protocol-calibration.md (+15 lines)
+  - INDEX.md updated with R12 attribution to 4 existing pages + new entry for directive-hook-integration-pattern.md
+  - All entries tagged [R-2026-04-28-shared-process-hardening, 26.5.2]; no contradictions silently resolved
+- promotions: 22/22 user-approve approved (8 DA + 4 TW + 1 CQA + 3 IE + 3 TA + 3 retroactive: DA-A1+A2 pre-flap + DA's TW-4 concession on cleanup-pass-precedence merged); 18 auto-landed (DA 2 retroactive + TA 2 confirmed-auto + 1 decision + IE 5 patterns + 1 decision + TW 3 patterns + CQA 6 patterns); 2 decisions logged via store_memory fallback (log_decision MCP-flapped); 42 total promotion-events
+- sync: COMPLETE — sigma-system-overview commit f8b94ae (103 files: 19 substantive + memory snapshot 2026-05-02), pushed to origin/main 2026-05-05; A14 git-clean reports legitimate post-archive drift on calibration-log.md + new c3-workspace archive file (resolved by post-archive sync commit)
+- archive: ~/.claude/teams/sigma-review/shared/archive/2026-04-28-shared-process-hardening-c3-workspace.md (1269 lines, metadata header added, status: archived-c3)
+- session-end-validation: V22 (archive exists + git committed) PASS, V23 (synthesis artifact exists) PASS, V24+V25+V26 (wiki attribution + no silent contradictions + no deleted pages) PASS
+- close-out trajectory (honest): r1 P=0.92 → post-event-1 P=0.88 (synthesis-agent halt #1) → R2 multi-path fix → TA CONCERN-1 cross-build bypass → R2-micro short-circuit → post-R2 P=0.91; the build's own honor-system enforcement caught two directive↔hook integration defects this build shipped (the gate working as designed); R2 in-build closure preserves <0.92 cap to honestly signal "defects shipped + caught only by gate-halt during close-out, not by test design"
+- meta-pattern surfaced for next build: directive↔hook integration co-test rule (now in wiki at directive-hook-integration-pattern.md) — directives that name recovery paths must be co-tested with the hooks that enforce the gates they recover from
+- top deferred to next build: 5 R2 follow-up gaps (CQA-surfaced GAP-D HIGH `_strip_fenced_blocks` parity in phase-gate.py + GAP-A/B/C edge-case test coverage + GAP-E trailing-WS regex anchor + CONCERN-2 LOW suffix-stripper extension), 4 ranked options for synthesis-precedes-compilation sequencing trap, DA[#4] Bash regex + MultiEdit/NotebookEdit dispatch gap, GAP[#2] _path_is_archive substring-match bypass, DA[#9] stale-line-number lint rule, DA[#6] §2d source-type enum extension, pre-existing test_existing_settings_preserved
+- status: complete
 
 ## C2 Handoff Notes
 

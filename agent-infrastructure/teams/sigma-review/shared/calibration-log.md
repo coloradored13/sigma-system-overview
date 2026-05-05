@@ -1100,3 +1100,4 @@ CAL-EMIT[B6]: review-id:2026-05-02-unnamed |finding-ref:CHECKPOINT[implementatio
 CAL-EMIT[B6]: review-id:2026-05-02-unnamed |finding-ref:CHECKPOINT[implementation-engineer] |fire-reason:files-diff-from-assignments |workspace-context:implementation-engineer:unexpected=['phase-gate.py', 'unexpected.py'] |da-verdict:PENDING
 CAL-EMIT[A25]: review-id:2026-05-02-unnamed |finding-ref:TEMPLATE[tpl1.md] |fire-reason:hash-mismatch |workspace-context:lead:expected=c6bba508dfad |da-verdict:PENDING
 CAL-EMIT[A25]: review-id:2026-05-02-unnamed |finding-ref:TEMPLATE[missing.md] |fire-reason:template-file-missing |workspace-context:lead:expected=abc123 |da-verdict:PENDING
+CAL-EMIT[A20]: review-id:2026-05-05-Vet-two-full-AI-agent-rollout |finding-ref:F[RL-F1] |fire-reason:HIGH/CRITICAL-severity |workspace-context:regulatory-licensing-specialist:F[RL-F1] MAINTAINED at HIGH severity. The playbook |da-verdict:PENDING
