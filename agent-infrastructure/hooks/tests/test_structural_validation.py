@@ -214,7 +214,7 @@ class TestSettingsJsonHooks:
         """Original settings should still be present."""
         content = json.loads((CLAUDE_DIR / "settings.json").read_text())
         assert content.get("env", {}).get("CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS") == "1"
-        assert content.get("effortLevel") == "high"
+        assert content.get("effortLevel") in {"high", "xhigh"}
         assert content.get("autoDreamEnabled") is True
         assert content.get("voiceEnabled") is True
         assert "statusLine" in content

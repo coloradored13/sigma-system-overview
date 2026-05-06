@@ -25,15 +25,16 @@ Anchor refs (plan): plan §P2.A row Files; ADR[H7] r2; c1-plan.md:62.
 
 from __future__ import annotations
 
-import os
 import re
 import subprocess
 from pathlib import Path
 
 import pytest
 
+from conftest import get_infra_dir
 
-CLAUDE_DIR = Path(os.path.expanduser("~/.claude"))
+
+CLAUDE_DIR = get_infra_dir()
 SKILLS_DIR = CLAUDE_DIR / "skills"
 AGENTS_DIR = CLAUDE_DIR / "agents"
 SHARED_DIR = CLAUDE_DIR / "teams" / "sigma-review" / "shared"
