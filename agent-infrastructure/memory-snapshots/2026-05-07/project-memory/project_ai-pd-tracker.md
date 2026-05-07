@@ -21,6 +21,10 @@ Local personal learning tracker for the user's 8-week AI professional developmen
 - `ai-pd-curriculum.md` — source curriculum (~40K).
 - `curriculum.json` — parsed output, what the app reads.
 
+## External references
+
+- NotebookLM live build (private): https://notebooklm.google.com/notebook/d482a634-4739-4962-8a2e-57cf49770e05 — built from the 6 manifests in `notebooklm/` per velvety-swinging-coral Stream 2 spec. Confirmed live 2026-05-07.
+
 ## Stack decisions (non-obvious)
 
 - **FastAPI + vanilla JS + Tailwind CDN**, not Streamlit or React. No build step.
