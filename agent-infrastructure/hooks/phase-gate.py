@@ -73,6 +73,30 @@ CONTEXT_FIREWALL_KEYWORDS = [
     r"\bpersonally I\b",
 ]
 
+# ---------------------------------------------------------------------------
+# ΣComm Tier-2 enforcement (per CLAUDE.md three-tier boundary)
+# ---------------------------------------------------------------------------
+# Tier 2 = workspace findings + agent inbox messages. Required tags on finding
+# blocks: |source:|, severity (HIGH/MEDIUM/LOW), and a status verb. Identifier-
+# gated: only blocks containing DA[#N]/IC[N]/ADR[N]/etc. trigger the check.
+
+SIGMACOMM_CALIBRATION_LOG = Path.home() / ".claude/hooks/sigmacomm-calibration.jsonl"
+
+FINDING_ID_RE = re.compile(
+    r"\b(?:DA|PA|IC|ADR|BC|PM|SQ|H|F|R|D|C|RC)\[#?[\w\-.]+\]"
+)
+SOURCE_RE = re.compile(r"\|source:[^|\n]+\|", re.IGNORECASE)
+STATUS_VERB_RE = re.compile(
+    r"\b(VERIFIED|CONVERGED|RESTATE|WITHDRAWN|PASS|FAIL|PENDING|"
+    r"CONFIRMED|RESOLVED|BLOCKING|CRITICAL|HIGH|MEDIUM|LOW)\b"
+)
+
+_TIER2_PATH_RES = [
+    re.compile(r"/workspace\.md$"),
+    re.compile(r"/c\d+-scratch\.md$"),
+    re.compile(r"/c\d+-plan\.md$"),
+]
+
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -673,6 +697,116 @@ def detect_context_firewall_leak(file_path: str, content: str) -> str | None:
 
 
 # ---------------------------------------------------------------------------
+# WARN 7: ΣComm Tier-2 tag check (workspace findings + agent inbox messages)
+# ---------------------------------------------------------------------------
+
+def _is_sigmacomm_tier2_path(file_path: str) -> bool:
+    """Return True if path is a Tier-2 ΣComm surface (workspace/scratch/plan)."""
+    if not file_path:
+        return False
+    return any(rx.search(file_path) for rx in _TIER2_PATH_RES)
+
+
+def _split_into_blocks(content: str) -> list:
+    """Split content into blocks separated by blank lines."""
+    if not content:
+        return []
+    return [b for b in re.split(r"\n\s*\n", content) if b.strip()]
+
+
+def _log_sigmacomm_calibration(event_type: str, surface: str, snippet: str) -> None:
+    """Append a calibration event to JSONL log. Best-effort, never raises."""
+    try:
+        import time
+        record = {
+            "ts": time.time(),
+            "event_type": event_type,  # "warn" | "write"
+            "surface": surface,
+            "snippet": (snippet or "")[:200],
+        }
+        SIGMACOMM_CALIBRATION_LOG.parent.mkdir(parents=True, exist_ok=True)
+        with SIGMACOMM_CALIBRATION_LOG.open("a", encoding="utf-8") as fh:
+            fh.write(json.dumps(record) + "\n")
+    except (OSError, TypeError):
+        pass  # Never break the hook on log write failure
+
+
+def detect_missing_sigmacomm_tags(content: str, surface: str) -> str | None:
+    """WARN if a finding block lacks |source:| AND status verb tags.
+
+    Identifier-gated: only blocks containing a finding identifier
+    (DA[#N], IC[N], ADR[N], etc.) trigger the check. Pure-prose narrative
+    blocks without identifiers are exempt.
+
+    Caller pre-filters: only invoke for known Tier-2 surfaces (workspace
+    paths, agent inbox messages).
+    """
+    if not content:
+        return None
+    blocks = _split_into_blocks(content)
+    for block in blocks:
+        if FINDING_ID_RE.search(block):
+            if not (SOURCE_RE.search(block) or STATUS_VERB_RE.search(block)):
+                _log_sigmacomm_calibration("warn", surface, block)
+                return (
+                    "ΣComm Tier-2: finding block contains an identifier "
+                    "(DA[#N]/IC[N]/ADR[N]/etc.) but no |source:...| or status "
+                    "verb (VERIFIED/PASS/PENDING/etc.). Tag with severity "
+                    "(HIGH/MEDIUM/LOW), status, and source. See "
+                    "~/.claude/memory/rosetta.md."
+                )
+    _log_sigmacomm_calibration("write", surface, "")
+    return None
+
+
+def compute_sigmacomm_fp_rate() -> None:
+    """Read calibration log; print stats for Tier-2→Tier-1 promotion gating.
+
+    Eligibility: fp_rate ≤ 0.05 AND writes ≥ 20. Operator marks WARN events
+    as `"is_fp": true` in the JSONL log; this command tallies them.
+    """
+    if not SIGMACOMM_CALIBRATION_LOG.exists():
+        print(json.dumps({
+            "fires": 0, "writes": 0, "fp_rate": 0.0,
+            "false_positives": 0, "eligible_for_block": False,
+            "msg": "calibration log empty",
+        }, indent=2))
+        return
+    fires = writes = fps = 0
+    try:
+        with SIGMACOMM_CALIBRATION_LOG.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    record = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                event_type = record.get("event_type")
+                if event_type == "warn":
+                    fires += 1
+                    writes += 1
+                    if record.get("is_fp"):
+                        fps += 1
+                elif event_type == "write":
+                    writes += 1
+    except OSError as exc:
+        print(json.dumps({"error": f"could not read log: {exc}"}))
+        return
+    fp_rate = (fps / fires) if fires else 0.0
+    eligible = (fp_rate <= 0.05) and (writes >= 20)
+    print(json.dumps({
+        "fires": fires,
+        "writes": writes,
+        "false_positives": fps,
+        "fp_rate": round(fp_rate, 4),
+        "eligible_for_block": eligible,
+        "criterion": "fp_rate <= 0.05 AND writes >= 20",
+    }, indent=2))
+
+
+# ---------------------------------------------------------------------------
 # Hook dispatch
 # ---------------------------------------------------------------------------
 
@@ -718,7 +852,25 @@ def enforce_post_tool_use(data: dict) -> dict:
     if tool_name in ("Write", "Edit"):
         file_path = tool_input.get("file_path", "")
         content = tool_input.get("content", "") if tool_name == "Write" else tool_input.get("new_string", "")
+
         warn = detect_context_firewall_leak(file_path, content)
+        if warn:
+            return {"systemMessage": warn}
+
+        if _is_sigmacomm_tier2_path(file_path):
+            warn = detect_missing_sigmacomm_tags(content, file_path)
+            if warn:
+                return {"systemMessage": warn}
+
+    elif tool_name == "SendMessage":
+        # Tier-2: agent-to-agent inbox messages
+        message = tool_input.get("message", "")
+        # Skip protocol JSON (shutdown_request/_response, plan_approval_*)
+        if not isinstance(message, str) or len(message) < 100:
+            return {}
+        recipient = tool_input.get("to", "unknown")
+        surface = f"inbox:{recipient}"
+        warn = detect_missing_sigmacomm_tags(message, surface)
         if warn:
             return {"systemMessage": warn}
 
@@ -726,6 +878,11 @@ def enforce_post_tool_use(data: dict) -> dict:
 
 
 def main():
+    # CLI mode: --sigmacomm-fp-rate prints calibration stats for promotion gate
+    if len(sys.argv) > 1 and sys.argv[1] == "--sigmacomm-fp-rate":
+        compute_sigmacomm_fp_rate()
+        sys.exit(0)
+
     try:
         data = json.loads(sys.stdin.read())
     except (json.JSONDecodeError, EOFError):

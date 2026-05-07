@@ -15,19 +15,43 @@ description: >
 ΣComm saves tokens in AI-read content: memory files, agent messages, workspace
 findings. **Never use ΣComm in user-facing output** — humans get plain English.
 
-## When to Use
+## When to Use — Three-Tier Model
 
-| Content | Format | Why |
-|---------|--------|-----|
-| CLAUDE.md (hot cache) | ΣComm | Read every session start |
-| memory/ files | ΣComm | Agent-read reference |
-| Agent-to-agent messages | ΣComm | High-frequency, agent-read |
-| Workspace findings | ΣComm | Agent-written, agent-read |
-| wiki/ entries | **Plain English** | Human reference docs |
-| User-facing output | **Plain English** | Humans read this |
+Form follows audience and frequency. Three tiers, two enforcement levels.
 
-**The test**: Will an AI agent read this during a task? → ΣComm.
-Will a human read this? → Plain English.
+### Tier 1 — Compressed (full ΣComm) · BLOCK enforcement
+
+| Content | Why |
+|---------|-----|
+| `MEMORY.md` hot-cache (global + project-scoped) | Read every session start |
+| Sigma-mem `store_*` calls (entries, decisions, patterns) | Stored + recalled across sessions |
+| Agent instruction Boot/Work/Comms/Weight/Review | Read every spawn |
+
+### Tier 2 — Tagged English (plain prose with required tags) · WARN→BLOCK enforcement
+
+Plain English with required tags on findings: `|source:...|`, severity (HIGH/MEDIUM/LOW), and a status verb (VERIFIED, CONVERGED, RESTATE, WITHDRAWN, PASS, FAIL, PENDING). Tags apply to finding blocks (those containing identifiers like `DA[#N]`, `IC[N]`, `ADR[N]`); narrative prose is exempt.
+
+| Content | Why |
+|---------|-----|
+| Workspace findings (`workspace.md`, `c*-scratch.md`) | Long-form, mixed audience (lead + peers + synthesis + user) |
+| Agent-to-agent inbox messages (SendMessage `text` field) | Cross-model audience needs English; tags preserve provenance |
+| Convergence declarations, synthesis input | Same |
+
+### Tier 3 — Plain · no enforcement
+
+| Content | Why |
+|---------|-----|
+| Wiki entries | Human reference docs |
+| User-facing output | Humans read this |
+| `MEMORY.md` index lines | Navigation, not data |
+| Agent Role/Expertise sections, open-questions | Identity framing, user-readable |
+| Format specifications | Preserve as-is |
+
+### The test
+
+- Human reads it cold? → **Tier 3**
+- Agents read it during a task; content is short and frequent? → **Tier 1**
+- Agents read it during a task; content is long-form findings or messages? → **Tier 2**
 
 ---
 

@@ -105,29 +105,44 @@ Shared workspace at `~/.claude/teams/{team}/shared/workspace.md`:
 3→user Qs → open-questions (plain)
 4→status: ✓|◌ in convergence
 
-## Boundary
+## Boundary — three-tier model
 
-ΣComm applies to all agent-facing surfaces. Plain English only where humans are the audience.
+Form follows audience and frequency. Mechanical enforcement at Tier 1 (BLOCK) and Tier 2 (WARN→BLOCK after calibration).
 
-| Surface | Format | Why |
-|---------|--------|-----|
-| agent instructions (Boot, Work, Comms, Weight, Review) | ΣComm | read by agents every spawn |
-| MCP tool descriptions (machine.py) | ΣComm | in agent context all session |
-| spawn prompt instructions | ΣComm | per-spawn × agent-count |
-| memory writes | ΣComm | stored+recalled across sessions |
-| agent-to-agent messages | ΣComm | peer inbox format |
-| workspace findings | ΣComm | agent-written, agent-read |
-| convergence declarations | ΣComm | status + next actions |
-| agent Role/Expertise | **plain** | identity framing (self-concept) |
-| open-questions | **plain** | user reads these |
-| user-facing docs (SETUP.md, SIGMA-COMM-SPEC.md) | **plain** | human audience |
-| format templates + examples | **as-is** | they ARE the reference |
-| Python code logic | **as-is** | only description strings compressed |
+### Tier 1 — full ΣComm · BLOCK
 
-### test: is this ΣComm?
-content read by agent during task → ΣComm
-content read by human → plain
-content that IS a format spec → as-is (it's the reference)
+| Surface | Why |
+|---------|-----|
+| agent instructions: Boot, Work, Comms, Weight, Review | read every spawn |
+| MCP tool descriptions (machine.py) | in agent context all session |
+| spawn prompt instructions | per-spawn × agent-count |
+| memory writes (sigma-mem `store_*`) | stored+recalled across sessions |
+
+### Tier 2 — tagged English · WARN→BLOCK
+
+Plain English with required tags on findings: `|source:|`, severity (HIGH/MEDIUM/LOW), status verb (VERIFIED/CONVERGED/RESTATE/WITHDRAWN/PASS/FAIL/PENDING). Identifier-gated — narrative prose blocks without DA[#N]/IC[N]/ADR[N]/etc. are exempt.
+
+| Surface | Why |
+|---------|-----|
+| workspace findings (workspace.md, c*-scratch.md) | long-form, lead+peers+synthesis+user audience |
+| agent-to-agent messages (SendMessage `text` field) | cross-model dispatch needs English |
+| convergence declarations | status + next actions |
+
+### Tier 3 — plain · no enforcement
+
+| Surface | Why |
+|---------|-----|
+| agent Role/Expertise | identity framing |
+| open-questions | user reads these |
+| user-facing docs (SETUP.md, SIGMA-COMM-SPEC.md) | human audience |
+| format templates + examples | they ARE the reference |
+| Python code logic | only description strings compressed |
+
+### test: which tier?
+- human reads it cold → Tier 3
+- agent reads during task, content short+frequent → Tier 1
+- agent reads during task, content long-form findings/messages → Tier 2
+- content IS a format spec → preserve as-is
 
 ## Examples
 

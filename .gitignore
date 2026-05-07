@@ -13,3 +13,6 @@ output/
 # Inboxes (runtime, not persistent)
 **/teams/*/inboxes/
 __pycache__/
+
+# Hook calibration logs (operational telemetry, not source)
+agent-infrastructure/hooks/sigmacomm-calibration.jsonl

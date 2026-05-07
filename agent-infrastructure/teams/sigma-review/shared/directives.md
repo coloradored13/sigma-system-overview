@@ -898,16 +898,27 @@ BUILD mode:
 
 ### §3 token budget management
 
-#### ΣComm maximization
+#### ΣComm three-tier model
 
-!directive: ALL agent-facing communication uses ΣComm — no exceptions
+!directive: notation form follows audience+frequency, mechanically enforced
 
-ΣComm surfaces: inbox messages, workspace findings, convergence declarations, memory writes, agent spawn prompts (instructions), DA challenges+responses, debate exchanges, checkpoint status, agent-request proposals
+Tier 1 (full ΣComm, BLOCK enforcement):
+  - memory writes (sigma-mem store_*)
+  - agent spawn prompts (Boot/Work/Comms/Weight/Review sections)
+  - MCP tool descriptions
 
-plain English surfaces: agent role/expertise (identity), open-questions (user reads), user-facing deliverables, debate judge rulings
+Tier 2 (tagged English, WARN→BLOCK after calibration):
+  - workspace findings (workspace.md, c*-scratch.md)
+  - agent-to-agent inbox messages (SendMessage payload)
+  - convergence declarations, DA challenges+responses, debate exchanges
+  - required tags on finding blocks: |source:|, severity (HIGH/MEDIUM/LOW), status verb (VERIFIED/CONVERGED/RESTATE/WITHDRAWN/PASS/FAIL/PENDING)
+  - identifier-gated: blocks without DA[#N]/IC[N]/ADR[N]/etc. are exempt
 
-!enforcement: DA flags natural-language workspace writes as process violation
-  first: warning | repeated: note in agent calibration as "token-inefficient"
+Tier 3 (plain English, no enforcement):
+  - agent Role/Expertise (identity), open-questions (user reads)
+  - user-facing deliverables, debate judge rulings, format specs
+
+!enforcement: phase-gate.py PostToolUse on Write/Edit + SendMessage detects Tier-2 finding blocks missing required tags (WARN); BLOCK promotion gated on ≤5% FP-rate over ≥20 workspace writes. Tier-1 BLOCK on sigma-mem store_* tools (PreToolUse).
 
 #### dynamic agent token caps
 

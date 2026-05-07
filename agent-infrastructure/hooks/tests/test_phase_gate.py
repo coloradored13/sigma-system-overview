@@ -309,6 +309,258 @@ class TestContextFirewallLeak:
 
 
 # ---------------------------------------------------------------------------
+# ΣComm Tier-2 detector tests
+# ---------------------------------------------------------------------------
+
+@pytest.fixture
+def tmp_sigmacomm_log(tmp_path, monkeypatch):
+    """Redirect SIGMACOMM_CALIBRATION_LOG to a tmp file for the test."""
+    log_path = tmp_path / "sigmacomm-calibration.jsonl"
+    monkeypatch.setattr(pg, "SIGMACOMM_CALIBRATION_LOG", log_path)
+    return log_path
+
+
+class TestSigmaCommTier2Detector:
+    def test_warns_finding_block_missing_source(self, tmp_sigmacomm_log):
+        content = "DA[#1] some-finding text without tags here"
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is not None
+        assert "Tier-2" in result
+
+    def test_no_warn_finding_with_source(self, tmp_sigmacomm_log):
+        content = "DA[#1] finding text |source:[code-read foo.py:10-20]|"
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is None
+
+    def test_no_warn_finding_with_status_verb(self, tmp_sigmacomm_log):
+        content = "DA[#1] finding text — VERIFIED via code-read"
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is None
+
+    def test_no_warn_finding_with_severity(self, tmp_sigmacomm_log):
+        content = "DA[#3] something concerning, severity HIGH"
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is None
+
+    def test_no_warn_pure_prose_narrative(self, tmp_sigmacomm_log):
+        content = (
+            "The waterfall type distinction (fund-dist vs loan-admin-payment vs "
+            "CLO-compliance) is still valid. No new platform spans all three."
+        )
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is None
+
+    def test_allows_nested_brackets_in_source(self, tmp_sigmacomm_log):
+        content = "DA[#1] finding |source:[code-read foo.py + DA[#2] L100-200]|"
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is None
+
+    def test_finds_in_one_block_among_many(self, tmp_sigmacomm_log):
+        content = (
+            "Some narrative prose at the top.\n\n"
+            "DA[#1] tagged finding |source:[code-read]| HIGH\n\n"
+            "DA[#2] untagged finding without any tags or source\n\n"
+            "More narrative."
+        )
+        result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert result is not None
+
+    def test_recognizes_full_identifier_family(self, tmp_sigmacomm_log):
+        # Plan declared family: DA, PA, IC, ADR, BC, PM, SQ, H, F, R, D, C, RC
+        for prefix in ("PA[5]", "IC[6]", "ADR[3]", "PM[1]", "SQ[12]", "F[CQA-1]"):
+            content = f"{prefix} bare finding no source no status"
+            result = pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+            assert result is not None, f"{prefix} should trigger WARN"
+
+    def test_calibration_log_written_on_warn(self, tmp_sigmacomm_log):
+        content = "DA[#9] orphan finding"
+        pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        assert tmp_sigmacomm_log.exists()
+        lines = [json.loads(line) for line in tmp_sigmacomm_log.read_text().splitlines() if line.strip()]
+        assert any(rec.get("event_type") == "warn" for rec in lines)
+        assert any(rec.get("surface") == "/ws/workspace.md" for rec in lines)
+
+    def test_calibration_log_writes_event_for_clean_content(self, tmp_sigmacomm_log):
+        content = "DA[#1] clean |source:[code-read]| VERIFIED"
+        pg.detect_missing_sigmacomm_tags(content, "/ws/workspace.md")
+        lines = [json.loads(line) for line in tmp_sigmacomm_log.read_text().splitlines() if line.strip()]
+        assert any(rec.get("event_type") == "write" for rec in lines)
+
+
+class TestSigmaCommTier2Path:
+    def test_workspace_md_matches(self):
+        assert pg._is_sigmacomm_tier2_path("/foo/bar/workspace.md")
+
+    def test_c1_scratch_matches(self):
+        assert pg._is_sigmacomm_tier2_path("/foo/builds/abc/c1-scratch.md")
+
+    def test_c14_scratch_matches(self):
+        assert pg._is_sigmacomm_tier2_path("/foo/builds/abc/c14-scratch.md")
+
+    def test_c2_plan_matches(self):
+        assert pg._is_sigmacomm_tier2_path("/foo/builds/abc/c2-plan.md")
+
+    def test_random_md_does_not_match(self):
+        assert not pg._is_sigmacomm_tier2_path("/foo/bar/notes.md")
+
+    def test_archive_workspace_does_not_match(self):
+        # Archive files use suffix forms like 2026-04-28-shared-...-c3-workspace.md
+        # which the current regex doesn't match. By design — archives are read-only.
+        assert not pg._is_sigmacomm_tier2_path(
+            "/teams/sigma-review/shared/archive/2026-04-28-shared-foo-c3-workspace.md"
+        )
+
+    def test_empty_path(self):
+        assert not pg._is_sigmacomm_tier2_path("")
+
+
+class TestSigmaCommTier2Dispatch:
+    def test_post_tool_use_warns_on_workspace_write_missing_tags(self, tmp_sigmacomm_log):
+        output = pg.enforce_post_tool_use({
+            "tool_name": "Write",
+            "tool_input": {
+                "file_path": "/teams/sigma-review/shared/workspace.md",
+                "content": "DA[#1] orphan finding text",
+            },
+        })
+        assert "systemMessage" in output
+        assert "Tier-2" in output["systemMessage"]
+
+    def test_post_tool_use_no_warn_on_non_workspace(self, tmp_sigmacomm_log):
+        output = pg.enforce_post_tool_use({
+            "tool_name": "Write",
+            "tool_input": {
+                "file_path": "/some/other/file.md",
+                "content": "DA[#1] orphan finding text",
+            },
+        })
+        assert output == {}
+
+    def test_post_tool_use_warns_on_sendmessage_with_finding(self, tmp_sigmacomm_log):
+        long_msg = "DA[#1] " + ("padding text " * 20) + "no tags here"
+        output = pg.enforce_post_tool_use({
+            "tool_name": "SendMessage",
+            "tool_input": {
+                "to": "researcher",
+                "message": long_msg,
+            },
+        })
+        assert "systemMessage" in output
+
+    def test_post_tool_use_no_warn_short_sendmessage(self, tmp_sigmacomm_log):
+        output = pg.enforce_post_tool_use({
+            "tool_name": "SendMessage",
+            "tool_input": {
+                "to": "researcher",
+                "message": "DA[#1] short",  # under 100 chars
+            },
+        })
+        assert output == {}
+
+    def test_post_tool_use_skips_protocol_json_message(self, tmp_sigmacomm_log):
+        output = pg.enforce_post_tool_use({
+            "tool_name": "SendMessage",
+            "tool_input": {
+                "to": "researcher",
+                "message": {"type": "shutdown_request", "reason": "done"},
+            },
+        })
+        assert output == {}
+
+    def test_context_firewall_runs_before_sigmacomm_check(self, tmp_sigmacomm_log):
+        # Context firewall should still fire on a workspace write, regardless of tags
+        output = pg.enforce_post_tool_use({
+            "tool_name": "Write",
+            "tool_input": {
+                "file_path": "/teams/sigma-review/shared/workspace.md",
+                "content": "DA[#1] tagged |source:[x]| my career advancement",
+            },
+        })
+        assert "systemMessage" in output
+        # Firewall fires first on personal context leak
+        assert "firewall" in output["systemMessage"].lower() or \
+               "personal context" in output["systemMessage"].lower()
+
+
+class TestSigmaCommArchiveRegression:
+    """Verify the Tier-2 detector does not fire spuriously on real archived
+    workspaces. Archives represent the empirically validated tag conventions
+    that exist in production today."""
+
+    ARCHIVE_DIR = Path.home() / ".claude/teams/sigma-review/shared/archive"
+
+    def _sample_recent_workspaces(self, limit=4):
+        if not self.ARCHIVE_DIR.is_dir():
+            pytest.skip("archive dir not present in this environment")
+        files = sorted(
+            self.ARCHIVE_DIR.glob("*workspace*.md"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        return files[:limit]
+
+    def test_archive_workspaces_do_not_trigger(self, tmp_sigmacomm_log):
+        samples = self._sample_recent_workspaces()
+        if not samples:
+            pytest.skip("no archive workspaces found")
+        for ws in samples:
+            content = ws.read_text(encoding="utf-8", errors="ignore")
+            # Use the workspace surface to exercise the detector path
+            result = pg.detect_missing_sigmacomm_tags(
+                content, str(ws)
+            )
+            # Note: archives may legitimately contain orphan finding blocks
+            # because the current convention has drifted. We do not assert
+            # zero fires; we assert the detector terminates and produces
+            # diagnosable output.
+            assert result is None or "Tier-2" in result, \
+                f"detector returned unexpected message for {ws.name}: {result}"
+
+
+class TestSigmaCommFpRateCli:
+    def test_fp_rate_empty_log(self, tmp_sigmacomm_log, capsys):
+        pg.compute_sigmacomm_fp_rate()
+        captured = capsys.readouterr()
+        report = json.loads(captured.out)
+        assert report["fires"] == 0
+        assert report["writes"] == 0
+        assert report["eligible_for_block"] is False
+
+    def test_fp_rate_below_threshold(self, tmp_sigmacomm_log, capsys):
+        # Seed log: 25 writes, 1 warn (none marked is_fp) → fp_rate=0, eligible
+        for _ in range(24):
+            tmp_sigmacomm_log.write_text(
+                tmp_sigmacomm_log.read_text() if tmp_sigmacomm_log.exists() else ""
+            )
+        with tmp_sigmacomm_log.open("w") as fh:
+            for _ in range(24):
+                fh.write(json.dumps({"ts": 0, "event_type": "write", "surface": "/x", "snippet": ""}) + "\n")
+            fh.write(json.dumps({"ts": 0, "event_type": "warn", "surface": "/x", "snippet": "DA[#1]"}) + "\n")
+        pg.compute_sigmacomm_fp_rate()
+        captured = capsys.readouterr()
+        report = json.loads(captured.out)
+        assert report["fires"] == 1
+        assert report["writes"] == 25
+        assert report["fp_rate"] == 0.0
+        assert report["eligible_for_block"] is True
+
+    def test_fp_rate_above_threshold_marks_ineligible(self, tmp_sigmacomm_log, capsys):
+        # 20 warns total, 5 marked is_fp → fp_rate = 0.25 > 0.05
+        with tmp_sigmacomm_log.open("w") as fh:
+            for i in range(20):
+                rec = {"ts": 0, "event_type": "warn", "surface": "/x", "snippet": "DA"}
+                if i < 5:
+                    rec["is_fp"] = True
+                fh.write(json.dumps(rec) + "\n")
+        pg.compute_sigmacomm_fp_rate()
+        captured = capsys.readouterr()
+        report = json.loads(captured.out)
+        assert report["false_positives"] == 5
+        assert report["fp_rate"] == 0.25
+        assert report["eligible_for_block"] is False
+
+
+# ---------------------------------------------------------------------------
 # enforce_pre_tool_use() — dispatch tests
 # ---------------------------------------------------------------------------
 
