@@ -12,6 +12,9 @@
 ## sigma-ui
 - [sigma-ui](project_sigma-ui.md) — Phase B3 COMPLETE (26.3.31): 16 modules, 280 tests, E2E integration, pushed. Repo: ~/Projects/sigma-ui/
 
+## sigma-ralph
+- [sigma-ralph](project_sigma-ralph.md) — ~/Projects/sigma-ralph/, Apache-2.0 Ralph Loop primitive via SDK-direct (sidesteps chain-evaluator). Phase 1 shipped 26.5.7 commit 0559289 (16/16 tests, 1305 hook-pass regression). Phase 2 (engineer-ralph) Gate-contingent on c2-baseline.md (sigma-system-overview commit c5d3f43). Plan: glowing-hugging-wilkinson.md.
+
 ## sigma-optimize
 - [sigma-optimize](project_sigma-optimize.md) — Exp 1-2 COMPLETE, A2-follow + A3 COMPLETE, Exp 3 DESIGNED (convergence probe)
 - [Exp 3 convergence probe](project_exp3-convergence.md) — cross-model/architecture convergence, ready to scope (Exp 2 dependency resolved)
@@ -87,6 +90,9 @@ coloradored13/{hateoas-agent(public),sigma-mem(public),ollama-mcp-bridge(public)
 - [Recovery over apology](feedback_recovery-over-apology.md) — don't apologize for tech hiccups (API errors, MCP flapping, dropped spawns); name state + recover; keeping to the plan after a hiccup IS the success (26.4.28)
 - [User-approval gate non-bypassable](feedback_user-approval-gate-non-bypassable.md) — when lead persists for agents on MCP-flap, the auto-vs-user-approve classification gate STILL APPLIES; transport-failure does NOT authorize gate-skip; silently elevating new-principle entries is a contamination vector (26.4.28)
 - [Pivot direction logic](feedback_pivot-direction-logic.md) — left wheel fwd + right stopped = bot turns RIGHT (CW); active wheel arcs in SAME direction as heading change. Verify before claiming L/R wiring inversion (26.5.3)
+- [Ralph plugin avoidance](feedback_ralph-loop-plugin-avoid.md) — never install ralph-loop plugin in chain-evaluator-active project; Stop-hook collision; use sigma-ralph or pattern-only instead (26.5.7)
+- [Phase Gate measurement pattern](feedback_phase-gate-measurement.md) — for extensions to working infra, build Phase 1 first then Gate Phase 2 on measured trigger; mechanical analysis not eyeballed; null result is also a deliverable (26.5.7)
+- [Other-model feedback pattern](feedback_other-model-feedback-pattern.md) — for non-trivial plans, route through cross-model review before approval; caught material issues both rounds on sigma-ralph (26.5.7)
 
 ## references
 - [Anthropic rate limits](reference_anthropic-rate-limits.md) — 1K RPM, 90K output tok/min (binding constraint), all Claude models (26.4.2)
