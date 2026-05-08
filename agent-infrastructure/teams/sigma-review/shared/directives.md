@@ -1350,6 +1350,7 @@ audit: run `/sigma-audit {this-file-path}` in a fresh context to verify process 
     precedent); §8f line 1284-1286 (ANALYZE-track ## sync recovery form, structurally parallel
     pattern); §8e (workspace corruption recovery, shares attestation pattern); §2p DC[3]
     (premise-audit-results pre-dispatch sibling — header-presence=phase-ran shared with §8f).
+  !synthesis-archive-carveout: synthesis-archive writes (path matches `*-synthesis.md` under `shared/archive/`) are EXEMPT from the BLOCK 5 compilation-complete precondition by design — Step 13f→14 dependency order makes gating synthesis on compilation a logical cycle. Predicate: `_is_synthesis_archive_write` @ phase-gate.py (Cond A: basename endswith `-synthesis.md` AND Cond B: any `_ARCHIVE_PATH_MARKERS` substring; both required). Source: ADR[1] of build 2026-05-05-block-5-synthesis-carveout.
 
 !cross-references:
   DC[1]: §8a — ## archive-complete header is the §8a post-write attestation (existing archival rule re-anchored to header).

@@ -1101,6 +1101,13 @@ class TestBlock5MultiPathWorkspace:
     def test_no_header_anywhere_blocks(self, patch_multi):
         """Regression of original BLOCK 5 behavior: header missing from BOTH
         workspace.md AND any active build scratch → BLOCK fires.
+
+        Archive path uses ``-workspace.md`` shape (not ``-synthesis.md``) so
+        that the BLOCK 5 synthesis-archive carve-out (ADR[1] of build
+        2026-05-05-block-5-synthesis-carveout) does not short-circuit before
+        the multi-path scan runs. The invariant under test is "no header
+        anywhere in any active workspace-source → BLOCK fires", which is
+        independent of the synthesis-archive suffix.
         """
         write_workspace, write_scratch, _ = patch_multi
         write_workspace("## task\nbuild review\n## mode: BUILD\n")
@@ -1110,9 +1117,13 @@ class TestBlock5MultiPathWorkspace:
             "c2",
             "## task\nbuild review C2\n## findings\nno compilation header\n",
         )
+        archive_path_workspace = (
+            f"/Users/test/.claude/teams/sigma-review/shared/archive/"
+            f"{self._BUILD_ID}-workspace.md"
+        )
         blocked, reason = pg.check_pre_archive_gate(
             "Write",
-            {"file_path": self._ARCHIVE_PATH_FOR_BUILD, "content": "x"},
+            {"file_path": archive_path_workspace, "content": "x"},
         )
         assert blocked is True, (
             "BLOCK must still fire when no compilation-complete header "
@@ -1206,14 +1217,20 @@ class TestBlock5MultiPathWorkspace:
             "c2",
             "## task\nbuild B\n## mode: BUILD\n## findings\nno override header\n",
         )
-        # Archive write targets build B's archive name.
+        # Archive write targets build B's archive name. Uses ``-workspace.md``
+        # shape (not ``-synthesis.md``) so the BLOCK 5 synthesis-archive
+        # carve-out (ADR[1] of build 2026-05-05-block-5-synthesis-carveout)
+        # does not short-circuit before cross-build authorization resolution
+        # runs. The invariant under test is "build A's override header MUST
+        # NOT authorize a write targeting build B", which is independent of
+        # the synthesis-archive suffix.
         archive_path_for_b = (
             "/Users/test/.claude/teams/sigma-review/shared/archive/"
-            "2026-04-23-r19-remediation-synthesis.md"
+            "2026-04-23-r19-remediation-workspace.md"
         )
         blocked, reason = pg.check_pre_archive_gate(
             "Write",
-            {"file_path": archive_path_for_b, "content": "synthesis"},
+            {"file_path": archive_path_for_b, "content": "snapshot"},
         )
         assert blocked is True, (
             "Cross-build authorization bypass: build_a's override must NOT "
@@ -1271,3 +1288,177 @@ class TestBlock5MultiPathWorkspace:
             "must fall through to broad-glob fallback"
         )
         assert rid2 == "2026-04-28-shared-process-hardening"
+
+
+class TestBlock5SynthesisCarveOut:
+    """ADR[1] BLOCK 5 carve-out for synthesis-archive writes (2026-05-05).
+
+    Synthesis-archive writes occur at c3-review.md Step 13f, which
+    structurally precedes compilation at Step 14. Gating those writes on the
+    compilation-complete header creates a logical cycle. The carve-out exempts
+    paths matching `*-synthesis.md` AND under a known archive marker from the
+    BLOCK 5 compilation-complete precondition; all other archive writes still
+    require the header.
+    """
+
+    @pytest.fixture
+    def patch_multi(self, tmp_path):
+        """Mirrors TestBlock5MultiPathWorkspace.patch_multi — same fixture
+        signature so tests (c) and (d) reuse the multi-path setup pattern."""
+        ws = tmp_path / "workspace.md"
+        builds = tmp_path / "builds"
+        builds.mkdir()
+
+        def write_workspace(content):
+            ws.write_text(content, encoding="utf-8")
+
+        def write_build_scratch(build_id, c_label, content):
+            d = builds / build_id
+            d.mkdir(parents=True, exist_ok=True)
+            scratch = d / f"{c_label}-scratch.md"
+            scratch.write_text(content, encoding="utf-8")
+            return scratch
+
+        with patch.object(pg, "DEFAULT_WORKSPACE", ws), \
+             patch.object(pg, "BUILDS_DIR", builds), \
+             patch.object(pg, "CHAIN_STATUS_FILE", tmp_path / ".chain-status.json"):
+            yield write_workspace, write_build_scratch, builds
+
+    _BUILD_ID = "2026-05-05-block-5-synthesis-carveout"
+    _SYNTH_ARCHIVE_PATH = (
+        f"/Users/test/.claude/teams/sigma-review/shared/archive/"
+        f"{_BUILD_ID}-synthesis.md"
+    )
+
+    # (a) carve-out fires: synthesis-archive write passes without
+    # compilation-complete header in an active sigma session.
+    def test_synthesis_archive_passes_without_compilation_header(self, patch_paths):
+        """Carve-out PASS: ADR[1] exempts `*-synthesis.md` archive writes
+        from the BLOCK 5 compilation-complete precondition."""
+        write, _, _ = patch_paths
+        # Active sigma session via task marker; NO compilation-complete header.
+        write("## task\nbuild review\n## mode: BUILD\n")
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._SYNTH_ARCHIVE_PATH, "content": "synthesis"},
+        )
+        assert blocked is False, (
+            "Synthesis-archive write must pass BLOCK 5 without "
+            "compilation-complete header (ADR[1] carve-out)"
+        )
+        assert reason == ""
+
+    # (b) carve-out short-circuit fires DIRECTLY — not via FP guard
+    # (CQA BC-1: must exercise the carve-out branch, not _is_sigma_session=False).
+    def test_synthesis_archive_short_circuit_inside_active_session(self, patch_paths):
+        """CQA BC-1: in an active sigma session (FP guard does NOT fire),
+        synthesis-archive write returns PASS via the carve-out short-circuit
+        BEFORE _has_compilation_complete is consulted. Verifies behavior
+        equivalence with a non-existent compilation header AND ensures the
+        carve-out branch is actually exercised."""
+        write, _, _ = patch_paths
+        # Active session markers — _is_sigma_session() returns True.
+        write("## task\nbuild review C2\n## mode: BUILD\n## findings\n")
+        # Confirm session is active (FP guard would otherwise mask result).
+        assert pg._is_sigma_session() is True
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": self._SYNTH_ARCHIVE_PATH, "content": "synthesis"},
+        )
+        assert blocked is False
+        assert reason == ""
+        # Sanity: helper itself returns True for this path.
+        assert pg._is_synthesis_archive_write(self._SYNTH_ARCHIVE_PATH) is True
+
+    # (c) regression: WS-1 R2-micro multi-path scan untouched. Non-synthesis
+    # archive write resolves through preferred-build path as before.
+    def test_non_synthesis_multi_path_resolution_unchanged(self, patch_multi):
+        """Regression: WS-1 R2-micro behavior preserved. A non-synthesis
+        archive write (e.g., `-workspace.md`) with the override header in the
+        preferred build's c{N}-scratch.md still passes BLOCK 5 via the
+        existing _has_compilation_complete path — carve-out does NOT short-
+        circuit, header check still runs."""
+        write_workspace, write_scratch, _ = patch_multi
+        write_workspace("## task\nbuild review\n## mode: BUILD\n")
+        write_scratch(
+            self._BUILD_ID,
+            "c3",
+            "## task\nbuild review C3\n"
+            f"## compilation-complete: [R-{self._BUILD_ID}, "
+            "manual-override, reason: in-build hook wiring]\n"
+            "## findings\n",
+        )
+        # Archive path is `-workspace.md` (not `-synthesis.md`) — Condition A
+        # fails, carve-out does NOT fire, falls through to multi-path scan.
+        non_synth_archive = (
+            f"/Users/test/.claude/teams/sigma-review/shared/archive/"
+            f"{self._BUILD_ID}-workspace.md"
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": non_synth_archive, "content": "x"},
+        )
+        assert blocked is False, (
+            "WS-1 R2-micro preferred-build resolution must still authorize "
+            "non-synthesis archive write when override header present in "
+            "build scratch — carve-out must NOT alter this path"
+        )
+
+    # (d) Condition A failure: non-synthesis archive write WITHOUT header
+    # still blocks (IE BC-3: defense against over-broad short-circuit).
+    def test_non_synthesis_archive_still_blocks_without_header(self, patch_multi):
+        """IE BC-3 / PM[5] defense: a non-synthesis archive write (Condition A
+        fails: filename does not end `-synthesis.md`) with no compilation-
+        complete header anywhere must still BLOCK. Confirms the short-circuit
+        is suffix-scoped, not blanket-archive."""
+        write_workspace, write_scratch, _ = patch_multi
+        write_workspace("## task\nbuild review\n## mode: BUILD\n")
+        # Build scratch fresh + active but NO override header.
+        write_scratch(
+            self._BUILD_ID,
+            "c2",
+            "## task\nbuild review C2\n## findings\nno compilation header\n",
+        )
+        non_synth_archive = (
+            f"/Users/test/.claude/teams/sigma-review/shared/archive/"
+            f"{self._BUILD_ID}-workspace.md"
+        )
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": non_synth_archive, "content": "x"},
+        )
+        assert blocked is True, (
+            "Non-synthesis archive write (Condition A fails) must still "
+            "BLOCK when no compilation-complete header exists — carve-out "
+            "is suffix-scoped, not blanket archive exemption"
+        )
+        assert "PRE-ARCHIVE BLOCKED" in reason
+
+    # (e) Condition B failure: synthesis-suffixed file outside archive dir
+    # is NOT classified as an archive op at all (CQA EC[3]). The carve-out's
+    # Condition B (archive marker) is independently required.
+    def test_synthesis_path_outside_archive_classification(self, patch_paths):
+        """CQA EC[3]: a `-synthesis.md` file outside any known archive dir
+        (Condition B fails) is not classified as an archive operation — the
+        BLOCK 5 path is not entered. _path_is_archive returns False so
+        check_pre_archive_gate returns PASS via the `not is_archive_op`
+        branch, NOT via the carve-out. _is_synthesis_archive_write also
+        returns False on this path (Condition B independently required)."""
+        write, _, _ = patch_paths
+        write("## task\nbuild review\n## mode: BUILD\n")
+        outside_archive = "/tmp/foo-synthesis.md"
+        # Helper itself rejects: Condition B (archive marker) fails.
+        assert pg._is_synthesis_archive_write(outside_archive) is False
+        # _path_is_archive also False, so check_pre_archive_gate returns
+        # (False, "") via the `not is_archive_op` branch (line 681).
+        assert pg._path_is_archive(outside_archive) is False
+        blocked, reason = pg.check_pre_archive_gate(
+            "Write",
+            {"file_path": outside_archive, "content": "x"},
+        )
+        assert blocked is False, (
+            "Path outside archive markers is not an archive op; gate exits "
+            "before BLOCK 5 logic — carve-out must NOT extend BLOCK to "
+            "non-archive synthesis paths"
+        )
+        assert reason == ""

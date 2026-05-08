@@ -620,6 +620,32 @@ def _path_is_archive(path: str) -> bool:
     return any(marker in path for marker in _ARCHIVE_PATH_MARKERS)
 
 
+def _is_synthesis_archive_write(path: str) -> bool:
+    """Return True iff path is a synthesis-archive write: filename ends with
+    `-synthesis.md` AND path is under a known archive directory.
+
+    Fail-safe: returns False for any ambiguity (non-string, empty, BOM-prefixed,
+    whitespace-only, non-archive dir, wrong suffix). Gate fires on doubt.
+
+    Consequence note (ADR[1] r3): a false positive here removes the
+    compilation-complete precondition entirely for the matched path
+    (gate-removal), which has stronger downstream consequence than a false
+    positive in _path_is_archive (archive-classification only). The
+    compilation-complete header is an integrity boundary. This is accepted
+    residual risk in the single-user hook context — see ADR[1] AMENDMENT r3.
+    Known limitations: symlinks, HFS+ case-fold, relative `..` — inherited
+    from _path_is_archive, deferred per ADR[6].
+    """
+    if not isinstance(path, str):
+        return False
+    stripped = path.lstrip("﻿").strip()
+    if not stripped:
+        return False
+    if not os.path.basename(stripped).endswith("-synthesis.md"):
+        return False
+    return any(marker in stripped for marker in _ARCHIVE_PATH_MARKERS)
+
+
 def check_pre_archive_gate(tool_name: str, tool_input: dict) -> tuple[bool, str]:
     """BLOCK 5: 06b pre-archive — workspace must have compilation-complete header.
 
@@ -653,6 +679,11 @@ def check_pre_archive_gate(tool_name: str, tool_input: dict) -> tuple[bool, str]
                     break
 
     if not is_archive_op:
+        return False, ""
+
+    # BLOCK 5 carve-out (ADR[1]): synthesis-archive writes structurally precede
+    # compilation (Step 13f → Step 14); gating them is a logical cycle.
+    if archive_path and _is_synthesis_archive_write(archive_path):
         return False, ""
 
     has_header, review_id, manual_override = _has_compilation_complete(archive_path)
