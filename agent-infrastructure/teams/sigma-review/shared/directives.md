@@ -415,6 +415,35 @@ R19 example:
 
 > BUILD variant → see build-directives.md §2d-severity
 
+#### §2d++ source-bias probe (26.4.29, extension of §2d/§2d+)
+
+!purpose: catch capture/conflict/framing bias modes that §2d+ authority-tier scoring and convergence rules miss. §2d+ rewards primary sources (5/5) regardless of whether they're the creator describing their own creation. Convergence (3+ sources) rewards interconnected peer-promotion ecosystems where convergence ≠ independent corroboration. §2d+ assigns one tier per source; the same source can be high-quality in descriptive register and low-quality in predictive register.
+!observed failure mode (sigma-single 26.4.29, velvety-swinging-coral.md): plan-build cited Cat Wu Anthropic essay [creator-on-creation], Lenny's Newsletter recap [peer-promotion within VC-PM-podcast ecosystem], Pragmatic Engineer [commercial substack same ecosystem]. All scored 4-5/5 authority. Cross-source convergence reinforced rather than challenged the framing. Hype-anchoring on predictive claims survived §2d+ checks.
+!observed-in: sigma-single composition w/ sigma-retrieve. NOT yet observed in sigma-review post-26.4.23 protocol. Added preemptively — capture/framing bias is independent of single-vs-multi-instance architecture, expected to apply equally.
+
+!applies-to: load-bearing findings citing external commentary, founder/creator essays, podcast/newsletter/blog outlets, "thought leadership" content, or sources where the source benefits commercially or socially from the claim being true
+!when ¬applies: regulatory primary sources, academic peer-reviewed sources, technical specifications — §2d+ T1 sufficient
+
+bias types:
+  [creator-on-creation] → source is head/founder/lead of system being discussed
+  [framing-capture] → source sits within interconnected ecosystem (peer-cross-promotion); convergence with peers ≠ independent
+  [register-predictive-load] → source's load-bearing claims are predictive/evaluative not descriptive
+  [format-constraint] → softball-interview/product-demo format; adversarial pushback structurally absent
+  [none] → bias-prone source vetted, no flag (explicit ¬omission)
+
+!format extension: |source:[independent-research:T1] |source-bias:[creator-on-creation,framing-capture]
+
+!rule: load-bearing predictive claim resting on [creator-on-creation] source → independent corroboration from outside creator's organization/ecosystem REQUIRED
+!rule: convergence built from ≥2 [framing-capture] sources within same ecosystem → reclassify as single-source for §2d+ convergence; DA r2 challenge
+!rule: missing |source-bias: tag on bias-prone source → process violation (same class as missing §2d source tag)
+
+!DA audit (extension of §2d/§2d+ audit):
+  - cluster of [creator-on-creation] sources supporting same predictive claim → echo chamber flag
+  - convergence from peer-promoted sources within single ecosystem → independent-corroboration flag
+  - load-bearing finding resting solely on [creator-on-creation] predictive claims with no out-of-ecosystem corroboration → bias-anchoring flag
+
+!skill-reference: source-validation skill provides the underlying lens (capture patterns, descriptive-vs-predictive register split, third-party validation heuristics). Agents may invoke /source-validation as a research probe; this directive enforces the tagging.
+
 #### §2j HIGH-severity governance minimum artifact (26.4.23)
 
 !purpose: actionability floor for governance/compliance findings. R19 F[CDS-A1]+F[CDS-B1] scored Actionability 3/4 because recommendations stopped at gap-identification without templates, specimen crosswalks, or decision trees. Sherman Kent+SATs: receiver must be able to act without further consultation. Gap-ID alone fails.
