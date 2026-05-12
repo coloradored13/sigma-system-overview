@@ -1,11 +1,13 @@
 # Cross-Model Protocol Design — Calibration and Empirical Findings
-Last updated: 26.5.2 | Reviews: R16, R-2026-04-28-shared-process-hardening
+Last updated: 26.5.9 | Reviews: R16, R-2026-04-28-shared-process-hardening, R-2026-05-05-block-5-synthesis-carveout
 
 ## Summary
 
 Calibration and confidence estimates for SIGMA-COMM-WIRE and cross-model protocol design generally. Covers bootstrap reliability, format choice rationale, adoption risk, and pre-mortem failure modes. Produced by reference-class-analyst with DA challenge. These findings inform confidence levels for the protocol specification — they are not the spec itself.
 
 [R-2026-04-28-shared-process-hardening, 26.5.2] also adds operational findings on XVERIFY behavior in practice: single-provider fallback when `cross_verify` hangs, and the Anthropic exclusion rule for cross-model verification.
+
+[R-2026-05-05-block-5-synthesis-carveout, 2026-05-09] further extends the XVERIFY operational findings with the T0/T1/T2 four-witness reframe: T0 (`cross_verify` bridge bug) escalated to 4-build P0; T1 (per-session registry mismatch from C2 of the parent build) reframed as a C2-build-track-session-specific transient, NOT a structural propagation gap — schemas LOAD cleanly across four independent agent sessions (DA+TA+IE+CQA) in C3; T2 NEW per-tool-invocation post-schema-load fault class first articulated this build (heterogeneous per-tool behavior: `cross_verify` errors with "An internal error occurred" while `verify_finding` and `challenge` return substantive output, even when all three schemas register cleanly via ToolSearch deferred-tool flow).
 
 ---
 
@@ -104,6 +106,19 @@ None within this review. H5 represents the clearest falsification — pre-review
 **Anthropic exclusion rule for cross-model verification.** Per `feedback_xverify-anthropic-excluded.md` (26.4.23) and reaffirmed in this build: sigma-verify cross-model checks must exclude the `anthropic` provider, because Claude verifying Claude is not cross-model. This is enforced in spawn prompts as a temporary measure until sigma-verify default-excludes anthropic from `cross_verify`. The rule applies to both the multi-provider and single-provider fallback forms — when falling back to a single provider per §2h, choose a non-Anthropic provider (`openai`, `google`, etc.). The rule is not a quality concern about Claude as a verifier; it is a logical-independence concern (a self-consistent verifier of itself does not provide cross-model convergence evidence).
 
 **Pattern**: cross-model protocol design must accommodate the operational reality that multi-provider verification can hang, fall back gracefully, and label the fallback honestly. Building this distinction (full cross-verify vs single-provider fallback verify) into the verification record format is a candidate addition to the SIGMA-COMM-WIRE error taxonomy and result-confidence enum.
+
+### T0/T1/T2 reframe (XREVIEW infra failure-mode taxonomy)
+
+[R-2026-05-05-block-5-synthesis-carveout, 2026-05-09] C2 of the parent shared-process-hardening build logged two distinct XREVIEW infrastructure findings: T0 (3-build P0 recurring `cross_verify` bridge bug) and T1 (NEW P1 per-session registry mismatch — operational tool registration landed in lead session, did not propagate to agent session). C3 of the synthesis-carveout build re-probed sigma-verify availability across four independent agent sessions (DA + TA + IE + CQA) and reframed the taxonomy:
+
+- **T0 — `cross_verify` bridge bug, now 4-build P0 (escalated from 3-build).** Confirmed [R-...]: `cross_verify` UNREACHABLE in agent sessions even when `verify_finding` and `challenge` register cleanly via ToolSearch deferred-tool flow (also [R-2026-04-28-shared-process-hardening, 26.5.2] at the C2 level). The per-model paths (`verify_finding`, `challenge`) work; only the multi-provider fan-out/aggregation path fails. TA's recommended out-of-band engineering remediation is targeted at the `cross_verify` MCP-handler fan-out/aggregation logic specifically, not a broad sigma-verify rewrite.
+- **T1 — reframed as C2-build-track-session-specific transient (NOT structural propagation gap).** The C2 framing (operational tool registration landed in lead session, did not propagate to agent session) was extrapolated from a single C2 build-track-session sample. C3 4-witness validation (schemas LOAD cleanly across DA + TA + IE + CQA) shows that the per-session propagation gap is not a structural property of the MCP registry. The C2 incident remains real but is now classified as a session-local registry-contamination event, recoverable on the next clean spawn.
+- **T2 — NEW per-tool-invocation post-schema-load fault class.** First articulated this build in TA-XREVIEW-probe and corroborated in DA-XREVIEW-probe. The failure mode is: schemas LOAD cleanly via deferred-tool flow, but the per-tool invocation behavior is heterogeneous — `cross_verify` errors with "An internal error occurred", while `verify_finding` (gemini-3.1-pro) and `challenge` (openai gpt-5.4-pro reasoning-tier) return substantive output. Distinct from T0 (which is about cross_verify specifically) and T1 (which is about session registration). T2 names the broader class: schema-load success is not sufficient evidence of tool-invocation reachability; per-tool probes are required. Out-of-band investigation needed.
+
+**Implications for cross-model protocol design**:
+1. XREVIEW availability must be probed per-tool, not per-server. A protocol-level "is verifier available?" call returning a server-level boolean would have masked T2 entirely.
+2. Single-provider fallback (per `build-directives.md §2h`) is now the practical default for security-critical findings until T0 is closed. Synthesis must continue labeling these as partial/medium-confidence rather than promoting to full-cross-verify equivalence.
+3. The C2-recoverable-on-next-spawn property of T1 means agent-spawn discipline (fresh agent contexts, no cross-session contamination) is a load-bearing operational practice, not just a hygiene preference.
 
 ---
 

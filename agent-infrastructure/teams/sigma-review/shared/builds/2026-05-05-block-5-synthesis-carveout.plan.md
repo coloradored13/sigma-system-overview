@@ -5,12 +5,18 @@
 - locked: 2026-05-05
 - build-id: 2026-05-05-block-5-synthesis-carveout
 - tier: BUILD TIER-1 (score 6/25)
-- status: built
+- status: complete
 - plan-exit-gate: PASS
 - plan-belief: P=0.88
 - plan-da-grade: PASS (DA[exit-gate-r3] PASS, 4/4 DA[#1/#2/#4/#8] all closed substantively)
 - build-exit-gate: PASS
-- build-belief: P=0.87 (n=6 sources: 5 code-read + 1 full hook-suite re-run + IE+CQA peer-verify ring closed; CQA Wave-1 14 findings VERIFIED + Wave-2 7/7 tests PASS independent + IE peer-verify sample-checks 5/5 + 13-case probe live-replayed via importlib + hook-suite parity 1286/14/0 EXACT MATCH delta=+5 0 regressions; -0.01 from plan-belief P=0.88 to reflect XREVIEW skip — substitute coverage strong but recipe-prescribed cross-model layer absent due to infrastructure unreachable in agent context; documented latent: :1056 coverage shadow asymptomatic, deferred to C3 with 3-eye concurrence)
+- build-belief: P=0.91 (C3-r1 lead-synthesis post-CONVERGE, +0.04 from C2 entering 0.87: +0.02 §2h XVERIFY now substantive via verify_finding+challenge tools reachable in agent sessions [4-witness on schema-load], +0.01 plan §289 inconsistency-trap closed via editorial fix verified by CQA peer-verify, +0.01 4-witness XREVIEW infra clarity [T0 cross_verify bridge bug 4-build P0 + T1 reframe to C2-session-specific transient + T2 NEW per-tool-invocation fault class]; three-track convergence DA P=0.93 + TA P=0.97 + CQA P=0.90; residuals keeping below 0.95: substring-overmatch documented but not remediated [bundled into followups micro-build], T0 4-build P0 infra debt, T2 needs separate investigation, plan-text edit at locked plan slightly weakens "locked" semantics, F[CQA-8] LOW doc-precision drift originated C2)
+- c2-build-belief-historical: P=0.87 (preserved for audit; superseded by C3-r1 P=0.91)
+- c3-locked: 2026-05-09
+- c3-team-name: block-5-synthesis-carveout-c3
+- c3-rounds: 1 (CONVERGE-r1 across 3 tracks; r2 not triggered)
+- c3-da-grade: PASS (DA r1-grading P=0.93 [DA scope], 0 unresolved tensions, all 5 review findings + 3 carry-forwards substantively closed, §4f circuit-breaker PASSED via DA[#1] external `challenge` reasoning-tier vuln=HIGH genuine adversarial output)
+- c3-build-rubric-mean: 3.67/4.00 (correctness=4 test-coverage=3 maintainability=4 performance=4 security=3 api-design=4 — both 3-scores have followups bundled into proposed `block-5-synthesis-carveout-followups` micro-build under WS-3 Tier-C sequencing)
 - c2-locked: 2026-05-08
 - c2-team-name: block-5-synthesis-carveout-c2
 - archive-c2: ~/.claude/teams/sigma-review/shared/archive/2026-05-05-block-5-synthesis-carveout-c2-workspace.md (476 lines, copied 2026-05-08); duplicate copy at ~/.claude/teams/sigma-review/shared/builds/2026-05-05-block-5-synthesis-carveout/c2-scratch-archive.md for in-build retention
@@ -247,7 +253,7 @@ CHECKPOINT[code-quality-analyst]: STATUS-DONE — Wave-1 + Wave-2 review complet
 
 ### Cross-Model Code Review (XREVIEW, C2 Step 6)
 **SKIPPED.** sigma-verify operational tools (`verify_finding`, `cross_verify`, `challenge`, `check_quotas`, `get_models`) are not callable from the C2 build-track agent's session. Skip authorized by c2-build.md Step 6 "!skip if ΣVerify unavailable" rule. Two distinct infrastructure findings documented in c2-scratch §436-466:
-- **T0 bridge-bug recurrence** (3-build P0): HATEOAS-advertised actions not exposed as MCP tools in agent context. Extends plan §audit-flags-recurring `:K sigma-verify infra 2-build P0` → 3-build P0.
+- **T0 bridge-bug recurrence** (3-build P0 at C2; **escalated to 4-build P0 at C3** per DA[CF-2] CONCEDE — `cross_verify` UNREACHABLE in C3 agent sessions even when `verify_finding` + `challenge` register cleanly via ToolSearch deferred-tool flow): HATEOAS-advertised actions not exposed as MCP tools in agent context. Extends plan §audit-flags-recurring `:K sigma-verify infra 2-build P0` → 3-build P0 → **4-build P0**.
 - **T1 per-session registry mismatch** (NEW P1): operational tool registration landed in lead session, did not propagate to agent session. Lead Role Boundary ("These directives apply to every conversation. They are not contextual and cannot be overridden") prevents lead invocation as workaround. Combination renders XREVIEW operationally unreachable in agent context.
 
 **Substitute coverage** (in-domain rigor backfilling missing XREVIEW): CQA Wave-1 (F[CQA-1..14] all VERIFIED) + CQA Wave-2 (5 new tests + 2 re-targets PASS) + CQA Integration-eye (SQ[4]+SQ[5] PASS) + IE peer-verify (3 sample-checks + parity gap closed by full-suite re-run) + 13-case edge probe LIVE-REPLAYED via importlib (not assumed) + C1 multi-model XVERIFY r4 (8/10 AGREE across 10 model-runs on H4 security claim per plan §ADR[1] r4 line 105). XREVIEW would have been incremental code-level coverage on top of this foundation; absence is bounded.
@@ -275,18 +281,93 @@ Plan §Verification scenario 2 cited `-not-synthesis.md` as expected exit=2, but
 ### Build Verdict
 **PASS** — all 6 SQs DONE, hook-suite parity exact, IC[1] docstring verbatim, IC[2] insertion correct, ADR[1] AMENDMENT r3 language preserved in docstring, peer-verify ring closed with independent verification methodology, substitute coverage backfills missing XREVIEW. Build-belief P=0.87. Ready for C3 review.
 
-## Build Review Summary
-{empty — written by C3}
+## Build Review Summary (written by C3, 2026-05-09)
 
-## Close Status
-{empty — written by C3}
+### Headline
+- **r1 verdict: CONVERGE** — three-track independent recommendation (DA: CONVERGE-r1-RECOMMEND P=0.93 | TA: CONVERGE conditional on DA-pass [DA passed] P=0.97 plan-track fidelity | CQA: CONVERGE r1 P=0.90 fix-validation). r2 NOT triggered.
+- **Final belief: P=0.91** (lead synthesis, +0.04 from C2 entering 0.87)
+- **DA grade: PASS** (substantive engagement, §4f circuit-breaker PASSED, 0 unresolved tensions)
+- **Plan compliance: full** (TA: ZERO architectural drift across 7 fidelity dimensions)
+- **BUILD rubric §3b mean: 3.67/4.00** — correctness=4 test-coverage=3 maintainability=4 performance=4 security=3 api-design=4
+
+### Findings + Resolutions
+- **DA challenges: 5 review + 3 carry-forward = 8 total**
+  - DA[#1] MEDIUM: substring-overmatch as failure class independent of ADR[6] inheritance (escape-vs-spoof reframe). External `challenge` (gpt-5.4-pro reasoning) vuln=HIGH. → **DEFEND-WITH-COMPROMISE**: keep code, bundle boundary-aware-matching into followups micro-build symmetrically across `_path_is_archive` + `_is_synthesis_archive_write`. TA explicitly conceded AMENDMENT r3 line 104 covers escape-direction not spoof-direction.
+  - DA[#2] LOW: overmatch test-gap (`/tmp/sigma-review/shared/archive/foo-synthesis.md` near-miss not in 5-test suite). → **DEFEND-with-deferred-SQ**: parent-scope (ADR[6] `_path_is_archive` substring-match limitation), bundled into followups micro-build alongside DA[#1]. 5 defense pillars verified by CQA F[CQA-7].
+  - DA[#3] LOW: plan §Verification:289 internal inconsistency (`-not-synthesis.md` reference unresolved despite Q2 substitution). → **CONCEDE + FIXED**: editorial forward-pointer to §267-268 applied at plan-line:289 by IE via Edit tool, byte-stable surrounding lines verified by CQA F[CQA-3], pytest 1286/14/0 EXACT MATCH preserved.
+  - DA[#4] LOW: docstring lacks explicit "security-adjacent" / §2h marker. → **DEFEND**: TA's "right artifact" argument — IC[1] verbatim-spec preservation discipline + parent `_path_is_archive` precedent + correct location for security-adjacent registry is directives.md §2h companion-list, not inline docstring drift. Promotion-candidate, not in-build fix.
+  - DA[#5] INFO: §4f circuit-breaker self-check. → **PASS** (genuine adversarial engagement on DA[#1]).
+  - DA[CF-1] LOW: `:1056` coverage shadow on `test_header_in_build_scratch_passes_block5` post-carve-out. → **CONVERGED** (3-eye + IE-peer-verify-CONCUR deferral remains sound; bundled into followups micro-build).
+  - DA[CF-2] MEDIUM: XREVIEW infra T0/T1/T2 reframe. → **CONCEDE**: T0 cross_verify bridge bug **4-build P0** (escalating from 3-build P0); T1 C2 per-session-registry-mismatch was C2-session-specific transient (NOT structural — 4-witness DA+TA+IE+CQA tools-available in C3); T2 NEW per-tool-invocation post-schema-load fault class (cross_verify alone errors while verify_finding + challenge work).
+  - DA[CF-3] INFO: C2 process-integrity wins as Step 15 promotion candidates. → **PASS** (Step 15 territory, not C3 review challenge).
+
+### Test Integrity Findings (build-directives §4d)
+- 1 finding: DA[#2] overmatch test-gap (LOW, near-miss path coverage). Accepted as scope-disciplined deferral. Bundled into followups micro-build.
+- All other test-integrity dimensions: behavior-testing (vs run-only) ✓, real fixtures (`patch_paths`/`patch_multi`, no hardcoded-pass values) ✓, failure-case asserts (tests d+e cover Cond A and Cond B failure paths) ✓, real infra (importlib live-replay used for 13-case probe in C2 Wave-1) ✓.
+
+### BUILD Rubric §3b Detailed Scores (CQA, final-round)
+| Dimension | Score | Source |
+|---|---|---|
+| correctness | 4 | phase-gate.py:623-646 + 5/5 PASS + 13-case probe + IC[1] verbatim |
+| test-coverage | 3 | 5 behavioral tests + 2 documented gaps (DA[#2] OVERMATCH + CF-1 :1056), both ASYMPTOMATIC + bundled to followups |
+| maintainability | 4 | typed signature + family-convention + 11-line docstring + dual-audience cross-refs + cyclomatic ≤4 |
+| performance | 4 | O(1) predicate + short-circuit before disk-I/O `_has_compilation_complete` + 3 timed runs ≤10.96s + zero regression |
+| security | 3 | 3 input-shape filters + outer-guard layering + ADR[1] AMENDMENT r3 doctrine + escape-vs-spoof gap (DA[#1]) bundled to followups + cross_verify T0 4-build P0 |
+| api-design | 4 | typed/pure/idempotent + defensive `and` guard + matching `(False, "")` PASS-shape + zero new public API + IC[1] verbatim |
+
+### Process-Integrity Checks (HARD GATES)
+- **Contamination check: clean** — session topics outside scope: build-routing-survey-at-resume only (meta-routing, lead-only, did not influence agent context). No build-external content leaked into agent briefs.
+- **Sycophancy check: clean** — softened: none, selective-emphasis: none, dissent-reframed: none. 1 process-issue correctly flagged at boot per CLAUDE.md "STOP and flag" directive (recipe-vs-plan mismatch on `build-exit-gate: PASS` already in plan Meta; resolved with rationale: established pattern in completed builds).
+- **§2d source provenance audit: PASS** (5/5 load-bearing claims source-grounded).
+- **§2h XVERIFY-mandatory-security-critical: completed via 2/3 sigma-verify tools** (verify_finding + challenge reachable; cross_verify T0 4-build P0 logged). DA top-1 ADR[1] finding XVERIFY'd via gemini-3.1-pro + gpt-5.4-pro reasoning-tier.
+- **All 4 BUILD success criteria met**: zero arch decisions during build, intent preserved no-drift, no scope creep, test integrity caught ≥1 weak pattern.
+
+### Fix Summary
+- **Fixes applied: 1** (editorial only, no code change)
+  - plan-line:289 forward-pointer to §267-268 (Q2 ambiguity resolution made discoverable in plan-isolation reads). Edit tool used (no sed -i). CQA peer-verify PASS (F[CQA-2/3/4]).
+- **Code changes: NONE** (phase-gate.py + test_phase_gate.py + directives.md + sigma-lead.md untouched).
+- **Tests: 1286/14/0 EXACT MATCH** across 3 independent runs (IE boot 10.69s, IE post-fix 10.60s, CQA fix-validation 10.96s). C2 inheritance-without-rerun gap CLOSED.
+
+### Cross-track Convergence Signals
+1. **Followups bundling**: IE proposed → TA endorsed → DA accepted → CQA concurred. `block-5-synthesis-carveout-followups` micro-build under WS-3 Tier-C sequencing. Bundles: (a) DA[#1] boundary-aware-matching applied symmetrically to `_path_is_archive` + `_is_synthesis_archive_write` (closes ADR[6] escape-vs-spoof asymmetry), (b) DA[#2] OVERMATCH test class, (c) CF-1 `:1056` split into one synthesis-test + one `-workspace.md` multi-path-test, (d) optional F[CQA-8] scope-boundary doc-drift correction.
+2. **T0/T1/T2 infra reframe**: 4-witness convergence (DA + TA + IE + CQA) on tools-available in agent sessions. C2 T1 was session-specific transient (NOT structural propagation gap). T0 bridge-bug recurs at 4-build P0. T2 NEW per-tool-invocation post-schema-load fault class first articulated in TA-XREVIEW-probe and corroborated in DA-XREVIEW-probe.
+3. **Editorial routing**: DA[#3] CONCEDE → TA SendMessage → IE Edit-tool → CQA peer-verify (proper agent-routing, no lead intervention beyond final acknowledgment).
+4. **Three-track BELIEF convergence**: DA P=0.93 + TA P=0.97 + CQA P=0.90 — all trending up from entering 0.87, no track flagging another track.
+
+### Open Items (deferred or routed)
+- **Followups micro-build candidate**: `block-5-synthesis-carveout-followups` under WS-3 Tier-C — bundle DA[#1] + DA[#2] + CF-1 + optional F[CQA-8].
+- **Out-of-band engineering remediation**: T0 cross_verify bridge bug at 4-build P0 (TA suggested cross_verify MCP-handler fan-out logic specifically — per-model verify_finding+challenge work, only fan-out/aggregation breaks). T2 NEW class needs investigation.
+- **Promotion candidates** (Step 15): T1 build-track-peer-verifier-independent-pytest-discipline (IE-proposed, CQA-concurred, would have caught C2 inheritance gap earlier); T2 xreview-mcp-registry-c3-recovery-pattern (4-witness validation); reinforcement of F[CQA-PATTERN-process-integrity-under-spurious-task-pressure] (held with 0 violations across full r1 cycle).
+
+### Final Belief Trajectory
+| Round | Belief | Notes |
+|---|---|---|
+| C2 entering | P=0.87 | XREVIEW skipped due to T1 mismatch; substitute coverage strong |
+| C3 r1 lead synthesis | **P=0.91** | +0.04 honest gain; substring-overmatch documented and bundled, not remediated |
+
+## Close Status (written by C3, 2026-05-12)
+
+- **synthesis-artifact**: `~/.claude/teams/sigma-review/shared/archive/2026-05-05-block-5-synthesis-carveout-synthesis.md` (40,329 bytes, 264 lines, 7 sections, written by separate-context synthesis-agent 2026-05-09)
+- **wiki-pages-updated**: `sigma-build-infrastructure-architecture.md` (BLOCK 5 carve-out + escape-vs-spoof asymmetry + followups bundling) + `cross-model-protocol-calibration.md` (T0/T1/T2 reframe); 0 new pages; INDEX.md edited; CLOSED prior open question "Synthesis-precedes-compilation sequencing trap" from R-2026-04-28-shared-process-hardening with Option-1 attribution; V24+V25+V26 all satisfied
+- **promotions**: 14 total = 6 auto-promoted (DA D1+D2+D3 + TA A1+A2+A3) + 8 user-approved (DA D4 + TA U1+U2 + IE U2+U3+U4+U5 + CQA T1); user-approval-gate-non-bypassable test PASSED (0 silent elevations across all 4 agents); portfolio entry written at `~/.claude/teams/sigma-review/shared/portfolio.md`
+- **sync**: drift sync complete; installed paths are symlinks to `~/Projects/sigma-system-overview/agent-infrastructure/`, so all C3 writes (plan, wiki, patterns.md, portfolio.md, synthesis, c3-scratch archive) automatically land in the repo; pending one consolidated commit
+- **archive**: `~/.claude/teams/sigma-review/shared/archive/2026-05-05-block-5-synthesis-carveout-c3-scratch.md` (839 lines, with metadata header per recipe Step 17a; synthesis artifact at separate path above)
+- **C3 process anomalies** (transparency log):
+  1. 3-day pause between Step 13 synthesis-landing (2026-05-09) and user-resume (2026-05-12); synthesis-agent went idle without explicit completion message but artifact landed cleanly; team agents persisted across the gap
+  2. MCP sigma-mem tool-rotation mid-session (`dream` + `get_conversations` went offline; team-scoped store tools came online); non-blocking, agents continued via `store_memory`
+  3. IE parameter-encoding artifact on first store_memory batch (XML-tagged `file` arg inside entry payload); corrected on retry with zero partial-writes
+  4. DA D3 cosmetic trailing-garbage on auto-promote store (`</entry></invoke>` suffix); non-blocking, dream cycle will clean
+  5. Step 17a archive write initially blocked by phase-gate BLOCK 5: directive↔hook gap surfaced — c3-scratch missing `## mode` marker prevented broad-glob fallback in `_iter_active_build_scratches`, AND `_build_id_from_archive_path` doesn't strip `-c{N}-scratch.md` suffix (returned `2026-05-05-block-5-synthesis-carveout-c3-scratch` instead of build-id). Recipe-faithful fix applied (added `## mode: REVIEW` to c3-scratch); latent flagged for `block-5-synthesis-carveout-followups` micro-build bundling.
+- **status**: complete
+- **followups micro-build candidate**: `block-5-synthesis-carveout-followups` under WS-3 Tier-C sequencing bundles (1) DA[#1] boundary-aware-matching applied SYMMETRICALLY to `_path_is_archive` + `_is_synthesis_archive_write`, (2) DA[#2] OVERMATCH near-miss test class, (3) CF-1 `:1056` `test_header_in_build_scratch_passes_block5` split into one synthesis-test + one `-workspace.md` multi-path-test, (4) optional F[CQA-8] scope-boundary doc-drift correction, (5) NEW: phase-gate.py `_build_id_from_archive_path` suffix-strip extension for `-c{N}-scratch.md` + c3-scratch.md recipe template `## mode` marker addition
+- **out-of-band engineering**: T0 cross_verify MCP-handler fan-out logic bug at 4-build P0 (per-model verify_finding+challenge succeed, only fan-out/aggregation breaks); T2 per-tool-invocation post-schema-load fault class investigation
 
 ## Verification
 
 End-to-end empirical (5 scenarios per remediation §WS-2 + IE-U3 lesson learned: include `hook_event_name`):
 
 1. `python3 ~/.claude/hooks/phase-gate.py` with `{"hook_event_name":"PreToolUse","tool_name":"Write","tool_input":{"file_path":".../shared/archive/test-synthesis.md","content":"x"}}` → exit=0 even with empty workspace (carve-out fires)
-2. Same JSON with `tool_input.file_path` ending in `-not-synthesis.md` → exit=2 if no compilation-complete header (carve-out doesn't fire — preserves R2-micro behavior)
+2. Same JSON with `tool_input.file_path` ending in `-not-synthesis.md` (resolved to `-workspace.md` per §Plan Ambiguity Resolution Q2 lines 267-268) → exit=2 if no compilation-complete header (carve-out doesn't fire — preserves R2-micro behavior)
 3. Same JSON pointing at `/tmp/foo-synthesis.md` (outside archive dir) → existing `_is_sigma_session()` FP guard handles; carve-out doesn't fire
 4. Full hook-suite parity check: pre-fix 1253/14/1, post-fix **1258/14/1** (+5 new tests in `TestBlock5SynthesisCarveOut`, zero regressions)
 5. Empirical re-run of the original trap that started this remediation: synthesis-archive write to `2026-04-28-shared-process-hardening-synthesis.md` with NO compilation-complete header in workspace → exit=0 (would have eliminated both close-out events from the parent build had this been in place)
