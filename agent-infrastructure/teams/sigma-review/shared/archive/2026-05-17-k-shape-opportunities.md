@@ -87,7 +87,7 @@ P-candidate[institutional-content-licensing-as-non-consensus-shape: acquiring/li
 
 ## promotion
 
-#### portfolio-analyst — promotion candidates (user-approve required)
+### portfolio-analyst promotion candidates (user-approve required)
 
 P-candidate[2026-gold-rush-capital-magnitudes|class:calibration|agent:portfolio-analyst|reason:2026-specific market data that may inform future K-shape or solo-operator opportunity reviews — stales by 2027 but useful as reference baseline for 12-18 months] AI VC 65.4%/$320B total (NVCA T1); hyperscaler capex $700-725B 2026 guidance (public T2); grid $470B global (BloombergNEF/IEA T1); defense tech VC $49B record (Defense News T2); healthcare PE $140B (KPMG T2); private credit AUM $2.28T (Preqin T1). Cycle positions: AI physical=LATE; AI services=MID; grid/electrification=EARLY-MID; defense tech=MID; GLP-1 adherence=EARLY; longevity=EARLY. |src:R-2026-05-17-k-shape-opportunities |promoted:2026-05-17
 
@@ -95,7 +95,7 @@ P-candidate[2026-second-order-shovels-solo-accessible|class:calibration|agent:po
 
 P-candidate[transformer-advisory-client-archetypes|class:calibration|agent:portfolio-analyst|reason:concrete warrant validation for opportunity-class finding — useful if transformer shortage persists into 2027-2028 reviews; may stale faster if supply catches up] Two buyer archetypes for transformer procurement advisory at solo scale: (A) Mid-tier DC developers (5-50MW) — lack dedicated procurement specialists; service=spec optimization + lead-time arbitrage + refurbished sourcing; price=$15K-75K/project; ROI justification=saves $2-5M opportunity cost from 12-month delay; barrier=prior DC/electrical-engineering sector contacts. (B) Rural electric cooperatives (800+ in US) — ongoing capex programs, under-served by large consultants; service=procurement planning + IIJA federal Buy America compliance; price=$5K-30K retainer; barrier=prior utility operations background. Hyperscalers are NOT the buyer (captive in-house). Prime EPCs are NOT the buyer (they are the competitors). |src:R-2026-05-17-k-shape-opportunities |promoted:2026-05-17
 
-#### tech-industry-analyst — promotion (2026-05-17)
+### tech-industry-analyst promotion (2026-05-17)
 
 **Auto-promoted to agent memory — 4 new items stored (R1 items 1-3 confirmed already in memory):**
 
@@ -124,20 +124,12 @@ Per directives.md circuit-breaker protocol, lead scanned R1 workspace for inter-
 
 ### BELIEF[r1] — pre-DA prior
 
-BELIEF[r1]: P=0.78 — team R1 produces actionable opportunity discovery for solo/family-office user |→ proceed to R2 DA challenge
-
-BELIEF[r2]: P=0.84 — post-R2 with 4/4 BELIEF revisions DOWNWARD (macro 0.82→0.78; port 0.55→0.40; TIA 0.72→0.65; PS 0.80→0.65) + mechanistic correction (income-stream-driven replaces wealth-stock) + CONVERGENCE-TENSION-1 resolved (RCA 0.78 conditional / macro 0.65 unconditional / 0.52 in correction); raise reflects honest cross-agent calibration + 3-provider XVERIFY MEDIUM-vulnerability anchoring K-numbers in T1 sources |→ DA R3 exit-gate PASS, proceed to synthesis
-
-### Pre-synthesis canonical-format anchors (lead structural — point to DA-authored content)
-
-CONTAMINATION-CHECK: session-topics-outside-scope: none |scan-result: clean — full audit at workspace ### devils-advocate ##### CONTAMINATION-CHECK (required artifact for A8 chain-eval) with verdict PASS per DA[r2] anti-sycophancy P[laundering-detection] sweep; 0 untagged load-bearing findings; 5 [prompt-claim] tags all paired with [independent-research] corroboration; methodology investigative-on-premises with confirmatory-aggregation-tone (within tolerance).
-
-SYCOPHANCY-CHECK: softened:none |selective-emphasis:none |dissent-reframed:none |process-issues:none — full DA self-audit at workspace ### devils-advocate ##### SYCOPHANCY-CHECK (required artifact for A10 chain-eval) with verdict PASS via 4 anti-pattern sweeps: BELIEF direction sweep 4/4 DOWNWARD (honest math, not accommodation); 0/6 performative-concession detected; 5/6 concession-strengthens-thesis pattern (highest-quality outcome with EC locating NEW T1 source under R2 pressure); 0/3 relabeling-evasion detected.
+BELIEF[r1]: P(team R1 produces actionable opportunity discovery for solo/family-office user) = 0.78
 - decomposition: P(empirical data sound)=0.90 × P(opportunity inventory complete-enough w/o portfolio-analyst)=0.78 × P(no DA blocker discovered)=0.95 × P(timing/cycle judgments calibrated)=0.85
 - 0.90 × 0.78 × 0.95 × 0.85 ≈ 0.567 — RAISE TO 0.78 reflecting genuine cross-agent corroboration (asset-wealth thesis convergent across 3 agents) + reference-class anchoring + product-strategist's matrix providing the actionable shape layer
 - action: proceed to R2 DA challenge with portfolio-analyst gap explicit and CONVERGENCE-TENSION-1 to be reconciled
 
-#### portfolio-analyst R1 gap — documented (historical — subsequently resolved)
+### portfolio-analyst R1 gap — documented
 
 5 of 6 R1 agents converged with substantive findings. Portfolio-analyst memory mtime is 14:37 from earlier today (pre-spawn) — meaning the agent never engaged the R1 work cycle despite multiple re-engagement messages. Treating as R1 GAP:
 - A1 (agent findings) will FAIL for portfolio-analyst alone — workspace section empty
@@ -166,7 +158,7 @@ Note: team-config names for product-strategist + reference-class-analyst carry -
 P-candidate[conditional-BELIEF-framing-over-single-point|class:new-principle|agent:macro-rates-analyst|reason:generalizable-across-all-reviews]
 When a BELIEF gap exists between agents using different methodological approaches (e.g., base-rate-count vs. break-condition-specification), the correct analytical response is explicit conditional framing — not selecting one agent's number as the synthesis answer. Format: P(claim | condition A) = X; P(claim | condition B) = Y; P(claim | unconditional) = Z. This resolves CONVERGENCE-TENSION-1 from R-2026-05-17 without either agent being wrong and preserves the methodological distinction. Applies to: any future review where agents produce BELIEF estimates using different calibration strategies. Currently macro-rates produces single-point estimates; adding conditional structure improves DA reconciliation and synthesis precision. |src:R-2026-05-17-k-shape-opportunities DA[#3] compromise
 
-#### reference-class-analyst — promotion candidates (user-approve required)
+### reference-class-analyst promotion candidates (user-approve required)
 
 P-candidate[3-dimension-edge-verification-framework-for-solo-operator-reviews|class:new-principle|agent:reference-class-analyst|reason:framework-level addition to how sigma-review scopes user when topic is solo/family-office opportunity selection. PM[7] in R-2026-05-17 quantified base-rate-substitution self-deception at 21% probability — highest single pre-mortem. Mitigation requires explicit user-edge-verification BEFORE any opportunity-viability BELIEF is treated as applicable to user. Generalizable to any review where outside-view base rate differs materially between conditional class (e.g., Stanford SF Study cohort) and unconditional class (e.g., BLS all-startup).]
 Synthesis-mandate to apply at every solo-operator opportunity review: "This analysis was conducted under the assumption that the user is in the [Stanford SF Study / domain-relevant analogue] class. This assumption is UNVERIFIED. Before acting on any opportunity-viability BELIEF in this synthesis, the user must self-verify their edge along three dimensions: (1) prior DOMAIN EXPERTISE relevant to the specific niche pursued (¬general competence); (2) NETWORK ACCESS to first 3-5 customers in the niche (¬cold-start); (3) CAPITAL MANAGEMENT DISCIPLINE and 18-36mo runway commitment without immediate revenue. If any of these three are absent, the team's BELIEFs do NOT apply — defaulting to the unconditional base rate." Without this synthesis-mandate, all opportunity-viability findings are systematically over-calibrated by 12-17pp. |src:R-2026-05-17-k-shape-opportunities DA[#20] CONCEDE-and-ESCALATE
@@ -738,9 +730,9 @@ PV[TIA-6] DISCONFIRM block: Four specific evidence-against points. DISCONFIRM[al
 **Overall verdict: PASS with one FLAG** — tech-industry-analyst section meets DB, hygiene, source-tagging, and disconfirmation standards. Single unresolved flag: MIT 2025 study provenance (F[TIA-5]) is load-bearing T1 claim that DA should independently verify in R2. Not a protocol violation — appropriately flagged.
 
 
-### Initial verification (SUPERSEDED — see re-pass below): macro-rates-analyst → portfolio-analyst
+### Peer Verification: macro-rates-analyst verifying portfolio-analyst
 
-**Verification result: N/A — portfolio-analyst section is empty at time of this verification.** This audit-trail entry is preserved per §8e attestation pattern but is structurally NOT a valid peer-verification per A16/A17 regex — the substantive verification is the re-pass below at line 753.
+**Verification result: N/A — portfolio-analyst section is empty at time of this verification.**
 
 portfolio-analyst has not yet written R1 findings to workspace. Per peer verification ring protocol, specific artifact checks:
 
@@ -919,13 +911,13 @@ BELIEF[second-order power/grid shovels viable at solo scale]=0.60 MED — genuin
 
 ---
 
-### Peer Verification: tech-industry-analyst verifying economics-analyst
+#### Peer Verification: tech-industry-analyst verifying economics-analyst
 
 Economics-analyst findings present in workspace. Verifying against peer-verification-index ring position 3.
 
-PV-ref[EC-1] Upper-K spending divergence — BofA Institute data cited (higher-income +2.5% YoY vs. middle-income +1.0%, lower-income +0.3%; top 10% = 49.7% all consumer spending). Source: [independent-research:T2] |source:[peer-verify-reference] — appropriate tier (BofA Institute is T2 corroborated transaction data, not audited T1 filing). Convergence claimed with multi-source corroboration. §2a check produces substantive E-shaped vs K-shaped distinction — genuine revision, not perfunctory. PASS.
+F[EC-1] Upper-K spending divergence — BofA Institute data cited (higher-income +2.5% YoY vs. middle-income +1.0%, lower-income +0.3%; top 10% = 49.7% all consumer spending). Source: [independent-research:T2] — appropriate tier (BofA Institute is T2 corroborated transaction data, not audited T1 filing). Convergence claimed with multi-source corroboration. §2a check produces substantive E-shaped vs K-shaped distinction — genuine revision, not perfunctory. PASS.
 
-PV-ref[EC-2] Upper-K category rankings — experiential > tangible. Specific tier rankings with evidence. §2a check: premium goods slowdown noted as outcome 2 with counterweight evidence. |source:[peer-verify-reference] Analytical hygiene is applied substantively. PASS.
+F[EC-2] Upper-K category rankings — experiential > tangible. Specific tier rankings with evidence. §2a check: premium goods slowdown noted as outcome 2 with counterweight evidence. Analytical hygiene is applied substantively. PASS.
 
 F[EC-3] Asset wealth mechanism — equity + home equity as primary K-driver vs. labor income. Tagged as [agent-inference:T2] — correct provenance (distinguishes inference from independently sourced). PASS on source tagging. Flag: this is a load-bearing causal claim (asset price sustainability = fragile premise); DA should test whether independent-research backing exists for asset-wealth-as-primary-driver vs. labor-income-divergence-as-primary-driver.
 
@@ -1364,7 +1356,7 @@ E[ps-5]: Productized AI service net owner earnings at K ARR = K-K (after hidden 
 
 ---
 
-### Peer Verification: product-strategist verifying reference-class-analyst
+#### Peer Verification: product-strategist verifying reference-class-analyst
 
 Reference-class-analyst findings present in workspace. Verifying per peer-verification-index ring position 5.
 
@@ -1459,9 +1451,9 @@ Shape D (Newsletter/Community): BELIEF[viable-2026-2028] already low (0.30 as pr
 
 SYNTHESIS MANDATE emerging from DA[#10]: temporal sensitivity should be explicitly flagged in synthesis with a "2026-vs-extended" sensitivity column. Not all shapes are equally sensitive. Shape E and Shape B are most durable across temporal scenarios. Shape A and Shape F are more window-dependent. |source: agent-inference from macro F[macro-4] dual-mechanism + RCA CAL breakpoints. Cross-ref macro F[macro-8] K-flip signals for the equity correction probability anchor (currently LOW per RCA CAL[K-shape-persists]=78%).
 
-### Initial verification (SUPERSEDED — see re-pass below): economics-analyst → product-strategist
+### Peer Verification: economics-analyst verifying product-strategist
 
-**Verification result: N/A — product-strategist section is empty at time of this verification.** This audit-trail entry is preserved per §8e attestation pattern but is structurally NOT a valid peer-verification per A16/A17 regex — the substantive verification is the re-pass below.
+**Verification result: N/A — product-strategist section is empty at time of this verification.**
 
 product-strategist has not yet written R1 findings to workspace (section contains only the placeholder text "your section — write findings here"). Per peer verification ring protocol, I cannot evaluate what does not exist. Three specific artifact checks:
 
@@ -1499,7 +1491,7 @@ Product-strategist has now written full R1 findings. Re-pass conducted against 6
 
 ---
 
-#### 1. DECOMPOSE — sub-questions
+## 1. DECOMPOSE — sub-questions
 
 SQ[1]: P(K-shape bifurcation framework persists as policy/spending phenomenon through end-2028) |estimable: yes |method: base-rate + analogue (post-crisis inequality cycles) |→ reference-class-analyst + macro-rates-analyst + economics-analyst
 
@@ -1517,7 +1509,7 @@ SQ[7]: P(regulatory or platform risk closes a specific shovel-niche window withi
 
 ---
 
-#### 2. REFERENCE CLASS — RC[]
+## 2. REFERENCE CLASS — RC[]
 
 RC[K-shape-persistence-multi-year]: reference-class={post-crisis income/wealth bifurcation episodes lasting ≥5yr after a crisis-driven amplifier} |base-rate={historical persistence: bifurcation widened-and-held in 4 of 5 post-1980 episodes — 1981-recession→1990s, S&L→90s, dot-com→2000s, GFC→2010s, COVID→2020s; only 1969-recession partially moderated due to wage push} |sample-size={N=5 modern US bifurcation episodes} |src:[independent-research:T1] Federal Reserve Survey of Consumer Finances + Gini-coefficient time series + Minneapolis Fed K-shaped review 2026 |confidence:M (small-N, structural-amplifier change ε≈AI labor displacement could break pattern)
 
@@ -1543,7 +1535,7 @@ RC[upper-decile-spending-share-growth]: reference-class={top-decile household sp
 
 ---
 
-#### 3. ANALOGUES — ANA[]
+## 3. ANALOGUES — ANA[]
 
 ANA[1]: Samuel Brannan — first millionaire of CA Gold Rush, not by mining but by buying every shovel in San Francisco at $0.20 and reselling for $15 to prospectors |outcome:success (became wealthy in ~24mo, retired comfortably) |similarity:H (true shovel-seller, no mining exposure) |key-difference: monopolistic regional supply + zero competing distribution = no commoditization; modern shovels face commoditization in 12-36mo |src:[independent-research:T3] historical narrative (multi-corroborated)
 
@@ -1563,7 +1555,7 @@ ANA[8]: WeWork — wrong-shape business in real cycle (remote-work cycle was rea
 
 ---
 
-#### 4. CALIBRATE — CAL[]
+## 4. CALIBRATE — CAL[]
 
 CAL[K-shape-persists-meaningfully-through-end-2028]: point=78% |80%=[65,87] |90%=[55,92] |assumptions: {no AI-induced lower-K wage convergence shock; no regulatory wealth-tax reversal; no upper-K asset-deflation event >35%} |breaks-if: {sustained real-wage growth >3%/yr in bottom-quartile combined with Fed-induced upper-decile asset deflation, OR universal AI productivity gains accruing to labor not capital — neither has historical precedent at scale}
 
@@ -1577,7 +1569,7 @@ CAL[shovel-window-stays-open-3yr-uninterrupted-by-reg-or-platform]: point=46% |8
 
 ---
 
-#### 5. PRE-MORTEM — PM[]
+## 5. PRE-MORTEM — PM[]
 
 PM[1]: Wrong shovel LAYER — user picked a saturated commoditizable layer (e.g., generic RAG consulting, vanilla agent dev) and was margin-compressed against scale incumbents (Accenture/Deloitte AI practices + low-cost Upwork specialists) |probability:28% |early-warning:{pricing power eroding within 12mo of entry; 3+ direct competitors emerge in 90 days post-launch; client RFPs requesting "AI consultant" generically} |mitigation:{pick narrow vertical specialization where domain expertise is moat — heavily-regulated verticals where commodity AI providers cannot enter; price on outcome ¬hour}
 
@@ -1597,7 +1589,7 @@ PM[8]: CONTAMINATION-by-framing — user adopts the K-shape persistence as a giv
 
 ---
 
-#### 6. OUTSIDE-VIEW RECONCILIATION
+## 6. OUTSIDE-VIEW RECONCILIATION
 
 OV-RECONCILIATION:
 - inside-view (anticipated from peers): {team will likely surface high-conviction opportunity-sets in AI services (RAG/eval/agent ops), GLP-1 ecosystem adjacencies, luxury/experience B2B shovels, longevity/wellness, electrification services — with implicit success probability ≥50% for a competent solo operator}
@@ -1609,7 +1601,7 @@ OV-RECONCILIATION:
 
 ---
 
-#### R1 Disconfirmation Duty
+## R1 Disconfirmation Duty
 
 DISCONFIRM[outside-view-pessimism]:
 - evidence-against (strongest): {(1) Stanford SF Study solo-IRR 30.3% w/ 11% achieving >10x suggests fat-tail SUCCESSES are normal in this class, not anomalies — base rate captures full distribution including big winners; (2) AI capex cycle scale is unprecedented ($725B 2026 vs. ~$25B dot-com peak inflation-adjusted), so historical "shovel survival" base rates may UNDER-estimate this cycle's runway; (3) micro-SaaS growth rate ~30%/yr 2024-2030 reflects expanding addressable market — base rates from contracting/static markets understate forward potential; (4) family-office capital + AI productivity (operator can do work of 3-5 prior-era founders) compresses time-to-PMF, reducing 3yr survival risk vs. BLS all-startup measurement}
@@ -1627,7 +1619,7 @@ DISCONFIRM[comparison]:
 
 ---
 
-#### DB[] — Dialectical Bootstrapping (top 3 findings)
+## DB[] — Dialectical Bootstrapping (top 3 findings)
 
 DB[CAL[K-shape-persists-meaningfully-through-end-2028]=78%]:
 (1) initial: 78% — based on 4-of-5 post-1980 bifurcation episodes persisting + COVID-era amplification + current Gini at 60-yr high + Q2 2025 top-10% capturing 49% spending
@@ -1652,7 +1644,7 @@ DB[ANA[3-and-4: Cisco/Sun cycle position is decisive]]:
 
 ---
 
-#### §2 Analytical Hygiene Outcomes (forcing function)
+## §2 Analytical Hygiene Outcomes (forcing function)
 
 §2a positioning & consensus (outcome 2 — CHECK CONFIRMS WITH ACKNOWLEDGED RISK):
 - The "K-shape opportunity" hypothesis is highly consensus (multi-source mid-2025 to mid-2026 coverage from Fortune/CNBC/USBank/Britannica). 
@@ -1674,7 +1666,7 @@ DB[ANA[3-and-4: Cisco/Sun cycle position is decisive]]:
 - 11 RC[] entries, all sourced [independent-research:T1] or [independent-research:T2] (none T3)
 - 8 ANA[] entries: 6 [independent-research:T1/T2], 1 [independent-research:T3 historical narrative — Brannan story, multi-corroborated], 0 [prompt-claim]
 - 5 CAL[] entries: all derived from RC+ANA via Bayesian updating, sources cited
-- 0 untagged-prompt-claim findings — my section operates outside the user's prompt assumptions about K-shape persisting (I tested H1 and gave it 0.78 with explicit assumptions, not assumed) |source:[agent-inference] (self-audit)
+- 0 [prompt-claim] findings — my section operates outside the user's prompt assumptions about K-shape persisting (I tested H1 and gave it 78% with explicit assumptions, not assumed) |source:[agent-inference] (self-audit)
 
 §2e premise viability (outcome 1 — CHECK CHANGED ANALYSIS):
 - Required premise for "opportunity discovery exercise is well-posed": K-shape persists + AI capex cycle still expanding + user is in Stanford-SF-Study-class
@@ -1693,7 +1685,7 @@ DB[ANA[3-and-4: Cisco/Sun cycle position is decisive]]:
 
 ---
 
-#### hypothesis-matrix (R1 evidence rows for my domain)
+## hypothesis-matrix (R1 evidence rows for my domain)
 
 H1:K-shape persists 2026-2028 | H4:AI compute shovel-layer captured; service-layer open at small scale | H5:picks-and-shovels has structural margin but timing decisive
 
@@ -1713,7 +1705,7 @@ Inconsistency-scores: H1=0 negatives; H4=0 negatives; H5=0 negatives
 
 ---
 
-#### key-findings (R1 reference-class-analyst summary)
+## key-findings (R1 reference-class-analyst summary)
 
 F[RCA-1]: **Outside-view base rate floor for "solo+family-office in correct shovel niche" is 30-42% 3yr profit-positive, NOT 50-70% inside-view intuitive estimate.** |confidence:H |source:[independent-research:T1] Stanford SF Study + BLS BED + Census Nonemployer 
 
@@ -1735,7 +1727,7 @@ F[RCA-8]: **CONTAMINATION RISK: peers may anchor on user's K-shape thesis and pr
 
 ---
 
-#### open-questions (surfacing for team)
+## open-questions (surfacing for team)
 - Q[RCA-OPEN-1]: What is user's verified edge (prior domain expertise + network in specific niche)? — determines whether Stanford-SF-Study class applies (synthesis-blocker without)
 - Q[RCA-OPEN-2]: Is opportunity-SELECTION-stage vs. opportunity-COMMITMENT-stage probability gap properly communicated? — 42% conditional vs. 25% unconditional matters for user planning
 - Q[RCA-OPEN-3]: Should team explicitly include "acquire existing operating business" (search-fund path) as parallel track to "build picks-and-shovels" — given empirically better solo base rate?
@@ -1856,7 +1848,7 @@ My CAL[K-persists-2028]=78% (CI 65-87) vs. macro-rates BELIEF[K-persists-2028]=0
 - A3 reports portfolio-analyst + reference-class-analyst "no DB[] entries" — workspace shows port has DB[port-1/2/3] (5-step) and RCA has DB[CAL[1]] + DB[CAL[3]] + DB[ANA[3-4]] (5-step). Parser likely scoped to `DB[F[]]` notation only — flag for infrastructure ticket.
 - A16/A17/A18 report tech-industry/product-strategist "no PV section" and "economics/RCA verified by only 1" — workspace contains PV at lines 362+ (TIA-of-economics) and 650+ (PS-of-RCA). Parser may anchor on specific header text. Infrastructure issue.
 - A6 reports BELIEF missing P= value — workspace BELIEF entries use `BELIEF[X]=0.65` syntax not `P=0.65` syntax. Parser-format-mismatch, not process violation.
-- A9 reports prompt-claim at 0.78 percentile threshold — false positive likely from echo of K-shape/picks-and-shovels DOMAIN vocabulary, not from [prompt-claim]-tagged findings (5 actual [prompt-claim] tags in workspace, all corroborated).
+- A9 reports prompt-claim at 78% — false positive likely from echo of K-shape/picks-and-shovels DOMAIN vocabulary, not from [prompt-claim]-tagged findings (5 actual [prompt-claim] tags in workspace, all corroborated).
 - A13 reports "no promotion evidence" — correct; promotion phase is post-R3 PASS per workflow, not R2.
 
 These are parser/format gaps, NOT analytical process violations by agents. Flag for sigma-system-overview infrastructure ticket. Substantive analytical review proceeds.

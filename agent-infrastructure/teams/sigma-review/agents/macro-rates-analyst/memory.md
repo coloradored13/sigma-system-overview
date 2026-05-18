@@ -111,6 +111,57 @@ R[oil-supply-disruption-detail:Iran war started Feb 28(US+Israel joint strikes)|
 R[labor-market:Feb NFP -92K(est -50K)|3rd negative print in 5mo|Jan revised to +126K(from higher)|UE 4.4%|AHE +3.8% y/y(+0.4% m/m)|healthcare -28K(Kaiser strike 30K+ workers)|fed govt -10K(-330K since Oct 2024, -11% of total)|Mar report due Apr 3|wage growth still above inflation=real wage gains positive but narrowing|labor market "essentially paralyzed"(CNBC)|DOGE-driven federal cuts structural¬cyclical|SHIFT from prior: confirmed -92K, wage growth sticky at 3.8%(inflationary)|src:bls.gov,cnbc.com,tradingeconomics.com|refreshed:2026-03-22|next:2026-04-22]
 
 R[fed-transition:Powell term expires May 15 2026|Warsh formally nominated Mar 4|confirmation pending—Senate blockade+DOJ probe creating "constitutional standoff"|Warsh repositioned from hawk to "AI productivity bull"—argues AI structurally disinflationary→allows lower rates|signals: front-loaded cuts once seated, QT2.0(aggressive balance sheet reduction), "sound money" framing|if confirmed: expect dovish pivot Jun/Jul FOMC|Miran dissented Mar FOMC wanting -25bp=pressure building for cuts|market implication: significant policy discontinuity at May/Jun transition|SHIFT from prior: Warsh formally nominated(was expected), stance clearer("AI productivity bull"), constitutional friction added uncertainty|src:cnbc.com,whitehouse.gov,invesco.com|refreshed:2026-03-22|next:2026-04-22]
+## R1 complete — k-shape-opportunities-2026-05-17
+
+task: K-shape economy opportunity discovery | round: r1 complete | date: 2026-05-17
+
+### findings summary
+F[macro-1]: K-shape structural+intensifying | BELIEF[K-persists-2026]:0.82 | BELIEF[K-persists-2028]:0.65 | src:Minneapolis Fed 2026,CNBC Jan 2026,NY Fed Liberty Street May 2026 | T2
+F[macro-2]: wage reversal confirmed — bottom outpaced top 2023-2024(Cleveland Fed:bottom-40% +4.5pp cumulative vs top-20% +3.5pp) | reversed 2025: high-income 4% vs low-income 1.4% YoY(BofA) | BELIEF[wage-reversal]:0.78 | T1
+F[macro-3]: wealth bifurcation record — top-1% 31.7% net worth($54.8T) vs bottom-50% 2.5%($4.25T) | 12.9x differential | Q3 2025 Fed DFA | T1
+F[macro-4]: dual-mechanism upper-K — wage(4% after-tax) AND asset(+25% net worth since Q1 2023) | K-FLIP-SIGNAL: simultaneous equity correction >20% AND labor softening | T2
+F[macro-5]: upper-K spending — travel/dining/premium services gaining share | affluent=50% US spending | top-quintile $151K vs bottom $29K(BLS CEX 2024) | T2
+F[macro-6]: lower-K distress — necessities 62% of <$50K income | BNPL: 78% "only way I could afford it" | 24% sub-$25K have 3-mo savings | T1
+F[macro-7]: macro regime favors asset holders | Fed tools blunt | structural trap | T2
+F[macro-8]: K-flip signals: sustained UE<4% 3yr + equity correction >20% + MMT fiscal + Warsh cuts w/o asset inflation | current prob LOW
+
+### DB revisions
+DB[macro-1]: REVISED — income-K and wealth-K decouple | wealth-K more durable for opportunity discovery
+DB[macro-2]: REVISED — dual mechanism not single | wage growth(4%) AND asset appreciation(25%+) | more durable short-term but fragile to combined shock
+
+### analytical hygiene
+§2a:outcome-2 | §2b:outcome-2 | §2e:outcome-2 | §2c:N/A
+XVERIFY-UNAVAILABLE: agent-context deferred-load failure(consistent R20 carryover) | sigma-retrieve multi-source convergence used as substitute
+
+### disconfirmation
+DISCONFIRM[K-shape]: Cleveland Fed 2023-2024 bottom outperformance real but reversed | severity:MEDIUM
+DISCONFIRM[alt-frame]: generational divide — boomers 62.2% net worth vs millennials 10% | supplementary lens recommended for age-skewed categories
+
+### peer-verification
+portfolio-analyst: FAIL — section empty at time of verification | re-verify required when portfolio-analyst writes
+
+### open questions
+OQ[macro-1]: middle-40% spending data underserved — compressing toward lower-K or holding?
+OQ[macro-2]: Q1 2026 PCE by income quintile lag
+OQ[macro-3]: Warsh Fed ambiguous K-shape effect
+## R2 promotions — k-shape-opportunities-2026-05-17
+
+P[wealth-K-stock-vs-flow-calibration|src:R-2026-05-17-k-shape-opportunities|promoted:2026-05-17|class:calibration]
+Net-worth stock figures (Fed DFA top-1% vs bottom-50% shares) are scale context ¬operative mechanism. K-shape spending divergence must be grounded in FLOW evidence: non-wage income differential (dividends +46%, rental income +54% for high-income since 2019 per BEA/BofA), wage growth gap (4.0% vs 1.4% YoY per BofA Institute), and credit-distress signals (BNPL 78% "only way I could afford it" per Fed FEDS Note T1). Wealth-effect spending propensity from unrealized equity gains IS real but IS equity-correction-sensitive. Stock figures alone ¬sufficient for load-bearing causal claim — XVERIFY-openai flagged MEDIUM vulnerability; DA[#1] conceded and revised. Future reviews: lead with flow evidence; use stock figures as supporting scale context.
+
+P[K-flip-three-condition-architecture|src:R-2026-05-17-k-shape-opportunities|promoted:2026-05-17|class:pattern]
+K-shape spending bifurcation reverses when THREE conditions hold simultaneously: (1) equity correction >20% sustained 6+ months [removes wealth-effect leg], (2) labor market softening to UE 5%+ [removes wage-growth-differential leg], (3) absence of offsetting fiscal stimulus [prevents leg restoration]. The 2020 episode FALSIFIES the two-condition version — S&P -34% and UE spiked 14.7% but K-flip was temporary because CARES/PPP restored both legs within 9 months. The 2008-2009 episode CONFIRMS the three-condition version — both legs hit AND fiscal offset was insufficient and delayed. Third condition (fiscal offset absence) is testable in 2026 context: deficit ~6% of GDP + political environment makes aggressive fiscal response less likely than 2020. Three-condition architecture is more falsifiable than two-condition.
+
+P[base-rate-N1-substitution-risk|src:R-2026-05-17-k-shape-opportunities|promoted:2026-05-17|class:calibration]
+Single-episode base rate risk: the 2008-2019 K-shape persistence episode was amplified by unique mechanism (HAMP failure + ZIRP + QE-asset-inflation simultaneously). Using it as representative base rate for 2026 overstated calibration confidence by ~4pp (DA[#9] concession: 0.82→0.78). Corrective: always test directionality across ≥3 comparable historical episodes before citing persistence. 1981-1989 (Gini 0.403→0.431 through Volcker-to-Greenspan), 1990-2000 (K-shaped recovery post-recession), 2000-2010 (bifurcation through two distinct shocks) all confirm wealth-K directional persistence without ZIRP. Generalize: any N=1 base rate disguised as multi-episode precedent is a §2b OUTCOME-1 trigger.
+
+## R2 BELIEF revision log — k-shape-opportunities-2026-05-17
+BELIEF[K-persists-2026]: 0.82 → 0.78 (DA[#9] N=1 base-rate concession)
+BELIEF[K-persists-2028|unconditional]: 0.65 (maintained)
+BELIEF[K-persists-2028|equity within ±10% 2026Q1]: 0.75 (new conditional)
+BELIEF[K-persists-2028|equity correction >25%]: 0.52 (new conditional)
+BELIEF[K-persists-2028|Warsh-aggressive-cuts]: 0.60 (new conditional)
+BELIEF[wealth-K-stock-as-primary-causal-driver]: WITHDRAWN
 
 → actions:
 → new finding → append with severity+evidence
