@@ -19,10 +19,10 @@ A cross-model verification system (~1,776 LOC, 300 tests), exposed as an MCP ser
 Compressed agent-to-agent communication. Format: `[STATUS] BODY |¬ ruled-out |→ actions |#count`. Forces agents to declare what they ruled out (¬) and what they can do next (→).
 
 ### [Agent Team Infrastructure](./agent-infrastructure/)
-File-based infrastructure for self-sufficient agent teams. 29 agent definitions, 22 agents on the active roster, 7 skills, and a shared governance system (directives, patterns, decisions). Agents boot themselves, read their own memory, communicate via ΣComm inboxes, share a workspace, and declare convergence — all on markdown files. Counts are validated in CI by `validate-docs.sh`.
+File-based infrastructure for self-sufficient agent teams. 29 agent definitions, 22 agents on the active roster, and a shared governance system (directives, patterns, decisions, calibration gates). Agents boot themselves, read their own memory, communicate via ΣComm inboxes, share a workspace, and declare convergence — all on markdown files. Counts are validated in CI by `validate-docs.sh`.
 
 ### [Skills Ecosystem](./agent-infrastructure/skills/)
-7 orchestration skills covering the full lifecycle:
+The system ships **11 sigma-prefixed orchestration skills** (plus ~30 auxiliary capability and domain skills). The 7 core lifecycle skills:
 
 | Skill | When to use | What it does |
 |-------|-------------|--------------|
@@ -33,6 +33,8 @@ File-based infrastructure for self-sufficient agent teams. 29 agent definitions,
 | `/sigma-retrieve` | During a review when an agent needs deep research on a specific topic | Agentic RAG — decomposes query, runs parallel retrieval, scores sources on relevance/authority/recency, cross-validates, filters noise |
 | `/sigma-research` | Before a major review to refresh agent domain knowledge | Agents conduct web research in their expertise areas, store compressed findings in memory for use during reviews |
 | `/sigma-init` | Setting up sigma-review for a new project or first-time installation | Initializes team structure, creates project-tier files, validates system configuration |
+
+Additional sigma orchestration skills: `/sigma-feedback` (post-review calibration loop), `/sigma-optimize` (evolutionary prompt optimization), `/sigma-dream` (memory consolidation cycle), `/sigma-single` (enhanced single-instance analysis). The auxiliary layer includes capability skills (research-analysis, structured-writing, review-critique, data-analysis, etc.), passive always-on skills (skill-improver, assumption-surfacer, memory-compiler, etc.), and domain skills (loan-agency, engineering, legal, finance-accounting, bio-research). See [skills/INDEX.archived.md](./agent-infrastructure/skills/INDEX.archived.md) for the full categorized inventory.
 
 ## Architecture
 
@@ -70,19 +72,27 @@ sigma-system-overview/
     agents/                         # 29 agent definitions (+ orchestrator, protocol, template, spec)
                                     # See teams/sigma-review/shared/roster.md for the 22 currently active
                                     # Counts validated by validate-docs.sh in CI
-    skills/                         # 7 orchestration skills
+    skills/                         # 42 skills — 11 sigma orchestration + auxiliary ecosystem
       sigma-review/                 # ANALYZE mode orchestration
       sigma-build/                  # BUILD mode orchestration
       sigma-evaluate/               # Rubric-based evaluation
       sigma-audit/                  # Independent process verification
+      sigma-feedback/               # Post-review calibration loop
       sigma-retrieve/               # Agentic RAG pipeline
       sigma-research/               # Domain research refresh
+      sigma-optimize/               # Evolutionary prompt optimization
+      sigma-dream/                  # Memory consolidation cycle
+      sigma-single/                 # Enhanced single-instance analysis
       sigma-init/                   # Team initialization
+      ...                           # + capability, behavioral, passive, protocol, domain skills
+      INDEX.archived.md             # Categorized inventory
     teams/sigma-review/             # Live team instance
-      shared/                       # Workspace, decisions, patterns, directives, roster
+      shared/                       # Workspace, decisions, patterns, directives, gates, calibration
         directives.md               # ANALYZE governance
         build-directives.md         # BUILD governance
-        archive/                    # Archived review workspaces
+        gate_checks.py              # Pre/post-round gate checks
+        audit-calibration-gate.py   # Calibration gate enforcement
+        archive/                    # 59 archived review workspaces
       agents/                       # Individual agent persistent memory
       inboxes/                      # ΣComm inbox files
     knowledge-graphs/               # Structured domain knowledge
@@ -112,6 +122,6 @@ sigma-system-overview/
 | Agent definitions | 4,399 (29 files) | — | — |
 | **Total (Python)** | **7,802** | **14,150** | **1,054** |
 
-**Reviews completed:** 51 archived in `agent-infrastructure/teams/sigma-review/shared/archive/` (hateoas-agent code reviews, loan-admin tech landscape, VDR market analysis, biotech healthcare M&A, workflow automation, SVB stress test, and others).
+**Reviews completed:** 59 archived in `agent-infrastructure/teams/sigma-review/shared/archive/`. Topics include hateoas-agent code reviews, loan-admin tech landscape, VDR market analysis, biotech healthcare M&A, workflow automation, SVB stress test, Iran conflict / geopolitical, enterprise AI rollout, sigma-chatroom internal product review, sigma-predict cross-pollination, K-shape economic opportunities, plus multiple meta-reviews of sigma itself (process hardening, architecture, audit remediation).
 
 > Submodule code stats are auto-checked by `validate-docs.sh` (run in CI). Submodule freshness is auto-managed by the `update-submodules.yml` workflow (daily cron) — run `check-freshness.sh` locally to verify.

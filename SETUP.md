@@ -26,6 +26,8 @@ The setup script creates a dedicated virtual environment at `~/.claude/sigma-ven
 | `hateoas-agent` | `pip install git+https://github.com/coloradored13/hateoas-agent.git` | HATEOAS framework for AI agent tool use |
 | `sigma-mem` | `pip install git+https://github.com/coloradored13/sigma-mem.git` | Persistent memory MCP server (built on hateoas-agent) |
 
+> **sigma-verify** is a peer MCP server (cross-model verification) that the system documents but `setup.sh` does not currently install. To enable it, install the package manually (`~/.claude/sigma-venv/bin/pip install git+https://github.com/coloradored13/sigma-verify.git`) and add a second `mcpServers` entry to `~/.claude.json` mirroring the `sigma-mem` block but pointing at `sigma_verify.server`. See `INTERFACES.md` for the tool surface.
+
 ### Files Created
 
 The Sigma System uses a two-tier memory architecture. The global tier is installed by `setup.sh`; the project tier is initialized per-project with `setup-project.sh`.

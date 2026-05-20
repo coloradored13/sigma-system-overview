@@ -187,40 +187,73 @@ File-based infrastructure for self-sufficient agent teams with persistent identi
 ~/.claude/agents/              # 29 global agent definitions (validated by validate-docs.sh)
   sigma-lead.md                # Orchestrator protocol
   sigma-comm.md                # Communication protocol
+  SIGMA-COMM-SPEC.md           # Full protocol specification
   devils-advocate.md           # Adversarial analyst (exit-gate authority)
   reference-class-analyst.md   # Superforecasting / calibration specialist
   tech-architect.md            # Architecture specialist
+  implementation-engineer.md   # Backend implementation specialist
   product-strategist.md        # Product/market specialist
+  product-designer.md          # Design systems / interaction design specialist
+  ui-ux-engineer.md            # Frontend build / visual design specialist
   ux-researcher.md             # Developer experience specialist
   code-quality-analyst.md      # Code quality specialist
   technical-writer.md          # Documentation specialist
+  synthesis-agent.md           # Cross-agent synthesis specialist
+  cross-model-validator.md     # External-model verification specialist
   + market-domain agents       # macro-rates, sanctions-trade, energy, geopolitical, portfolio
   + regulatory-domain agents   # regulatory, tech-industry, economics
-  + cross-cutting specialists  # cognitive-decision-scientist, security-specialist, statistical-analyst, etc.
-  + dynamic agents             # created mid-review when DA identifies domain gaps
+  + cross-cutting specialists  # cognitive-decision-scientist, security-specialist, statistical-analyst, m-and-a-deal-counsel
+  + dynamic agents             # loan-ops-tech-specialist, regulatory-licensing-specialist (created mid-review per DA gap ID)
+  + search-strategy agents     # search-aggressive, search-conservative, search-combinatorial
   _template.md                 # Canonical agent definition template
   See agent-infrastructure/teams/sigma-review/shared/roster.md for the 22 currently active.
 
-~/.claude/skills/              # Orchestration + auxiliary skills
+~/.claude/skills/              # 42 skills total — 11 sigma orchestration + auxiliary ecosystem
+  # Sigma orchestration (multi-agent team workflows)
   sigma-review/                # ANALYZE mode — multi-agent research with adversarial rounds
   sigma-build/                 # BUILD mode — plan→challenge→build→review
   sigma-evaluate/              # Rubric-based output evaluation (3 evaluators + judge)
   sigma-audit/                 # Independent process quality verification
+  sigma-feedback/              # Post-review calibration loop (datum/concept tracks)
   sigma-retrieve/              # Agentic RAG pipeline
   sigma-research/              # Agent domain research refresh
+  sigma-optimize/              # Evolutionary prompt optimization
+  sigma-dream/                 # Memory consolidation cycle (dedup, prune, promote)
+  sigma-single/                # Enhanced single-instance analysis
   sigma-init/                  # Team initialization
-  + auxiliary skills           # source-validation, sigmacomm helpers, etc.
+  # Auxiliary layer (capability, behavioral, passive, protocol, domain)
+  + capability skills          # research-analysis, structured-writing, review-critique, data-analysis, planning-prioritization, process-design, reporting
+  + behavioral skills          # socratic-grill, negotiation-coach
+  + passive skills             # passive-bootstrap, skill-improver, assumption-surfacer, skill-identifier, memory-compiler, research-harvester
+  + protocol skills            # sigmacomm, persistent-wiki
+  + execution-layer skills     # query, visualize, financial-close, bio-tools
+  + orchestrator skills        # product-ops, design-ops, competitive-brief
+  + domain skills              # loan-agency, legal, engineering, finance-accounting, bio-research
+  + meta skills                # mcp-builder, source-validation
+  INDEX.archived.md            # Categorized inventory (documentation-only; Claude Code's native router handles matching)
 
 ~/.claude/teams/sigma-review/  # Team instance
   shared/
     roster.md                  # 22 agents with domains + wake-for rules
     directives.md              # ANALYZE governance
     build-directives.md        # BUILD governance
+    protocols.md               # Inter-protocol coordination
     decisions.md               # Expertise-weighted decisions with attribution
     patterns.md                # Cross-agent observations (growing across reviews)
+    portfolio.md               # Projects reviewed: dates, agents, takeaways, promotions
     workspace.md               # Current task (agents read/write collaboratively)
-    orchestrator-config.py     # Automated phase transition CLI
-    archive/                   # Archived review workspaces (51+ runs)
+    workspace_write.py         # Workspace write coordination
+    gate_checks.py             # Pre/post-round gate checks
+    audit-calibration-gate.py  # Calibration gate enforcement
+    calibration-log.md         # Calibration data across reviews
+    calibration/               # Calibration baselines and snapshots
+    snapshots/                 # Periodic state snapshots
+    wiki/                      # Compiled cross-session knowledge
+    builds/                    # BUILD-mode artifacts
+    security-architecture-draft.md   # Security architecture work product
+    security-review-findings.md      # Security audit findings
+    archive/                   # 59 archived review workspaces
+    test_*.py                  # Gate-check unit tests
   agents/{name}/
     memory.md                  # Persistent personal memory (agent self-maintains)
   inboxes/{name}.md            # Markdown/ΣComm inbox (summarize-and-clear)
@@ -317,9 +350,9 @@ User interaction:
 
 ## Evidence it works
 
-The system has completed 50+ reviews across codebases, market analyses, and stress tests. Team composition has grown from 3 core agents to 22 roster agents with adversarial layer.
+The system has completed 59 reviews across codebases, market analyses, build cycles, and stress tests. Team composition has grown from 3 core agents to 22 roster agents with adversarial layer.
 
-**Review history:**
+**Review history (selected milestones):**
 - Reviews 1-3 (sigma-mem): correctness issues → polish → architecture review
 - Review 4 (hateoas-agent): 9 findings, grades arch A-, security A, DX B+
 - Review 5 (hateoas-agent delta): 6 resolved, 3 remaining, DX A-
@@ -330,14 +363,28 @@ The system has completed 50+ reviews across codebases, market analyses, and stre
 - Review 11 (biotech healthcare M&A): 6+DA, 3 rounds, AI-as-structural-accelerant framework, doc-generation-heredoc pattern discovered
 - Review 12 (workflow automation): highest R3 engagement grades observed (A-/A across all agents), genuine analytical shift under DA pressure (automation-first→PI-first-conditional)
 
-**Observed patterns (from patterns.md, 142 lines):**
+**Recent work (Reviews 13+, 2026-03 through 2026-05):**
+- Cross-model protocol synthesis (2026-04-09): incorporating sigma-verify into the review loop
+- sigma-predict cross-pollination (2026-04-13): meta-review of capability transfer between sigma skills
+- sigma-v2 architecture plan (2026-04-15): forward-looking architecture work
+- Enterprise AI rollout (2026-04-16): topical for the AI guild audience
+- sigma-chatroom M1 a/b reviews + audits (2026-04-20/21): internal product review with R3 audit cycle
+- AI agent rollout playbook vet (2026-04-22)
+- R19 remediation (2026-04-23): closing the loop on prior review findings
+- Shared process hardening (2026-04-28): the system improving its own protocols
+- BLOCK 5 synthesis-archive carve-out (2026-05-05): TIER-1 build with C3 review chain
+- K-shape opportunities (2026-05-17): macro-economic analysis
+
+**Observed patterns (from patterns.md, 531 lines):**
 - Review severity decreases with iteration (correctness → polish → acceptance)
 - Independent agents converge on the same issues from different domain angles
 - 2-agent teams herd faster than 5-agent teams — always include DA from R2
 - Data-backed DA challenges produce behavioral change; rhetorical challenges produce performative concession
 - Teams replace old consensus with new consensus under DA pressure → DA must stress-test new consensus too
 - Herding detected and addressed in 3+ reviews (Iran, loan-admin, workflow-automation)
-- Dynamic agent creation fills genuine domain gaps (regulatory-licensing-specialist, loan-ops-tech-specialist)
+- Dynamic agent creation fills genuine domain gaps (regulatory-licensing-specialist, loan-ops-tech-specialist, cognitive-decision-scientist, security-specialist)
+- Calibration gates (audit-calibration-gate.py) enforce post-review forecasting hygiene
+- Cross-session pattern accumulation: patterns.md grew from 142 lines (Review 6) to 531 lines (Review 59) — ~3.7x growth, single source of truth for cross-review observations
 
 ## What's novel
 

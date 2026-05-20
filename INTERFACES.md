@@ -1,22 +1,28 @@
 # Cross-Repo Interface Contract
 
-This document defines the coupling points between sigma-system-overview, sigma-mem, and hateoas-agent. Changes to any interface listed here require coordinated updates across repos.
+This document defines the coupling points between sigma-system-overview, sigma-mem, sigma-verify, and hateoas-agent. Changes to any interface listed here require coordinated updates across repos.
 
-Last verified: 2026-03-19
+Last verified: 2026-05-20
 
 ## Dependency Chain
 
 ```
 sigma-system-overview (agent definitions, setup, skills)
-    └── sigma-mem (MCP server, memory tools, integrity checks)
+    ├── sigma-mem (MCP server, memory tools, integrity checks)
+    │       └── hateoas-agent (StateMachine, serve())
+    └── sigma-verify (MCP server, cross-model verification)
             └── hateoas-agent (StateMachine, serve())
 ```
 
+Both `sigma-mem` and `sigma-verify` are MCP servers built on the `hateoas-agent` framework. They are peer components — agents call `sigma-mem` for memory and `sigma-verify` for cross-model challenge of findings.
+
 ## Version Pinning
 
-setup.sh pins both dependencies to specific commit hashes:
+setup.sh pins both `sigma-mem` and `hateoas-agent` to specific commit hashes:
 - `HATEOAS_AGENT_PIN` — hateoas-agent commit
 - `SIGMA_MEM_PIN` — sigma-mem commit
+
+> **Note:** `setup.sh` does not currently install `sigma-verify`. The component is documented and importable as a submodule, but wiring its MCP server into `~/.claude.json` is a manual step (mirror the sigma-mem block in `setup.sh`, swapping `sigma_mem.server` for `sigma_verify.server`). Adding a `SIGMA_VERIFY_PIN` to setup.sh is tracked as future work.
 
 **Upgrade procedure:**
 1. Update the pin hash in setup.sh
@@ -86,9 +92,26 @@ Recognized by sigma-mem integrity checker (`extract_confidence()`):
 3. Add test in `sigma_mem/tests/test_integrity.py`
 4. Update this table
 
+## sigma-verify MCP Tool Interface
+
+Cross-model verification, built on hateoas-agent. Gateway tool is `init`; remaining actions are state-dependent on configured providers and remaining quotas.
+
+| Tool | Parameters | Purpose |
+|------|-----------|---------|
+| `init` | — | Gateway. Returns configured models, current quotas, and the action set valid for current state. |
+| `get_models` | — | List configured verification models (provider + model id). |
+| `verify_finding` | `finding`, `context`, `provider`, `model` | Check a single finding against an alternative model. Returns agreement/disagreement + divergent reasoning. |
+| `cross_verify` | `finding`, `context`, `providers` | Check against multiple models in parallel. |
+| `challenge` | `claim`, `evidence`, `provider`, `model`, `tier` | Ask an alternative model to argue against the finding (adversarial). |
+| `check_quotas` | — | Current usage / remaining budget per configured model. |
+
+Actions disappear from the advertised set when their preconditions fail (e.g., `verify_finding` is not advertised when all model quotas are exhausted — no silent failures). Used by `/sigma-evaluate` and adversarial rounds in `/sigma-review` to ground challenges in independent model output.
+
+Source: `sigma-verify/src/sigma_verify/machine.py`.
+
 ## hateoas-agent API Surface
 
-sigma-mem imports and uses:
+sigma-mem and sigma-verify both import and use:
 
 ```python
 from hateoas_agent import StateMachine, serve
@@ -109,7 +132,7 @@ StateMachine.get_transition_metadata()
 serve(machine, name="sigma-mem")
 ```
 
-Changes to any of these method signatures break sigma-mem at runtime.
+Changes to any of these method signatures break both sigma-mem and sigma-verify at runtime.
 
 ## File Path Conventions
 
