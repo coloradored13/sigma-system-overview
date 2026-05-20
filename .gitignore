@@ -16,3 +16,15 @@ __pycache__/
 
 # Hook calibration logs (operational telemetry, not source)
 agent-infrastructure/hooks/sigmacomm-calibration.jsonl
+
+# Python / IDE noise
+.env
+.venv/
+venv/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.idea/
+.vscode/

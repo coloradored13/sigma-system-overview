@@ -48,7 +48,11 @@ See [case-study/REVIEW-6-WALKTHROUGH.md](./case-study/REVIEW-6-WALKTHROUGH.md) f
 
 ```bash
 git clone --recurse-submodules https://github.com/coloradored13/sigma-system-overview.git
+cd sigma-system-overview
+./setup.sh
 ```
+
+`setup.sh` is idempotent — it installs the Python venv, copies agent definitions and skills, and registers the `sigma-mem` MCP server. See [SETUP.md](./SETUP.md) for the full install guide, manual setup steps, and the optional per-project two-tier setup via `setup-project.sh`.
 
 If you already cloned without `--recurse-submodules`:
 ```bash

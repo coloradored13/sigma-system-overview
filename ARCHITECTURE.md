@@ -289,6 +289,14 @@ User interaction:
   @agent-name → message written to agent's inbox, agent spawned with shared context
 ```
 
+**Sibling subdirectories** in `agent-infrastructure/` not shown in the tree above (operational infrastructure, not deployed by `setup.sh` as user-facing surface):
+- `hooks/` — operational coordination layer (phase-gate, chain-evaluator, compliance-monitor, calibration-tracker). 18 hook implementations with matching test files, exercised in CI.
+- `memory-snapshots/` — dated captures of team-memory state (2026-04 through 2026-05). Operational data for cross-session calibration, not source.
+- `scripts/` — agent-tooling utilities (`backup-memory.sh`, `sync-templates.sh`, `yaml-to-agent.py`). Optional, for advanced agent creation.
+- `templates/` — agent-config templates consumed by `yaml-to-agent.py`.
+- `knowledge-graphs/` — domain reference data (e.g., warehouse-supply-chain). Not auto-installed.
+- `claude-md/` — modular CLAUDE.md assembly pattern, **archived 2026-04-15**. Left in place as historical reference.
+
 **Key design decisions:**
 - **Self-sufficient agents** — agents read their own files at boot, no memory injection by the lead
 - **Markdown inboxes** — ΣComm messages with summarize-and-clear pattern
@@ -418,4 +426,4 @@ The system has completed 59 reviews across codebases, market analyses, build cyc
 
 Numeric stats above are validated in CI by `validate-docs.sh` against the live submodules and `agent-infrastructure/agents/`.
 
-**Team scale:** 22 roster agents, 51+ archived reviews, cross-agent pattern log growing with each review.
+**Team scale:** 22 roster agents, 59 archived reviews, cross-agent pattern log growing with each review.

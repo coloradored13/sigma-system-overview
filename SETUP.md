@@ -148,7 +148,8 @@ mkdir -p ~/.claude/teams/sigma-review/shared
 mkdir -p ~/.claude/teams/sigma-review/agents/{tech-architect,product-strategist,ux-researcher,code-quality-analyst,technical-writer}
 ```
 
-Create `~/.claude/teams/sigma-review/shared/roster.md`:
+Create `~/.claude/teams/sigma-review/shared/roster.md`. The example below shows the roster format with a minimal 5-agent core team — useful for understanding the structure. The canonical 22-agent roster that `setup.sh` actually deploys lives at [`agent-infrastructure/teams/sigma-review/shared/roster.md`](./agent-infrastructure/teams/sigma-review/shared/roster.md); copy that file verbatim for a complete install.
+
 ```
 # sigma-review team roster
 
@@ -269,7 +270,7 @@ You can also test by asking Claude: "What do you remember about me?"
 ```bash
 ls ~/.claude/agents/sigma-lead.md
 ls ~/.claude/teams/sigma-review/shared/roster.md
-ls ~/.claude/teams/sigma-review/agents/  # Should show all 5 agent directories
+ls ~/.claude/teams/sigma-review/agents/  # Should show one directory per agent in the roster (22 active by default)
 cat ~/.claude.json | python3 -m json.tool | grep sigma-mem
 cat ~/.claude/settings.json | python3 -m json.tool | grep AGENT_TEAMS
 ```
