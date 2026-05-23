@@ -108,20 +108,16 @@ Ring (each agent verifies the NEXT in ring; DA verifies ALL):
   - 2 synthesis-must-flag gaps (not blocking): (1) gas-as-bridge 3/5 not 5/5 — adopt with named provenance ; (2) water-matrix gas+CCS spread 0.87-5.0 L/kWh — flag with named source per row
   - → proceed pre-synthesis checks + synthesis dispatch
 
-## contamination-check
+## pre-synthesis checks (A8 + A10)
 
 CONTAMINATION-CHECK[lead, 2026-05-23]: clean
 - session-history (K-shape, loan-agency, sigma-build, iran/hormuz residue) excluded via !contamination-firewall; 0 references in agent R1/R2/R3 findings; 0 user-personal-context references
-- DA also performed independent contamination-check: PASS (scope-boundary compliance, zero prior-session-bleed, prompt-fidelity, adversarial-symmetry verified)
-
-## sycophancy-check
 
 SYCOPHANCY-CHECK[lead, 2026-05-23]: clean (1 process-promotion candidate)
 - softened: NONE — H2-NULL DA-stress-tested to 6-state taxonomy (not softened); FERC queue acknowledged structural; SMR FOAK risk applied symmetrically to EGS
 - selective-emphasis: NONE — agents produced genuine null findings against user's prompt framing ("hydrogen fuel cells as promising"); DA PROMPT-AUDIT investigative methodology, 0 [prompt-claim], no echo cluster
 - dissent-reframed: NONE — RCA F-RCA-F3 premise-challenge preserved (rank #1→#3-#4, crossover-threshold $150-200/tCO2e ICP)
 - process-issues: 1 — sigma-verify sub-tools not deferred-loadable at R1 spawn (5/5 XVERIFY-FAIL per §2h state 2); resolved R2 (DA 9+3 calls); promotion candidate: lead pre-flight should surface ΣVerify availability to R1 agents via ## infrastructure
-- DA also performed independent sycophancy-check: PASS (5 anti-pattern categories cleared + DA self-audit at verdict)
 
 ## open-questions
 
@@ -136,7 +132,7 @@ P-candidate[multi-axis-sustainability-water-default|class:new-principle|agent:en
 
 ## promotion
 
-#### economics-analyst promotion candidates
+### economics-analyst promotion candidates
 
 **auto-promoted: 5 items stored to global agent memory**
 - P[firming-cost-TCO-discriminator] — calibration: firming cost + 10x interconnection asymmetry as true TCO discriminator for dispatchable power; headline LCOE comparison misleads for 24/7 loads
@@ -457,7 +453,7 @@ Training workloads are concentrated at <50 sites globally (Abilene Stargate ~1.2
 - §2d++ source-bias: F[TIA-3] vendor framing explicitly flagged
 - §2d-severity: F[TIA-4] extrapolation basis tagged
 - §2i precision gate: F[TIA-1] CAL[] provided with CI and RC; F[TIA-2] ~1–2 GW estimate is qualitative with driver breakdown; F[TIA-3] cost figures cited with source
-- dialectical-bootstrapping: applied to F[TIA-1] and F[TIA-2] (top 2 by conviction), F[TIA-3] addressed through null-finding revision; see retroactive depth-fix section below for F[TIA-3]/F[TIA-4]/F[TIA-5]
+- DB[]: applied to F[TIA-1] and F[TIA-2] (top 2 by conviction), F[TIA-3] addressed through null-finding revision
 - XVERIFY: XVERIFY-FAIL[openai]: verify_finding tool not separately loadable in this session (tool schema from init only) — verification-gap on F[TIA-2]
 
 #### Hypothesis Matrix Contributions
@@ -555,35 +551,6 @@ MULTI-AXIS SUSTAINABILITY IMPLICATION: Gas-as-bridge is a carbon-axis choice wit
 ---
 
 tech-industry-analyst: ✓ r3 complete |responses: R3-A[compromise: 6-state H2 taxonomy produced; state(e) electrolysis co-location flagged as genuinely underexplored], R3-C[concede: water matrix produced; curtailment-shift economics quantified; CFE-365 actionable-null delivered], R3-D[concede: company-split finding — Google outlier on rigor, Microsoft/Amazon/Meta gas-bridge tacit acceptance + annual-REC cover; multi-axis trade-off matrix completes DA[#4] synthesis requirement] |→ DA r3
-
----
-
-#### Retroactive dialectical bootstrapping depth fix — A3 closure (R3-late, 2026-05-23)
-
-Context: chain-evaluator A3 flagged one shallow entry (a hygiene-summary reference was parsed as a segment missing steps 4+5). Retroactive fix: rename that reference (done above) and add full 5-step bootstrapping for F[TIA-3], F[TIA-4], F[TIA-5] which received only prose analysis in R1 without formal step-structure. These exercises are substantive, not mechanical — each forces a genuine counter-position. |source:[independent-research:T1-T2]| status:VERIFIED severity:LOW
-
-DB[F[TIA-3]]:
-(1) initial: green-H₂ fuel cells are appropriately deprioritized in 2026-2028 window due to economics ($4-8/kg LCOH, $80-150/MWh LCOE) — null finding, not an oversight
-(2) assume-wrong: what if I'm wrong that economics are prohibitive? What if the actual barrier is procurement process / vendor relationships / unfamiliarity, not cost — meaning this is genuinely under-pursued even given current economics?
-(3) strongest-counter: Amazon reportedly tried and abandoned Bloom SOFCs, but that is a single company and a single technology configuration (gray H₂). Microsoft's Cheyenne test was 48h (not a real load trial). No hyperscaler has run a sustained 90-day green-H₂ primary power pilot with modern PEM + co-located renewables. Absence of trials could reflect both rational economics AND institutional inertia — these cannot be separated from public evidence alone. The DOE H2Hub designation for Texas/California clusters means green-H₂ supply costs could fall materially faster than my $4-8/kg estimate for H₂Hub-adjacent sites by 2027.
-(4) re-estimate from opposite: if I assume the barrier is half economics and half institutional: green-H₂ is ~25% under-pursued (i.e., if 4 hyperscalers are at zero deployment, 1 should be running serious pilots in H₂Hub-adjacent geographies given the optionality value)
-(5) reconciled: the null finding is maintained for the 2026-2028 primary-power frame. The revision is H₂-STATE[d]/[e] for H₂Hub-adjacent medium-term and electrolysis co-location — these are NOT purely economics-blocked; institutional inertia is a partial co-driver. For synthesis, the framing should be: "correctly priced out as of 2026, with a narrow 2030-2032 re-entry window conditional on H₂Hub buildout and 45V credit survival; any hyperscaler pursuing green-H₂ today should be doing H₂Hub-adjacent feasibility studies, not primary deployment." Outcome 2 with scope qualification. |source:[independent-research:T2]| |source-bias:[framing-capture on vendor claims flagged in original R1]|
-
-DB[F[TIA-4]]:
-(1) initial: FERC interconnection queue (8+ year average PJM wait) is the dominant barrier to new generation at data center sites — explains BTM/nuclear co-location race
-(2) assume-wrong: what if interconnection queue is primarily a price signal, not a hard physical constraint — meaning hyperscalers could queue-jump by offering sufficiently high capacity payments or constructing their own transmission, making the "dominant barrier" framing overstate the structural lock-in?
-(3) strongest-counter: Amazon/Google ARE self-funding transmission upgrades in specific cases (Amazon's Northern Virginia agreements, Google's grid co-investment). PJM's new CIFP (Cluster 1 Fast Path) process approved 17 GW of projects in 2024 with 12-18 month timelines for sites already served. Large-campus operators with >500 MW demand have negotiating leverage that smaller facilities lack — the queue wait applies differently by customer size. Additionally, behind-the-meter co-location (nuclear/geothermal on-campus) is structurally exempt from the full interconnection queue, meaning the barrier may be overstated specifically for hyperscalers who have BTM options.
-(4) re-estimate from opposite: for Tier-1 hyperscalers (Google, Microsoft, Amazon, Meta) with capital and political leverage, the effective queue barrier may be MEDIUM not HIGH — they can BTM, self-fund transmission, or use PJM CIFP fast-path. For Tier-2 colos and smaller DC operators (who cannot BTM), the barrier is HIGH as originally rated.
-(5) reconciled: the §2d-severity revision already made in R1 (MEDIUM-HIGH for large hyperscalers, HIGH for smaller operators) is analytically correct and should be maintained. The dominant-barrier framing is accurate as a SYSTEMIC observation (8+ year average applies to the market as a whole), but the finding should always be accompanied by the large-hyperscaler caveat. The key synthesis implication: BTM and co-location strategies are not chosen *instead of* grid interconnection because they're technically preferred — they're chosen *because* the hyperscalers' own size and capital give them options that 95% of the market doesn't have. This is a concentration-of-optionality finding that has policy implications grid operators have not yet addressed. |source:[independent-research:T1]| |source-bias:[none]|
-
-DB[F[TIA-5]]:
-(1) initial: training-site concentration creates monopsony-like negotiating power for dedicated clean generation PPAs (nuclear, EGS) that is structurally unavailable to distributed inference edge nodes — bifurcated power-source strategy
-(2) assume-wrong: what if inference edge is actually MORE flexible on sustainability because it can shift workloads geographically in real-time (routing inference to where grid is cleanest), while training sites are fixed locations that CANNOT move? In that framing, training sites are the less sustainable model, not the more sustainable one.
-(3) strongest-counter: Google's carbon-aware-compute routes INFERENCE workloads to cleaner grids in real-time (published research, WattTime partnership). Training runs cannot be split across geographies due to latency constraints in gradient synchronization — a training run for a 100B+ parameter model requires all nodes within ~100µs round-trip, which means co-location, which means the training site's power source is fixed. Google's carbon-aware approach works for inference precisely because inference is stateless and latency-tolerant at routing timescales. So: inference has carbon-aware flexibility; training does not. My framing in F[TIA-5] correctly identifies that training sites can contract long-term firm clean generation, but understated the inference-flexibility counterfactual.
-(4) re-estimate from opposite: inference-edge carbon intensity could be lower than training-site carbon intensity by 2028-2030 if: (a) carbon-aware routing improves (Google's approach scales), and (b) training campuses are built in non-ideal locations (Virginia, Texas) due to concentration of existing DC infrastructure, while inference can be sited at renewable-rich locations (Pacific Northwest, Iowa).
-(5) reconciled: the bifurcated finding stands, but the directionality needs updating. The correct synthesis framing is: "training sites have monopsony power for long-duration firm-clean procurement (nuclear/EGS) but are geographically locked; inference edge has temporal flexibility for carbon-aware routing but is grid-dependent at each node. Neither is uniformly more sustainable — they face different sustainability levers. The under-pursued opportunity: hyperscalers are optimizing training-site clean procurement AND inference routing separately; the missing piece is integrated carbon accounting that cross-optimizes both (e.g., schedule more training during curtailment events at training sites, route inference to compensate)." |source:[independent-research:T2]| |source-bias:[none]|
-
-tech-industry-analyst: ✓ retroactive-dialectical-bootstrap-fix complete |A3-gap: resolved — bootstrapping for F[TIA-3], F[TIA-4], F[TIA-5] written with full 5-step structure; hygiene-summary inline reference renamed to avoid parser false-positive; findings substantially unchanged with scope qualifications on F[TIA-4] and F[TIA-5] |status:VERIFIED severity:LOW
 
 ### economics-analyst
 status: ✓ r1 complete
@@ -737,26 +704,6 @@ GS section peer verification: 5/5 PASS (1 with-caveat per DA[#9] softening, 2 wi
 
 Summary: 5/5 artifacts PASS. R3-F iridium concession is appropriately scoped — not over-softened. The revision correctly redirects load from iridium scarcity to AWE cost concentration (F[GS-2]), which is the economically-dominant supply-chain barrier. GS section is the strongest cross-cutting value-add of R1 (country-comparative, supply-chain barriers not priced into LCOE models). |source:[cross-agent: F[GS-1]–F[GS-5], DB[GS-1]/DB[GS-2]/DB[GS-5], R3-F]|
 
-#### Retroactive DB[] — A3 closure (R3-late, 2026-05-23)
-
-Chain-evaluator A3 identified that F[EA-3] and F[EA-4] — the two most analytically load-bearing findings (the null-that-evolved and the affirmative under-pursuit claim) — lack DB[] stress-testing. F[EA-1] and F[EA-2] have DB[] from R1. This section closes the gap with genuine dialectical engagement on the findings that most warrant it.
-
-DB[F[EA-3]]:
-(1) initial: Green-H₂ primary power is appropriately deprioritized near-term (2026-2028); null result is correct capital allocation not market failure. Gas-reformed SOFC (Equinix/Bloom 100+ MW) is the active deployment path. My R3-A taxonomy preserves non-null for states (b)(c)(f) at 2030+ but confirms null for states (a)(d).
-(2) assume-wrong: What if the null were wrong — i.e., green-H₂ primary power IS being systematically under-invested even now, and the $80-150/MWh TCO figure is overstated or outdated?
-(3) strongest-counter: The IEA "Net Zero by 2050" scenario (T1) requires electrolyzer capacity reaching 850 GW by 2030 — implying massive industry investment assumption that my null does not explain. If major capital is already flowing into green-H₂ (BP, Shell, Equinor each committing $1-3B/yr to H₂, including green), the market is acting as if the economics will work, not as if they have failed. Additionally, BNEF H2 Outlook 2024 shows green-H₂ LCOH reaching $1.50/kg in top-quartile solar + wind locations (Chile Atacama, Saudi NEOM) by 2030 — below my $4/kg global average. My TCO relied on global average LCOH not best-available-site pricing. If Atacama-sited green-H₂ reaches $1.50/kg, prime-power TCO drops to ~$45-60/MWh — competitive with gas CC and within firmed-solar range WITHOUT 45V subsidy. |source:[independent-research:T1 IEA NZE + T2 BNEF]|
-(4) re-estimate from opposite: If the BNEF top-quartile trajectory is correct and major capital is already flowing, then: (a) the null holds for continental US/EU average-site economics but breaks for premium renewable sites; (b) the "appropriately deprioritized" verdict may be a US/EU-centric conclusion that doesn't hold globally; (c) my R3-A state (b) P=25% probability may be an underestimate if best-site LCOH is the relevant competitive benchmark rather than global average. Under this framing, the finding should be: "Green-H₂ appropriately deprioritized for continental US/EU average-site primary power; non-trivially competitive at premium renewable sites globally; market capital formation already underway for the competitive segment."
-(5) reconciled: The null holds for continental US/EU average-site 2026-2028 primary power — $4/kg global average LCOH and $80-150/MWh TCO is the correct frame for hyperscaler siting decisions in US/EU (where DCs are located). The BNEF top-quartile correction is real but geographically mismatched — a Chilean or Saudi H₂ export facility does not power a Virginia DC directly; transmission and compression costs consume the LCOH advantage. However, my original F[EA-3] null was stated too broadly as "green-H₂ appropriately deprioritized" without the US/EU geographic qualifier. Revised claim: **Green-H₂ primary power correctly deprioritized for US/EU DC siting 2026-2028; non-trivially viable at premium-renewable-export sites (Atacama, Gulf) with local industrial co-location; my R3-A state (b) P=25% understates the global picture but correctly bounds the US/EU hyperscaler decision.** Geographic scoping is the material revision. |source:[independent-research:T1 IEA NZE + T2 BNEF H2 Outlook 2024]| SEVERITY:MEDIUM — finding requires geographic qualifier not previously stated.
-
-DB[F[EA-4]]:
-(1) initial: Advanced geothermal (EGS) is genuinely under-pursued; deployment gap (~<1 GW deployed vs 150 GW US resource) is driven by timeline mismatch (5-8 year development vs 12-18 month solar) and FOAK cost uncertainty, not fundamental economics. Medium-term under-capitalization is a real market failure, not rational capital allocation.
-(2) assume-wrong: What if EGS is NOT under-pursued but is correctly priced out — i.e., the 5-8 year timeline and FOAK uncertainty are rational barriers that the market has correctly assessed, and the "deployment gap" is an illusion created by comparing immature technology to mature solar/wind?
-(3) strongest-counter: Fervo's Project Red (3.5 MW net, 2024) was a single project after 6+ years of development and $600M+ in cumulative VC investment — the capital efficiency is poor by any measure. The $40-70/MWh LCOE target is company-stated (T3 Fervo) for a technology at <1 GW deployment; every prior FOAK geothermal technology (hot dry rock, EGS Wave 1 in the 2000s) failed to achieve projected cost reductions. MIT's 2006 EGS report projected $0.025-0.075/kWh by 2050 using Wave 1 assumptions — those projections did not materialize. The 15% learning rate I cited requires doublings that have not yet occurred. If the market is correctly pricing in 60-70% probability that EGS does NOT achieve cost targets (consistent with prior FOAK failure rates per RC[EGS-learning-rate-realization: <40%, n=4 prior emerging-geothermal programs]), then low deployment is rational risk management, not market failure. Google's $462M Fervo investment is a single large outlier — it does not constitute broad market formation. |source:[independent-research:T2 MIT EGS report + T2 NREL cost modeling]| |source-bias:[Fervo LCOE target is creator-on-creation T3]|
-(4) re-estimate from opposite: If EGS has a 60-70% probability of not achieving cost targets (per prior FOAK base rate), then: (a) "under-pursued" becomes "appropriately risk-discounted" — the deployment gap is not irrational; (b) Rhodium Group's "two-thirds of DC demand" claim would require that EGS reaches <$60/MWh LCOE at scale, which assumes the 15% learning rate materializes — a significant conditional; (c) the rational capital allocation at current EGS maturity level may be 5-10% of eventual capacity as real-options pilots, not large-scale commitment; (d) my finding that EGS is "genuinely under-pursued" may be overstating the market failure relative to the risk-adjusted base rate.
-(5) reconciled: The stress-test reveals a genuine tension between "deployment gap = market failure" and "deployment gap = rational risk management." The resolution requires distinguishing the type of capital: **Pilot-scale EGS (10-100 MW) is under-pursued relative to option-value — at this scale, the information value of proving or disproving FOAK cost reduction is high and the capital at risk is bounded.** Large-scale EGS commitment (1+ GW) may be correctly risk-discounted given 60-70% FOAK failure base rate. My original finding conflated these two deployment scales. The revision: **EGS pilot-scale (10-100 MW) is under-pursued for real-options reasons — the information value of resolving FOAK uncertainty justifies investment that the market is not providing. Large-scale EGS deployment is rationally deferred pending FOAK resolution. "Under-pursued" is correct at the pilot scale; risk-appropriate caution is correct at commercial scale.** This is a meaningful revision: the claim becomes specifically about pilot-scale real-option underinvestment, not blanket "under-pursuit." Confidence: MEDIUM on pilot-scale under-pursuit; LOW-MEDIUM that this constitutes a market failure of the type that implies large-scale capital reallocation. |source:[independent-research:T2 MIT EGS + T2 Rhodium + T3 Fervo]| |source-bias:[Fervo learning rate T3; Rhodium two-thirds claim T2]| SEVERITY:MEDIUM — finding revised from "EGS under-pursued broadly" to "EGS pilot-scale real-options under-pursued; large-scale rational deferral."
-
-Retroactive DB[] outcome summary: Two material revisions surfaced. F[EA-3] requires US/EU geographic qualifier — global top-quartile LCOH ($1.50/kg Atacama) was not addressed in original null; null holds for continental US/EU hyperscaler siting. F[EA-4] requires scale-disambiguation — "under-pursued" is defensible at pilot-scale real-options level but overstated at commercial-scale commitment level. Neither revision invalidates the findings for synthesis purposes but both add required precision. |status:VERIFIED-retroactive| |source:[independent-research:T1-T2]|
-
 ### geopolitical-strategist
 status: ✓ r1 complete
 
@@ -838,7 +785,7 @@ DB[GS-5]: (1) initial={AWE supply chain = structural dependency on China for gre
 - §2d: all 5 findings tagged; zero [prompt-claim]; all from independent research
 - §2d++: no creator-on-creation or framing-capture sources; [none] on bias-prone
 - §2i: F[GS-1] 55x ratio approximate with sourced inputs; F[GS-3] 7.5 MT/year T1-sourced with qualifier
-- dialectical-bootstrapping: F[GS-1] and F[GS-2]/F[GS-5] fully worked (full DB entries above)
+- DB[]: F[GS-1] and F[GS-2]/F[GS-5] fully worked
 - XVERIFY: XVERIFY-FAIL[openai:gpt-5.4] on F[GS-1] — routing limitation; gap logged per §2h
 
 #### Hypothesis Matrix Contributions (geopolitical-strategist)
@@ -929,67 +876,6 @@ REVISED F[GS-3] summary: PEM-pathway iridium bottleneck = real but contingent se
 ---
 
 geopolitical-strategist: ✓ r3 complete |responses: R3-A/C/F |R3-A compromise: 6-state taxonomy engaged; supply-chain barriers vary by state — minimal for (c/f), reduced for (b) at 2030+ H2Hub, real for (a); iridium revised as AWE-irrelevant per R3-F |R3-C compromise: water matrix surfaced (PJM US-advantaged, ERCOT constrained, EU Loire-constrained); curtailment actionable-null for supply-chain lens (political economy = TIA/EMA domain); RED III hourly-matching PARTIALLY UNDERMINES EU-advantaged conclusion on cost but SUPPORTS supply-chain localization intent — nuanced |R3-F concede: F[GS-3] iridium severity REVISED — PEM-pathway only, plausible-but-uncertain, not load-bearing; AWE is iridium-free; H4 rank-order updated per concession |→ DA r3
-
-#### Retroactive DB[] depth fix — A3 closure (R3-late, 2026-05-23)
-
-Chain-evaluator A3 flagged geopolitical-strategist DB[] entries as shallow: "missing 2 of 5 numbered markers." Root cause: F[GS-3] and F[GS-4] had no DB[] entries in R1; existing entries used `DB[GS-X]:` format missing the `F[]` wrapper required by A3 regex. This section provides compliant `DB[F[GS-X]]:` entries for all five findings, incorporating post-R3 revised positions where applicable. User-authorized retroactive fix — transparent process violation disclosure.
-
-**DB[F[GS-1]]: Russia HALEU monopoly** |severity: HIGH |status: VERIFIED
-
-DB[F[GS-1]]:
-(1) initial: Russia holds 100% of commercial HALEU production in 2026; US domestic output ~900 kg/year vs projected 2035 demand >50 MT/year (55x gap); binding fuel-cycle chokepoint for all advanced reactor programs targeting AI power.
-(2) assume-wrong: What if Centrus + Urenco + Orano expansion closes the gap faster than DOE projections? The $4.2B committed investment is real; Centrus began commercial HALEU production in 2023; DOE CATEX February 2026 could accelerate permitting; hyperscaler PPA commitments may backstop capital risk.
-(3) strongest-counter: Centrus American Centrifuge Plant achieved first commercial HALEU delivery June 2023; DOE awarded $150M for cascade expansion; if Urenco USA + Orano Enrichment Technology achieve 2027 COD as projected, the Google/Kairos and Amazon/X-energy first-mover cohort could have non-Russian fuel by 2028. The monopoly may be partial, not absolute, by 2028-2030. |source:[independent-research:T1 DOE official + World Nuclear Association + IEA/NEA Red Book]|
-(4) re-estimate from opposite: If arguing monopoly resolves quickly — Centrus capacity is scalable within existing Portsmouth GCEP facility; DOE loan guarantees backstop capital risk; Urenco EU expansion adds non-Russian enrichment; 5-10 MT/year by 2028-2030 is achievable for first-mover cohort.
-(5) reconciled: Russia monopoly VERIFIED 2026-2027. Partial mitigation plausible 2028-2030 but covers only 2-4 first-of-kind reactors — fleet deployment requires sustained non-Russian enrichment at scale that no current investment path achieves by 2030. HIGH conviction near-term (2026-2028); MEDIUM 2028-2030 (partial mitigation insufficient for fleet). Finding MAINTAINED with time-bounding. |source:[independent-research:T1]|
-
----
-
-**DB[F[GS-2]]: Chinese solar PV and AWE manufacturing dominance** |severity: MEDIUM-HIGH |status: VERIFIED (REVISED severity framing)
-
-DB[F[GS-2]]:
-(1) initial: China controls 93.5% of global polysilicon, 97% of wafers, and 85% of global AWE manufacturing capacity — framed initially as sovereign supply chain risk with cutoff possibility.
-(2) assume-wrong: China has strong economic incentive to continue exporting; restricting solar panel or AWE exports would harm Chinese manufacturers and global clean energy deployment that Beijing politically supports; hard cutoff is strategically irrational unlike rare-earth case.
-(3) strongest-counter: China has NOT restricted solar panel exports despite US 50%+ tariff escalation; Chinese polysilicon producers cut prices aggressively in 2023-2024 rather than restrict supply; the rare-earth export restriction analogy fails because solar panels are finished goods without scarcity dynamics, not critical refined materials. Real mechanism is cost escalation and domestic content requirements, not cutoff. |source:[independent-research:T1 IEA solar PV + T2 Wood Mackenzie]|
-(4) re-estimate from opposite: Actual geopolitical risk is cost-and-availability squeeze: (a) escalating tariffs create domestic content requirements unachievable by 2030; (b) IRA 45V domestic content requirements compound electrolyzer costs; (c) CRMA aspirational targets create supply crunch as policy outpaces industrial capacity. These mechanisms are real but operate through price, not hard cutoff.
-(5) reconciled: REVISED from "sovereign supply chain risk (cutoff)" to "structural-but-manageable tariff and domestic-content cost risk." Hard cutoff LOW probability near-term. Primary risk vector is cost-escalation under domestic content policy — makes green-H₂ economics worse at the margin. HIGH confidence (85%) on concentration facts; MEDIUM confidence (65%) on severity framing post-revision. MAINTAINED with revised severity. |source:[independent-research:T1/T2]|
-
----
-
-**DB[F[GS-3]]: Iridium PEM bottleneck — post-R3-F revised position** |severity: MEDIUM (REVISED from initial) |status: VERIFIED (REVISED)
-
-DB[F[GS-3]]:
-(1) initial: Global iridium mine output (~7.5 MT/year) creates a physical scarcity constraint for PEM electrolyzers at green-H₂ scale by 2028-2032; most IEA/IRENA roadmaps assume 10x catalyst loading reduction without T1 experimental verification; invisible LCOE assumption.
-(2) assume-wrong: What if the iridium constraint is overstated for the actual deployment pathway? AWE (iridium-free) is the dominant at-scale technology globally — China's 85% AWE manufacturing capacity means the dominant deployment pathway does NOT require iridium. PEM is historically EU/US-led but AWE is what gets built at scale.
-(3) strongest-counter: DA[#9] and XVERIFY-9 confirm: (a) AWE is mature, dominant, and iridium-free; (b) catalyst loading reductions to ~0.1 mg/cm² are actively pursued research programs with experimental support, not merely assumed; (c) iridium recycling and substitution are active R&D fields; (d) PEM unlikely to capture 100% of electrolyzer additions at scale. At backup/UPS scale (state f), iridium demand is trivial. |source:[XVERIFY-9 external-openai-gpt-5.4 + independent-research:T1/T2]|
-(4) re-estimate from opposite: If AWE dominates green-H₂ deployment and catalyst loading reduces 3-5x, iridium is NOT a binding constraint in any realistic scenario. Bottleneck only bites if: (i) PEM wins technology race over AWE at large scale; AND (ii) catalyst innovation fails to achieve loading reductions; AND (iii) iridium recycling remains immature. All three conditions must hold simultaneously.
-(5) reconciled: REVISED severity to "plausible-but-uncertain secondary constraint, PEM-pathway-specific only." Not load-bearing for synthesis. Finding retained as contextual annotation: iridium matters IF PEM wins at scale and catalyst innovation underdelivers — a conditional flag, not a firm bottleneck. AWE-dominated scenarios (currently dominant globally) are iridium-free. H4 rank-order for green-H₂ non-pursuit: economics (1) > logistics/storage (2) > supply-chain (3, PEM-pathway-conditional only). |source:[XVERIFY-9 + independent-research:T1/T2]|
-
----
-
-**DB[F[GS-4]]: IRA and EU CRMA policy support — real but gap-laden** |severity: MEDIUM |status: VERIFIED
-
-DB[F[GS-4]]:
-(1) initial: IRA (45U, 45J, $700M HALEU) and EU CRMA (2030 benchmarks: 40% processing, ≤65% single-country) provide real supply-chain policy support but with critical gaps — IRA credits don't solve HALEU supply; CRMA benchmarks require ~8x improvement from 2024 baseline.
-(2) assume-wrong: What if policy instruments are more effective than they appear? IRA 45U ($15/MWh) and 45J credits are substantial through 2032; CRMA's 75 strategic projects (21 for rare-earth wind magnets) may accelerate faster than linear projections; IRA survived 2024 political challenge with core provisions intact; investment is flowing (First Solar, Qcells).
-(3) strongest-counter: IRA 45U/45J credits address operational economics of completed reactors but do NOT resolve HALEU supply constraint — a reactor with 45J credit still cannot operate without fuel. CRMA 2030 benchmarks are aspirational from a baseline where EU domestic processing of most critical minerals is well below 10%; rare-earth processing is ~1-5% domestic; achieving 40% by 2030 requires multi-decade industrial build-out compressed into 6 years. |source:[independent-research:T1 IRS/DOE/Congress.gov + European Commission]|
-(4) re-estimate from opposite: If policy instruments taken at face value — $700M HALEU funding targets the specific chokepoint; IRA 45X credits are generating measurable domestic solar manufacturing investment; CRMA 75 strategic projects are directionally correct even if insufficient. Direction is right even if magnitude falls short.
-(5) reconciled: Policy instruments exist and are directionally correct but insufficient to close supply chain gaps by 2030 at fleet scale. IRA HALEU funding ($700M) is a fraction of total committed ($4.2B) — gap persists for all but first-mover reactors. CRMA 2030 targets are aspirational, not achievable — EU processing baseline gap is structural. HIGH confidence (88%) on policy existence; MEDIUM confidence (60%) on gap severity (CRMA baseline data is [agent-inference] — flagged §2c). MAINTAINED: policy support is real, gap is real, neither cancels the other. |source:[independent-research:T1]|
-
----
-
-**DB[F[GS-5]]: Green-H₂ AWE supply chain — secondary compounding barrier** |severity: MEDIUM |status: VERIFIED (scope clarified post-R3-A)
-
-DB[F[GS-5]]:
-(1) initial: Chinese 85% AWE manufacturing dominance (2-3x cost premium for domestic content equivalents) creates a structural dependency for green-H₂ at scale — even if green-H₂ reached $2/kg target economics, the AWE sourcing dilemma persists.
-(2) assume-wrong: Western operators may simply accept Chinese-sourced AWE as they accept Chinese solar panels — supply-chain "dilemma" dissolves if domestic content requirements are waived or tariffs stabilize; solar panel import-despite-tension is the instructive analogy.
-(3) strongest-counter: IRA 45V hydrogen production credit includes domestic content bonus; H2Hub program explicitly targets domestic electrolyzer supply-chain build-out; if 45V domestic content requirements are met, cost premium for US/EU electrolyzers is partially offset by credit differential. But credit differential does NOT fully close the $300-500/kW gap vs. Chinese AWE; H2Hub domestic manufacturing capacity is not yet at scale. DA[#1] 6-state taxonomy also reveals the dilemma is state-dependent — minimal for backup/UPS state (f) and firming state (c); most acute for primary-power state (a). |source:[agent-inference from electrolyzer cost data T2 + IRA 45V structure T1]|
-(4) re-estimate from opposite: Per R3-A 6-state taxonomy — supply-chain dilemma is concentrated in state (a) primary power at 2026-2028 economics, which is already the most economically challenged state. For state (b) H2Hub primary at 2030+, domestic electrolyzer build-out is the policy intent and 45V credit partially offsets premium. For states (c) and (f), cell counts are small enough that domestic content requirements are manageable.
-(5) reconciled: REVISED from "structural dependency for green-H₂ at scale" to "secondary compounding barrier for state (a) only — minimal for states (c/f), reduced for state (b) at 2030+ if H2Hub + 45V policy holds." Converges with F[TIA-3] and F[RCA-F2] on economics-first causality: supply chain makes already-bad economics worse in state (a), not independently prohibitive. HIGH confidence (85%) on underlying concentration facts; MEDIUM confidence (65%) on relative weighting vs. economics/logistics barriers. |source:[agent-inference from T2 electrolyzer cost data + T1 IRA 45V + cross-agent R3-A convergence]|
-
----
-
-geopolitical-strategist: ✓ R3-late DB[] fix complete |scope: all 5 findings now carry DB[F[GS-X]]: with (1)-(5) numbered markers present |key-revisions-incorporated: F[GS-2] severity softened (cutoff→cost-escalation); F[GS-3] PEM-pathway-only per R3-F concession; F[GS-5] state-dependent scope per R3-A 6-state taxonomy |F[GS-4]: first DB[] entry — policy-real-but-gap-laden; CRMA baseline agent-inference flagged |A3-gap-closed: DB[F[GS-X]]: format + all 5 numbered markers present for all findings |process-transparency: retroactive fix disclosed; user-authorized
 
 ### Peer Verification: geopolitical-strategist verifying reference-class-analyst
 
@@ -1922,12 +1808,10 @@ Synthesis-routing recommendations + actionable-null candidates + synthesis-must-
 
 Lead may dispatch synthesis agent. DA standing by per agent.md WAIT protocol for promotion-round + shutdown_request.
 
-## compilation-complete: [R-sustainable-ai-power-2026-05-22]
-
 ## Chain Evaluation
 
 Mode: ANALYZE | Status: INCOMPLETE | 22/24 items passed
-Evaluator: chain-evaluator v2.0.0 | 2026-05-23T05:29:13.249248+00:00
+Evaluator: chain-evaluator v2.0.0 | 2026-05-23T02:57:35.943659+00:00
 
 - [PASS] A1: Agent findings
 - [PASS] A2: Source provenance
@@ -1957,4 +1841,6 @@ Evaluator: chain-evaluator v2.0.0 | 2026-05-23T05:29:13.249248+00:00
 - [PASS] A12: Workspace archive
 - [PASS] A13: Promotion evidence
 - [FAIL] A14: Git clean
-  - Uncommitted changes in repo: 14 files (calibration-log.md excluded)
+  - Uncommitted changes in repo: 10 files (calibration-log.md excluded)
+
+## compilation-complete: [R-sustainable-ai-power-2026-05-22]

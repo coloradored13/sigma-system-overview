@@ -278,6 +278,48 @@
       "planModeRequired": false,
       "cwd": "/Users/bjgilbert",
       "backendType": "in-process"
+    },
+    {
+      "agentId": "economics-analyst-2@sigma-review",
+      "name": "economics-analyst-2",
+      "color": "yellow",
+      "joinedAt": 1779506225371,
+      "tmuxPaneId": "in-process",
+      "subscriptions": [],
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are economics-analyst on the sigma-review team. **Retroactive R3-late task** to close chain-evaluator A3 gap.\n\n## Context\nSigma-review for R-sustainable-ai-power-2026-05-22 completed with DA r3 PASS (engagement A-, BELIEF 0.91). However chain-evaluator A3 caught a real hygiene gap that DA missed at exit-gate: your ### economics-analyst section has NO DB[] dialectical bootstrapping entries on your top findings, violating §2 analytical hygiene (every agent must apply DB[] to top 1-2 findings).\n\nUser approved retroactive DB[] addition — this is transparent process-violation (analytical work post-exit-gate), explicitly authorized.\n\n## Task\nRead ~/.claude/teams/sigma-review/shared/workspace.md, specifically your ### economics-analyst section.\n\nIdentify your TOP 2 load-bearing findings (likely F[EA-1] US ~240 TWh shortfall, F[EA-3] green-H2 null with 6-state taxonomy, or whichever you assess as top conviction).\n\nApply DB[] dialectical bootstrapping with FULL 5-step structure to TWO findings:\n\n```\nDB[F[EA-X]]:\n(1) initial: {your original claim}\n(2) assume-wrong: {what if it were wrong?}\n(3) strongest-counter: {strongest evidence against — specific, sourced}\n(4) re-estimate from opposite: {what you'd believe if counter were true}\n(5) reconciled: {final claim after stress-test, with which adjustments}\n```\n\nThe chain-evaluator regex requires all FIVE numbered markers (1)-(5) to count as \"genuine DB\" not \"reference DB\". Use exactly `(1)` `(2)` `(3)` `(4)` `(5)` numerals.\n\n## Write\nAppend to your section: \"#### Retroactive DB[] — A3 closure (R3-late, 2026-05-23)\" followed by the 2 DB[] entries.\n\nNote: this is analytical work, not just reformatting. Genuinely engage the counter-evidence. If your stress-test reveals an actual finding revision, surface it (the analytical value of DB[] is real even retroactively).\n\nConfirm to lead via SendMessage when done. Then accept shutdown_request.",
+      "planModeRequired": false,
+      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "tech-industry-analyst-2@sigma-review",
+      "name": "tech-industry-analyst-2",
+      "color": "green",
+      "joinedAt": 1779506233773,
+      "tmuxPaneId": "in-process",
+      "subscriptions": [],
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are tech-industry-analyst on the sigma-review team. **Retroactive R3-late task** to close chain-evaluator A3 gap.\n\n## Context\nSigma-review for R-sustainable-ai-power-2026-05-22 completed with DA r3 PASS, but A3 flagged your DB[] entries as shallow: \"DB entry missing 2 of 5 numbered markers.\" The chain-evaluator regex requires all FIVE numbered markers (1) (2) (3) (4) (5) for DB[] to count as \"genuine\" not \"reference\".\n\nUser approved retroactive DB[] fix — transparent process-violation, explicitly authorized.\n\n## Task\nRead ~/.claude/teams/sigma-review/shared/workspace.md, your ### tech-industry-analyst section. Find your existing DB[] entries that are missing numbered markers. Rewrite (or augment) to ensure each one has all 5 numbered steps:\n\n```\nDB[F[TIA-X]]:\n(1) initial: {claim}\n(2) assume-wrong: {what if wrong?}\n(3) strongest-counter: {evidence against, sourced}\n(4) re-estimate from opposite: {alternative belief}\n(5) reconciled: {final claim with adjustments}\n```\n\nThe numbered markers MUST be present as `(1)` `(2)` `(3)` `(4)` `(5)` (with parens, single digits).\n\n## Write\nAppend to your section: \"#### Retroactive DB[] depth fix — A3 closure (R3-late, 2026-05-23)\" followed by your repaired DB[] entries (full 5-step versions of the previously shallow entries).\n\nThis is analytical work — genuinely engage the counter-evidence. The 5-step structure forces you to consider what you might be wrong about, which is real value even retroactively.\n\nConfirm to lead via SendMessage when done. Then accept shutdown_request.",
+      "planModeRequired": false,
+      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
+      "backendType": "in-process"
+    },
+    {
+      "agentId": "geopolitical-strategist@sigma-review",
+      "name": "geopolitical-strategist",
+      "color": "purple",
+      "joinedAt": 1779506241479,
+      "tmuxPaneId": "in-process",
+      "subscriptions": [],
+      "agentType": "general-purpose",
+      "model": "sonnet",
+      "prompt": "You are geopolitical-strategist on the sigma-review team. **Retroactive R3-late task** to close chain-evaluator A3 gap.\n\n## Context\nSigma-review for R-sustainable-ai-power-2026-05-22 completed with DA r3 PASS, but A3 flagged your DB[] entries as shallow: \"DB entry missing 2 of 5 numbered markers.\" The chain-evaluator regex requires all FIVE numbered markers (1) (2) (3) (4) (5) for DB[] to count as \"genuine\" not \"reference\".\n\nUser approved retroactive DB[] fix — transparent process-violation, explicitly authorized.\n\n## Task\nRead ~/.claude/teams/sigma-review/shared/workspace.md, your ### geopolitical-strategist section. Find DB[] entries missing numbered markers. Rewrite (or augment) to ensure each has all 5 steps:\n\n```\nDB[F[GS-X]]:\n(1) initial: {claim}\n(2) assume-wrong: {what if wrong?}\n(3) strongest-counter: {evidence against, sourced}\n(4) re-estimate from opposite: {alternative belief}\n(5) reconciled: {final claim with adjustments}\n```\n\nThe numbered markers MUST be present as `(1)` `(2)` `(3)` `(4)` `(5)` (with parens, single digits).\n\nLikely targets: F[GS-1] HALEU monopoly, F[GS-3] iridium PEM (you already revised this in R3-F — apply DB[] to the revised position), F[GS-5] supply-chain compounding.\n\n## Write\nAppend to your section: \"#### Retroactive DB[] depth fix — A3 closure (R3-late, 2026-05-23)\" followed by your repaired DB[] entries.\n\nThis is analytical work — genuinely engage the counter-evidence.\n\nConfirm to lead via SendMessage when done. Then accept shutdown_request.",
+      "planModeRequired": false,
+      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
+      "backendType": "in-process"
     }
   ]
 }

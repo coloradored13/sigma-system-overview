@@ -23,9 +23,9 @@ sources: T1:0 T2:0 T3:0
 xverify: skipped
 hygiene: incomplete
 
-### Trends (auto-generated, 580 entries)
-avg-findings: 5.9
-concession-rate: 25%
+### Trends (auto-generated, 614 entries)
+avg-findings: 6.1
+concession-rate: 26%
 grade-trend: stable
 ### 2026-04-12 19:54
 findings: 2
@@ -4631,6 +4631,278 @@ hygiene: incomplete
 findings: 2
 da-grade: n/a
 concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 19:24
+findings: 27
+da-grade: F
+concession: yes
+sources: T1:4 T2:4 T3:0
+xverify: used (fail)
+hygiene: incomplete
+
+### 2026-05-22 19:25
+findings: 18
+da-grade: n/a
+concession: no
+sources: T1:4 T2:2 T3:0
+xverify: used (fail)
+hygiene: incomplete
+
+### 2026-05-22 19:28
+findings: 11
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: used (fail)
+hygiene: incomplete
+
+### 2026-05-22 19:29
+findings: 23
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: used (fail)
+hygiene: incomplete
+
+### 2026-05-22 19:35
+findings: 15
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 19:51
+findings: 24
+da-grade: B+
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: used (fail)
+hygiene: incomplete
+
+### 2026-05-22 19:53
+findings: 10
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 19:53
+findings: 2
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 19:53
+findings: 4
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 19:53
+findings: 4
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 19:57
+findings: 10
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 19:57
+findings: 2
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 19:58
+findings: 14
+da-grade: n/a
+concession: yes
+sources: T1:4 T2:12 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 19:59
+findings: 6
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:00
+findings: 2
+da-grade: n/a
+concession: yes
+sources: T1:4 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 20:01
+findings: 6
+da-grade: F
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:05
+findings: 6
+da-grade: A-
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 20:06
+findings: 16
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:08
+findings: 12
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:08
+findings: 6
+da-grade: A-
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 20:14
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:14
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:14
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:15
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:15
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:16
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:17
+findings: 4
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:21
+findings: 2
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 20:57
+findings: 4
+da-grade: B
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 21:10
+findings: 1
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 21:10
+findings: 1
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 21:19
+findings: 16
+da-grade: n/a
+concession: yes
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-22 21:21
+findings: 24
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-22 23:32
+findings: 12
+da-grade: n/a
+concession: no
 sources: T1:0 T2:0 T3:0
 xverify: skipped
 hygiene: incomplete

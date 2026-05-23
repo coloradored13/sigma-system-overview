@@ -42,6 +42,8 @@ Persistent, compiled domain knowledge from sigma-review analyses. Each page is u
 - [Solo Entrepreneur Reference Class Forecasting](solo-entrepreneur-reference-class-forecasting.md) — Stanford SF Study base rates (30.3% solo IRR, 4.5x ROI), BLS baseline (~25%), 17pp edge-premium, PM[7] failure mode, shovel window duration base rates [R-2026-05-17-k-shape-opportunities, 2026-05-17]
 - [3-Dimension Edge-Verification Framework](3-dimension-edge-verification-framework.md) — META-PAGE: pre-deployment operator self-check (domain expertise + first-3-5-customer network + 18-36mo capital discipline); gates all opportunity-viability BELIEFs from sigma-review; PM[7] structural mitigation [R-2026-05-17-k-shape-opportunities, 2026-05-17]
 
+- [Sustainable AI Power 2026](sustainable-ai-power-2026.md) — demand-supply gap (US/EU TWh), H₂ 6-state taxonomy, enhanced geothermal FOAK-adjusted LCOE, LDES coordination failure, workload flexibility/curtailment absorption, gas-as-bridge entrenchment base rate, HALEU/AWE supply chain constraints, water matrix with calibration gap, hyperscaler procurement tiers (CFE-365 vs annual REC) [R-sustainable-ai-power, 2026-05-22]
+
 ## Convention
 - One page per entity, domain, or topic that appears across reviews or warrants standalone reference
 - Page filenames: lowercase, hyphenated (e.g., `loan-admin-tech-landscape.md`, `alter-domus.md`)
