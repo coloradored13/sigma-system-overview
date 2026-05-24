@@ -278,34 +278,6 @@
       "planModeRequired": false,
       "cwd": "/Users/bjgilbert",
       "backendType": "in-process"
-    },
-    {
-      "agentId": "tech-industry-analyst-2@sigma-review",
-      "name": "tech-industry-analyst-2",
-      "color": "green",
-      "joinedAt": 1779588672653,
-      "tmuxPaneId": "in-process",
-      "subscriptions": [],
-      "agentType": "general-purpose",
-      "model": "sonnet",
-      "prompt": "Retroactive peer-verification — A16/A18 closure for follow-up review ai-power-followup-2026-05-23.\n\nRead ~/.claude/teams/sigma-review/shared/workspace.md ### economics-analyst section (F[EA-1..5]).\n\nWrite a section in workspace.md (append to your own ### tech-industry-analyst section end) with EXACT header:\n\n### Peer Verification: tech-industry-analyst verifying economics-analyst\n\nRules:\n- 3-hash header, lowercase \"verifying\", no trailing colons on names\n- Reference ≥3 specific artifact IDs from EA section (F[EA-1] Korean APR-1400 4-condition test, F[EA-2] iron-air $30-50/kWh, F[EA-3] fusion 0-2 GW by 2040, F[EA-4] waste-heat US gap, F[EA-5] BTM hybrid $65-105/MWh)\n- Per-item PASS|FAIL|N/A verdicts with evidence — NOT narrative\n- Specifically check EA's Korean APR-1400 4-condition non-transfer framing (DA softened this in R2 — was the softening appropriately incorporated?)\n\nConfirm to lead via SendMessage when done, then accept shutdown_request.",
-      "planModeRequired": false,
-      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
-      "backendType": "in-process"
-    },
-    {
-      "agentId": "economics-analyst-2@sigma-review",
-      "name": "economics-analyst-2",
-      "color": "yellow",
-      "joinedAt": 1779588678900,
-      "tmuxPaneId": "in-process",
-      "subscriptions": [],
-      "agentType": "general-purpose",
-      "model": "sonnet",
-      "prompt": "Retroactive peer-verification — A16/A18 closure for follow-up review ai-power-followup-2026-05-23.\n\nRead ~/.claude/teams/sigma-review/shared/workspace.md ### geopolitical-strategist section (F[GS-1..4]).\n\nWrite a section in workspace.md (append to your own ### economics-analyst section end) with EXACT header:\n\n### Peer Verification: economics-analyst verifying geopolitical-strategist\n\nRules:\n- 3-hash header, lowercase \"verifying\", no trailing colons on names\n- Reference ≥3 specific artifact IDs from GS section (F[GS-1] transmission 10-22 GW vs NERC 35 GW, F[GS-2] land locally-binding nationally-non-binding, F[GS-3] solar silver 29-41% with copper relief valve per DA refinement, F[GS-4] PEM PFAS revised down per Oct 2025 EPA Method 1633)\n- Per-item PASS|FAIL|N/A verdicts with evidence — NOT narrative\n- Specifically check GS's silver constraint after DA refinement mandate #3 (was copper-substitution relief valve appropriately integrated?)\n\nConfirm to lead via SendMessage when done, then accept shutdown_request.",
-      "planModeRequired": false,
-      "cwd": "/Users/bjgilbert/Projects/sigma-system-overview",
-      "backendType": "in-process"
     }
   ]
 }

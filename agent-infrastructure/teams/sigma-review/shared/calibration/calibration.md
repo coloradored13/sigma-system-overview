@@ -23,9 +23,9 @@ sources: T1:0 T2:0 T3:0
 xverify: skipped
 hygiene: incomplete
 
-### Trends (auto-generated, 638 entries)
+### Trends (auto-generated, 640 entries)
 avg-findings: 6.2
-concession-rate: 27%
+concession-rate: 26%
 grade-trend: stable
 ### 2026-04-12 19:54
 findings: 2
@@ -5097,4 +5097,20 @@ da-grade: n/a
 concession: no
 sources: T1:0 T2:0 T3:0
 xverify: used (pass)
+hygiene: incomplete
+
+### 2026-05-23 20:21
+findings: 1
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
+hygiene: incomplete
+
+### 2026-05-23 20:21
+findings: 1
+da-grade: n/a
+concession: no
+sources: T1:0 T2:0 T3:0
+xverify: skipped
 hygiene: incomplete
