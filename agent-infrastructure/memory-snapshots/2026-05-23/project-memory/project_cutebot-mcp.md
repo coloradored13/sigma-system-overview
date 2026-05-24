@@ -8,7 +8,7 @@ originSessionId: 7a07e4bf-655f-4bdb-a008-80b66145a99f
 
 **Repo:** `~/Projects/cutebot-mcp/` (local-only git, no remote — flag before pushing)
 **Created:** 2026-05-02
-**Last session:** 2026-05-23 — full systems check across all 22 actions. Both motors confirmed working (prior "left motor dead" was wrong diagnosis from degrading-battery session). Watchdog bug found + fixed (one-line firmware patch + re-flash). Light/sound NOT broken — sensors work, just position-occluded when µbit is mounted on the Cutebot. Headlight protocol detail in prior memory was wrong (wire takes "L"/"R"/"B" string side, not numeric LED position 4/8). Compass calibrated. Recurring radio wedge needs investigation. Working tree dirty (watchdog fix + new sense_debug.py diagnostic).
+**Last session:** 2026-05-23 — full systems check across all 22 actions + radio wedge investigation. Motors confirmed working (prior "left motor dead" was wrong). Watchdog bug found + fixed. Light/sound NOT broken — env-occluded by Cutebot mount. Headlight protocol corrected (string side label). Compass calibrated. **Radio "wedge" debunked: 5-minute 1792-command sweep at ~5% transient drop rate produced 0 hard wedges. The 3 earlier "wedges" were double-drop coincidences with `--ping-robot` (2 attempts × ~5% drop). Fixed host-side by bumping default retries 1→3. BLE migration NOT needed.** Diagnostic firmware (DIAG/RST/auto-recovery/heartbeat) shipped as safety net regardless. Working tree dirty pending parallel sigma session completing its chain (phase-gate blocks commits).
 
 ## Architecture
 
@@ -75,7 +75,11 @@ Both motors functional. Isolation test sequence (D,50,0 / D,0,50 / D,50,50 / D,-
 - 041a024 v0.2.2 watchdog defers to auto_stop_at (long drives run full duration)
 - ca6fba3 sense_debug.py — standalone V2 sensor diagnostic firmware
 
-Working tree clean.
+**Working tree dirty (uncommitted, phase-gate blocked):**
+- `firmware/robot_microbit.py` — v0.2.3 diagnostics (DIAG/RST/auto-recovery/heartbeat) + RX_WEDGE_MS 30s→120s
+- `src/cutebot_mcp/bridge.py` — request() default retries 1→3
+
+Both live in their respective contexts (firmware flashed to robot µbit; bridge.py affects next Python process). Commit after parallel sigma-review session's chain completes.
 
 **v0.1 known issues now addressed:**
 - ❗ Bridge UART partial-line bug — fixed 26.5.3, already in main
@@ -121,7 +125,17 @@ Re-flashed bridge + robot µbits from current source, then exercised the full 22
 
 **Radio**: T (send) and R (sample_rssi) wire commands work. Full hide-and-seek loop still gated on a third µbit with beacon firmware (not present).
 
-**Recurring intermittent — robot µbit radio wedges after extended activity.** Pattern: ~30-60s of varied commands → ping fails with no radio response, but smiley face stays on µbit LED (firmware alive, just radio dead). Fix: power-cycle Cutebot (battery off 3s, on). Occurred 3x in this session. **Unknown root cause** — possibly related to `R`/`T` retunes leaving radio in bad state, microphone activity interfering with radio, or memory pressure. Worth investigating before any extended autonomous run.
+**Radio "wedge" — DEBUNKED.** Initially observed 3 apparent wedges this session. Diagnostic firmware (v0.2.3) added DIAG/RST/auto-recovery/heartbeat to probe. Two stress tests then disproved the wedge hypothesis:
+1. Hammer test (3 min, R/T retunes + sensors, ~360 cmds): 0 hard wedges, ~5% individual command timeouts.
+2. Full sensor sweep (5 min, 1792 cmds across all 22 actions): 0 hard wedges, 5.4% individual drop rate, `radio_resets` counter stayed flat throughout active use.
+
+**Root cause: ~5% baseline 2.4 GHz packet drop rate, NOT a wedge.** The earlier "wedges" were `--ping-robot` (2 attempts default) hitting double-drops at ~0.25% per ping. Across a session's worth of pings, 3 visible failures is statistically expected. Power-cycling "fixed" them only because by the time the user did it, the next ping happened to succeed.
+
+**Fix shipped: `Bridge.request()` default retries bumped 1→3.** Drops user-visible failure rate from ~0.25% to ~0.001%. Pure host-side change, no firmware needed.
+
+**BLE migration NOT needed.** Current radio architecture is sound. Document this — recurring impulse to "try BLE" should be batted away unless we observe a TRUE wedge (heartbeat blinking + DIAG silent for >2 min) that auto-recovery doesn't clear.
+
+**The auto-recovery firmware stays anyway** as cheap safety net (RX_WEDGE_MS bumped 30s→120s so idle silences don't pollute the diag_radio_resets counter).
 
 **Port float**: `/dev/tty.usbmodem*` enumeration drifts between 102 and 1102 across USB re-plugs. `DEFAULT_PORT` in `bridge.py` is currently set to `usbmodem1102`. Future v0.3 candidate: auto-glob `/dev/tty.usbmodem*` and pick the first match.
 
@@ -183,15 +197,17 @@ Backup at `~/.claude.json.bak.cutebot-step6`. Top-level `mcpServers.cutebot`:
 
 ## Carryover for next session
 
-**Open threads after 26.5.23 systems-check:**
-- **Radio wedge — root cause unknown.** Robot µbit radio stops responding after ~30-60s of mixed-command activity (3 occurrences in one session). LED still shows smiley (firmware alive). Fix: power-cycle Cutebot. Investigate before any extended autonomous run. Hypotheses to probe: R/T retune not restoring channel/group correctly; microphone activity interfering with nRF radio; MicroPython radio buffer overflow.
-- **Light + sound MCP-side improvements** (sensors confirmed working — env-occluded, not broken): consider adding `read_sound_peak(ms)` that samples microphone level over a window and returns max; ditto for light. Single-shot reads of instantaneous level return ~0 in most positions of the mounted µbit, which is a UX failure even though the underlying API works.
-- **Ultrasonic accuracy gate**: 30cm obstacle read as 70-108cm — likely beam-over-obstacle (sensor mounted ~3cm off surface; short obstacles miss). Test with tall obstacles next time, document working range.
-- **set_servo verification**: still untested (no physical servo). Defer until a servo is connected.
-- **follow_line**: untested this session (bot was on V1.3 paper but follow_line wasn't run). Quick to verify next time.
-- **Beacon µbit**: still not present. Hide-and-seek loop verification needs a third µbit running `beacon_microbit.py`.
+**Top priority: commit the dirty tree** once phase-gate clears (parallel sigma-review session at `~/.claude/teams/sigma-review/shared/workspace.md` review-id `ai-power-followup-2026-05-23` needs to wrap its chain first). `firmware/robot_microbit.py` + `src/cutebot_mcp/bridge.py` are both dirty with the v0.2.3 changes — already live on hardware, just need the commit.
 
-**Defer to v0.3**: battery telemetry, IR receiver, strict-mode state graph promotion, async sensor reads, port auto-glob in bridge.py, `read_sound_peak` / `read_light_peak` windowed APIs, radio wedge diagnostic instrumentation.
+**Open threads (real ones — wedge is closed):**
+- **Light + sound MCP-side improvements** (sensors confirmed working — env-occluded, not broken): consider adding `read_sound_peak(ms)` that samples microphone level over a window and returns max; ditto for light. Single-shot reads return ~0 in most mounted positions, UX failure even though the underlying API works.
+- **Ultrasonic accuracy gate**: 30cm obstacle read as 70-108cm — likely beam-over-obstacle (sensor mounted ~3cm off surface; short obstacles miss). Test with tall obstacles, document working range.
+- **set_servo verification**: still untested (no physical servo).
+- **follow_line**: untested this session despite bot being on V1.3 paper.
+- **Beacon µbit**: still not present. Hide-and-seek loop verification needs a third µbit running `beacon_microbit.py`.
+- **Port auto-glob**: `bridge.py` DEFAULT_PORT hardcoded to `usbmodem1102` but the number floats (saw 102 too this session). Glob `/dev/tty.usbmodem*` would prevent this re-occurring.
+
+**Defer to v0.3**: battery telemetry, IR receiver, strict-mode state graph promotion, async sensor reads, `read_sound_peak` / `read_light_peak` windowed APIs, **persistent compass calibration** (compass.calibrate() result is RAM-only; every boot/re-flash wipes it. Fix: write calibration data to micro:bit flash via `os` module on cal completion, read+apply on boot. Non-trivial but doable in MicroPython; would mean compass headings survive power-cycles without re-running the 70s tilt-game).
 
 **Compass UX note (v0.2 limitation):** calibration is awkward with µbit seated in Cutebot — user must tilt the whole bot through the LED gesture game. Document workaround: detach µbit for calibration, reattach. Compass needs re-calibration on every power-cycle.
 

@@ -416,9 +416,6 @@ AUDIT[26.4.28|shared-process-hardening-c1]: recurring — XVERIFY single-provide
 AUDIT[26.4.28|shared-process-hardening-c1]: recurring — Step 33 promotion auto-vs-user-approve classification gate skip caught by USER not mechanical enforcement. Same failure pattern feedback_user-approval-gate-non-bypassable (26.4.28) was logged for, recurred same session. Pre-shutdown hook gap: classification-gate enforcement is directive-only, not mechanically enforced. Hook candidate: pre-shutdown classifier that BLOCKs Stop until promotion entries are explicitly tagged auto|user-approve. |verdict:YELLOW |source:sigma-audit |agents: lead
 PATTERN[recurring-3.14-weakness-4th-instance|26.4.28]: 4 consecutive sigma-evaluate runs land at the B 3.14ish weakness profile — R18 B 3.14, r19 B 3.14, mellow-anchor B 2.86, shared-process-hardening c1 B 3.14 (exact). Most striking: c1 plan EXPLICITLY stated "≥3.5/4.0 to beat recurring B 3.14 weakness profile from R18+R19" as quality target — and missed by scoring exactly at the recurring profile. Common axis weakness: cal scores 3/4 across runs (2/4 once for mellow-anchor) + actionability is the only consistent 4/4 axis. Root patterns: (a) ADR justifications assert "concession-strengthens-thesis" without unpacking; (b) alternatives dismissed without steelmanning their strongest case; (c) probability/percentage figures lack CI or re-plan triggers ("+43%" "P=0.88" "effective PASS"); (d) lead self-correction records unaudited at scale (10 of 11 R-items unreviewed). Implication: P3 lead-side discipline corrections present in plan-mode handoff but did NOT translate to c1 plan output. Mechanizing P2.D citation enforcement at a downstream verdict layer will not resolve this — the gap is at upstream ADR justification rigor + calibration anchor specification + reconciliation audit completeness. |agents: sigma-evaluate-evaluator-domain,sigma-evaluate-evaluator-logic,sigma-evaluate-evaluator-calibration,sigma-evaluate-judge
 
-→ actions:
-→ new pattern observed → append with |agents and |signal
-→ pattern contradicted → move to ¬ section with explanation
 
 ## Retro: R3 — Vet two full AI-agent-rollout playbooks as a unified review. (2026-04-29)
 value: devils-advocate, devils-advocate converged (0 timeouts)
@@ -537,5 +534,35 @@ hygiene: outcome-1: 4, outcome-2: 8, outcome-3: 6 — perfunctory risk: low
 da-effectiveness: revision-rate: 100%, concession-type: genuine
 sources: T1:28 T2:15 T3:0
 xverify: used:0 failed:6 available:no
+complexity: tier-assessed: 3
+-> recommendation: Low agent convergence count — check if agents are stalling or timing out.
+AUDIT[2026-05-22|sustainable-ai-power]: DB[F[X-N]]: 5-marker format compliance is recurring R1 gap — agents engage substantively but skip format on findings 3-5 of batch; chain-eval A3 catches only post-R3; fix at R1 spawn-prompt level prevents retroactive-fix rounds |verdict:YELLOW |source:sigma-audit |scope:cross-agent |agents: economics-analyst,tech-industry-analyst,geopolitical-strategist
+AUDIT[2026-05-22|sustainable-ai-power]: ΣVerify sub-tool load-fail at R1 dispatch recurred 5/5 agents across 2+ reviews; lead pre-flight ## infrastructure header (mirror §2p pre-dispatch pattern) is the obvious mitigation; DA r2 absorbed XVERIFY coverage but R1 coverage was nil |verdict:YELLOW |source:sigma-audit |agents: all-r1-agents
+AUDIT[2026-05-22|sustainable-ai-power]: POSITIVE — DA anti-sycophancy self-check at exit-gate verdict explicitly tests opposite-direction failure (issuing FAIL to prove rigor when evidence supports PASS = performative-rigor mirror of sycophancy); workspace.md:1909 references this self-test; promote team-wide as exit-gate sub-check |verdict:YELLOW-but-positive-pattern |source:sigma-audit |agents: devils-advocate
+AUDIT[2026-05-22|sustainable-ai-power]: POSITIVE — DA r2 FAIL (B+) → R3 produced material content gains absent from R1 (water matrix, gas-as-bridge tension, EGS CONF-GAP target, 6-state H2 taxonomy); B+ → A- grade movement reflects genuine analytical work, not performative concession; DA challenge-specificity (XVERIFY-2 "wrong-optimization-problem" warrant-audit) was load-bearing for material reshape of synthesis |verdict:YELLOW-but-validates-DA-r2-FAIL-pattern |source:sigma-audit |agents: devils-advocate,all-r1-agents
+AUDIT[2026-05-22|sustainable-ai-power]: workspace state-hygiene gap — ## status:active retained after synthesis+wiki+archive+promotion all complete; status-flip should be explicit step at archive-completion, before chain-evaluator appends evaluation block; relates to [[feedback_sigma-review-restart-hygiene]] but at end-of-session not at next-session-start |verdict:YELLOW |source:sigma-audit |agents: lead
+eval[R-sustainable-ai-power-2026-05-22]|grade:B(3.0/4.0)|acc=3|comp=3|logic=3|evid=3|cal=3|act=3|scope=3|pattern:R1→DA-forced-correction|H2-NULL categorical over-generalization+asymmetric FOAK base-rate(EGS vs SMR)+silent gas-bridge omission+missing multi-axis axes(water/land/waste)+single-source bottleneck claims(iridium/Fervo/H2-learning)|all caught by DA r2/r3 not pre-dispatch|hypothesis:pre-dispatch §2p premise-audit operates at review-level not per-hypothesis level—agents not required to demonstrate base-rate symmetry across comparable techs OR scope verdicts to specific states/conditions BEFORE convergence|R3 end-state 3/4≈R1 end-state 2/4|DA absorbing dispatch-quality work|source:sigma-evaluate 3-evaluator+judge|status:VERIFIED severity:MEDIUM |agents: energy-market-analyst,tech-industry-analyst,economics-analyst,geopolitical-strategist,reference-class-analyst,devils-advocate
+
+→ actions:
+→ new pattern observed → append with |agents and |signal
+→ pattern contradicted → move to ¬ section with explanation
+
+## Retro: R3 — How can we power AI in a sustainable way, and are there appr (2026-05-23)
+value: none detected converged (0 timeouts)
+herding: not detected, CB fired: no
+hygiene: outcome-1: 46, outcome-2: 37, outcome-3: 29 — perfunctory risk: low
+da-effectiveness: revision-rate: 51%, concession-type: genuine
+sources: T1:92 T2:67 T3:0
+xverify: used:2 failed:34 available:no
+complexity: tier-assessed: 3
+-> recommendation: Low agent convergence count — check if agents are stalling or timing out.
+
+## Retro: R3 — Gap-fill multi-horizon and multi-axis analysis on AI sustain (2026-05-23)
+value: none detected converged (0 timeouts)
+herding: not detected, CB fired: no
+hygiene: outcome-1: 12, outcome-2: 22, outcome-3: 6 — perfunctory risk: low
+da-effectiveness: revision-rate: 97%, concession-type: genuine
+sources: T1:27 T2:35 T3:4
+xverify: used:11 failed:2 available:no
 complexity: tier-assessed: 3
 -> recommendation: Low agent convergence count — check if agents are stalling or timing out.

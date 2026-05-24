@@ -134,3 +134,28 @@ note: v2 trial — first use of loan-ops-tech-specialist dynamic agent
 - synthesis: 4109 words / 52 unique citations / shareable-report-style per [[feedback_shareable-report-style]]
 - artifact: shared/archive/2026-05-23-sustainable-ai-power-synthesis.md
 - chain-eval status: A1-A19 all PASS post-closure (pending git A14)
+
+## 2026-05-24 — AI Sustainable Power Follow-Up (R-ai-power-followup)
+- mode: ANALYZE follow-up, tier: TIER-3 (5 domain agents + DA + RCA)
+- scope: gap-fill on prior review (R-sustainable-ai-power 2026-05-22): medium-term (2030-2040) + long-term (2040+) + multi-axis (land + materials beyond iridium/HALEU + waste/EOL) + configurations from H3 list the prior review skipped (waste-heat recovery, BTM solar+LDES hybrid)
+- agents: energy-market-analyst, tech-industry-analyst, economics-analyst, geopolitical-strategist, reference-class-analyst, devils-advocate
+- rounds: R1 + DA r2 (PASS-WITH-REFINEMENTS B+ BELIEF 0.82) + R3 targeted (EMA gap-2 gas turbine supply, RCA gap-3 distributed generation) + DA r3 (PASS A- BELIEF 0.88)
+- exit-gate: PASS — engagement A- (EMA-A, TIA-A-, EA-B+, GS-B+, RCA-A), all 9 criteria met
+- key findings (multi-agent validated):
+  - GAS REALITY REFRAME (cross-agent gold-standard): GE Vernova + Siemens + Mitsubishi combined backlog ~190 GW physically caps PJM 106 GW gas queue; bridge mechanism shifts from central CCGT to distributed RICE engines + small turbines + existing-fleet extension; BTM gas has no PUC retirement pathway, REINFORCING stranded-asset risk via novel regulatory-gap mechanism; 22% hyperscaler on-site growth is parallel gas entrenchment NOT clean-power pathway
+  - SMR fleet Category A/B disaggregation: Cat B base 0.5-2 GW by 2035, aggressive-optimistic 4-6 GW (~20-30% probability); 5 GW H1 threshold needs aggressive case; HALEU supply (~12 MT/yr Centrus) caps aggressive scenario
+  - Korean APR-1400 NthOAK analogy non-transfer: 4 structural conditions (design freeze + vertical integration + continuous cadence + state-coordinated supply chain) absent in US default deployment; Vogtle-style negative learning is the historical reference class
+  - Continental transmission 10-22 GW by 2035 vs NERC ITCS 35 GW need; MISO Tranche 2.1 intra-MISO NOT interregional (common misattribution); reconductoring as wildcard upside
+  - LDES Form Energy $20/kWh-stored cross-agent gap (3 agents independently flagged); $30-50 realistic 2030; iron-air 45-50% RTE forces 2x solar oversizing → blended LCOE $90-115/MWh not optimistic $70-80
+  - Solar silver constraint 29-41% of supply by 2030 with copper-substitution relief valve
+  - PEM PFAS revised DOWN per Oct 2025 EPA Method 1633 study
+  - Eavor 2035-2040 not 2030-2035 (8 MWe per 4-loop reveals scale challenge); post-Hub green H₂ revised DOWN to 10-15%/hub
+  - Google Minnesota = utility-structured Xcel deal NOT true BTM hybrid (replicability jurisdiction-dependent)
+  - AI demand trajectory DELIBERATE DIVERGENCE: TIA continued-growth 40-50% vs RCA plateau 30-45% ties CAGR 25-40%; both T1-sourced, synthesis preserves both
+- infrastructure wins (validated):
+  - Lead pre-flight ToolSearch sigma-verify + sigma-mem sub-tools BEFORE agent spawn → 5/5 R1 XVERIFY successful (vs prior review 5/5 XVERIFY-FAIL)
+  - C4 DB[F[X-N]]:(1)(2)(3)(4)(5) hygiene mandate in spawn prompts → 5/5 DB[] depth pass at DA r2 check (vs prior review 3/5 incomplete)
+- promotions stored to global memory (11): 10 user-approved + GS-routed candidates + 1 process-validated pattern
+- synthesis: 5786 words / multi-agent provenance / structured for re-integration into analyst report
+- artifact: shared/archive/2026-05-24-ai-power-followup-synthesis.md
+- analyst report updated: /Users/bjgilbert/Documents/ai-power-sustainability-report-2026-05-23.md re-integrated with multi-agent-validated findings; near-term sections from prior review retained

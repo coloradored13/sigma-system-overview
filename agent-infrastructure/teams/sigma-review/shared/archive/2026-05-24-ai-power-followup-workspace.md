@@ -93,8 +93,8 @@ Ring (each agent verifies the NEXT in ring; DA verifies ALL):
   - 5 gap-logs: HALEU supply ceiling (binds aggressive-optimistic SMR scenario); GAS TURBINE SUPPLY CONSTRAINT reframes F-RCA-F5 mechanism (turbines booked through decade, PJM 106 GW cannot physically build on schedule); DISTRIBUTED GENERATION/microgrid pathway as H1 alternative (22% hyperscaler growth on-site power); post-2040 continental interconnect out-of-scope; iron-air-as-LDES-of-record untested consensus
   - → lead routing decision: R3 on gaps 2+3 (load-bearing); other 3 gaps handled in synthesis
 - 2026-05-23 R3 dispatched targeted scope per user authorization:
-  - R3-A: EMA → DA[#10] gas turbine OEM supply constraint (GE Vernova, Siemens Energy, Mitsubishi Power booked through decade) reframes F-RCA-F5 bridge-fuel mechanism — shift from "gas-turbine-as-bridge entrenches through 2045" to "gas turbine supply constraint physically caps central plant buildout; mechanism shifts to distributed reciprocating engines + smaller turbines"
-  - R3-B: RCA → DA[#11] distributed generation / on-site microgrid pathway as H1 alternative (22% growth in hyperscalers running entire campuses on-site power per industry data) — does this pathway invalidate H1's central-grid clean-firm scaling requirement?
+  - R3-A: EMA → DA[gap-2] gas turbine OEM supply constraint (GE Vernova, Siemens Energy, Mitsubishi Power booked through decade) reframes F-RCA-F5 bridge-fuel mechanism — shift from "gas-turbine-as-bridge entrenches through 2045" to "gas turbine supply constraint physically caps central plant buildout; mechanism shifts to distributed reciprocating engines + smaller turbines"
+  - R3-B: RCA → DA[gap-3] distributed generation / on-site microgrid pathway as H1 alternative (22% growth in hyperscalers running entire campuses on-site power per industry data) — does this pathway invalidate H1's central-grid clean-firm scaling requirement?
 - 2026-05-23 R3 complete (EMA + RCA both delivered) — DA R3 final exit-gate verdict: **PASS** |engagement:A- (EMA-A, RCA-A) |BELIEF[r3]:P=0.88 (↑ from R2 0.82, above 0.85 threshold) |both gaps RESOLVED via cross-agent convergence
   - Cross-agent gold-standard convergence: EMA F[EMA-6] (OEM supply economics: GE Vernova 100 GW + Siemens €138B/14 GW + Mitsubishi 30 GW = ~190 GW combined backlog) + RCA F-RCA-F6 (historical RC: US CHP 7% plateau 35y, microgrid 0.4%) reach mutually reinforcing conclusions via INDEPENDENT analytical routes
   - Key finding: distributed generation pathway does NOT escape gas-as-bridge — it absorbs the same gas dependence in distributed form. RICE + existing-fleet is actual bridge, NOT new CCGT central plant. BTM gas has no PUC pathway to retire (stranded-asset risk REINFORCED via novel mechanism beyond thermal efficiency)
@@ -105,8 +105,6 @@ Ring (each agent verifies the NEXT in ring; DA verifies ALL):
 
 ## contamination-check
 
-CONTAMINATION-CHECK: clean (lead, 2026-05-23 follow-up review)
-
 CONTAMINATION-CHECK[lead, 2026-05-23 follow-up review]: clean
 - session-history (K-shape, loan-agency, cutebot, sigma-build, sigma-ralph, prior-AI-power-near-term) excluded via !contamination-firewall + scope-boundary explicit reference; 0 references in R1/R3 findings
 - prior-review near-term findings (Fervo Cape Phase I, FERC interconnection queue, gas-as-bridge tension, 6-state H₂ taxonomy) correctly used as REFERENCE not subject-of-re-analysis per scope-boundary
@@ -114,8 +112,6 @@ CONTAMINATION-CHECK[lead, 2026-05-23 follow-up review]: clean
 - scan-result: clean
 
 ## sycophancy-check
-
-SYCOPHANCY-CHECK: clean (lead, 2026-05-23 follow-up review)
 
 SYCOPHANCY-CHECK[lead, 2026-05-23 follow-up review]: clean
 - softened: NONE — DA pushed back on EA Korean APR-1400 framing (softened with refinement-mandate), RCA Smil scope-mismatch (drop specific claim), GS silver under-hedged (add relief valve). All revisions were tightening, not softening of substantive claims
@@ -134,9 +130,9 @@ status: ✓ r1 complete
 
 ---
 
-#### R1 Findings — energy-market-analyst (2026-05-23)
+## R1 Findings — energy-market-analyst (2026-05-23)
 
-#### F[EMA-1]: SMR + Advanced Nuclear Fleet Realism 2035 — Disaggregated Scenarios
+### F[EMA-1]: SMR + Advanced Nuclear Fleet Realism 2035 — Disaggregated Scenarios
 
 **Finding:** US commercially operating advanced nuclear and SMR capacity by 2035 should be disaggregated into two distinct categories: (A) LWR restarts (Palisades ~800 MW targeting 2026, Duane Arnold 601 MW targeting 2029 per Google PPA, TMI/Crane ~835 MW from prior review) and (B) genuinely new SMR/advanced reactor builds. Category B — the base case for commercial SMR fleet — is 0.5–2 GW, realistic-optimistic 2–4 GW, aggressive-optimistic 4–6 GW. |source:[independent-research:T1]| |source-bias:[none]| SEVERITY: HIGH
 
@@ -163,7 +159,7 @@ XVERIFY[openai:gpt-5.4]: partial agreement. Endorses 0.5–2 GW base case; agree
 
 ---
 
-#### F[EMA-2]: Conventional Nuclear Restarts + Uprates — GW-by-2040 Pipeline
+### F[EMA-2]: Conventional Nuclear Restarts + Uprates — GW-by-2040 Pipeline
 
 **Finding:** LWR restarts + uprates realistic contribution: 2–4 GW additional clean firm power from existing-fleet actions by 2030, growing to 3–5 GW by 2035 including uprate pipeline. DOE UPRISE: 2.5 GW by 2027 target, 5 GW by 2029 target, with ~30 uprate applications at NRC through 2030 representing ~2.5 GWe if all approved. NRC review queue pushing 1–2 GW of targeted uprate capacity into the 2030s. |source:[independent-research:T1]|
 
@@ -182,7 +178,7 @@ DB[F[EMA-2]]:
 
 ---
 
-#### F[EMA-3]: Enhanced Geothermal Beyond Fervo — Eavor Closed-Loop Assessment
+### F[EMA-3]: Enhanced Geothermal Beyond Fervo — Eavor Closed-Loop Assessment
 
 **Finding:** Eavor closed-loop geothermal (ABLC) proves concept at Geretsried Germany (first grid power Dec 4, 2025; 4-loop system 64 MWth + 8 MWe CHP; 50% drilling efficiency improvement per lateral vs first loop; second loop construction March 2026). Technology validated at small scale. However, 8 MWe per 4-loop system reveals a scale challenge: reaching 100–500 MW for a data center campus requires 50–250+ parallel systems and massive coordinated drilling campaigns. Eavor closed-loop is a 2035–2040 technology for AI data center supply in the US, not a 2030–2035 contributor. |source:[independent-research:T1]| |source:[independent-research:T2]|
 
@@ -199,7 +195,7 @@ DB[F[EMA-3]]:
 
 ---
 
-#### F[EMA-4]: Post-Hub Green Hydrogen Primary Power Competitiveness 2030–2032
+### F[EMA-4]: Post-Hub Green Hydrogen Primary Power Competitiveness 2030–2032
 
 **Finding:** At hub geographies (Gulf Coast HALO H2Hub, Appalachian ARCH2), conditional probability that green-H₂ primary power for data centers becomes competitive by 2030–2032 is 10–15% per hub — revised down from prior review's 15–30% estimate. |source:[independent-research:T2]|
 
@@ -215,7 +211,7 @@ DB[F[EMA-4]]:
 
 ---
 
-#### F[EMA-5]: BTM Solar + Iron-Air LDES Economics at 500 MW+ Hyperscaler Scale
+### F[EMA-5]: BTM Solar + Iron-Air LDES Economics at 500 MW+ Hyperscaler Scale
 
 **Finding:** Google-Xcel Minnesota (300 MW/30 GWh iron-air, 100-hour duration, Form Energy, scheduled 2028 installation from Form Factory 1) is the proof-of-concept configuration. Clean energy fraction of 85–95% is technically credible — 30 GWh covers ~100 hours of 300 MW load, handling multi-day low-solar periods. Sub-$80/MWh blended LCOE by 2028–2030 is conditionally feasible but requires Form Energy achieving $20/kWh cost target — not confirmed by independent data. |source:[independent-research:T1]|
 
@@ -236,7 +232,7 @@ DB[F[EMA-5]]:
 
 ---
 
-#### Analytical Hygiene Summary
+## Analytical Hygiene Summary
 
 - §2a (positioning): checked F[EMA-1] (crowding risk/consensus), F[EMA-2] (NRC queue constraint)
 - §2b (calibration): applied to all findings; RC[] for FOAK overruns, DOE target achievement, battery cost realization
@@ -248,7 +244,7 @@ DB[F[EMA-5]]:
 
 ---
 
-#### Convergence Declaration
+## Convergence Declaration
 
 energy-market-analyst: ✓ r1 complete |findings: F[EMA-1..5] |XVERIFY: openai:gpt-5.4 partial on F[EMA-1] (LWR/SMR distinction incorporated) |gaps: F[EMA-3] Eavor fleet-scale capital cost undisclosed → DA, F[EMA-5] Form Energy $20/kWh unverified → DA |→ peer-verify tech-industry-analyst
 
@@ -256,13 +252,13 @@ energy-market-analyst: ✓ r1 complete |findings: F[EMA-1..5] |XVERIFY: openai:g
 
 #### R3 Response: gap-2 gas turbine supply constraint
 
-**DA[#10] verdict: COMPROMISE — mechanism reframed, direction confirmed, stranded-asset risk revised upward**
+**DA[gap-2] verdict: COMPROMISE — mechanism reframed, direction confirmed, stranded-asset risk revised upward**
 
 The F-RCA-F5 bridge-fuel entrenchment finding is correct in direction but wrong in mechanism. The prior synthesis treated the PJM TC1 106 GW gas queue as evidence that central-plant CCGT would fill the AI power gap. The OEM supply constraint evidence changes the mechanism without changing the directional conclusion.
 
 ---
 
-#### F[EMA-6]: Gas Turbine OEM Supply Constraint — Bridge-Fuel Mechanism Reframed SEVERITY: HIGH
+### F[EMA-6]: Gas Turbine OEM Supply Constraint — Bridge-Fuel Mechanism Reframed SEVERITY: HIGH
 
 **Finding:** Gas turbine OEM lead times have extended to 5–7 years, with all three major manufacturers (GE Vernova, Siemens Energy, Mitsubishi Power) reporting backlogs that extend well into the 2030s. This physically constrains how much new CCGT central plant from PJM TC1's 106 GW gas queue can reach commercial operation by 2030. The actual near-term AI power bridge runs through distributed alternatives, not new CCGT central plant. |source:[independent-research:T1]| |source-bias:[none]|
 
@@ -323,7 +319,7 @@ Net effect on F-RCA-F5: stranded-asset probability and magnitude are maintained 
 
 **R3 Convergence Declaration:**
 
-energy-market-analyst: ✓ r3 response complete |F[EMA-6]: gas turbine OEM supply constraint confirmed via T1 primary sources (GE Vernova SEC 8-K + Utility Dive, Siemens Energy investor materials, Mitsubishi Power Bloomberg + Turbomachinery Magazine) |DA[#10] verdict: COMPROMISE — mechanism reframed (RICE + existing fleet is actual bridge, not new CCGT central plant), F-RCA-F5 direction confirmed, stranded-asset risk maintained/increased |XVERIFY[openai:gpt-5.4]: partial — core mechanism endorsed, point estimate appropriately softened |§2e outcome 1: prior synthesis premise challenged and revised |→ SendMessage devils-advocate-3
+energy-market-analyst: ✓ r3 response complete |F[EMA-6]: gas turbine OEM supply constraint confirmed via T1 primary sources (GE Vernova SEC 8-K + Utility Dive, Siemens Energy investor materials, Mitsubishi Power Bloomberg + Turbomachinery Magazine) |DA[gap-2] verdict: COMPROMISE — mechanism reframed (RICE + existing fleet is actual bridge, not new CCGT central plant), F-RCA-F5 direction confirmed, stranded-asset risk maintained/increased |XVERIFY[openai:gpt-5.4]: partial — core mechanism endorsed, point estimate appropriately softened |§2e outcome 1: prior synthesis premise challenged and revised |→ SendMessage devils-advocate-3
 
 ---
 
@@ -471,50 +467,6 @@ Form Energy's Form Factory 1 (Weirton, WV) is targeting 500 MW/year production c
 #### Peer Verification: tech-industry-analyst verifying economics-analyst
 
 economics-analyst section is currently pending r1. Peer verification will be completed once economics-analyst writes findings. Placeholder logged; ring verification will execute when EA section is populated.
-
-### Peer Verification: tech-industry-analyst verifying economics-analyst
-
-**Artifacts reviewed:** F[EA-1] (Korean APR-1400 4-condition non-transfer), F[EA-2] (iron-air $30-50/kWh), F[EA-3] (fusion 0-2 GW by 2040), F[EA-4] (waste-heat US infrastructure gap), F[EA-5] (BTM hybrid $65-105/MWh blended LCOE), analytical hygiene summary, convergence declaration.
-
----
-
-**F[EA-1] — Korean APR-1400 4-condition structural diagnosis:** PASS-WITH-FLAG
-
-The four structural conditions (design freeze, vertically integrated constructor, continuous domestic build cadence, government-coordinated supply chain) are analytically sound and independently derivable from Barakah/Vogtle comparative data. The Barakah cost figure (~$4,300-5,500/kW) vs Vogtle ($8,000/kW+) is sourced at T1-T2 (World Nuclear Association; Columbia CGEP), and NREL ATB 2024 $7,000-9,000/kW SMR FOAK baseline is a recognized T2 reference. DB[F[EA-1]] (1)(2)(3)(4)(5) present and substantive: counter-evidence (ADVANCE Act, 45U credit, factory manufacturing) genuinely engaged, not dismissed. XVERIFY[openai:gpt-5.4] partial verdict incorporated — learning rate quantification removed, structural conditions retained. VERIFIED on structural analysis.
-
-**FLAG on Korean softening incorporation (DA refinement mandate #1):** DA R2 verdict found the original "Korean analogy does NOT transfer" framing over-stated and issued refinement mandate: revise to "Korean site-level conditions absent; alternative module/factory-level learning mechanism plausible but unproven." The EA convergence declaration (R1) still carries "Korean analogy misapplied to US SMRs" — the original framing. No EA R2 response section exists in the workspace incorporating this revision. The DA sycophancy check records this as a "tightening, not softening of substantive claims" and the gate-log routes it as synthesis mandate (1). Assessment: protocol-compliant routing to synthesis. Gap: the revised claim exists only in the gate-log, not in EA's own section. Flag for synthesis: confirm F[EA-1] revised language appears in final synthesis per mandate (1). SEVERITY: LOW (routing compliant; gap is documentation, not analytical contamination).
-
----
-
-**F[EA-2] — LDES iron-air $30-50/kWh realistic 2030 range:** PASS
-
-Cross-agent convergence with EMA F[EMA-5]: EMA independently derived Lazard LCOS $35-50/kWh and reached the same $30-50/kWh realistic range via a different analytical route (EA via Google Minnesota transaction back-calculation at $33/kWh post-45X; EMA via Lazard LCOS v7 cost basis). Genuine independent convergence per C5, not echo-chamber agreement. EA correctly identifies the 45X manufacturing credit structure ($45/kWh offset) as the mechanism that makes BTM economics viable even at the $30-50/kWh range. DB[F[EA-2]] (1)(2)(3)(4)(5) present and substantive. Coordination failure framed as the key gate is analytically independently derived, not prompted. Source provenance: T2 appropriately tagged where no T1-grade primary cost disclosure exists. §2b calibration RC[50% cost reduction in 5 years post-FOAK] 30-50% correctly confirms risk conservatively. VERIFIED. |source:[independent-research:T2]|
-
----
-
-**F[EA-3] — Fusion economics: ~zero by 2035, 0-2 GW by 2040:** PASS
-
-Directional convergence with RCA CAL[fusion-to-AI-power-by-2040]: RCA central 0-3 GW, 80%-CI [0, 5 GW] AI-allocated. EA's 0-2 GW by 2040 figure is within RCA's range, representing a more conservative estimate — convergent via independent analytical routes (EA from project-specific timeline analysis; RCA from reference-class fusion-forecast accuracy). Helion 2028 probability 15-25% (EA) vs RCA PM[1] 55-70% failure probability (implying 30-45% success) — EA is marginally more pessimistic but within calibration noise, not a material divergence. EA correctly tags Polaris D-T physics milestone (February 2026) as a positive update while maintaining timeline skepticism. LCOE $100-300/MWh tagged [agent-inference:T3] per §2i — correct source-tier and qualitative qualifier applied. §2b calibration RC[FOAK energy technology on-time delivery] 10-25% correctly confirms risk. VERIFIED. |source:[independent-research:T1-T2]| |source:[agent-inference:T3 for LCOE]|
-
----
-
-**F[EA-4] — Waste-heat US infrastructure gap:** PASS
-
-EA's structural diagnosis (Stockholm model not transferable; US 180-220 TWh rejected heat mostly lost to ambient; narrow Boston/Chicago/NYC opportunity) converges with TIA F[TIA-3] (three conjunctively binding structural barriers; 2035-2045 opportunity). EA arrives via economic revenue math (€190,000/MW annually = $10-20/MWh equivalent offset, 3-7% of energy cost) while TIA arrives via infrastructure gap analysis — independent routes, same structural conclusion. EA's EU ETS shadow value calculation (€13-40/MWh at €65-100/tCO2) is a genuine analytical contribution absent from TIA F[TIA-3], adding economic specificity to the barrier diagnosis. H8 confirmation ("all three gates currently absent in US deployments") correctly cross-references workspace hypothesis without echo-chambering — EA derives conclusion independently from economic math. Source provenance: T2 appropriately tagged; T3 for US market rates. VERIFIED. |source:[independent-research:T2]|
-
----
-
-**F[EA-5] — BTM hybrid TCO $65-105/MWh blended LCOE:** PASS-WITH-FLAG
-
-The LCOE model is explicitly decomposed into driver components (solar PPA + iron-air capex + grid backup), satisfying §2i Condition 1. The $65-75/MWh optimistic / $75-85/MWh base / $90-105/MWh pessimistic range is derived from explicit assumptions, not asserted. Land constraint (15,000-25,000 acres for 1.5 GW solar) is concrete and independently derivable, correctly limiting geography to Sun Belt — consistent with TIA F[TIA-4] replicability concern. §2e conditional flag (iron-air 100-hour reliability unproven at commercial scale) appropriate. §2c cost premium acknowledged with firm-plus-clean justification. Cross-agent convergence with TIA F[TIA-4] on $20/kWh unverified (EA via Lazard LCOS, TIA via source-type audit) — genuine independent convergence correctly DA-flagged by both agents. VERIFIED directionally.
-
-**FLAG on BTM/utility-structured terminology:** EA uses "BTM hybrid" throughout F[EA-5] and cites Google Minnesota as "the empirical gate." TIA F[TIA-4] establishes that Google Minnesota is utility-structured (Xcel Clean Energy Accelerator), not true BTM. EA's generic 500 MW campus model is not claiming Google MN is true BTM, but the shared "BTM" label creates a potential conflation risk in synthesis. This is a terminology clarification issue, not an analytical error. Flag for synthesis: distinguish generic BTM-modeled configuration from the Google MN utility-structured proof-of-concept. SEVERITY: LOW.
-
----
-
-**Overall assessment:** economics-analyst section is PASS (F[EA-1]: PASS-WITH-FLAG on softening-routing documentation, F[EA-2]: PASS, F[EA-3]: PASS, F[EA-4]: PASS, F[EA-5]: PASS-WITH-FLAG on BTM terminology). All DB[], §2d, §2e, §2b checks substantive. XVERIFY on F[EA-1] properly documented and incorporated. Two flags are documentation/terminology issues routed to synthesis, not analytical contamination. Cross-agent convergence on Form Energy $20/kWh gap (EA+TIA+EMA independent routes) and fusion 0-2 GW by 2040 (EA+RCA directional convergence) confirmed. SEVERITY: LOW on both flags. |2026-05-23|
-
-tech-industry-analyst: peer-verification economics-analyst → PASS |F[EA-1]: PASS-WITH-FLAG — 4-conditions structural sound; Korean softening routing to synthesis acceptable; synthesis must confirm revised language per mandate (1) |F[EA-2]: PASS — cross-agent convergence with EMA F[EMA-5] on $30-50/kWh; independent analytical routes confirmed |F[EA-3]: PASS — directional convergence with RCA CAL[fusion-to-AI-power-by-2040]; Helion pessimism within calibration range |F[EA-4]: PASS — cross-convergence with TIA F[TIA-3]; EU ETS shadow value adds economic specificity |F[EA-5]: PASS-WITH-FLAG — LCOE model explicit and decomposed; BTM/utility-structured terminology conflict with TIA F[TIA-4] flagged for synthesis |2026-05-23
 
 #### Convergence Declaration
 
@@ -674,31 +626,11 @@ economics-analyst: ✓ R1 complete |F[EA-1]: NthOAK learning — 4-conditions st
 
 ---
 
-### Peer Verification: economics-analyst verifying geopolitical-strategist
+#### Peer Verification: economics-analyst verifying geopolitical-strategist
 
-**Artifacts reviewed:** F[GS-1], F[GS-2], F[GS-3], F[GS-4], convergence declaration, GS peer-verification-index assignment.
+STATUS: geopolitical-strategist section is ◌ pending r1 — no findings present at time of EA R1 completion.
 
-**F[GS-1] — US interregional transmission expansion 2035 (10–22 GW vs NERC 35 GW gap):** PASS. The NERC ITCS Dec 2024 T1 source is correctly cited and the finding correctly distinguishes MISO Tranche 2.1 ($21.8B, intra-MISO) from interregional RTO-to-RTO transfer — this is a load-bearing distinction that protects against overcounting. DB[F[GS-1]] full (1)(2)(3)(4)(5) present per C4. XVERIFY[openai:gpt-5.4] partial result incorporated appropriately — original 7–15 GW range widened to 10–22 GW per counter-evidence on definitional ambiguity; reconductoring wildcard flagged with evidence (Goldman Sachs/GridLab analysis). §2b calibration grounded in specific historical pace (0.6 GW/year vs 3.9 GW/year required — 6.5× gap is a concrete quantification, not a vague assertion). CAL[] with 80% and 90% CI present. One note: DOE $4.9B loan to Grain Belt Express terminated July 2025 per GS finding — this is a material development that substantially increases Grain Belt delivery risk and appropriately informs the pessimistic end of the range. SEVERITY: MEDIUM — credible and well-sourced. |verdict:PASS
-
-**F[GS-2] — Land use locally binding, nationally non-capping:** PASS. The local-vs-national distinction is analytically precise and prevents the overstatement that H5 invited ("binding constraint by 2030 in 3+ US states"). Loudoun County March 2025 (7-2 bipartisan, Special Exception required) and Prince William County CoA voiding (March 2026) are correctly cited from T1 government sources. BLM >19M acres figure with NEPA 3–5 year review caveat correctly identifies that the binding variable is regulatory timeline not land quantity — this is a genuine analytical refinement over the prompt's H5 framing. DB[F[GS-2]] full (1)(2)(3)(4)(5) present. The assume-wrong case (tax base dependency limiting over-restriction) is specific and grounded. §2a outcome 1 (scale-level framing changed) correct. One flag: the 5–15% cost premium for secondary-market locations is tagged [prompt-claim+independent-research:T2] — the [prompt-claim] acknowledgment is appropriate hygiene per §2d, though the directional estimate is defensible from the broader evidence. PARTIAL-PASS: cost premium figure needs triangulation against real estate / leasing data if load-bearing. Finding stands directionally; 5–15% figure should be treated as directional. |verdict:PASS (cost premium: directional only)
-
-**F[GS-3] — Solar silver 29–41% of global silver supply 2030 constraint; DA refinement mandate #3 — copper-substitution relief valve:** PASS WITH VERIFICATION. The 29–41% solar silver figure is correctly sourced to T1 ScienceDirect peer-reviewed (2025) and the severity (HIGH, USGS MCS 2026 T1) basis is well-defended. DB[F[GS-3]] full (1)(2)(3)(4)(5) present. Cobalt (DRC 73–76%), lithium (Chile 54% + Argentina 43%), and rare-earth (China 85–90%) concentration figures correctly cite USGS MCS T1.
-
-**DA refinement mandate #3 verification:** The mandate specified "GS F[GS-3] silver — add copper-substitution relief valve." Reviewing F[GS-3] as written: the finding does NOT explicitly integrate a copper-substitution relief valve as of the R1 text visible in the workspace. The original GS convergence declaration at the bottom of the GS section reads: "F[GS-3]=iron-air-escapes-concentration;silver-29-41%-global-supply-2030;LFP-partial-escape" — no copper-substitution mention. The DA R2 exit-gate gate-log at line 91 states: "(3) GS F[GS-3] silver add copper-substitution relief valve" as a refinement mandate. This refinement was supposed to be incorporated by GS before the R3 round; I cannot confirm from the workspace text that it was written into the GS section.
-
-**Impact assessment of the gap:** The silver constraint is the more novel and underappreciated finding in F[GS-3]. The copper-substitution relief valve matters analytically because: (a) silver-coated copper (AgCu) paste substitution is an active PV industry effort that would reduce per-panel silver consumption; (b) ITRPV 2024 roadmap projects silver content per cell falling from ~18 mg/cell (2020) to ~8 mg/cell by 2033 via both thrifting and Cu substitution; (c) without this relief valve, the 29–41% constraint is materially overstated as a procurement risk. The absence of the copper-substitution relief valve in the written F[GS-3] text means the silver finding is stated at the upper severity bound without the mitigating evidence the DA mandated. PARTIAL-PASS: silver constraint directionally confirmed; severity should be qualified as conditional on copper-substitution adoption trajectory. Flagging for synthesis to incorporate relief valve per mandate #3. |verdict:PARTIAL-PASS (copper-substitution relief valve mandate not confirmed as incorporated)
-
-**F[GS-4] — PEM PFAS revised down per Oct 2025 EPA Method 1633:** PASS. The Oct 2025 study showing no PFAS detected during normal operation via EPA Method 1633 is correctly cited as the basis for revising PEM PFAS from "problematic" to "regulatory monitoring required — likely manageable via industry-specific exemptions." This is precisely the revision direction the evidence supports: operational emissions minimal; manufacturing/disposal exposure real but exemptible given EU energy transition exemptions. DB[F[GS-4]] full (1)(2)(3)(4)(5) present. The nuclear SNF position (3,800+ dry storage casks, no Yucca Mountain path, Congressional action required) is grounded in NRC/GAO T1 sources. The GPU e-waste finding (22.3% global recycling per UN GEM 2024, 18–36 month AI server refresh vs 5–7 year traditional) is a genuine contribution not present in prior review. §2e H7 (waste/EOL differentially binding) confirmed for nuclear, revised downward for PEM — correctly calibrated. The PV recycling 13× EU capacity gap (170,000 tonnes/year capacity vs 2.2M tonnes/year projected 2050) is IEA-PVPS T1 sourced and directionally important. |verdict:PASS
-
-**Cross-check with EA findings:**
-
-- F[GS-3] iron-air EOL benign CONVERGES with F[EA-2] iron-air supply chain advantage (earth-abundant feedstocks, no geopolitical concentration) — independent corroboration across supply-chain and waste/EOL axes. Gold-standard convergence per C5 (different analytical routes, compatible conclusions).
-- F[GS-4] PEM PFAS revised down is INDEPENDENT of EA analysis — EA did not cover PEM PFAS in F[EA-1..5]. No conflict, no duplication.
-- F[GS-1] transmission 10–22 GW gap CONVERGES directionally with F[EA-1] advanced nuclear structural conditions absent — both findings constrain H1's conjunctive probability from different supply-side axes (transmission limits renewable delivery; nuclear learning conditions absent limit clean-firm delivery). Reinforces H1 conjunctive-low-probability conclusion.
-
-**Overall assessment:** GS section is PASS with two PASSes, one PARTIAL-PASS (F[GS-2] cost premium directional), and one PARTIAL-PASS (F[GS-3] copper-substitution relief valve mandate not confirmed integrated). Both partials are flagged for synthesis. All DB[], §2d source provenance, §2e premise checks substantive. XVERIFY appropriately applied on F[GS-1]. No contamination detected. Four distinct findings, analytically independent.
-
-economics-analyst: peer-verification geopolitical-strategist → PASS-WITH-PARTIALS |F[GS-1]:PASS — NERC 35 GW vs 10–22 GW realistic; MISO T2.1 intra-MISO correctly excluded |F[GS-2]:PASS — land locally-binding nationally-non-capping; NEPA timeline correctly identified as binding variable |F[GS-3]:PARTIAL-PASS — silver 29–41% T1-sourced VERIFIED; copper-substitution relief valve (DA mandate #3) not confirmed integrated; synthesis must incorporate |F[GS-4]:PASS — PEM PFAS revised DOWN per Oct 2025 EPA Method 1633 VERIFIED; nuclear SNF structurally unresolved confirmed |cross-convergence: F[GS-3]+F[EA-2] iron-air EOL-vs-supply-chain independent corroboration; F[GS-1]+F[EA-1] transmission-gap+nuclear-learning conjunctively bind H1 probability downward |severity: MEDIUM overall; F[GS-3] silver partial requires synthesis resolution
+PEER-VERIFY[EA→GS]: DEFERRED — GS section empty at EA R1 completion |→ lead: flag for post-GS-R1 loop-close; ring verification will complete once GS writes findings
 
 ### geopolitical-strategist
 status: ✓ r1 complete
@@ -811,31 +743,12 @@ DB[F[GS-4]]:
 
 ---
 
-### Peer Verification: geopolitical-strategist verifying reference-class-analyst
-
-**Artifacts reviewed:** F-RCA-F1 (Smil base-rate dominance, DA refinement #2 applied), F-RCA-F2 (AI demand TIA-RCA divergence), F-RCA-F3 (fusion CI [0,12] GW AI-allocated 2040 / [0,60] GW 2050), F-RCA-F4 (SMR central 2-4 GW 2035), F-RCA-F5 (PJM gas bridge entrenchment, $200-400B stranded 50-65%), F-RCA-F6 (distributed-gen-as-parallel-gas-entrenchment). Full R1 + R3-B sections reviewed.
-
-**F-RCA-F1 — Smil 50-70-year base-rate dominance, DA refinement #2 applied:** PASS. Finding grounds the base rate in N=4 empirical transitions (coal/oil/gas/solar) with Smil 2010 + OWID + IEA — T1 and peer-reviewed. DA refinement #2 acknowledged in OV-RECONCILIATION and DB[F-RCA-F1] step (4): directional framing "realistic 2040 target is 10-20% clean-firm share" retained; unsupported point-estimate dropped per mandate. Structural-feature check (modularity + grid-edge + semiconductor-learning as preconditions for Smil-break) is independently derived — not present in other agents' sections, not prompted. DB[F-RCA-F1] markers (1)(2)(3)(4)(5) present and substantive per C4. §2a outcome 1 correctly applied as counterweight to team-optimism on clean-firm-by-2040. Single-author concentration risk (Smil) acknowledged; N=4 qualifier appropriate. No [prompt-claim] laundering detected. VERIFIED.
-
-**F-RCA-F2 — AI demand trajectory, TIA-RCA divergence:** PASS. RCA reached 25-40% probability for continued ~30% CAGR through 2035 vs TIA's ~40-50% — genuine 15-20pp directional disagreement, both T1-sourced via independent analytical routes. Divergence correctly preserved per §3 (do not force consensus). DB[F-RCA-F2] step (3) shows RCA revised upward from 20-35% to 25-40% based on Jevons-empirical counter-evidence — genuine engagement not anchoring. PPA-overbuy-rational-under-asymmetric-loss finding is analytically independent of prompt hypotheses. §2i precision gate applied; qualitative restatement correct. Source tags present. DB[] full (1)(2)(3)(4)(5) per C4. VERIFIED.
-
-**F-RCA-F3 — Fusion CI [0,12] GW AI-allocated 2040 / [0,60] GW 2050:** PASS. XVERIFY[openai:gpt-5.4] partial — finding revised per §2h state 1: "30% overrun" stat dropped (unsupported); AI-allocated CI widened; qualitative outside-view statement substituted. Revision is genuine tightening. Central estimate 1-3 GW AI-allocated by 2040 appropriately conservative against Metaculus aggregate (Sept 2069, 104 forecasters) and ITER 50-year slip track record. MIT 43 GW global avg by 2050 compatible with upper end of [0,60] CI — cross-source consistency correctly noted. ANA[5] (ITER outcome) and fusion-forecast RC (physicist survey slip rate since 1958) are appropriate failure analogues per protocol. Helion 2028 probability <30% grounded in RC. XVERIFY provenance tag present. VERIFIED.
-
-**F-RCA-F4 — SMR central 2-4 GW 2035, US negative-learning reference class:** PASS. Four conditioning factors (standardized design / integrated owner-operator-regulator / supply-chain depth / workforce continuity) independently derived from FR/KR/US/EU precedent — not prompted. Convergence with EMA F[EMA-1] genuine: RCA's 2-4 GW central falls between EMA's 0.5-2 GW base and 2-4 GW realistic-optimistic, arrived via outside-view RC weighting rather than EMA's project-by-project schedule analysis — independent routes. NuScale CFPP cancellation (ANA[4]) is the correct SMR-specific FOAK failure data point. 70-85% negative-learning base rate for US/EU large-LWR since 1995 evidenced at N=8-12 programs. CAL[smr-fleet-5GW-US-by-2035] 80% CI [1 GW, 5 GW] correctly shows H1's 5 GW threshold at upper CI bound — probability <50%. DB[F-RCA-F4] markers present per C4; §2e premise (Korean analogy) challenged per outcome 1. VERIFIED.
-
-**F-RCA-F5 — PJM gas bridge entrenchment, $200-400B stranded 50-65%:** PASS. Severity-uplift argument (data-center base-load PPAs MORE entrenching than 2007-2018 coal-displacement precedent) is analytically sound — four structural factors (24/7 firmness, 15-25yr PPAs, co-located load, IG counterparties) are each independently load-bearing. RMI 2024 "$1T global gas-stranded-by-2050" is T1; PJM-share weighting is a transparent calculation, not a [prompt-claim]. §2b calibration: RC[bridge-fuel-entrenchment]=85-95% from prior review applied with documented severity-uplift justification. PM[5] central probability 50-65% is not inflated relative to base rate given the uplift factors. XVERIFY not applied at R1 — acceptable per §2h load-bearing budget allocation (F-RCA-F3 received that budget). VERIFIED.
-
-**F-RCA-F6 — Distributed-gen as parallel gas-entrenchment vector; cross-agent convergence with EMA F[EMA-6]:** PASS. F-RCA-F6 cross-agent convergence with EMA F[EMA-6] IS supported by RCA's independent historical reference class analysis. RCA arrived at the gas-entrenchment conclusion via: (a) RC-R3-B[distributed-generation-displacing-central-grid-scaling US] — US CHP plateau ~7% since 1990, microgrid 0.4% of US capacity 2023 per EIA/Statista T1, 35+ years of documented non-displacement of central-grid scaling; (b) 2026 project-mix decomposition — Crusoe/Pacifico/Nscale/Edged = 85-95% gas-fired by aggregate MW, fuel-cell <5%; (c) no-PUC-retirement-pathway structural argument for BTM gas. EMA F[EMA-6] arrived via materially different route: OEM supply economics (GE Vernova SEC 8-K 100 GW backlog, Siemens 58 GW, Mitsubishi 30 GW combined ~190 GW) + RICE thermal-efficiency penalty (40-48% vs CCGT 55-62%) + harder coordinated-retirement. The two routes are genuinely independent — RCA did not import EMA's OEM supply data; EMA did not import RCA's historical RC. Both agents conclude: (1) mechanism shifts from central CCGT to RICE+existing fleet; (2) distributed pathway is overwhelmingly gas-fired; (3) stranded-asset risk REINFORCED not relieved; (4) H1 conjunctive-rejection on clean-supply outcome remains binding. Gold-standard cross-agent convergence per C5 (independent routes, compatible conclusions). XVERIFY[google:gemini-3.1-pro-preview] agree[high confidence] — NOT anthropic per [[feedback_xverify-anthropic-excluded]], compliant. DB[F-RCA-F6] full (1)(2)(3)(4)(5) per C4. XVERIFY provenance tag present. VERIFIED.
-
-**Cross-convergence note:** GS F[GS-1] (transmission 10-22 GW by 2035 vs NERC 35 GW need) and RCA F-RCA-F5 (PJM gas queue entrenchment) are mutually reinforcing — transmission gap means clean-firm alternatives have no delivery path even if built, compounding bridge-fuel entrenchment. No inconsistency between GS and RCA sections detected.
-
-**Overall assessment:** reference-class-analyst section PASS on all six artifacts. DB[] C4-compliant throughout. XVERIFY applied on F-RCA-F3 and F-RCA-F6 with revisions per counter-evidence. Source provenance T1/T2; no [prompt-claim] laundering. F-RCA-F6 convergence with EMA F[EMA-6] is analytically genuine — independent historical RC + project-mix route vs EMA's OEM-supply route.
-
-geopolitical-strategist peer-verification reference-class-analyst: PASS |F-RCA-F1: PASS (Smil base-rate grounded; DA refinement #2 acknowledged; DB[] C4-compliant) |F-RCA-F2: PASS (TIA-RCA divergence preserved per §3; Jevons counter-evidence integrated without anchoring) |F-RCA-F3: PASS (XVERIFY-revised CI widened; 30%-overrun stat dropped; outside-view substituted per §2h state 1) |F-RCA-F4: PASS (4-factor conditioning test independent of prompt; convergence with EMA F[EMA-1] genuine via independent routes) |F-RCA-F5: PASS (severity-uplift analytically sound; 4 structural factors each load-bearing; PM[5] 50-65% not inflated) |F-RCA-F6: PASS (convergence with EMA F[EMA-6] supported by independent historical RC: CHP plateau RC + project-mix decomposition; XVERIFY[gemini]:agree NOT anthropic; cross-agent gold-standard per C5) |ring-verification: COMPLETE
+#### Peer Verification: geopolitical-strategist verifying reference-class-analyst
+status: PENDING — reference-class-analyst section not yet posted. Will complete peer verification once ### reference-class-analyst section is present. Per ring assignment: geopolitical-strategist verifies reference-class-analyst.
 
 ---
 
-geopolitical-strategist: ✓ r1 complete |F[GS-1]=transmission-structural-underdelivery(10-22GW-vs-35GW-NERC-need;XVERIFY-partial-openai-gpt5.4;cost-allocation-co-equal-constraint) |F[GS-2]=land-use-locally-binding-nationally-non-capping;NEPA-3-5yr-binding-for-generation-siting |F[GS-3]=iron-air-escapes-concentration;silver-29-41%-global-supply-2030;LFP-partial-escape |F[GS-4]=nuclear-SNF-structurally-unresolved;PEM-PFAS-likely-exemptible;GPU-ewaste-18-36mo-refresh-accelerating |peer-verify-RCA-COMPLETE
+geopolitical-strategist: ✓ r1 complete |F[GS-1]=transmission-structural-underdelivery(10-22GW-vs-35GW-NERC-need;XVERIFY-partial-openai-gpt5.4;cost-allocation-co-equal-constraint) |F[GS-2]=land-use-locally-binding-nationally-non-capping;NEPA-3-5yr-binding-for-generation-siting |F[GS-3]=iron-air-escapes-concentration;silver-29-41%-global-supply-2030;LFP-partial-escape |F[GS-4]=nuclear-SNF-structurally-unresolved;PEM-PFAS-likely-exemptible;GPU-ewaste-18-36mo-refresh-accelerating |→ peer-verify-RCA-when-posted
 
 ### reference-class-analyst
 status: ✓ r1 complete |findings: F-RCA-F1..F5 |XVERIFY:partial[openai:gpt-5.4] on F-RCA-F3 (revised, CI widened, overrun-stat dropped) |peer-verify EMA: COMPLETE (below) |→ DA r2
@@ -1057,7 +970,7 @@ status: ✓ r3 complete |exit-gate: PASS — synthesis-ready |BELIEF[r3]: P=0.88
 
 ---
 
-#### R3 Findings — devils-advocate (2026-05-23)
+## R3 Findings — devils-advocate (2026-05-23)
 
 ### Cross-Agent Convergence Audit: EMA F[EMA-6] + RCA F-RCA-F6
 
@@ -1082,7 +995,7 @@ Net: the cross-agent convergence (EMA + RCA both via independent routes) is stro
 
 This is a STRENGTHENED claim, not a softened one.
 
-### DA[#10] R3 Final Verdict on F[EMA-6]: PASS
+### DA[gap-2] R3 Final Verdict on F[EMA-6]: PASS
 
 T1 primary sources independently verified by DA R3 web research (4/4 OEM/RICE claims confirmed):
 - GE Vernova 100 GW Q1 2026 backlog ~10 GW remaining through 2030 (SEC 8-K + Utility Dive + IIR Energy)
@@ -1099,7 +1012,7 @@ Stress-test on NEW consensus per devils-advocate.md r4 pattern: XCHALLENGE opena
 
 Engagement grade: **A**. gap-2 status: **RESOLVED**.
 
-### DA[#11] R3 Final Verdict on F-RCA-F6: PASS
+### DA[gap-3] R3 Final Verdict on F-RCA-F6: PASS
 
 - Full SQ + RC + ANA + CAL + PM + OV + DB[] structure (gold-standard r1+r3 protocol depth in single response)
 - XVERIFY[google:gemini-3.1-pro-preview]:agree[high] external corroboration
@@ -1152,7 +1065,7 @@ devils-advocate: ✓ r3 complete |R3-A verdict F[EMA-6]: PASS (refinement revise
 
 ---
 
-#### R2 Findings — devils-advocate (2026-05-23)
+## R2 Findings — devils-advocate (2026-05-23)
 
 ### §7d PROMPT-AUDIT
 
@@ -1499,29 +1412,37 @@ C[26.05.23] nuclear-ppa-multi-function-procurement: hyperscaler nuclear PPAs ser
 #### User-approve candidates (0)
 None — all 4 are calibration updates or new domain patterns. No new-principle, no behavior-change, no contradicts-global entries.
 
-## compilation-complete: [R-ai-power-followup-2026-05-24]
-
 ## Chain Evaluation
 
-Mode: ANALYZE | Status: INCOMPLETE | 23/24 items passed
-Evaluator: chain-evaluator v2.0.0 | 2026-05-24T02:20:17.187978+00:00
+Mode: ANALYZE | Status: INCOMPLETE | 16/24 items passed
+Evaluator: chain-evaluator v2.0.0 | 2026-05-24T01:27:30.890126+00:00
 
-- [PASS] A1: Agent findings
+- [FAIL] A1: Agent findings
+  - Agent 'energy-market-analyst' has empty/minimal findings section
 - [PASS] A2: Source provenance
-- [PASS] A3: Dialectical bootstrapping
-  - energy-market-analyst: DB entry missing 1 of 5 numbered markers
+- [FAIL] A3: Dialectical bootstrapping
+  - Agent 'energy-market-analyst' has no DB[] dialectical bootstrapping entries
   - reference-class-analyst: DB entry missing 1 of 5 numbered markers
 - [PASS] A4: Circuit breaker
-- [PASS] A5: DA challenges + responses
+- [FAIL] A5: DA challenges + responses
+  - No agent DA responses found (concede/defend/compromise)
 - [PASS] A6: BELIEF state
 - [PASS] A7: Exit-gate
-- [PASS] A8: Contamination check
+- [FAIL] A8: Contamination check
+  - CONTAMINATION-CHECK not found in workspace — required before synthesis
 - [PASS] A9: Source provenance audit
-- [PASS] A10: Anti-sycophancy check
+- [FAIL] A10: Anti-sycophancy check
+  - SYCOPHANCY-CHECK not found — required before synthesis
 - [PASS] A15: XVERIFY coverage
-- [PASS] A16: Peer verification sections
+- [FAIL] A16: Peer verification sections
+  - Agent 'tech-industry-analyst' has no peer verification section
+  - Agent 'economics-analyst' has no peer verification section
+  - Agent 'geopolitical-strategist' has no peer verification section
 - [PASS] A17: Verification specificity
-- [PASS] A18: Verification coverage matrix
+- [FAIL] A18: Verification coverage matrix
+  - Agent 'economics-analyst' verified by only 1: {'devils-advocate'}
+  - Agent 'geopolitical-strategist' verified by only 1: {'devils-advocate'}
+  - Agent 'reference-class-analyst' verified by only 1: {'devils-advocate'}
 - [PASS] A20: §2i precision gate (WARN, path β+)
 - [PASS] A22: §2j governance minimum artifact (WARN, path β+)
 - [PASS] A23: §2d-severity provenance (WARN, path β+)
@@ -1534,4 +1455,6 @@ Evaluator: chain-evaluator v2.0.0 | 2026-05-24T02:20:17.187978+00:00
 - [PASS] A13: Promotion evidence
 - [FAIL] A14: Git clean
   - 1 unpushed commit(s) — push before completing review
-  - Uncommitted changes in repo: 19 files (calibration-log.md excluded)
+  - Uncommitted changes in repo: 14 files (calibration-log.md excluded)
+
+## compilation-complete: [R-ai-power-followup-2026-05-24]
