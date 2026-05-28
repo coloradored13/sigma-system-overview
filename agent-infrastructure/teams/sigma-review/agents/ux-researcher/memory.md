@@ -190,6 +190,20 @@ C[sigma-ui: first-run experience = pre-flight confidence check (API+MCP+agents �
 C[sigma-ui: G2 (DA exit-gate) = adaptive tier — PASS=TIER-2(modal,[Proceed to R3]); FAIL=TIER-1(full-page,unresolved-challenges,[Stop Review] destructive); ¬OK-button ¬auto-retry; FAIL requires intentional context-switch via full-page|1|26.3]
 C[sigma-ui: audit log is quality-preservation mechanism for dashboard architecture — orchestrator bugs (wrong sequencing, missing spawns) invisible without it; H4 provisional without audit log|1|26.3]
 C[orchestration-dashboard: chat→dashboard mental model shift is control-room-operator vs conversation-participant; system tracks state, user monitors and intervenes at gates only|1|26.3]
+R[la-org-proposal-2026-05-27,UX,R1]: Q4+dual-user-CX+deflection-benchmarks |F:6 |DB:3 |XV:1(partial)
+F-UX1[Proactive-Notifications=highest-deflection-EYW:65-80%-of-1400-notice-resend-bucket|§2e:ticket-buckets-must-separate(1400-notice≠1740-position)|MAINTAINED|T2-corroborated]
+F-UX2[SSI-Self-Service=highest-write-capability-complexity:state-machine+audit-trail+role-auth+exactly-once|supports-H4|§2c-OUTCOME-1:architecture-scoping-must-precede-UI|HIGH]
+F-UX3[combined-lender+borrower-CX=VIABLE-with-safeguards(¬anti-pattern)|REVISED-via-DB[]+XVERIFY[gpt-5.4:partial]|safeguards:separate-success-metrics+named-journey-leads+borrower-capacity-floor|role-based-nav-IA=key-design-obligation|MEDIUM]
+F-UX4[Versana=highest-leverage-integration-BSL-book|LendOS=private-credit-analogue|VRM-mechanism:position-reconciliation-deflects-1740-ticket-bucket|REVISED(BSL≠DL)|T2-corroborated]
+F-UX5[KYC+Onboarding=highest-upstream-data-quality-impact:SSI-errors+FATCA-mismatch+tax-entity-debt-generate-downstream-tickets-across-all-categories|only-EYW-epic-affecting-lender+borrower+sponsor-simultaneously|T3-unverified-80%-figure]
+F-UX6[H5-contribution:EYW-external>SwB-internal-on-user-visible-competitive-impact-per-eng-month|$-leverage-gap:flagged-to-product-strategist+RCA|LOW|agent-inference]
+hygiene[§2b-GAP:no-BSL-loan-agency-specific-deflection-benchmarks-found|§2c-OUTCOME-1:SSI-complexity-changes-analysis|§2e-OUTCOME-1:ticket-buckets-must-separate]
+OQ[UX1:1740-tickets-discrepancy-vs-info-seeking|UX2:borrower-count-behind-461-deals|UX3:notice-resend-delivery-vs-content-failure]
+xref[LOT-7:DataXchange-threatens-notice-infrastructure-ROI-case|LOT-5:Versana-network-effect-confirmed]
+C[combined-lender+borrower-CX-viable-with-safeguards:segment-neglect-is-the-real-risk-not-structural-impossibility|1|26.5]
+C[Proactive-Notifications+Versana-VRM-integration=the-two-highest-deflection-levers-for-3140-ticket-baseline:1400-notice-bucket→push-delivery,1740-position-bucket→VRM-reconciliation|1|26.5]
+C[SSI-write-capability-complexity:must-architect-before-building-UI-or-will-rebuild-against-moving-contract|1|26.5]
+C[ticket-bucket-separation:deflection-benchmarks-must-be-applied-per-ticket-type-not-aggregate-3140|1|26.5]
 
 → actions:
 → reviewing user-facing changes → check against Nielsen's 10 heuristics + Dain's 3 principles

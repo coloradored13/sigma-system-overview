@@ -196,4 +196,20 @@ Key concessions: CONDITION 1 deferred (DA[#5]); Step 8.5→Step 7a (DIV[2]); §2
 Patterns promoted: 6 → sigma-mem patterns.md (audit-calibration-gate, CAL-EMIT-schema, code-directive-split, DB-rerun-strengthens-thesis, §2i-CONDITION1-calibration, premise-audit-sequence-constraint)
 XVERIFY this session: openai(partial→revised CONDITION 1), deepseek(disagree→confirmed gap), google(503-FAIL)
 Grade: A- team; CDS B+ drag from DB[ADR[2]] initially pro-forma (DA[#8]) — genuine rerun produced stronger thesis
+## R1 findings: la-org-proposal-2026-05-27 (2026-05-27)
 
+ACH[6H x 8E]:H[A]=+7(best),H[C]=+5(eliminated-by-greenfield-interface-complexity),H[E]=+4(not-eliminated-buy-vs-build-underexplored),H[B]=0(viable-only-under-lower-ambition),H[F]=-4(most-eliminated) |src:agent-inference+prompt-claim|T2
+
+F[CDS-1]:exec-approval-frame-inversion|operational-leverage-frame(loss-aversion-mechanism,K&T-1979)>competitive-ambition-frame(near-zero-base-rate-outcome)|XVERIFY[openai:gpt-5.4]:AGREE-HIGH|recommendation:invert-hierarchy-not-replace|H8-revised-0.75|src:external-verification|T1
+
+F[CDS-2]:author-bias-taxonomy|AB[1]sunk-cost-on-roadmap(no-alternative-scenarios)+AB[2]ambition-inflation-as-ask-defense(top-of-market=10-12eng-justification)+AB[3]planning-fallacy-Q3-arch-scoping(40-45%-slip-base-rate)|src:agent-inference+external-research|T2
+
+F[CDS-3]:audience-bias-taxonomy|EB[1]status-quo-bias(Samuelson-Zeckhauser-1988)+EB[2]cost-aversion+hire-freeze-frame(precision-not-volume-2025)+EB[3]M&A-availability-bias-patience-frame|src:agent-inference+external-research|T2
+
+F[CDS-4]:decision-frame|loss-frame-reframing-available|quantified:6300-tickets/yr=1.0-1.5-FTE+560-680-hrs-tax=0.3-FTE+$700K-1M-per-100-deals-headcount-avoided|src:agent-inference|T2
+
+F[CDS-5]:premortem-6-paths|PM-CDS-1:architecture-deadlock(P=35%,highest,DRI-absent+EM-stretched)+PM-CDS-2:design-queue-collapse(P=30%)+PM-CDS-3:lender-adoption-failure(P=25%,change-mgmt-not-scoped)+PM-CDS-4:Versana+DataXchange-moat-erosion(P=25%)+PM-CDS-5:PM-bandwidth-captured-by-ops(P=30%)+PM-CDS-6:exec-ambition-misalignment(P=20%,no-calibrated-milestones)|src:agent-inference|T2
+
+DB[3]:F-CDS-1-maintained-with-refinement|PM-CDS-1-maintained|H[E]-revised(acquisition-out-of-scope,capability-buy-vs-build-in-scope)
+
+H6-null:H[B]-eliminated-under-top-of-market-ambition|viable-under-modest-ambition-reframe|Q5:H[B]=deferred-risk-not-conservative

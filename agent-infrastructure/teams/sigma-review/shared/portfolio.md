@@ -159,3 +159,43 @@ note: v2 trial — first use of loan-ops-tech-specialist dynamic agent
 - synthesis: 5786 words / multi-agent provenance / structured for re-integration into analyst report
 - artifact: shared/archive/2026-05-24-ai-power-followup-synthesis.md
 - analyst report updated: /Users/bjgilbert/Documents/ai-power-sustainability-report-2026-05-23.md re-integrated with multi-agent-validated findings; near-term sections from prior review retained
+
+---
+
+## R-la-org-proposal-2026-05-27 (ANALYZE)
+
+**review-id:** la-org-proposal-2026-05-27
+**mode:** ANALYZE
+**tier:** TIER-3 (7 domain agents + DA + synthesis, complexity-score 21/25)
+**date:** 2026-05-27 → 2026-05-28
+**duration:** ~5 hours (R1 spawn → user approval)
+**deliverable:** /Users/bjgilbert/.claude/teams/sigma-review/shared/archive/2026-05-28-la-org-proposal-v6-synthesis.md
+**word-count:** 8,661 | **sources:** 20 | **rubric-score:** 39/40 PASS:ELITE-FINAL
+**distribution-contexts-cleared:** Internal/Working Draft + Executive/Board Memo (TARGET) + Client/Stakeholder + External Publication
+
+### Trajectory
+v5 (user draft, 3,400 words) → v6 (33/40, gate-fail on Team Topologies leak) → v6.1 (38/40, 5 fixes) → v6.2 (37/40, 3 content additions, SS&C cite drop) → v6.3 (38/40, SS&C cite restored) → v6.4 (38/40, +6 competitive landscape entries from 3-angle sweep) → v6.5 (39/40, 3 nice-to-haves, C10 unlocked broader distribution)
+
+### Key Findings
+- **Operational-leverage framing primary, competitive-parity secondary** (3-agent convergence: CDS + RCA + PS; empirically validated by Gartner 2026 CFO data + Gemba 64% rejection rate)
+- **Null hypothesis rejected** (PS H6 + RCA H6=0.80 + CDS ACH-H[B]) — incompatible with stated ambition
+- **Versana integration critical missing roadmap addition** (LOT-5 + LOT-10 + RCA-6 + UX) — Year 1 architecture + Year 2 production sequencing
+- **Workload-grounded resourcing 26-30 (Path A) / 23-25 (Path B)** vs v5's 20-25 single number — superseded T3-aggregator-derived 30-40 SHARP recommendation
+- **Falsifiable 24/36-month capability-parity language** replaced "compete at top of market" unfalsifiable framing
+- **Conditional DLX-substrate architecture** (substrate-IF-API-meets-5-criteria-else-thin-integration-layer) holds under both user-question paths
+- **5 missed competitors surfaced via 3-angle sweep**: CSC Global (most material, 125yr corporate services firm with admin agent practice), PactFi ($25M Series A March 2026, post-close roadmap), Ocorian (2 US acquisitions Dec 2024 + Aug 2025), Hypercore (elevated from feature benchmark to lender-side infrastructure threat), Computershare (TPRM trust charter strengthened treatment)
+- **Carta/Sirvatus correctly classified as NASCENT** (fund-CFO back-office, not admin agent) — convergence-signal flag only
+
+### Process Innovations
+- 3-angle parallel competitive sweep (ops/tech + regulatory + adjacent-fintech) when narrower R1 sweep missed material entrants (Carta + Hypercore both absent from initial coverage)
+- 5-round rubric iteration loop targeting Exec/Board Memo distribution gates
+- Content-fidelity round (agents verify their R1+R3 findings made it to synthesis without drift) before final user approval
+- Persistence directive: agents stay alive through rubric phase + user approval (process change from default shutdown)
+- Bottoms-up workload model superseding T3-aggregator competitor-comparator data when independent corroboration fails
+
+### Promotion (32 patterns approved by user)
+2 user-approve decision-rule candidates + 30 cross-domain process patterns across 9 agents. Stored to global patterns.md via store_memory.
+
+### Chain Evaluation
+Chain-evaluator parser has known false-positives on custom v6-proposal output format (this session's synthesis structure differs from standard sigma-review analytical synthesis schema). User-validated 39/40 rubric score + 4 distribution contexts cleared.
+

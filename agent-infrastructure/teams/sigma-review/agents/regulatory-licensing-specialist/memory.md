@@ -259,3 +259,34 @@ P[exam-crosswalk-standing-check — ALL regulatory playbooks: when reviewing any
 P[loan-agency-AI-fiduciary-severity-ladder — LOAN-AGENCY SKILL PATTERN: in loan-agency/trust-company AI deployments, classify deployment architecture against this four-tier fiduciary-exposure ladder before assigning severity to any lethal-trifecta or fiduciary-risk finding: HIGH=autonomous-interpretive agents making covenant/waterfall determinations without mandatory human review gate; MEDIUM-HIGH=human-supervised-interpretive AI where human has documented authority and accountability for final call; MEDIUM=rule-based deterministic AI (hardcoded covenant tests, arithmetic waterfall calculations) with no interpretive judgment; LOW=advisory-only read-only mode. BSA SAR liability (31 U.S.C. §5318(g)) stays with institution and designated BSA officer at all tiers. LSTA "mechanical and administrative" standard has no settled case law specific to AI agents — fiduciary-shift risk is real but legal theory not established. Store as loan-agency skill pattern. User approved 26.4.22. |src:ai-agent-rollout-review-26.4.22 |promoted:26.4.22 |user-approved:26.4.22 |class:loan-agency-skill-pattern]
 
 P[without-worrying-about-gaps-commitment-rule — HARD RULE: when a playbook uses language equivalent to "firms can take and run with this without worrying about gaps" or "strongest executable playbook" for a regulated firm, examination-facing artifact readiness is implicitly in scope. The phrase commits the playbook to the full operational consequence of deployment in a regulated environment, including first examination cycle. Flag absence of exam-facing translation as executability gap (Q5/HIGH), not merely completeness gap (Q2/MEDIUM). Rationale: examination findings ARE gaps — specifically the most expensive type ($150-400K emergency exam-prep vs $25-80K proactive crosswalk). User approved hard rule formulation over softer completeness-flag alternative 26.4.22. |src:ai-agent-rollout-review-26.4.22 |promoted:26.4.22 |user-approved:26.4.22 |class:scope-calibration-rule]
+## la-org-proposal-2026-05-27 R1 findings
+
+R[RLS-1]: GLAS=US-chartered-trust-co(NH-NDTC-2017)|draft-"European"-framing=WRONG|9yr-US-regulated-entity|TIA-§310-eligible+MTMA-exempt|cross-ref:F[LOT-3] |src:BusinessWire+GLAS-press-release+Finextra(T1) |confidence:HIGH
+
+R[RLS-2]: Kroll=UK-entity(Ltd.)|no-US-trust-charter|Lucid-origin|NY-expansion-emerging|¬TIA-§310-eligible-as-of-right|TPRM-more-complex-for-bank-lenders |src:Kroll-website+LSTA(T1) |confidence:HIGH
+
+R[RLS-3]: AD=no-US-trust-charter|Luxembourg-JFSC+US-subsidiary|CorPro-120+-investment-managers+10K-users-¬charter-dependent|AD-competitive-advantage=platform+fund-admin-convergence-NOT-regulatory |src:AD-website(T1) |confidence:HIGH
+
+R[RLS-4]: IRS-FIRE→IRIS=Dec-31-2026-mandatory|TY2025=last-FIRE-year|TY2026-1042-S-due-Mar-2027-MUST-use-IRIS-A2A|existing-FIRE-TCC-¬transfer|45-day-new-TCC|30%-penalty-IRC-§1461-on-incorrect-withholding|compliance-mandate-NOT-competitive-window|IRIS-native-design-IS-engineering-advantage |src:IRS.gov(T1) |confidence:HIGH
+
+R[RLS-5]: OCC-Bulletin-2023-17=bank-lender-TPRM-for-loan-agents|trust-chartered-agent=direct-examiner-relationship+TPRM-documentation-advantage|applies-BSL-only(¬DL)|if-SRS-book=predominantly-DL→advantage-scope-limited |src:OCC+law-firm-summaries(T2) |confidence:HIGH
+
+R[RLS-6]: H7-verdict=FLAG-AS-ADJACENCY(¬parallel-to-current-proposal)|PROB[proposal-flag-as-parallel]=0.30|PROB[SRS-should-charter-3-5yr-horizon]=0.75|NH-NDTC-cost:$1.25M-capital+$500-750K/yr-incremental(above-existing-FINRA-BD-infra)+$150-250K-setup|timeline:18-24mo-filing-to-first-mandate|file-Q1-2027→first-mandate-Q4-2028=aligned-Target-state |src:[independent-research+agent-inference]|T1-T2 |confidence:HIGH
+
+R[RLS-7]: regulatory-shifts-2026-2028:
+- FIRE→IRIS:HIGH-mandatory(F[RLS-4])
+- Basel-III-endgame-March-2026:capital-REDUCING(¬neutral)|TAILWIND-private-credit|finalization-late-2026+impl-2027|confidence:HIGH-T1
+- EU-AI-Act-Digital-Omnibus-May-7-2026:high-risk-standalone-AI-pushed-Aug-2026→Dec-2027(16mo)|B2B-institutional-loan-admin=likely-OUTSIDE-high-risk-Annex-III(natural-person-scope)|LOW-MEDIUM-for-core-service|confidence:HIGH-T1
+- OCC-charter-surge:crypto-driven(¬loan-admin-trend)|prior-timeline-estimates-valid|LOW-MEDIUM
+- CRD6:effective-Jan-11-2027|grandfathering-pre-Jul-11-2026|EU-expansion-contracting-window-ACTIVE-NOW|MEDIUM
+- OCC-2023-17-TPRM:ongoing-escalating|LOW-MEDIUM-DL|MEDIUM-BSL
+
+C[26.5.27] GLAS-US-charter-framing: HIGH-confidence|T1-triple-source|9yr-precedent
+C[26.5.27] H7-ADJACENCY-verdict: HIGH-confidence|independently-derived|anti-sycophancy-check-applied
+C[26.5.27] EU-AI-Act-deferral: HIGH-confidence|Consilium+White-Case+Hogan-Lovells-confirmed(T1)
+C[26.5.27] XVERIFY-FAIL: API-key-env-gap-in-direct-SDK-path|MCP-only-access|T1-compensates|flagged-for-lead
+
+peer-verification: ux-researcher=PASS(5/5:F-UX1+F-UX3+F-UX2+hygiene-summary+OQ-flagging)
+## la-org-proposal-2026-05-27 R1 calibration update (post-user-confirmation)
+
+C[26.5.27] H7-cost-benefit-at-461-deal-scale: user confirmed SRS internal numbers accurate |at-$84.3B-committed+461-deals: trust-charter-annual-incremental-compliance($500-750K/yr-above-FINRA-BD-infra) = economically-breakeven-or-better at current book size (prior memory breakeven=40-540 facilities; SRS=461 facilities = AT-OR-ABOVE lower bound) |cost-objection-to-charter=WEAK-at-this-scale |H7-verdict-STRENGTHENED: "flag-as-adjacency" is now a strategic-sequencing argument (platform-first-then-charter), NOT an economic-constraint argument |confidence:HIGH
