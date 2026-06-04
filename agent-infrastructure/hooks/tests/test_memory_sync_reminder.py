@@ -169,7 +169,7 @@ class TestState:
 class TestMain:
     def test_fires_on_feedback_write(self, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Write",
             "tool_input": {
                 "file_path": "/Users/test/.claude/projects/-Users-test/memory/feedback_test.md",
@@ -187,7 +187,7 @@ class TestMain:
 
     def test_fires_on_sigma_mem_direct_write(self, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Write",
             "tool_input": {
                 "file_path": "/Users/test/.claude/memory/patterns.md",
@@ -204,7 +204,7 @@ class TestMain:
 
     def test_silent_on_non_memory_write(self, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Write",
             "tool_input": {
                 "file_path": "/Users/test/Projects/app/main.py",
@@ -226,7 +226,7 @@ class TestMain:
         })
 
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Write",
             "tool_input": {
                 "file_path": "/Users/test/.claude/projects/-test/memory/feedback_x.md",
@@ -242,7 +242,7 @@ class TestMain:
 
     def test_ignores_non_write_tools(self, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Read",
             "tool_input": {"file_path": "/some/file"},
         })))
@@ -267,7 +267,7 @@ class TestMain:
 
     def test_handles_edit_tool(self, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Edit",
             "tool_input": {
                 "file_path": "/Users/test/.claude/memory/decisions.md",

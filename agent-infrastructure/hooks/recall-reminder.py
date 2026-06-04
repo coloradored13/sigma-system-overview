@@ -157,7 +157,7 @@ def main():
     except (json.JSONDecodeError, ValueError):
         sys.exit(0)
 
-    event = hook_input.get("event")
+    event = hook_input.get("hook_event_name")
 
     # --- PostToolUse: detect recall completion ---
     if event == "PostToolUse":
@@ -205,4 +205,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Fail-open: a reminder hook must NEVER break a tool call. Any unexpected
+    # error -> exit 0 (allow), never a non-zero exit the harness could treat as
+    # a block on every Read/Bash.
+    try:
+        main()
+    except SystemExit:
+        raise
+    except Exception:
+        sys.exit(0)
