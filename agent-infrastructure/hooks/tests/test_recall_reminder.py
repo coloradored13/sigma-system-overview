@@ -157,7 +157,7 @@ class TestCheckWikiAvailable:
         monkeypatch.setattr(recall_reminder, "WIKI_INDEX", index)
 
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PreToolUse",
+            "hook_event_name": "PreToolUse",
             "tool_name": "Read",
             "tool_input": {"file_path": "/some/file.py"},
         })))
@@ -208,7 +208,7 @@ class TestGetNewestMtime:
 class TestMainPreToolUse:
     def test_nudge_fires_on_first_call(self, tmp_path, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PreToolUse",
+            "hook_event_name": "PreToolUse",
             "tool_name": "Read",
             "tool_input": {"file_path": "/some/file.py"},
         })))
@@ -225,7 +225,7 @@ class TestMainPreToolUse:
         recall_reminder.mark_recall_done()
 
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PreToolUse",
+            "hook_event_name": "PreToolUse",
             "tool_name": "Read",
             "tool_input": {"file_path": "/some/file.py"},
         })))
@@ -240,7 +240,7 @@ class TestMainPreToolUse:
     def test_no_double_nudge(self, tmp_path, monkeypatch, capsys):
         # First call sends nudge
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PreToolUse",
+            "hook_event_name": "PreToolUse",
             "tool_name": "Read",
             "tool_input": {"file_path": "/some/file.py"},
         })))
@@ -251,7 +251,7 @@ class TestMainPreToolUse:
 
         # Second call should be silent (nudge already sent)
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PreToolUse",
+            "hook_event_name": "PreToolUse",
             "tool_name": "Bash",
             "tool_input": {"command": "ls"},
         })))
@@ -264,7 +264,7 @@ class TestMainPreToolUse:
 class TestMainPostToolUse:
     def test_marks_recall_done(self, tmp_path, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "mcp__sigma-mem__recall",
             "tool_input": {},
         })))
@@ -277,7 +277,7 @@ class TestMainPostToolUse:
 
     def test_ignores_other_tools(self, tmp_path, monkeypatch, capsys):
         monkeypatch.setattr("sys.stdin", __import__("io").StringIO(json.dumps({
-            "event": "PostToolUse",
+            "hook_event_name": "PostToolUse",
             "tool_name": "Read",
             "tool_input": {},
         })))

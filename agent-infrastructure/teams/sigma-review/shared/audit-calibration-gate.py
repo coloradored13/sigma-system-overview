@@ -51,7 +51,10 @@ _CAL_EMIT_RE = re.compile(
 # A24 added 2026-04-24 (R3 fix per CDS r2 cross-section finding): A24 fires
 # correctly via chain-evaluator but consumer was bucketing CAL-EMIT[A24]
 # records as malformed because the gate-id wasn't in this set.
-VALID_GATES = {"A20", "A22", "A23", "A24"}
+# 2026-06-04: same drift recurred — chain-evaluator emits CAL-EMIT for A25/A26/
+# B5/B6 (all newer gates) but they were absent here, so their records were
+# silently bucketed as malformed and could never reach WARN->BLOCK promotion.
+VALID_GATES = {"A20", "A22", "A23", "A24", "A25", "A26", "B5", "B6"}
 
 # Promotion thresholds (directives.md §2i path β+)
 MIN_REVIEWS = 3
