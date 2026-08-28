@@ -218,3 +218,75 @@ class TestSettingsJsonHooks:
         assert content.get("autoDreamEnabled") is True
         assert content.get("voiceEnabled") is True
         assert "statusLine" in content
+
+    def test_task_tools_enabled(self):
+        """Shared task list must be opted in.
+
+        TaskCreate/TaskGet/TaskList/TaskUpdate are off by default on the current
+        Opus/Sonnet/Fable families. Without this env var the lead has no task
+        tools at all (TodoWrite is itself disabled in their favor), so team
+        coordination silently degrades to messages only.
+        """
+        content = json.loads((CLAUDE_DIR / "settings.json").read_text())
+        assert content.get("env", {}).get("CLAUDE_CODE_ENABLE_TODO_TOOLS") == "1"
+
+    def test_subagent_cache_ttl_set(self):
+        """In-process teammates default to a 5-minute prompt cache.
+
+        Sigma rounds idle teammates between DA challenge rounds for longer than
+        that, so every round re-pays full input cost without this.
+        """
+        content = json.loads((CLAUDE_DIR / "settings.json").read_text())
+        assert content.get("subagentPromptCacheTtl") == "1h"
+
+    def test_no_removed_settings_keys(self):
+        """teammateDefaultModel was removed in v2.1.234 and is ignored if present."""
+        content = json.loads((CLAUDE_DIR / "settings.json").read_text())
+        assert "teammateDefaultModel" not in content
+
+
+# --- Harness drift: orchestration files must not name tools that no longer exist ---
+
+# Tools Claude Code has removed or disabled. A sigma file that instructs the lead
+# to call one of these produces a runtime failure, not a warning, so keep this
+# list as the tripwire when the harness moves again.
+#   TeamCreate / TeamDelete — removed in v2.1.178; a named Agent call spawns a
+#     teammate instead, and no setup or cleanup step is needed.
+#   TodoWrite — disabled by default in favor of TaskCreate/TaskGet/TaskList/TaskUpdate.
+DEAD_TOOL_NAMES = ("TeamCreate", "TeamDelete", "TodoWrite")
+
+# Files that tell the lead which tools to call. Scratch workspaces, archives, and
+# memory snapshots are historical records and are deliberately excluded.
+ORCHESTRATION_FILES = (
+    "agents/sigma-lead.md",
+    "agents/_template.md",
+    "skills/sigma-review/SKILL.md",
+    "skills/sigma-build/SKILL.md",
+    "skills/sigma-build/phases/c1-plan.md",
+    "skills/sigma-build/phases/c2-build.md",
+    "skills/sigma-build/phases/c3-review.md",
+    "teams/sigma-review/shared/directives.md",
+    "teams/sigma-review/shared/build-directives.md",
+)
+
+
+class TestNoDeadHarnessTools:
+    """sigma-review/sigma-build must not instruct the lead to call removed tools."""
+
+    @pytest.mark.parametrize("rel_path", ORCHESTRATION_FILES)
+    def test_orchestration_file_has_no_dead_tool(self, rel_path):
+        path = CLAUDE_DIR / rel_path
+        if not path.exists():
+            pytest.skip(f"{rel_path} not installed")
+        content = path.read_text(encoding="utf-8")
+        for dead in DEAD_TOOL_NAMES:
+            # A line that documents the removal is allowed; a line that tells the
+            # lead to use the tool is not.
+            offenders = [
+                line.strip()
+                for line in content.splitlines()
+                if dead in line and "no longer exist" not in line and "removed in" not in line
+            ]
+            assert not offenders, (
+                f"{rel_path} references removed tool '{dead}': {offenders[:3]}"
+            )

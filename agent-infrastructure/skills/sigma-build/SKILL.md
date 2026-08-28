@@ -2,7 +2,7 @@
 name: sigma-build
 description: Run a sigma-build team review for code implementation tasks. Orchestrates specialist agents through plan→challenge→build→review across 3 separate conversations. Use when the user says "sigma-build", "build review", or asks for multi-agent implementation with adversarial quality gates. BUILD mode only — for analysis use /sigma-review.
 argument-hint: "[build task description]"
-allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage, TodoWrite
+allowed-tools: Read, Grep, Glob, Bash, Agent, SendMessage, TaskCreate, TaskGet, TaskList, TaskUpdate
 ---
 
 # Sigma Build — 3-Conversation BUILD Orchestration

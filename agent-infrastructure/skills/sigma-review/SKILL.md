@@ -2,7 +2,7 @@
 name: sigma-review
 description: Run a full sigma-review team review. Spawns specialist agents to analyze a codebase or task from multiple expert perspectives. ANALYZE mode only — BUILD mode has been separated into /sigma-build.
 argument-hint: "[task description]"
-allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage, TodoWrite
+allowed-tools: Read, Grep, Glob, Bash, Agent, SendMessage, TaskCreate, TaskGet, TaskList, TaskUpdate
 ---
 
 # Sigma Review — ANALYZE Mode
@@ -54,7 +54,7 @@ Read `~/.claude/agents/sigma-lead.md` for the full workflow. Key steps:
    - Lead writes PREMISE-AUDIT result to workspace `## premise-audit-results` section BEFORE spawning agents (Step 2). Format per directives.md §2p `!workspace format`. Decision line (`→ proceed-with-H | revise-H-space({N}) | flag-premise({N})`) is REQUIRED — chain-evaluator §2p presence-check BLOCKs on missing `## premise-audit-results` section (PM[3] mitigation).
    - Rules: CHALLENGED/GAP on PA[1] or PA[2] → revise H-space BEFORE Step 2 spawn. CHALLENGED on PA[3] or PA[4] → convert to explicit H[] for agents to test. DA receives PREMISE-AUDIT in r2 — checks agents ¬re-anchored on challenged premises.
    - Cross-ref: BUILD variant carries the "Step 7a" label (sigma-build c1-plan.md:62 Step 7a HARD GATE); ANALYZE side keeps the structure but drops the label to avoid renumber-cascade across the workflow steps.
-2. **Spawn:** Initialize workspace, assign peer verification ring, spawn agents via TeamCreate
+2. **Spawn:** Initialize workspace, assign peer verification ring, spawn agents as NAMED `Agent` calls (`TeamCreate` no longer exists — see sigma-lead.md)
 3. **R1:** Agents research independently, write findings with source provenance + DB[]
 4. **Circuit breaker:** Check for zero-dissent after R1
 5. **R2+:** DA challenges, agent responses, BELIEF computation, exit-gate

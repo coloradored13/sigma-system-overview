@@ -887,6 +887,24 @@ phase-1 DEFINE (lead):
   lead fills in: Role, Expertise, Review steps, Weight, Domain Gap Reporting
   !include: current task context + GAP that triggered creation
 
+  !rule: pick the name FIRST — it is the identity key everywhere (see sigma-lead.md Spawn rules).
+    lowercase-with-hyphens, unique against the roster, ¬a prefix-collision with an existing entry.
+  !rule: create ALL FIVE name-keyed locations before phase-2, in this order:
+    1→ `~/.claude/agents/{name}.md`            (from _template.md)
+    2→ `T/agents/{name}/`                      (DIRECTORY — see below, load-bearing)
+    3→ `T/inboxes/{name}.md`                   (empty inbox, so peers can reach it in phase-3)
+    4→ roster.md entry: `{name} |domain: … |wake-for: … |dynamic: created {date} per {trigger}`
+    5→ workspace `### {name}` section
+  !rule: step 2 is the one that silently breaks. sigma-mem's `_detect_agent_identity()` enumerates the
+    `T/agents/*/` DIRECTORY NAMES and matches them against the agent's `"I'm {name}"` self-declaration.
+    ¬directory → ¬identity match → no `agent_boot`, and the new agent researches memoryless through
+    phase-2 with no error raised. `setup.sh` creates these dirs at install time from the agent-def
+    filenames, so only mid-task agents hit this.
+  !rule: `dynamic:`/`added:` roster markers are provenance for humans — sigma-mem's roster parser reads
+    only `domain:` and `wake-for:`. Write them anyway: they are how a later audit reconstructs WHY the
+    agent exists (cf. regulatory-licensing-specialist 26.3.11, cognitive-decision-scientist 26.3.21,
+    security-specialist 26.4.5).
+
 phase-2 RESEARCH (new agent, solo):
   reads: workspace, roster, decisions.md, patterns.md
   conducts: independent domain research (web search, build memory)
@@ -1128,6 +1146,28 @@ retrievers (/sigma-retrieve): TIER-C for search, TIER-B for validation
 !rule: user can override: "use opus for all" or "use sonnet for all"
 !rule: lead can escalate: if TIER-B agent produces low-quality output, re-run as TIER-A
 !rule: lead reports model selection: "MODEL[{agent}]: {tier}({model}) |reason: {why}"
+
+### §5d effort tier (second dial, orthogonal to §5a)
+!purpose: model tier is no longer the only cost lever. Effort (`low|medium|high|xhigh|max`) trades thoroughness
+  against token spend WITHIN one model. Lower effort on a current-generation model often beats a prior-generation
+  model at high effort, and staying on one model keeps ONE prompt-cache namespace — a model cascade forfeits
+  cache reuse across its tiers, so §5a's cost math must be read against §5d, ¬in isolation.
+
+EFFORT-A (max):   correctness > cost — exit-gate disputes, Toulmin debate, plan-lock validation
+EFFORT-B (xhigh): default for lead orchestration + adversarial challenge (settings.json `effortLevel`)
+EFFORT-C (high):  domain analysis, standard synthesis
+EFFORT-D (low):   mechanical checks — gate scoring, retrieval, routine promotion sweeps
+
+!rule: teammates INHERIT the lead's effort level — it is a session-level dial (`/effort`), ¬a per-teammate one.
+  To run a cheap round, lower the lead's effort before the spawn; to run an expensive one, raise it first.
+!rule: there is no `effort` parameter on the Agent tool. The only per-agent effort control is `effort:` in a
+  subagent definition's frontmatter, and that applies to Agent-tool subagents — ¬to named teammates, which
+  follow the lead regardless. Sigma's agent defs carry no frontmatter today (see sigma-lead.md), so in
+  practice effort is a session-level dial only.
+!rule: an effort change mid-conversation invalidates the messages prompt cache — batch effort changes at
+  round boundaries, ¬mid-round.
+!rule: prefer §5d before §5a when cutting cost. Drop effort first; drop model tier only if effort alone
+  misses the budget, and record which lever moved: "MODEL[{agent}]: {tier}({model}) |effort:{level} |reason: {why}"
 
 ## prompt-decomposition-protocol v1.0 (26.3.17)
 
