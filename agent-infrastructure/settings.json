@@ -1,6 +1,7 @@
 {
   "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "CLAUDE_CODE_ENABLE_TODO_TOOLS": "1"
   },
   "hooks": {
     "PreToolUse": [
@@ -125,6 +126,7 @@
     "command": "~/.claude/statusline-command.sh"
   },
   "effortLevel": "xhigh",
+  "subagentPromptCacheTtl": "1h",
   "autoDreamEnabled": true,
   "voiceEnabled": true
 }

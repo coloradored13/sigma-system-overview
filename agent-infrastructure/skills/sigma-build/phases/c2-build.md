@@ -24,7 +24,9 @@ Evaluate SQ[] independence per build-directives §3a.1:
 
 ### Step 2: Spawn Build-Track Agents
 Agents: implementation-engineer, ui-ux-engineer (if plan file contains UI work), code-quality-analyst
-!rule: TeamCreate only. No isolated Agent calls.
+!rule: NAMED `Agent({name: ..., model: ..., prompt: ...})` calls only — a named call spawns a teammate you
+  can SendMessage. An UNNAMED Agent call is an isolated subagent: it returns once and cannot be messaged,
+  so checkpoints (Step 4) and merge coordination break. `TeamCreate` no longer exists.
 !rule: NO plan-track agents. NO DA. C2 is pure execution.
 
 SendMessage each agent:
@@ -120,7 +122,7 @@ Before ending this conversation, verify ALL items. Any unchecked item is a faile
 - [ ] Plan file validated at boot (status: plan-locked, plan-exit-gate: PASS)
 - [ ] Scratch workspace created with build-assignments
 - [ ] Parallel engineer check completed (independence clusters evaluated)
-- [ ] All build-track agents spawned via TeamCreate
+- [ ] All build-track agents spawned as NAMED `Agent` calls (messageable teammates)
 - [ ] All agents wrote checkpoint at ~50% (drift addressed if found)
 - [ ] All SQ[] items have build status (DONE, PARTIAL, or BLOCKED)
 - [ ] Tests pass with zero regressions

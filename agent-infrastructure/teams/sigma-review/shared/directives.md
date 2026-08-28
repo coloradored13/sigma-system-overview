@@ -1129,6 +1129,28 @@ retrievers (/sigma-retrieve): TIER-C for search, TIER-B for validation
 !rule: lead can escalate: if TIER-B agent produces low-quality output, re-run as TIER-A
 !rule: lead reports model selection: "MODEL[{agent}]: {tier}({model}) |reason: {why}"
 
+### §5d effort tier (second dial, orthogonal to §5a)
+!purpose: model tier is no longer the only cost lever. Effort (`low|medium|high|xhigh|max`) trades thoroughness
+  against token spend WITHIN one model. Lower effort on a current-generation model often beats a prior-generation
+  model at high effort, and staying on one model keeps ONE prompt-cache namespace — a model cascade forfeits
+  cache reuse across its tiers, so §5a's cost math must be read against §5d, ¬in isolation.
+
+EFFORT-A (max):   correctness > cost — exit-gate disputes, Toulmin debate, plan-lock validation
+EFFORT-B (xhigh): default for lead orchestration + adversarial challenge (settings.json `effortLevel`)
+EFFORT-C (high):  domain analysis, standard synthesis
+EFFORT-D (low):   mechanical checks — gate scoring, retrieval, routine promotion sweeps
+
+!rule: teammates INHERIT the lead's effort level — it is a session-level dial (`/effort`), ¬a per-teammate one.
+  To run a cheap round, lower the lead's effort before the spawn; to run an expensive one, raise it first.
+!rule: there is no `effort` parameter on the Agent tool. The only per-agent effort control is `effort:` in a
+  subagent definition's frontmatter, and that applies to Agent-tool subagents — ¬to named teammates, which
+  follow the lead regardless. Sigma's agent defs carry no frontmatter today (see sigma-lead.md), so in
+  practice effort is a session-level dial only.
+!rule: an effort change mid-conversation invalidates the messages prompt cache — batch effort changes at
+  round boundaries, ¬mid-round.
+!rule: prefer §5d before §5a when cutting cost. Drop effort first; drop model tier only if effort alone
+  misses the budget, and record which lever moved: "MODEL[{agent}]: {tier}({model}) |effort:{level} |reason: {why}"
+
 ## prompt-decomposition-protocol v1.0 (26.3.17)
 
 scope: sigma-review ANALYZE operations — executed by lead before agent spawn

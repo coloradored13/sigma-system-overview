@@ -70,7 +70,7 @@ Write availability to scratch ## infrastructure. Not blocking — advisory for X
 
 ### Step 5: Spawn Review Agents
 
-Spawn via TeamCreate:
+Spawn as NAMED `Agent` calls (`TeamCreate` no longer exists — see sigma-lead.md):
 
 **DA (fresh, model=opus):**
 - DA has NO memory of C1's plan challenge (conversation boundary wiped it)

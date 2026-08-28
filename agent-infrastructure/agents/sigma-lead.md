@@ -35,6 +35,18 @@ Reference-class-analyst wakes for ALL tiers. DA always joins.
 DA + reference-class-analyst: model=opus | domain agents: model=sonnet | synthesis-agent: model=sonnet
 User may override. Pass `model` in the Agent tool call: `Agent({..., model: "opus"})` or `Agent({..., model: "sonnet"})`.
 
+!rule: use the family alias (`opus`/`sonnet`/`haiku`/`fable`), ¬a pinned dated ID. The alias resolves to
+  the newest permitted version of that family, so tiers (directives §5a) survive model releases without edits.
+  ¬append a context suffix (`[1m]`) — current Opus/Sonnet carry 1M context natively.
+!rule: teammate model resolution order — `CLAUDE_CODE_SUBAGENT_MODEL` env > the model your spawn prompt names >
+  the subagent definition's `model` (in-process only) > the lead's current model. Name the model in the spawn
+  prompt; `teammateDefaultModel` was removed and a leftover value is ignored.
+!rule: effort is the second dial (directives §5d) — teammates inherit the LEAD's effort level, so raise/lower
+  it on the lead session (`/effort`), ¬per-teammate. The Agent tool has no `effort` parameter.
+!note: sigma's agent definitions (`~/.claude/agents/*.md`) carry no YAML frontmatter, so they cannot be
+  referenced as a `subagent_type` and cannot supply per-agent `model`/`tools`/`effort`. That is why this
+  file's spawn template pastes Role/Expertise inline (BUG-B). Adding frontmatter is the open upgrade path.
+
 **Prompt decomposition:**
 Extract from user prompt: QUESTIONS (Q1-QN), CLAIMS → HYPOTHESES (H1-HN), CONSTRAINTS (C1-CN).
 Present to user for confirmation. Write to workspace ## prompt-decomposition.
@@ -113,7 +125,18 @@ See your ## Peer Verification instructions in the agent template for the full ch
 Your chain is incomplete without this verification (A16).
 ```
 
-**Spawn via TeamCreate** (BUG-B requires embedding Role/Expertise in spawn prompt):
+**Spawn via the Agent tool** (BUG-B requires embedding Role/Expertise in spawn prompt):
+
+!rule: `TeamCreate`/`TeamDelete` no longer exist (removed in Claude Code v2.1.178). Spawn a teammate by calling
+  `Agent({name: "{agent-name}", model: "{tier}", prompt: "{composed prompt}"})` — with
+  `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (settings.json env), a NAMED Agent call launches as a teammate,
+  ¬an ordinary subagent. The `name` is the SendMessage address, so it must match the roster name exactly.
+  No team setup step and no cleanup step: the team is created at session start and torn down at session end.
+!rule: an unnamed `Agent({...})` call is an ordinary subagent — it returns its result to you and cannot be
+  messaged. Named = teammate = reports via workspace + idle notification. Team agents MUST be named.
+!rule: an idle notification does NOT carry the teammate's output. Read the workspace section, ¬the notification.
+  This is why every finding goes to workspace.md before an agent declares ✓.
+!rule: teammates cannot spawn teammates (no nested teams). All spawning is the lead's.
 ```
 You are {name} on the sigma-review team.
 Role: {from agent definition}
@@ -169,7 +192,7 @@ Write CB evidence to workspace (divergence OR CB[] entries). Chain evaluator che
 
 ### 5. DA challenge round (R2+)
 
-**Spawn DA** (first entry only): read `~/.claude/agents/devils-advocate.md`, spawn via TeamCreate with model="opus". DA reads workspace (R1 findings + CB results). DA MUST write challenges and exit-gate to workspace with `DA[#N]` citations — A18 coverage matrix counts DA section as verification of all agents.
+**Spawn DA** (first entry only): read `~/.claude/agents/devils-advocate.md`, spawn via `Agent({name: "devils-advocate", model: "opus", prompt: ...})`. DA reads workspace (R1 findings + CB results). DA MUST write challenges and exit-gate to workspace with `DA[#N]` citations — A18 coverage matrix counts DA section as verification of all agents.
 
 **Challenge/response cycle:** DA writes challenges to workspace → all agents respond with concede/defend/compromise. Monitor workspace for updates.
 

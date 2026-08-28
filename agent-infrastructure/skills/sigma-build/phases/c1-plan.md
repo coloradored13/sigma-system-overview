@@ -213,15 +213,22 @@ BUILD TIER-{N} |scores: module-count({N}),interface-changes({N}),test-complexity
 ## open-questions
 ```
 
-### Step 11: Spawn Plan-Track + Build-Track Agents via TeamCreate
+### Step 11: Spawn Plan-Track + Build-Track Agents via the Agent tool
 For each agent selected in preflight:
 
 1. Read `~/.claude/agents/{name}.md` → extract Role + Expertise
 2. Read `~/.claude/agents/sigma-comm.md` → extract Codebook section
-3. Select model tier (per build-directives §5):
+3. Select model tier (per build-directives §5 / directives §5a):
    - DA: model="opus" | domain agents: model="sonnet"
+   - use the family alias, ¬a pinned dated ID or `[1m]` suffix (see sigma-lead.md Model selection)
 4. Compose spawn prompt using template (see below)
-5. Spawn via TeamCreate
+5. Spawn via `Agent({name: "{agent-name}", model: "{tier}", prompt: "{composed prompt}"})`
+
+!rule: `TeamCreate`/`TeamDelete` no longer exist (removed in Claude Code v2.1.178). A NAMED `Agent` call
+  launches as a teammate when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is set (settings.json env); an
+  unnamed one is an ordinary subagent that returns its result and cannot be messaged. Build-track agents
+  MUST be named — c2-build.md addresses them by name via SendMessage.
+!rule: the idle notification carries no output. Read the agent's scratch section, ¬the notification.
 
 **Do NOT spawn DA in this phase.** DA joins in Step 18 (plan challenge).
 
@@ -417,7 +424,7 @@ Flag any misalignment in scratch ## open-questions for challenge phase.
 ### Step 18: Spawn DA (first entry only)
 On first entry to this phase:
 1. Read `~/.claude/agents/devils-advocate.md`
-2. Spawn DA via TeamCreate with model="opus"
+2. Spawn DA via `Agent({name: "devils-advocate", model: "opus", prompt: ...})`
 3. DA reads scratch workspace (plans, ADRs, design system, interface contracts)
 
 If already in a loop (round 2+), DA is already alive — skip to Step 19.
