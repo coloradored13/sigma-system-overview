@@ -27,7 +27,7 @@ This principle — **deterministic state-driven navigation** — is then applied
 
 ### hateoas-agent
 
-A Python library (~3,354 LOC, 452 tests) that implements HATEOAS for AI agent tool use.
+A Python library (~3,905 LOC, 518 tests) that implements HATEOAS for AI agent tool use.
 
 **How it works:**
 ```
@@ -73,7 +73,7 @@ The framework handles:
 
 ### sigma-mem
 
-A persistent memory system for Claude (~2,672 LOC, 302 tests), exposed as an MCP server. Built on hateoas-agent.
+A persistent memory system for Claude (~2,788 LOC, 316 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The memory system is itself a HATEOAS state machine. Claude calls `recall` (the gateway), describes the current context, and the system detects the conversation type (project work, debugging, being corrected, team work, etc.) and returns relevant memories with state-dependent actions.
@@ -115,7 +115,7 @@ Claude calls get_team_decisions("sigma-review")
 
 ### sigma-verify
 
-A cross-model verification system (~1,776 LOC, 300 tests), exposed as an MCP server. Built on hateoas-agent.
+A cross-model verification system (~1,792 LOC, 300 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The verification system is a HATEOAS state machine. Agents call `init` (the gateway), and the system advertises which verification actions are available given the current quotas, configured models, and prior findings.
@@ -363,11 +363,11 @@ The system has completed 50+ reviews across codebases, market analyses, and stre
 
 | Component | Source LOC | Test LOC | Tests |
 |-----------|-----------|----------|-------|
-| hateoas-agent | 3,354 | 7,776 | 452 |
-| sigma-mem | 2,672 | 2,677 | 302 |
-| sigma-verify | 1,776 | 3,697 | 300 |
+| hateoas-agent | 3,905 | 9,227 | 518 |
+| sigma-mem | 2,788 | 2,748 | 316 |
+| sigma-verify | 1,792 | 3,622 | 300 |
 | Agent definitions | 4,399 (29 files) | — | — |
-| **Total (Python)** | **7,802** | **14,150** | **1,054** |
+| **Total (Python)** | **8,485** | **15,597** | **1,134** |
 
 Numeric stats above are validated in CI by `validate-docs.sh` against the live submodules and `agent-infrastructure/agents/`.
 

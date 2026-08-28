@@ -7,13 +7,13 @@ This repository documents a system of interlocking components that together crea
 ## Components
 
 ### [hateoas-agent](./hateoas-agent/) v0.2.0
-A Python framework (~3,354 LOC, 452 tests) that applies HATEOAS to AI agent tool use. The agent starts with one tool; each response tells it exactly what actions are available next. The server decides what's valid, not the LLM. v0.2 adds multi-agent orchestration: `Orchestrator`, `AsyncRunner`, composable guard conditions, persistence, and visualization.
+A Python framework (~3,905 LOC, 518 tests) that applies HATEOAS to AI agent tool use. The agent starts with one tool; each response tells it exactly what actions are available next. The server decides what's valid, not the LLM. v0.2 adds multi-agent orchestration: `Orchestrator`, `AsyncRunner`, composable guard conditions, persistence, and visualization.
 
 ### [sigma-mem](./sigma-mem/)
-A persistent memory system for Claude (~2,672 LOC, 302 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
+A persistent memory system for Claude (~2,788 LOC, 316 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
 
 ### [sigma-verify](./sigma-verify/)
-A cross-model verification system (~1,776 LOC, 300 tests), exposed as an MCP server. Gateway tool is `init`; available actions are `get_models`, `verify_finding`, `cross_verify`, `challenge`, `check_quotas`. Lets agents stress-test findings against alternative models before accepting them.
+A cross-model verification system (~1,792 LOC, 300 tests), exposed as an MCP server. Gateway tool is `init`; available actions are `get_models`, `verify_finding`, `cross_verify`, `challenge`, `check_quotas`. Lets agents stress-test findings against alternative models before accepting them.
 
 ### [ΣComm Protocol](./agent-infrastructure/agents/sigma-comm.md)
 Compressed agent-to-agent communication. Format: `[STATUS] BODY |¬ ruled-out |→ actions |#count`. Forces agents to declare what they ruled out (¬) and what they can do next (→).
@@ -106,11 +106,11 @@ sigma-system-overview/
 
 | Component | Source LOC | Test LOC | Tests |
 |-----------|-----------|----------|-------|
-| hateoas-agent | 3,354 | 7,776 | 452 |
-| sigma-mem | 2,672 | 2,677 | 302 |
-| sigma-verify | 1,776 | 3,697 | 300 |
+| hateoas-agent | 3,905 | 9,227 | 518 |
+| sigma-mem | 2,788 | 2,748 | 316 |
+| sigma-verify | 1,792 | 3,622 | 300 |
 | Agent definitions | 4,399 (29 files) | — | — |
-| **Total (Python)** | **7,802** | **14,150** | **1,054** |
+| **Total (Python)** | **8,485** | **15,597** | **1,134** |
 
 **Reviews completed:** 51 archived in `agent-infrastructure/teams/sigma-review/shared/archive/` (hateoas-agent code reviews, loan-admin tech landscape, VDR market analysis, biotech healthcare M&A, workflow automation, SVB stress test, and others).
 
