@@ -65,7 +65,8 @@ jobs:
 
           # Verify sigma-mem has expected actions
           expected_mem_actions = {'search_memory', 'store_memory', 'check_integrity', 'get_meta',
-                                  'get_project', 'get_decisions', 'log_decision', 'get_failures',
+                                  'get_project', 'update_project', 'get_decisions', 'log_decision',
+                                  'get_failures',
                                   'log_failure', 'get_corrections', 'log_correction', 'update_belief',
                                   'get_user_model', 'get_patterns', 'get_conversations', 'full_refresh',
                                   'verify_beliefs', 'dream', 'get_roster', 'get_team_decisions',
