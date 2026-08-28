@@ -363,6 +363,43 @@ if [ -d "$SRC_SKILLS" ]; then
             cp "$src" "$dest"
             ok "$skill_name skill installed"
         fi
+
+        # --- supporting files beyond SKILL.md (phases/, references/, scripts/) ---
+        # 15 of the shipped skills keep real content outside SKILL.md, and for
+        # sigma-build the entire workflow lives in phases/c{1,2,3}-*.md. Copying
+        # only SKILL.md left all of it stale forever while setup.sh still
+        # reported success — that is how installed phase files drifted months
+        # behind the repo and kept instructing the lead to call TeamCreate long
+        # after the repo had dropped it.
+        # The find stream is on fd 3, not stdin: a `read -rp` prompt inside a
+        # `while read ... done < <(find)` body consumes the file list instead of
+        # the user's answer, so the prompt silently self-answers and nothing is
+        # ever overwritten. fd 3 keeps stdin free for the prompt, and works on
+        # bash 3.2 (macOS default) unlike mapfile.
+        sub_new=0; sub_upd=0; sub_kept=0
+        while IFS= read -r -d '' sub_src <&3; do
+            sub_rel="${sub_src#"$skill_dir"}"
+            sub_dest="$dest_dir/$sub_rel"
+            if [ -f "$sub_dest" ]; then
+                cmp -s "$sub_src" "$sub_dest" && continue
+                warn "$skill_name/$sub_rel differs from repo"
+                read -rp "  Overwrite? (y/N): " sub_overwrite
+                if [[ "$sub_overwrite" =~ ^[Yy]$ ]]; then
+                    cp "$sub_src" "$sub_dest"
+                    sub_upd=$((sub_upd + 1))
+                else
+                    sub_kept=$((sub_kept + 1))
+                fi
+            else
+                mkdir -p "$(dirname "$sub_dest")"
+                cp "$sub_src" "$sub_dest"
+                sub_new=$((sub_new + 1))
+            fi
+        done 3< <(find "$skill_dir" -type f ! -name SKILL.md -print0)
+
+        if [ $((sub_new + sub_upd + sub_kept)) -gt 0 ]; then
+            ok "$skill_name support files: ${sub_new} installed, ${sub_upd} updated, ${sub_kept} kept"
+        fi
     done
 else
     warn "Skills source directory not found at $SRC_SKILLS — skipping"
