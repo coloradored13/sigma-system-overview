@@ -887,6 +887,24 @@ phase-1 DEFINE (lead):
   lead fills in: Role, Expertise, Review steps, Weight, Domain Gap Reporting
   !include: current task context + GAP that triggered creation
 
+  !rule: pick the name FIRST — it is the identity key everywhere (see sigma-lead.md Spawn rules).
+    lowercase-with-hyphens, unique against the roster, ¬a prefix-collision with an existing entry.
+  !rule: create ALL FIVE name-keyed locations before phase-2, in this order:
+    1→ `~/.claude/agents/{name}.md`            (from _template.md)
+    2→ `T/agents/{name}/`                      (DIRECTORY — see below, load-bearing)
+    3→ `T/inboxes/{name}.md`                   (empty inbox, so peers can reach it in phase-3)
+    4→ roster.md entry: `{name} |domain: … |wake-for: … |dynamic: created {date} per {trigger}`
+    5→ workspace `### {name}` section
+  !rule: step 2 is the one that silently breaks. sigma-mem's `_detect_agent_identity()` enumerates the
+    `T/agents/*/` DIRECTORY NAMES and matches them against the agent's `"I'm {name}"` self-declaration.
+    ¬directory → ¬identity match → no `agent_boot`, and the new agent researches memoryless through
+    phase-2 with no error raised. `setup.sh` creates these dirs at install time from the agent-def
+    filenames, so only mid-task agents hit this.
+  !rule: `dynamic:`/`added:` roster markers are provenance for humans — sigma-mem's roster parser reads
+    only `domain:` and `wake-for:`. Write them anyway: they are how a later audit reconstructs WHY the
+    agent exists (cf. regulatory-licensing-specialist 26.3.11, cognitive-decision-scientist 26.3.21,
+    security-specialist 26.4.5).
+
 phase-2 RESEARCH (new agent, solo):
   reads: workspace, roster, decisions.md, patterns.md
   conducts: independent domain research (web search, build memory)

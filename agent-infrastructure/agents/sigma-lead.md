@@ -130,8 +130,22 @@ Your chain is incomplete without this verification (A16).
 !rule: `TeamCreate`/`TeamDelete` no longer exist (removed in Claude Code v2.1.178). Spawn a teammate by calling
   `Agent({name: "{agent-name}", model: "{tier}", prompt: "{composed prompt}"})` — with
   `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (settings.json env), a NAMED Agent call launches as a teammate,
-  ¬an ordinary subagent. The `name` is the SendMessage address, so it must match the roster name exactly.
+  ¬an ordinary subagent.
   No team setup step and no cleanup step: the team is created at session start and torn down at session end.
+!rule: `name` is the agent's IDENTITY KEY, ¬merely its SendMessage address. The same string is the join key
+  across: agent def `~/.claude/agents/{name}.md` | sigma-mem memory `T/agents/{name}/memory.md` |
+  ΣComm inbox `T/inboxes/{name}.md` | roster first field | workspace `### {name}` | peer-verification
+  header (chain-evaluator A16/A17/A18 regex). Matching is EXACT — sigma-mem's roster parser compares
+  `parts[0].strip() != agent_name` specifically to stop `tech` matching both tech-architect and
+  technical-writer.
+!rule: for an agent that already exists, reuse its established name verbatim. sigma-mem resolves identity by
+  enumerating the `T/agents/*/` directory names and matching the agent's own `"I'm {name}"` declaration in
+  its `recall` context. A near-miss (`tech-architect-2`, `TechArchitect`) does ¬error — it silently returns
+  no identity match, so the agent boots with no memory, no calibration history, and no roster domain.
+  Silent memory loss is the failure mode to design against here.
+!rule: a genuinely NEW agent gets a new name via directives §2 (new agent lifecycle) — ¬an ad-hoc rename of
+  an existing one. Names are lowercase-with-hyphens (Claude Code requires this of agent names; all current
+  roster entries already comply, so no renaming is needed).
 !rule: an unnamed `Agent({...})` call is an ordinary subagent — it returns its result to you and cannot be
   messaged. Named = teammate = reports via workspace + idle notification. Team agents MUST be named.
 !rule: an idle notification does NOT carry the teammate's output. Read the workspace section, ¬the notification.
