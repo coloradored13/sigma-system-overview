@@ -14,6 +14,17 @@ pass() { echo "  PASS: $1"; }
 fail() { echo "  FAIL: $1"; ERRORS=$((ERRORS + 1)); }
 warn() { echo "  WARN: $1"; WARNINGS=$((WARNINGS + 1)); }
 
+# A missing submodule is a hard failure, not a warning. Every stat check in this
+# script reads from the submodule working trees, so an uninitialized submodule
+# means the checks are skipped — and the script used to still print
+# "Status: PASS". That is the one outcome a validator must never produce: green
+# because it verified nothing. Doc drift then accumulates undetected, which is
+# exactly how the README test counts went stale while CI reported PASS.
+missing_submodule() {
+  fail "$1/src not found — submodule not initialized, so $1 stats were NOT validated"
+  echo "        run: git submodule update --init --recursive"
+}
+
 echo "=== Sigma System Doc Validation ==="
 echo ""
 
@@ -86,7 +97,7 @@ if [ -d "hateoas-agent/src" ]; then
     fi
   fi
 else
-  warn "hateoas-agent/src not found (submodule not initialized?)"
+  missing_submodule "hateoas-agent"
 fi
 
 echo ""
@@ -155,7 +166,7 @@ if [ -d "sigma-mem/src" ]; then
     fi
   fi
 else
-  warn "sigma-mem/src not found (submodule not initialized?)"
+  missing_submodule "sigma-mem"
 fi
 
 echo ""
@@ -228,7 +239,7 @@ if [ -d "sigma-verify/src" ]; then
     fail "sigma-verify not listed in ARCHITECTURE.md stats table"
   fi
 else
-  warn "sigma-verify/src not found (submodule not initialized?)"
+  missing_submodule "sigma-verify"
 fi
 
 echo ""
