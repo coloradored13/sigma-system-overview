@@ -2,7 +2,7 @@
 name: sigma-optimize
 description: "Run multi-agent evolutionary prompt optimization experiments. Spawns search agents with different mutation strategies, validates findings statistically, tests cross-model transfer. Use when user says 'sigma-optimize', 'optimize prompts', or asks for evolutionary token search."
 argument-hint: "[experiment description or task] or 'resume'"
-allowed-tools: Read, Grep, Glob, Bash, Agent, TeamCreate, SendMessage
+allowed-tools: Read, Grep, Glob, Bash, Agent, SendMessage
 ---
 
 # sigma-optimize — Multi-Agent Experimental Research Framework
@@ -141,7 +141,8 @@ source: top-K from conservative + aggressive |matrix: {description}
 !ALL agent spawns use this template. Lead MUST NOT improvise agent instructions.
 
 ```
-TeamCreate(team:sigma-optimize) → Agent(name:{agent-name}):
+Agent({name: "{agent-name}", model: "{tier}", prompt: ...}) — named call spawns a teammate
+(`TeamCreate` no longer exists; see sigma-lead.md Spawn rules):
 
 ROLE: {from agent def Role section}
 EXPERTISE: {from agent def Expertise section}
@@ -192,7 +193,7 @@ INDEPENDENCE (search agents only):
     - Read result JSON content, interpret score patterns, comment on preliminary findings, suggest adjustments based on partial data
   - This is a narrow exception to §1, not a general override. Lead is a transparent execution proxy.
 
-1→spawn search-conservative + search-aggressive SIMULTANEOUSLY via TeamCreate
+1→spawn search-conservative + search-aggressive SIMULTANEOUSLY as NAMED Agent calls
   - use §4b template for BOTH agents
   - task: "Run evolutionary search with {conservative/aggressive} mutation strategy per workspace ## search-parameters. Report top candidates, patterns, convergence curve. Use --gen-limit 1 --resume pattern. Use evaluate_batch (concurrent) not evaluate (serial)."
   - include INDEPENDENCE instruction for both
@@ -210,7 +211,7 @@ INDEPENDENCE (search agents only):
 ## §6 — Phase 2: COMBINATORIAL
 
 1→verify orchestrator phase = combinatorial
-2→spawn search-combinatorial via TeamCreate using §4b template
+2→spawn search-combinatorial as a NAMED Agent call using §4b template
   - task: "Read peer findings from workspace ## findings. Extract winning tokens. Test all combinations systematically per workspace ## search-parameters."
 3→monitor workspace ## convergence for search-combinatorial ✓
 4→log to ## experiment-log
@@ -234,7 +235,7 @@ INDEPENDENCE (search agents only):
 ## §7 — Phase 3: VALIDATION (Exit Gate)
 
 1→verify orchestrator phase = validation
-2→spawn statistical-analyst via TeamCreate using §4b template
+2→spawn statistical-analyst as a NAMED Agent call using §4b template
   - task: "Read ALL agent findings from workspace. Re-test top candidates at N=20. Compute p-values, effect sizes, check for rubric gaming. Issue exit-gate verdict."
   - agent has FULL workspace read access (all findings from all agents)
 3→monitor workspace ## validation → exit-gate
@@ -257,7 +258,7 @@ INDEPENDENCE (search agents only):
 ## §8 — Phase 4: CROSS-MODEL
 
 1→verify orchestrator phase = cross_model
-2→spawn cross-model-validator via TeamCreate using §4b template
+2→spawn cross-model-validator as a NAMED Agent call using §4b template
   - task: "Read statistically validated candidates from workspace ## validation. Run them against GPT + Gemini via sigma-verify MCP. Report transfer rates using same mechanical scoring rubric."
 3→monitor workspace ## cross-model for convergence
 
