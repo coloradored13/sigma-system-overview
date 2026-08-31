@@ -265,6 +265,7 @@ ORCHESTRATION_FILES = (
     "skills/sigma-build/phases/c1-plan.md",
     "skills/sigma-build/phases/c2-build.md",
     "skills/sigma-build/phases/c3-review.md",
+    "skills/sigma-optimize/SKILL.md",
     "teams/sigma-review/shared/directives.md",
     "teams/sigma-review/shared/build-directives.md",
 )
