@@ -16,3 +16,4 @@ __pycache__/
 
 # Hook calibration logs (operational telemetry, not source)
 agent-infrastructure/hooks/sigmacomm-calibration.jsonl
+sigma-system-overview/
