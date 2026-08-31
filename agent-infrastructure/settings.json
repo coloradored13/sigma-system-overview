@@ -128,5 +128,21 @@
   "effortLevel": "xhigh",
   "subagentPromptCacheTtl": "1h",
   "autoDreamEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  },
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "model": "claude-fable-5[1m]"
 }
