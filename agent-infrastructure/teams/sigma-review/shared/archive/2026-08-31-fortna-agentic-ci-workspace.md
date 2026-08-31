@@ -1,3 +1,6 @@
+# ARCHIVED WORKSPACE — R-fortna-agentic-ci-2026-08-31
+archived: 2026-08-31 | mode: ANALYZE | tier: TIER-2 (product-strategist, tech-industry-analyst, tech-architect, economics-analyst, reference-class-analyst + devils-advocate; synthesis-agent + compilation-agent) | rounds: 4 | exit-gate: PASS (r4, unconditional) | BELIEF[r4]=0.85 | synthesis: 2026-08-31-fortna-agentic-ci-synthesis.md
+
 # workspace
 ## status: active
 ## review-id: fortna-agentic-ci-2026-08-31

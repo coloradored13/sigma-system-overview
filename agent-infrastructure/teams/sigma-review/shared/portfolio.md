@@ -199,3 +199,12 @@ v5 (user draft, 3,400 words) → v6 (33/40, gate-fail on Team Topologies leak) �
 ### Chain Evaluation
 Chain-evaluator parser has known false-positives on custom v6-proposal output format (this session's synthesis structure differs from standard sigma-review analytical synthesis schema). User-validated 39/40 rubric score + 4 distribution contexts cleared.
 
+
+## R-fortna-agentic-ci-2026-08-31
+date: 2026-08-31 | mode: ANALYZE | tier: TIER-2 (5 domain agents + DA, complexity 17/25) | rounds: 4 (R1 → DA r2 FAIL → r3 remediation → r4 CONDITIONAL-PASS → PASS unconditional)
+task: competitive market intelligence brief for Fortna (warehouse automation/intralogistics) + agentic-technology opportunities on product and internal-work surfaces
+exit-gate: PASS | BELIEF[r4]=0.85 | DA: 26 challenges, 26 resolved, 3 corrected against DA | debate slots: 0/2 spent, all non-spends justified
+headline: DA[#1] caught 2026-08-20 Fortna debt-for-equity recapitalization (Ares-led lender group, agreed-not-closed) missed by all 5 agents; H[4] rejected (vertical at adoption parity); H[1] resolved two-clause; recommendation: clear the floor on agentic, differentiate on the provable (imitable/time-limited), SWITCH product surface to owned deterministic core, invest-don't-market internal work, instrument bid debriefs now
+deliverable: archive/2026-08-31-fortna-agentic-ci-synthesis.md (5,886 words) | wiki: fortna-competitive-position.md + warehouse-automation-agentic-ai-landscape.md
+promotion: 55 auto-stored + 14 user-approved (6 principles, 6 protocol changes incl. entity-recency-sweep R1 mandate + DA overcorrection-check standing duty, 2 team patterns)
+infra: sigma-verify registration root-caused (spawn-time tool snapshot) + venv workaround validated; provider budget/registry degraded (separate item); stale-read race pattern promoted; chain-evaluator A9 regex false-positive logged
