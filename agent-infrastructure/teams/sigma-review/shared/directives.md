@@ -273,6 +273,7 @@ Inconsistency-scores: H1={sum-negatives} H2={sum} H3={sum}
 
 !tools (via sigma-verify MCP):
   init → check provider availability (call once per session)
+!rule[per-session-unlock]: init unlocks verify_finding/cross_verify/challenge ONLY in the session that calls it — HATEOAS gateway state is per-session, lead's preflight init ¬propagates to teammate sessions. EVERY agent calls mcp__sigma-verify__init in its OWN session (Boot final step) before first XVERIFY attempt. ToolSearch-not-found without own-init = expected behavior, ¬infra gap — call init, retry ToolSearch once. Root cause of 5-review XVERIFY-FAIL recurrence (26.4.22→26.8.31); verified live both directions 26.9.5.
   verify_finding(finding, context, provider?) → single-model verification
   cross_verify(finding, context) → all-model comparison
   challenge(claim, evidence, provider?) → external devil's advocate

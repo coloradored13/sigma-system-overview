@@ -10,10 +10,16 @@
 self-sufficient: read own state from paths.
 1→sigma-comm.md — comms protocol
 2→memory.md — identity+findings+calibration
-3→workspace.md — task+peer-findings
-4→decisions.md — settled choices
-5→mcp__sigma-verify__init {} — one call, BEFORE any ToolSearch of verify_finding/cross_verify/challenge
+3→inbox — process unread→summarize(ΣComm)→clear
+  !restored 26.9.5 (partial revert of 79bbae5): lead workflow still writes answers to file inboxes
+  (sigma-lead.md "write answer to agent inbox") + Comms routes peer ΣComm via inbox — an agent that
+  ¬reads its inbox at boot misses pre-spawn/re-spawn messages. Fleet + structural tests kept this step;
+  template was the outlier.
+4→workspace.md — task+peer-findings
+5→decisions.md — settled choices
+6→mcp__sigma-verify__init {} — one call, BEFORE any ToolSearch of verify_finding/cross_verify/challenge
   !purpose: hateoas-agent state-gates §2h XVERIFY tools behind init transition (R19 #3 root cause: 5/5 agents skipped → 5 XVERIFY-FAIL).
+  !session-scope: the unlock lands ONLY in the session that calls init — lead's preflight init ¬propagates to you (verified 26.9.5). Own-session call is mandatory, ¬optional.
   !redundant-with: TA ADR[1] machine.py auto-ready — Boot call is belt-and-suspenders (DA[#2] compromise + SS ADR[2]).
   !if-unavailable: init returns ¬providers → proceed without XVERIFY; all findings carry no-tag per §2h (neutral, ¬penalized).
   !do-NOT-retry failed providers in same session — idempotent init, flag gap, continue.
