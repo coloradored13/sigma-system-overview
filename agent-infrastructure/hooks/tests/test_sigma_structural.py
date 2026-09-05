@@ -190,6 +190,23 @@ class TestAgentDefinitions:
             f"{agent_name}.md boot missing step 5→decisions or 5→directives"
         )
 
+    def test_boot_has_init_step(self, agent_name, agent_content):
+        """Every standard agent must call mcp__sigma-verify__init in its OWN session.
+
+        The unlock is per-session (HATEOAS gateway): the lead's preflight init
+        does not propagate to teammate sessions, so an agent without its own
+        call ToolSearches cold and logs XVERIFY-FAIL. This exact fix was made
+        once before (R19 added it to _template.md) and reached 1 of 29 agents,
+        which is how the failure recurred across five reviews — hence a
+        per-agent tripwire, not a template-only one. cross-model-validator
+        carries the call in its Work section rather than Boot, so presence
+        anywhere in the definition satisfies this.
+        """
+        assert "mcp__sigma-verify__init" in agent_content, (
+            f"{agent_name}.md never calls mcp__sigma-verify__init — "
+            "its XVERIFY attempts will fail with tools-not-found"
+        )
+
     def test_boot_step_order(self, agent_name, agent_content):
         """Steps 1-5 must appear in sequential order."""
         positions = []
@@ -424,3 +441,41 @@ class TestSharedInfrastructure:
             assert (AGENTS_DIR / name).exists(), (
                 f"Special agent file missing: {name}"
             )
+
+
+# ============================================================
+# TestTemplateBootCanon — _template.md must match fleet Boot shape
+# ============================================================
+
+class TestTemplateBootCanon:
+    """The template is the base for every dynamically-created agent (§2 phase-1).
+
+    It diverged from the fleet once (79bbae5 removed the inbox boot step; the
+    28 existing agents and these tests kept it) and the init-first fix later
+    landed in the template without reaching the fleet. Both directions of
+    template/fleet drift produced real review failures, so the canonical Boot
+    sequence is pinned here explicitly.
+    """
+
+    CANON = [
+        r"1→sigma-comm",
+        r"2→memory",
+        r"3→inbox",
+        r"4→workspace",
+        r"5→decisions",
+        r"6→mcp__sigma-verify__init",
+    ]
+
+    def test_template_boot_matches_fleet_canon(self):
+        content = (AGENTS_DIR / "_template.md").read_text(encoding="utf-8")
+        boot = re.search(r"## Boot.*?\n## ", content, re.DOTALL)
+        assert boot, "_template.md has no Boot section"
+        text = boot.group(0)
+        positions = []
+        for pat in self.CANON:
+            m = re.search(pat, text)
+            assert m, f"_template.md Boot missing canonical step: {pat}"
+            positions.append(m.start())
+        assert positions == sorted(positions), (
+            "_template.md Boot steps out of canonical order"
+        )
