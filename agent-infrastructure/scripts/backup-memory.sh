@@ -13,6 +13,13 @@ LOCAL_SETTINGS="$HOME/.claude/settings.local.json"
 PROJECT_MEMORY="$HOME/.claude/projects/-Users-$(whoami)/memory"
 CALIBRATION_LOG="$HOME/.claude/teams/sigma-review/shared/calibration-log.md"
 
+# Branch guard: snapshots are meant to be committed from main. The session-end
+# checklist has each memory-modifying session commit its snapshot, and a commit
+# made from whatever branch happens to be checked out lands on feature branches
+# (observed 26.9.5: a concurrent session's snapshot rode an open PR). The
+# snapshot itself is always written — only the commit guidance changes.
+CURRENT_BRANCH="$(git -C "$REPO_DIR" branch --show-current 2>/dev/null || echo unknown)"
+
 # Create snapshot directory
 mkdir -p "$SNAPSHOT_DIR"
 
@@ -55,4 +62,11 @@ echo "Snapshot saved to: $SNAPSHOT_DIR"
 echo "Files:"
 ls -la "$SNAPSHOT_DIR"/ 2>/dev/null
 echo ""
-echo "To commit: cd $REPO_DIR && git add agent-infrastructure/memory-snapshots/ && git commit -m 'Memory snapshot $(date +%Y-%m-%d)'"
+if [ "$CURRENT_BRANCH" = "main" ]; then
+    echo "To commit: cd $REPO_DIR && git add agent-infrastructure/memory-snapshots/ && git commit -m 'Memory snapshot $(date +%Y-%m-%d)'"
+else
+    echo "⚠️  Repo is on branch '$CURRENT_BRANCH', NOT main."
+    echo "⚠️  Do NOT commit the snapshot from this branch — it will ride along in"
+    echo "⚠️  someone else's open PR. Snapshot files are written and safe on disk."
+    echo "⚠️  When the repo returns to main: git add agent-infrastructure/memory-snapshots/ && git commit"
+fi
