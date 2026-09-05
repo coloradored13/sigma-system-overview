@@ -7,7 +7,7 @@
 - [K-shape Ultra Report](project_k-shape-ultra-report.md) — 13,995-word opportunity scan 26.5.17, ~/Documents/k-shape-ultra-report-2026-05-17.{md,docx} — detail in file
 - [Prompt Coach](prompt-coach-project.md) — local webapp, scaffolded 26.3.6, paused → evolved into Spec Workshop
 - [Spec Workshop](project_spec-workshop.md) — Streamlit spec-writing tool with Claude API, v1 spec drafted 26.3.29
-- [AI PD Tracker](project_ai-pd-tracker.md) — ~/Projects/ai-pd-tracker/ FastAPI+SQLite curriculum tracker + Field Guide workbench; remote restructured 26.8.4 (Track P, Phase 3, 41 lessons, 106 tests); audit triage 26.9.5 → plan there-are-two-documents-hazy-peach.md; Wave 0 hygiene PR #5 OPEN; learner not started; next = merge → Wave 1 coach assessor — full detail in file
+- [AI PD Tracker](project_ai-pd-tracker.md) — ~/Projects/ai-pd-tracker/ FastAPI+SQLite curriculum tracker + Field Guide workbench; remote restructured 26.8.4 (Track P, Phase 3, 41 lessons, 106 tests); audit triage 26.9.5 → plan there-are-two-documents-hazy-peach.md; Wave 0 merged (PR #5); Wave 1 coach assessor PR #6 READY (assessor 13/13 ×3; blind GPT-5.6 13/13; must_hold 6/13); learner not started; next = merge #6 → currency run → Wave 2 — full detail in file
 - [Cutebot MCP](project_cutebot-mcp.md) — ~/Projects/cutebot-mcp/ MCP server, v0.2.3 live 26.5.23: 22 actions verified, radio-wedge debunked (retries 1→3 fix), BLE not needed; 2 files dirty pending commit — full detail in file
 - [Loan Admin KB](project_loan-admin-kb.md) — 6-doc review, complete 26.3.13
 - [Rosetta](rosetta.md) — ΣComm notation decoder (canonical version now in sigma-mem/docs/notation-reference.md)
