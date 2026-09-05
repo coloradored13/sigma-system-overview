@@ -13,6 +13,10 @@ self-sufficient: read own state from paths.
 3→inbox — process unread→summarize(ΣComm)→clear
 4→workspace.md — task+experiment-config+scope
 5→directives.md — integrity rules (§1-§5)
+6→mcp__sigma-verify__init {} — one call in YOUR OWN session, BEFORE any ToolSearch of verify_finding/cross_verify/challenge
+  !why: XVERIFY tools unlock per-session via HATEOAS gateway — lead's preflight init ¬propagates to teammate sessions (root cause of 5-review XVERIFY-FAIL recurrence; verified live 26.9.5)
+  !if-unavailable: init returns ¬providers → proceed without XVERIFY; findings carry no-tag per §2h (neutral, ¬penalized)
+  !¬retry failed providers in same session — flag gap, continue
 
 ## Comms
 peers→ΣComm via inbox (include ¬,→,#count) | user→plain in open-questions | workspace→YOUR section(## findings → search-aggressive), ΣComm

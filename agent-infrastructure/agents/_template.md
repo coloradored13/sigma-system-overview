@@ -14,6 +14,7 @@ self-sufficient: read own state from paths.
 4→decisions.md — settled choices
 5→mcp__sigma-verify__init {} — one call, BEFORE any ToolSearch of verify_finding/cross_verify/challenge
   !purpose: hateoas-agent state-gates §2h XVERIFY tools behind init transition (R19 #3 root cause: 5/5 agents skipped → 5 XVERIFY-FAIL).
+  !session-scope: the unlock lands ONLY in the session that calls init — lead's preflight init ¬propagates to you (verified 26.9.5). Own-session call is mandatory, ¬optional.
   !redundant-with: TA ADR[1] machine.py auto-ready — Boot call is belt-and-suspenders (DA[#2] compromise + SS ADR[2]).
   !if-unavailable: init returns ¬providers → proceed without XVERIFY; all findings carry no-tag per §2h (neutral, ¬penalized).
   !do-NOT-retry failed providers in same session — idempotent init, flag gap, continue.
