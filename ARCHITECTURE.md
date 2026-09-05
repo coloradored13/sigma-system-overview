@@ -115,7 +115,7 @@ Claude calls get_team_decisions("sigma-review")
 
 ### sigma-verify
 
-A cross-model verification system (~1,792 LOC, 300 tests), exposed as an MCP server. Built on hateoas-agent.
+A cross-model verification system (~1,807 LOC, 301 tests), exposed as an MCP server. Built on hateoas-agent.
 
 **How it works:**
 The verification system is a HATEOAS state machine. Agents call `init` (the gateway), and the system advertises which verification actions are available given the current quotas, configured models, and prior findings.
@@ -365,9 +365,9 @@ The system has completed 50+ reviews across codebases, market analyses, and stre
 |-----------|-----------|----------|-------|
 | hateoas-agent | 3,905 | 9,227 | 518 |
 | sigma-mem | 2,788 | 2,748 | 316 |
-| sigma-verify | 1,792 | 3,622 | 300 |
+| sigma-verify | 1,807 | 3,641 | 301 |
 | Agent definitions | 4,399 (29 files) | — | — |
-| **Total (Python)** | **8,485** | **15,597** | **1,134** |
+| **Total (Python)** | **8,500** | **15,616** | **1,135** |
 
 Numeric stats above are validated in CI by `validate-docs.sh` against the live submodules and `agent-infrastructure/agents/`.
 
