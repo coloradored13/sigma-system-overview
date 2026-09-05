@@ -13,7 +13,7 @@ A Python framework (~3,905 LOC, 518 tests) that applies HATEOAS to AI agent tool
 A persistent memory system for Claude (~2,788 LOC, 316 tests), exposed as an MCP server. Memory retrieval is itself a HATEOAS state machine — call `recall`, describe your context, get state-dependent actions.
 
 ### [sigma-verify](./sigma-verify/)
-A cross-model verification system (~1,792 LOC, 300 tests), exposed as an MCP server. Gateway tool is `init`; available actions are `get_models`, `verify_finding`, `cross_verify`, `challenge`, `check_quotas`. Lets agents stress-test findings against alternative models before accepting them.
+A cross-model verification system (~1,807 LOC, 301 tests), exposed as an MCP server. Gateway tool is `init`; available actions are `get_models`, `verify_finding`, `cross_verify`, `challenge`, `check_quotas`. Lets agents stress-test findings against alternative models before accepting them.
 
 ### [ΣComm Protocol](./agent-infrastructure/agents/sigma-comm.md)
 Compressed agent-to-agent communication. Format: `[STATUS] BODY |¬ ruled-out |→ actions |#count`. Forces agents to declare what they ruled out (¬) and what they can do next (→).
@@ -108,9 +108,9 @@ sigma-system-overview/
 |-----------|-----------|----------|-------|
 | hateoas-agent | 3,905 | 9,227 | 518 |
 | sigma-mem | 2,788 | 2,748 | 316 |
-| sigma-verify | 1,792 | 3,622 | 300 |
+| sigma-verify | 1,807 | 3,641 | 301 |
 | Agent definitions | 4,399 (29 files) | — | — |
-| **Total (Python)** | **8,485** | **15,597** | **1,134** |
+| **Total (Python)** | **8,500** | **15,616** | **1,135** |
 
 **Reviews completed:** 51 archived in `agent-infrastructure/teams/sigma-review/shared/archive/` (hateoas-agent code reviews, loan-admin tech landscape, VDR market analysis, biotech healthcare M&A, workflow automation, SVB stress test, and others).
 
