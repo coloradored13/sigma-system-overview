@@ -1,0 +1,293 @@
+---
+name: AI PD Tracker
+description: Local FastAPI+SQLite tracker for ai-pd-curriculum.md at coloradored13/ai-pd-tracker (private); restructured 26.8.4 (Track P, Phase 3, 41 lessons); audit triage 26.9.5 with 5-wave plan; Wave 0 PR #5 open; learner has not started
+type: project
+originSessionId: 94ee6e68-5400-4953-9051-035d791b124d
+---
+# AI PD Tracker
+
+**Location:** `~/Projects/ai-pd-tracker/`
+**Remote:** `github.com/coloradored13/ai-pd-tracker` (private, main)
+**Started:** 2026-04-19
+**Status (2026-04-20):** Feature-complete. All 10 build-brief steps shipped + browser-verified. Coach infra + vague-answer harness validated against claude-sonnet-4-6. Repo initialized and pushed private.
+
+## What it is
+
+Local personal learning tracker for the user's 8-week AI professional development curriculum. Runs on user's laptop, no cloud, SQLite for persistence, Anthropic API for the AI Coach. Single-user, single-machine (brief is explicit).
+
+## Authoritative references (on disk)
+
+- `build-brief.md` — full build spec, source of truth. Byte-identical to the original prompt zip.
+- `ai-pd-curriculum.md` — source curriculum (~40K).
+- `curriculum.json` — parsed output, what the app reads.
+
+## External references
+
+- NotebookLM live build (private): https://notebooklm.google.com/notebook/d482a634-4739-4962-8a2e-57cf49770e05 — built from the 6 manifests in `notebooklm/` per velvety-swinging-coral Stream 2 spec. Confirmed live 2026-05-07.
+
+## Stack decisions (non-obvious)
+
+- **FastAPI + vanilla JS + Tailwind CDN**, not Streamlit or React. No build step.
+- **SPA with hash routing**, not server-rendered templates.
+- **Curriculum parsed once at startup from JSON.** Parser is one-way: run `python parse_curriculum.py` after editing the `.md`.
+- **Slugify converts `.` to `-`**: "Module 1.1" → `module-1-1`, not `module-11`.
+- **Dev no-cache middleware** on `/` and `/static/` — required because Chrome aggressively caches SPA assets on disk even with ETag/Last-Modified. Without this, HTML edits don't show up until hard-reload.
+
+## Key files
+
+| File | Purpose |
+|---|---|
+| `parse_curriculum.py` | Markdown → JSON; re-run after editing curriculum.md |
+| `app.py` | FastAPI backend, SQLite, all endpoints |
+| `coach.py` | AI Coach system prompt + Anthropic API wrapper |
+| `test_coach.py` | Vague-answer harness (risk callout from brief line 190) |
+| `static/index.html` | SPA shell (Tailwind CDN) |
+| `static/app.js` | Client-side router + all views |
+| `static/styles.css` | Minimal custom CSS |
+| `curriculum.json` | Parsed curriculum (don't hand-edit) |
+| `data.db` | SQLite, gitignored |
+| `.env` | API key (gitignored, mode 0600) |
+| `.backups/` | Auto-snapshots of data.db on startup, last 10 kept, gitignored |
+| `requirements.txt` | fastapi, uvicorn, anthropic, python-dotenv, pydantic |
+
+## Run command
+
+```bash
+cd ~/Projects/ai-pd-tracker
+source .venv/bin/activate
+python -m uvicorn app:app --reload --port 8000
+```
+
+Then http://localhost:8000.
+
+## API key wiring (non-obvious)
+
+The `.env` ANTHROPIC_API_KEY for this project reuses the same key the sigma-verify MCP uses. Canonical source:
+
+```
+~/.claude.json → mcpServers.sigma-verify.env.ANTHROPIC_API_KEY
+```
+
+If the user rotates the key, update `.claude.json` (via `claude mcp add` or direct edit) AND copy the new value to `ai-pd-tracker/.env`. `load_dotenv()` runs once at server startup — touch `app.py` to force uvicorn reload after `.env` edits.
+
+## Coach validation (step 5 risk callout)
+
+Brief line 190 warns: "If the coach just agrees with the user, the whole testing premise fails." Harness in `test_coach.py` feeds four deliberately vague / pattern-matched / surface-level messages and checks replies for pushback markers.
+
+Results (26.4.20, claude-sonnet-4-6, 6 scenarios): 6/6 pass end-to-end. Full sample run saved at `~/Downloads/ai-pd-tracker-coach-harness-2026-04-20.md`. Earlier "empty reply / non-determinism" note was a harness bug, not a model issue — one scenario pointed at a lesson without an `ai_coach` block (day-5-from-chat-to-api) and `run_one` was silently returning `{"skipped": ...}` which the main loop misrendered as a 0-char failure. Fix: scenario lesson_id moved to `day-6-7-anthropic-agent-guides` and the skip path now raises ValueError so future misconfigurations are loud.
+
+System prompt in `coach.py` embeds the user's two real work projects by name (natural-language dashboard, credit agreement extraction) — this is why the repo is private. If it ever goes public, genericize the persona first.
+
+## Ollama decision
+
+User has local Ollama (M3 16GB, 4-8B models). Not used here. Coach's value is catching subtle thinking failures where small models break down (agreeableness, generic responses). Token cost on Sonnet for coach conversations is trivial (~1k per turn). Ollama might fit later for non-adversarial features (note auto-summary, quick-check generator) — not the coach.
+
+## Dashboard features shipped
+
+Overall progress %, lessons completed (lessons_completed / lessons_total), this-week hours vs. configurable weekly target, streak counter (consecutive days with logged time), coach-checks-pending count, phase progress bars, next-lesson card, portfolio + journal link tiles, recent journal strip, review queue (due items + next up), Week 8 checkpoint link, reset-all-progress button (with confirmation).
+
+## Lesson view features shipped
+
+Title, objectives, resources, deliverable, instructions, sign-off button, interactive quiz with per-question explanation reveal on submit, 70% pass threshold (`QUIZ_PASS_THRESHOLD` in app.py), AI Coach chat with 4+ turn gate on mark-passed, notes autosave on blur, mark-complete button gated on (signed_off AND quiz_passed AND coach_passed).
+
+## Open threads
+
+- **(RESOLVED 26.4.20) struggled_topics wire-up:** now populated on quiz submission (`api_submit_quiz` saves wrong question-numbers as JSON), exposed as `struggled_questions` in the review-queue response, and rendered on the review card as "Focus on: Q3, Q6". DB column name kept as `struggled_topics` — no migration.
+- **(RESOLVED 26.4.20) coach grounding accountability:** `COACH_PERSONA` rule #2 in coach.py rewritten to keep the default demanding but require the coach to *defend* each grounding demand. Coach can now pivot to mechanism-pushback for theoretical concepts (attention math, tokenizer internals) and will concede when a learner challenges an unjustifiable demand. Validated: `test_coach.py` added "theoretical_accepted" and "justify_or_concede" scenarios, both pass (empirical replies: coach says "this is a theoretical topic — I won't force that analogy" and "You're right. I can't construct a justification."). Work-context embedding in `USER_CONTEXT` unchanged — still references dashboard + extraction by name, so a work pivot still means editing `USER_CONTEXT` in coach.py.
+- **(RESOLVED 26.4.20) Coach "empty-reply intermittent":** root-caused to a harness bug (scenario targeted a lesson with no ai_coach block; silent skip rendered as 0-char fail). Fixed by moving the scenario and making skips raise. Not actually non-determinism — no retry-on-empty needed in coach.py.
+- **(RESOLVED 26.4.20) Coach mark-passed backend gate:** `api_coach_mark_passed` now requires `≥ COACH_MIN_USER_TURNS` user turns in transcript before allowing the flag to be set. Constant exported to `/api/stats` so UI and backend agree.
+
+## Code-review open threads (logged 26.4.20, not yet fixed)
+
+Full review at `~/Downloads/ai-pd-tracker-code-review-2026-04-20.md`. Remaining items ordered by severity:
+
+- **High — timezone handling.** `_now_iso`, `_week_start_iso`, `_compute_streak`, `_review_due_date` all use implicit local time. Works fine for a single-user laptop but edge cases exist across DST and machine time-zone changes. Decide: (a) switch to TZ-aware timestamps in DB (cleanest), or (b) document the local-time assumption and make `.backups/` the recovery path. Not urgent.
+- **Medium — coach prompt caching.** `coach.send_message` sends full persona + user_context + lesson block (~1.4k tokens) every turn. Anthropic `cache_control` on the static prefix would cut per-turn cost. Defer unless conversations start extending past 6+ turns routinely.
+- **Medium — coach message persistence order.** `api_coach_message` saves transcript only after the API call returns. If DB write fails post-API-success, the reply is shown then lost. Fix: persist user turn first, append assistant turn after — or wrap in a single transaction.
+- **Medium — `api_reset` has no confirmation token.** UI has `window.confirm`, backend is naked. Localhost mitigates; an `X-Confirm-Reset` header would tighten.
+- **Medium — `coachByLesson` client-side map never GC'd.** 15-lesson ceiling makes it a non-issue today.
+- **Medium — `api_review_queue` rebuilds lesson map per-request.** Cache at module scope since CURRICULUM is immutable after startup.
+- **Medium — `test_coach.py` has no token budget.** Add a `MAX_TOTAL_TOKENS` hard stop to prevent runaway scenario costs.
+- **Low — magic numbers scattered.** `QUIZ_PASS_THRESHOLD`, `REVIEW_INTERVALS_DAYS`, `BACKUP_KEEP`, `max_tokens` in coach, `COACH_MIN_USER_TURNS`. Consolidate into one CONFIG block.
+- **Low — `h({html: ...})` in app.js relies on unwritten invariant.** Rename or comment to document that `html:` is only safe via `renderProse` (which calls `escapeHTML` first).
+- **Low — inconsistent list response shapes.** `api_list_portfolio` → `{items}`, `api_list_time` → `{entries, since}`, `api_list_journal` → `{entries}`. Align for future API docs.
+- **Low — `coach.py max_tokens=1024` hardcoded.** Could truncate deep mechanism explanations; bump to 2048 or parameterize.
+- **Next-level tuning:** `QUIZ_PASS_THRESHOLD` at 0.7 and default weekly target at 420 min are settable from UI (target button on dashboard). Pass threshold requires code edit.
+- **Weekly target for sprint vs. normal weeks:** brief suggests 7h/5h split. Currently single configurable value. Upgrade if user wants per-phase targets.
+
+## User context for this project
+
+Senior PM in loan administration, non-developer, "prefer simple code over clever code." Learning > delegating. Two work projects this curriculum feeds: natural-language dashboard + credit agreement extraction. Both are embedded in the coach system prompt.
+
+---
+
+## Updates 2026-04-29 to 2026-04-30 (persona-recentering work)
+
+The repo has expanded beyond the original curriculum tracker into a workbench for the AI Product Operator persona-becoming plan at `/Users/bjgilbert/.claude/plans/velvety-swinging-coral.md`. Three new top-level subdirectories and a curriculum schema expansion.
+
+### Field Guide work area (26.4.29, commit `f36da73`)
+
+- `field-guide-source/` — extractions from 3 docx files in `~/Downloads/production_ai_agent_readiness_*.docx` (brief, field-guide, one-pager) + Husain 2026 reframes + citation insertion plan + ~600-word lending-specific governance sidebar drafted as canonical edit guide for Stream 1 publish
+- `notebooklm/sources-verified.md` — 23-source verification ledger, all VERIFIED at primary canonical URLs (zero drops; SR 26-2, OCC 2026-13, Lethal Trifecta, MA AG Earnest, 4 CVEs all real)
+- `pretest-dossier-deferred/DEFERRED.md` — formal sigma-build pretest deferred indefinitely with 4 re-trigger criteria, Husain 2026 reframe of Eval Discipline veto cell, MVP diagnostic spec
+
+### Curriculum schema additions (26.4.30, commit `7167913`)
+
+8 new optional fields on each lesson, parsed from `**Label:** value` blocks in markdown:
+
+- `track` (default `"A"`) — `"A"` (AI Product) or `"B"` (Operator)
+- `prerequisites` (default `[]`) — list of lesson IDs
+- `estimated_hours` (default `None`) — float; falls back to None on parse error
+- `artifact_required` (default `False`) — bool; accepts true/yes/y/1
+- `artifact_type` (default `None`) — string label
+- `gate_type` (default `"learning"`) — `"learning" | "foundational" | "veto"`
+- `risk_level` (default `"low"`) — `"low" | "medium" | "high"`
+- `notebook_id` (default `None`) — optional NotebookLM mapping (e.g., `nb-6-operator`)
+
+10 new tests in `tests/test_parser.py` cover defaults + parsing + type validation + edge cases (invalid hours fallback, yes/no aliases for booleans). Full suite **91 passed / 1 skipped** (no regression).
+
+Track A: 17 lessons preserved, all with default values for new fields. Track B: 0/8 markdown content; schema is ready to receive Track B modules in a fresh session.
+
+Track B label syntax pattern (from plan):
+
+```markdown
+**Track:** B
+**Prerequisites:**
+- (none for M1)
+**Estimated hours:** 4
+**Artifact required:** yes
+**Artifact type:** git-rescue-drill
+**Gate type:** foundational
+**Risk level:** medium
+**Notebook:** nb-6-operator
+```
+
+### NotebookLM source manifests (26.4.30, commit `7167913`)
+
+6 per-notebook manifests + README at `notebooklm/`. Build order 6 → 3 → 4 → 5 → 2 → 1:
+
+| Notebook | Sources | Purpose |
+|---|---|---|
+| `notebook-06-operator.md` | 22 | Track B Modules 1–8 + pretest §7 |
+| `notebook-03-agent-architecture.md` | 16 | §2 veto-cell mastery, Lethal Trifecta canonical |
+| `notebook-04-eval-discipline.md` | 14 | §4 veto-cell, Husain + Shankar 2026 FAQ as canonical primary |
+| `notebook-05-regulated-finance.md` | 21 | SR 26-2, OCC 2026-13, MA AG Earnest, Moffatt anchors |
+| `notebook-02-reference.md` | 42–48 | Reference search corpus (deltas + padding to specialty union) |
+| `notebook-01-audio-overview.md` | 30 | Narrative-friendly reflex install for daily commute |
+
+Each manifest cites verified URLs from `sources-verified.md`, maps to pretest cells + Track B modules, includes audio prompt template + calibration check + refresh cadence. Actual NotebookLM creation is the user's manual work in Google's NotebookLM service (cannot be done autonomously); ~28-30h split across 3-4 sittings to load + generate audio + run calibration.
+
+### Open threads (Stream 3 specifically)
+
+- **Track B markdown content (8 modules, ~40-60h)** — pending. Schema ready, source mapping ready (in `notebook-06-operator.md`), Track A patterns are the style template. Plan says: "fresh session opens, reads `velvety-swinging-coral.md`, writes Track B."
+- **Frontend Track A/B toggle** — pending. Plan calls for `track: A | B` toggle in dashboard + `notebook_id` link in lesson view ("Open study notebook"). Optional artifact submission form for `artifact_required: true` lessons. Wire in `static/app.js` after Track B markdown ships.
+- **Gap Report ingestion endpoint** — DEFERRED indefinitely (only build if pretest re-trigger criteria fire per `pretest-dossier-deferred/DEFERRED.md`).
+
+---
+
+## Updates 2026-05-05 (Field Guide Stream 1 citation pass)
+
+Stream 1 citation pass applied to the three Field Guide source documents per `field-guide-source/citation-insertion-plan.md`. Outputs are new `_v2.docx` files in `field-guide-source/`; originals in `~/Downloads/` are untouched.
+
+### What shipped
+
+| Output (in `field-guide-source/`) | Source (`~/Downloads/`) | Insertions |
+|---|---|---|
+| `production_ai_agent_readiness_field_guide_v2.docx` | `..._field_guide.docx` | 1, 2, 3 (wholesale rewrite), 4, 5, 6, 7, 9 + timeline-expectations caveat |
+| `production_ai_agent_readiness_brief_v2.docx` | `..._brief.docx` | 10 only (preface dropped 2026-05-05) |
+| `production_ai_agent_readiness_executive_one_pager_v2.docx` | `..._executive_one_pager.docx` | cost/timeline caveat only (Insertion 11 Substack CTA dropped 2026-05-05) |
+
+9 in-scope insertions + 2 supporting caveats (timeline + one-pager cost). Insertions 8, 11, and the brief preface all skipped per user direction. Final verify run: 14/14 pass.
+
+All citations use canonical primary URLs from `notebooklm/sources-verified.md` (23-source ledger, all verified 2026-04-29). URLs render as clickable hyperlinks (blue + underline, standard Word hyperlink styling).
+
+### Out of scope (user-deferred)
+
+- **Insertion 8 + new ~600-word "Regulated lending agents: what changes" section.** User authoring in their own voice — citations are pre-verified in `sources-verified.md` (CFPB Circulars 2022-03/2023-03, NYDFS Industry Letter Oct 2024, SR 26-2/OCC 2026-13, MA AG Earnest, Lethal Trifecta).
+- **Voice pass** (matching Husain/Cat Wu directness, removing hedging) — separate Stream 1 sub-task.
+- **Pre-publish review** — separate sub-task.
+
+### Notable decisions
+
+- **Insertion 3 wholesale rewrite.** Replaced the original Evaluation methodology section (12 paragraphs) with 5 body paragraphs + 8 planning questions reflecting the Husain & Shankar 2026 LLM Evals FAQ. Per the plan's anti-sycophancy directive: where Husain contradicts the existing Field Guide framing ("create golden set first" vs. "error analysis precedes evals"), update the Field Guide rather than dual-attributing. The rewrite cites the FAQ inline and applies reframes 1, 2, 3, 4, 5, 8 from `husain-2026-reframes.md`.
+- **`[SUBSTACK URL]` placeholder** kept in two places (brief preface + one-pager CTA) — user fills before publish. Flagged in run log.
+- **Insertion 2 sidebar styling** uses Heading 3 + List Bullet styles in body flow rather than a true side-floating text box (python-docx text-box support is poor). Renders as a labeled "Recent failure cases" section with 3 bulleted incidents (Klarna, Air Canada, MA AG Earnest).
+
+### Reproducibility
+
+`field-guide-source/apply_citations.py` — single Python script (python-docx ≥ 1.2) that performs all insertions and self-verifies. Idempotent: re-running overwrites the `_v2.docx` files. Run log at `field-guide-source/_v2_run.log`. The script can be re-run if the citation plan evolves; anchor-matching is text-based and tolerant of typographic differences.
+
+### Brief preface — DROPPED per user correction 2026-05-05
+
+Initial v2 brief included a 2-paragraph "About this brief" preface with an inferred byline ("Brett Gilbert") and a description of the user as a "regulated lending PM." Both were fabrications:
+
+- **Name:** I had no signal beyond the email handle `bjgilbert13`. I picked "Brett" as plausible and inserted it as if known. User corrected.
+- **"Regulated lending":** I conflated two unrelated signals — (a) project memory describing the user as "senior PM in loan administration / loan-agency-team" (third-party loan agency work, NOT lending) with (b) the citation-insertion-plan's framing of regulated finance as the document's "natural moat" (= target audience for positioning, not the user's job). The synthesis "regulated lending PM" was wrong on both counts.
+
+User direction: drop the preface entirely. The Field Guide is industry-agnostic — intended to be picked up by a PM in any industry to assess agent readiness, not framed toward any specific vertical.
+
+`apply_citations.py:edit_brief` updated to skip the preface insertion. v2 brief no longer includes any byline, author info, or industry framing in the preamble. The existing "Purpose" paragraph (already in the source brief) covers the framing job.
+
+### Resolved decisions (2026-05-05)
+
+- **Insertion 2 sidebar:** keep all 3 cases (Klarna, Air Canada, MA AG Earnest). User confirmed the multi-industry diversity supports the industry-agnostic positioning rather than tilting toward lending — each case appears as the failure pattern, not as industry-specific guidance.
+
+---
+
+## Updates 2026-09-05 (audit triage + Wave 0)
+
+**Repo state.** Remote `main` was restructured on 2026-08-04 by a Claude cloud session (PRs #1–#4, +5,015/−1,266 curriculum lines): Track P (P.1–P.6, thread project, P.5 veto gate), Phase 3 (3.1–3.6), Phase E finance elective, Day 3.5 LLM foundations, Module 2.4 rebuilt as Agentic Systems Engineering, Module 2.5 model selection, 86-URL link audit, `weekly-currency-prompt.md` (for Cowork — never scheduled), `model-watch.md` (unpopulated stub). 41 lessons, 164 quiz questions, 37 coach checks, 22 artifact-required, 2 veto gates. 106 tests. Local clone was 15 commits behind until this session; now synced. Lesson slugs for 5 old lessons changed — irrelevant because `data.db` has zero progress rows: **the learner has not started the August curriculum.**
+
+**Audit triage.** Two documents in `~/Downloads/` from an external adversarial review ("Get to Green Plan", "Enterprise AI Case") were triaged against remote main. Full disposition tables, collapse map, not-build list, wave sequence, hours (+9.0 net, Module 1.1 cut after moving its V1-boundary probe to P.2), and verification live in `~/.claude/plans/there-are-two-documents-hazy-peach.md`. Headline: the audit under-credited Phase 3 (F/G already covered), its sample cold case is the curriculum's own worked example (rejected as a transfer test, kept as template), and its P0 order put currency before coach semantics (reversed).
+
+**Decisions (user):** persona = practicing PM applying product thinking to AI (fundamentals assumed, probed on gaps or where non-determinism changes the practice); coach pass gated by a separate assessor call with asymmetric acceptance (≥11/13 agreement AND zero false-PASS on `must_hold`); cold cases sealed — rubric committed, instance authored just-in-time into gitignored `cold-cases/` with a no-echo rule; Cowork not set up so the first currency run is a one-off Claude Code session.
+
+**Wave 0 shipped** — branch `claude/wave0-hygiene`, commit 60428d5, PR #5 (open, awaiting user merge): CI workflow, dependency upper bounds (`anthropic>=0.40,<2`; 0.96 installed), README governance + `--check`, `backup_db()` before `/api/reset`, persona v3 in header/`coach.py`/`build-brief.md`, `COACH_MODEL` default → `claude-sonnet-5`, prompt caching on the system block with cache token fields persisted, Day 13-14 `artifact_required`, `Grading:`→`Grading criteria:` fix in 1.1/2.1 (parser was dropping them), harness terms aligned, currency-log block, overdue pretest re-trigger check recorded (stays deferred, next 2026-12-31). Live harness 6/6 on claude-sonnet-5. [Corrected 2026-09-06: it was NOT on Sonnet 5 — `.env` overrode the code default with `claude-sonnet-4-6`; see the Opus switch block.]
+
+**PR #5 merged 2026-09-05 (c2cf625).**
+
+**Wave 1 shipped same session** (user chose not to split it out; sigma-build judged disproportionate for ~200 LOC) — branch `claude/wave1-assessor`, commit 9128e52, **draft PR #6** pending the owner's adjudication of the 13 fixture labels. What it does: `coach.assess_transcript` returns a structured pass/hold/uncertain verdict over the stored transcript via forced tool use (grades learner turns only; coach approval is explicitly not evidence; malformed → uncertain). `POST /api/coach/{id}/assess`; `mark-passed` requires a `pass` rendered on the current transcript or an explicit override with a ≥20-char note stored as `coach_pass_mode=override` and counted in `/api/stats`. Seven new columns via idempotent ALTER migration. UI: Request assessment / Re-assess, verdict card with gaps, stale marker, Coach-certified vs Self-certified badge, dashboard override count. 116 tests. Gold set: 13 transcripts (6 pass / 7 hold / 5 must_hold) at `tests/fixtures/coach_gold/`, runner `eval_coach_assessor.py` with asymmetric green.
+
+**Calibration evidence** (`tests/fixtures/coach_gold/runs/`): pre-fix 11/13 and 12/13 — case 08 flipped between two identical-prompt runs, so the assessor has run-to-run variance on borderline cases (take ≥3 runs, never trust one). Both false holds had one cause: assessor treated lesson *objectives* as required items. One principled prompt fix ("grading criteria are the bar; objectives are context"). Post-fix 13/13, 0/5 false-PASS, 0/6 false-HOLD on three consecutive runs. Caveat: tuned with the two failing cases in view → design-set performance; held-out set = the learner's first real transcripts, labeled after the fact.
+
+**Label calibration (2026-09-05, later).** User raised the circularity: the learner cannot set the bar they are being measured against. Resolution: (1) every label now carries a `source_anchor` (grading criteria verbatim + curriculum passages), so adjudication = "does the label follow from the written standard"; (2) blind cross-model second labelers — OpenAI and Gemini both returned 429 (OpenAI: no credits; Gemini: quota exceeded) → **both provider accounts need topping up before automated cross-model runs work**; (3) fallback delivered: anonymized paste-ready packet `~/Downloads/coach-gold-blind-packet-2026-09-05.md` (cases A–M, ~7.4k words, no label leakage verified), private mapping at `tests/fixtures/coach_gold/runs/blind-packet-mapping.json`; user runs it through a non-Anthropic model and pastes back the JSON array. Adjudication rule (user-approved logic): hold→pass flips require a source citation; pass→hold does not. Also found: 7/37 coach checks have no grading criteria (Day 8-9, Day 12, 2.0, 2.1b, 2.2, E.1, E.3) → Wave 2 edit pass.
+
+**Blind pass returned (2026-09-05).** Owner pasted the packet into GPT-5.6; 13/13 agreement with drafts; three-way agreement with the Claude assessor's post-fix runs; no split rows. Case 02 promoted to `must_hold` on the blind labeler's "high" severity (must_hold now 6/13; assessor already held it 3/3). Caveat on record: the labeler used design vocabulary absent from the packet ("must-hold case", "coach-wrongly-approved") → semi-independent, likely the audit's author model; packet itself verified leak-free. Strongest untaken anchor: a human at the bar (P.5 cold-read). PR #6 marked ready for review.
+
+**Cold pass (2026-09-05, Gemini Pro, temporary chat, third family).** 13/13 agreement → four-way agreement (drafts, Claude assessor ×3, GPT-5.6, Gemini). Gemini's notes use its own vocabulary ("the coach hallucinates a pass"), so it is the first fully independent labeler. Severity votes: unanimous high on 01/02/05/11/12; split on 09 (Gemini high / GPT medium) and 13 (GPT high / Gemini medium). Case 09 promoted to must_hold (same class as 01) → must_hold 7/13; assessor already held it 3/3. Workaround for "no human at the bar" that the user lacks: (1) source anchors, (2) multi-family convergence (done), (3) construction-labeled adversarial hold cases (proposed, not yet built — could be authored cold via a Gemini packet), (4) week-12 self re-label of early transcripts (proposed checkpoint item). P.5 cold-read needs any engineer, not an AI PM.
+
+**PR #6 merged 2026-09-05 (8fa4d33).**
+
+**Wave 2a shipped (PR #7, open):** `thread_project` table + `/api/thread-project` + dashboard card/form; portfolio `lesson_id` + `evidence_note`; artifact gate in `api_set_complete` (Track P needs a URL); `_coach_context()` = thread project + PREREQUISITE lessons' artifacts + last verdict/gaps (bounded); `_cold_case_text()` sealed runtime (`n/a|authored|missing→409|invalid`); parser `**Case source:**` label; `cold-cases/AUTHORING.md` (no-echo rule) + gitignore; `make_adversarial_packet.py` / `ingest_adversarial.py`. 132 tests.
+
+**Wave 2b shipped (PR #8, stacked on #7):** 54 curriculum edits + 11 arithmetic: solution ladder starts at "remove the step" (Day 12, P.1 deliverable item 0 + suitability read), per-case economics in 3.2, supervision bar replaces "read everything" (Day 1-3, P.4, B.2), 5 doctrinal rewordings, 4 boundary questions (Day 8-9, Day 10-11, P.2, P.3), 3.1 rejected-opportunity, 3.5 pressure Qs, P.5 intervention layer, stale schedule refs fixed (checkpoint heading now "Checkpoint (Week 12-13)"; parser detects by name), grading criteria for the 7 criteria-less coach checks, Module 2.2 resources made specific (2 a16z URLs UNVERIFIED — ledger known-fragile #5), design principle 3 rewritten to current truth, Module 1.1 retired (V1 probe → P.2), 5 Cold Case slot lessons (1: Sprint gate; 2+5: before P.4; 3: before P.6; 4: before B.7), checkpoint gains the ~4h gauntlet. 45 lessons; 187 core lesson-hours + 4h gauntlet; header ~17 weeks. app.js "Week 8" labels removed.
+
+**Adversarial packet** `~/Downloads/coach-gold-adversarial-authoring-packet-2026-09-05.md` (cases N–S) handed to the user for Gemini; `ingest_adversarial.py` converts the reply into by-construction hold fixtures; then `eval_coach_assessor.py` ×3.
+
+**Currency run**: kickoff prompt given to the user for a separate Claude Code session (branch `claude/currency-bootstrap-2026-09-05`; must NOT edit ai-pd-curriculum.md while #7/#8 are open; proposals → `currency-proposals/2026-09-05.md`).
+
+**Concurrency note 26.9.5:** another session modified `sigma-system-overview/agent-infrastructure/scripts/backup-memory.sh` (branch guard) while this session ran — a live instance of the parallel-session hazard. Only commit snapshots from main.
+
+**Merged 2026-09-05 (later):** #7 (2a) → #10 (2b; #8 was auto-closed when #7's branch was deleted — GitHub does NOT retarget stacked PRs on base deletion; re-open from the surviving branch) → #9 (currency bootstrap) → #11 (post-merge link hygiene). Main at HEAD of that sequence; 132 tests; parser in sync.
+
+**PR #9 review findings (fixed on the branch before merge):** (1) Artificial Analysis figures were wrong — Fable 5.1 listed at 57 (AA publishes 66 max / 58 low), Opus 5 54 (AA 63), GPT-6 Astra 55 (not listed); the "57" matched a number the 26.4.29 audit had excised as fabricated → other AA numbers downgraded to T3; (2) "anthropic.com/engineering silent since April" was a bot-blocked fetch misread as silence (posts exist 05-11, 05-25, 09-04) → retracted; rule: blocked anchor = unfetchable, never quiet; (3) module names wrong in proposals (2.6→2.3; 1.3→Day 10-11/2.1/P.3). Rest of the run was sound: no curriculum edits, provider-page prices, anti-findings method stated, P1 link rot real (reproduced). **P2 (Art. 50(2) grace period wording in 2.3) and P3 (cite Reg. (EU) 2026/1744) are unapplied, awaiting the user's approval.**
+
+**Adversarial set landed (2026-09-05, PR #12):** six hollow-by-construction holds authored cold by Gemini via the anonymized packet (Day 10-11, P.3, P.5, 2.4, B.6, Day 8-9; two with the coach wrongly approving; cases Q/S got a null 4th learner turn at ingest because the author wrote 3). Assessor prompt unchanged → 19/19 ×3, 0/13 false-PASS ×3, 0/6 false-HOLD ×3. This is the held-out result for the prompt tuned on 01–13. Gold set now 19 (6 pass / 13 hold, all holds critical). Three label kinds documented in the README: human-drafted+cross-model-calibrated, by-construction, real transcripts (future). Currency session closed by the user after #9 merged.
+
+**PR #13 (2026-09-05):** P2/P3 owner-approved and applied (Art. 50(2) grace-period wording in 2.3; Reg. (EU) 2026/1744 cited at 2.3, E.2, Resource Index; EUR-Lex fetched 200). Day 5 corrected — user spotted that the currency run missed it: `temperature`/`top_p`/`top_k` return 400 on Fable 5/5.1, Opus 5/4.8/4.7, Sonnet 5; assistant prefill likewise; both still exist on the 4.6 family, Haiku 4.5 and other providers. Day 5 Why/objective/Q2/Q3/Q4 rewritten around the durable lesson (engineer determinism via output contract + validation; verify with an eval; `effort` + adaptive thinking is the effort control). Quiz distractors elsewhere mentioning temperature are wrong answers by design and were left. `model-watch.md` Deprecations gained the sampling-params removal; `weekly-currency-prompt.md` Part 4 now checks request-surface changes and bar 2 names "a taught API parameter no longer exists".
+
+**Wave 3 shipped + merged (PR #14):** review = retrieval attempt. Quiz lessons serve one question (missed-first; answer key withheld; deterministic pick in (lesson, review_count) so the server validates against its own pick); coach-only lessons serve one objective → ≤4000-char written application graded by `coach.assess_review` (same tool schema + fail-closed `_normalize_assessment`; live smoke: concrete application pass, restatement hold). Correct → count+1; miss/hold/uncertain → count−1, `review_misses`+1, `last_review_result`, next interval cut to a third. No-attempt POST → 400. Cold cases excluded from the queue. Design principle 3 rewritten to describe the mechanic. 143 tests.
+
+**PR #15 (2026-09-05):** gauntlet spec expanded from stub to nine components with binary rubrics + scoring/Phase-3 weighting rules; 'Capstone Gauntlet (Transfer Test)' lesson added at end of Track P (4h, veto, prereqs P.6 + B.8, `case_source cold-cases/gauntlet/index.md`, artifact = half-page note checked against verdicts); header 191 core hours incl. gauntlet; 46 lessons; coach.py persona 'read the code that comes back' → supervision bar. **All build waves that precede Day 1 are done.**
+
+**Quick start (PR #16, 2026-09-05):** macOS LaunchAgent `com.aipd.tracker` INSTALLED on this machine (`~/Library/LaunchAgents/com.aipd.tracker.plist`; RunAtLoad + KeepAlive; venv python, no --reload; logs `.run/tracker.log`). Scripts: `scripts/install-launch-agent.sh`, `uninstall-launch-agent.sh`, `restart-tracker.sh` (needed after `git pull` — the service does not auto-reload), `run.sh` (one-off background start), `open-tracker.command` (ensures up, opens browser). Desktop launcher: `~/Desktop/AI PD Tracker.command` → exec of the repo's open-tracker.command. Dev mode with --reload still works from the README command but will conflict on port 8000 while the service runs — stop the service first (`launchctl bootout gui/$UID/com.aipd.tracker`) or use another port.
+
+**Final cleanup (PR #17, 2026-09-05):** the `or True` assertion in the spaced-review test replaced with real checks of the served objective, the assess_review call args, and the next cycle's objective; README gained "How the learning evidence is trusted" (assessor → gold set + asymmetric green → cross-model calibration → review assessor → real transcripts as held-out) and reframes `test_coach.py` as a conversational smoke test. User's scope instruction: no new machinery or eval surfaces; further evidence comes from real learner interactions, not synthetic refinement.
+
+**Opus switch (PR #18, 2026-09-06, merged 8c9638e).** User asked whether the tool ran on Opus or Sonnet and wanted Opus. Finding: the tracked `.env.example` shipped `COACH_MODEL=claude-sonnet-4-6`, the user's `.env` inherited it, and an env value wins over the code default — so the Wave 0 switch to Sonnet 5 never ran, and every 2026-09-05 gold-set run (prefix, postfix, adversarial) and the Wave 0 harness actually ran on Sonnet 4.6 (per the `model` field recorded in each result). Fix: code default `claude-opus-5` at all three call sites with `max_tokens` 4096/4096/2048 for thinking; override removed from `.env`; `.env.example` ships overrides commented out with the precedence rule; README names the runtime model; `model-watch.md` false "Sonnet 5 was the default" wording corrected; runs README carries a provenance note. Precedence: `ASSESSOR_MODEL` > `COACH_MODEL` (env) > code default. Validation on Opus 5 (model verified in every result): smoke harness 6/6; gold set 18/19 ×3, 0/13 false-PASS, 1/6 false-HOLD — case 04 (the borderline expected-pass) held in every run on "criterion claimed, not demonstrated", asking for the lesson's three assigned scenarios to be worked (objectives-as-requirements drift, same class the 09-05 fix targeted on Sonnet 4.6); green ×3 on the asymmetric rule; ~67k tokens per run. Prompt deliberately not re-tuned with the case in view (user scope: no further synthetic refinement). Service restarted on main. Watch for case-04-class false holds in real transcripts; the learner's override path exists for that.
+
+**Next.** The learner can start Day 1 (tracker is running at http://127.0.0.1:8000). Remaining plan items (all just-in-time by design): slot-1 cold case authored the day before the Sprint readiness gate (separate session, `cold-cases/AUTHORING.md`); slots 2–5 and gauntlet artifacts just-in-time; human-at-the-bar anchor still untaken (any engineer for the P.5 cold-read); weekly currency run cadence (Cowork or manual) not yet scheduled.
+
+(superseded next-steps follow)  → ingest adversarial cases + 3× eval → currency PR lands → Wave 3 (review-retrieval gate; coach-only path via the assessor) before the first review falls due → Wave 2b/4 slot cases authored just-in-time → gauntlet artifacts the week before the checkpoint. → one-off currency run → Wave 2 before P.1 (thread-project record, artifact gate, coach context, curriculum edit pass incl. 1.1 cut, `cold-cases/AUTHORING.md`). Wave 3 (review-retrieval gate) can now reuse the assessor for coach-only lessons. Wave 2 also carries the E2 "read everything it produced" reword in P.4 and the coach's "can read the code that comes back" line.
+
+**Known gaps not yet fixed** (all in the plan): design principle 3 ("failed checks return to the review queue") is false as implemented; checkpoint still says "Week 8" / "1 hour/day" / "Phase 3 gets designed"; Module 2.2 has three non-specific resources; coach transcript still persisted after the API call returns.
